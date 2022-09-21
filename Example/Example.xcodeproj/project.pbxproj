@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,7 @@
 		010656AF28DB2E8C00F2A9A6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 010656AD28DB2E8C00F2A9A6 /* Main.storyboard */; };
 		010656B128DB2E8E00F2A9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 010656B028DB2E8E00F2A9A6 /* Assets.xcassets */; };
 		010656B428DB2E8E00F2A9A6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 010656B228DB2E8E00F2A9A6 /* LaunchScreen.storyboard */; };
+		010656C328DB543B00F2A9A6 /* BugsnagPerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 010656C228DB543B00F2A9A6 /* BugsnagPerformance */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				010656C328DB543B00F2A9A6 /* BugsnagPerformance in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +46,7 @@
 				010656A628DB2E8C00F2A9A6 /* Example */,
 				010656BF28DB2F5E00F2A9A6 /* Packages */,
 				010656A528DB2E8C00F2A9A6 /* Products */,
+				010656C128DB543B00F2A9A6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -77,6 +80,13 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		010656C128DB543B00F2A9A6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -93,6 +103,9 @@
 			dependencies = (
 			);
 			name = Example;
+			packageProductDependencies = (
+				010656C228DB543B00F2A9A6 /* BugsnagPerformance */,
+			);
 			productName = Example;
 			productReference = 010656A428DB2E8C00F2A9A6 /* Example.app */;
 			productType = "com.apple.product-type.application";
@@ -113,7 +126,7 @@
 				};
 			};
 			buildConfigurationList = 0106569F28DB2E8C00F2A9A6 /* Build configuration list for PBXProject "Example" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -226,7 +239,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -280,7 +293,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -368,6 +381,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		010656C228DB543B00F2A9A6 /* BugsnagPerformance */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformance;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0106569C28DB2E8C00F2A9A6 /* Project object */;
 }
