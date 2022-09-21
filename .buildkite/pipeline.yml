@@ -1,0 +1,14 @@
+env:
+  LANG: "en_GB.UTF-8"
+
+steps:
+  - group: ":xcode_simulator: Test"
+    steps:
+      - label: "iOS 15"
+        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
+        agents:
+          queue: macos-12-arm
+      - label: "iOS 10"
+        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test
+        agents:
+          queue: macos-10.15
