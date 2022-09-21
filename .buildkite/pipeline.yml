@@ -13,6 +13,6 @@ steps:
         agents:
           queue: macos-12-arm
       - label: "iOS 10"
-        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test
+        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test SWIFT_VERSION=4.2
         agents:
           queue: macos-10.15
