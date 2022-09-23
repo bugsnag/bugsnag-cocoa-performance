@@ -20,6 +20,5 @@ let package = Package(
         .testTarget(
             name: "BugsnagPerformanceTests",
             dependencies: ["BugsnagPerformance"]),
-    ],
-    swiftLanguageVersions: [.v5, .v4_2]
+    ]
 )
