@@ -20,6 +20,7 @@
 - (void)testEncode {
     auto span = std::make_shared<Span>(@"My span", CFAbsoluteTimeGetCurrent(), ^(const Span &span) {});
     span->end();
+    
     auto json = span->encode();
     
     NSString *traceId = json[@"traceId"];
