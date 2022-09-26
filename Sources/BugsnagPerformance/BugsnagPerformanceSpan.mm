@@ -8,18 +8,14 @@
 #import "BugsnagPerformanceSpan+Private.h"
 
 @implementation BugsnagPerformanceSpan {
-    Span *_span;
+    std::shared_ptr<Span> _span;
 }
 
-- (instancetype)initWithSpan:(Span *)span {
+- (instancetype)initWithSpan:(std::shared_ptr<Span>)span {
     if ((self = [super init])) {
         _span = span;
     }
     return self;
-}
-
-- (void)dealloc {
-    delete _span;
 }
 
 - (void)end {

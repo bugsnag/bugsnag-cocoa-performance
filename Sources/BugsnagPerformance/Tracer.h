@@ -7,14 +7,16 @@
 
 #import "Span.h"
 
+#import <memory>
+
 class Tracer {
 public:
     Tracer(NSURL *endpoint) : endpoint(endpoint) {
         NSLog(@"BugsnagPerformance started");
     }
     
-    Span * startSpan(NSString *name, CFAbsoluteTime startTime) {
-        return new Span(name, startTime, ^(const Span &span) {
+    std::shared_ptr<Span> startSpan(NSString *name, CFAbsoluteTime startTime) {
+        return std::make_shared<Span>(name, startTime, ^(const Span &span) {
             this->onEnd(span);
         });
     }

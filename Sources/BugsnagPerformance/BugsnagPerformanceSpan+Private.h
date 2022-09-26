@@ -9,13 +9,15 @@
 
 #import "Span.h"
 
+#import <memory>
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan ()
 
 - (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWithSpan:(Span *)span NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSpan:(std::shared_ptr<Span>)span NS_DESIGNATED_INITIALIZER;
 
 @end
 
