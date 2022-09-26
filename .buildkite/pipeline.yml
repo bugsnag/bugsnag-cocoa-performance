@@ -3,7 +3,7 @@ env:
 
 steps:
   - label: ":hammer: Example"
-    command: cd Example && xcodebuild -quiet
+    command: cd Example && xcodebuild
   - group: ":xcode_simulator: Test"
     steps:
       - label: "iOS 15"
