@@ -10,13 +10,15 @@
 #import "BugsnagPerformanceSpan+Private.h"
 #import "Tracer.h"
 
+#import <memory>
+
 @implementation BugsnagPerformance
 
-static Tracer *tracer;
+static std::shared_ptr<Tracer> tracer;
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
     NSAssert(!tracer, @"+[BugsnagPerformance startWithConfiguration:] already called");
-    tracer = new Tracer(configuration.endpoint);
+    tracer = std::make_shared<Tracer>(configuration.endpoint);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
