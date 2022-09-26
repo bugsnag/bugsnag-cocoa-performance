@@ -2,6 +2,8 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
+  - label: ":hammer: Example"
+    command: cd Example && xcodebuild -quiet
   - group: ":xcode_simulator: Test"
     steps:
       - label: "iOS 15"
