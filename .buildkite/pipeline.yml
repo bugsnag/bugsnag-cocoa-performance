@@ -3,7 +3,9 @@ env:
 
 steps:
   - label: ":hammer: Example"
-    command: cd Example && xcodebuild
+    command: cd Example && xcodebuild -scheme Example -destination generic/platform=iOS
+    agents:
+      queue: macos-12-arm
   - group: ":xcode_simulator: Test"
     steps:
       - label: "iOS 15"
