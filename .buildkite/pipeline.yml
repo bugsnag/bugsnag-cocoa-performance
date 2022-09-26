@@ -3,14 +3,22 @@ env:
 
 steps:
 
-  - label: ":hammer: Example"
-    command: cd Example && xcodebuild -scheme Example -destination generic/platform=iOS
-    agents:
-      queue: macos-12-arm
-
-  - group: ":xcode_simulator: Test"
+  - group: ":hammer:"
     steps:
+      - label: "Example"
+        command: ./Example/build.sh
+        agents:
+          queue: macos-12-arm
+      - label: "Fixture"
+        command: ./features/fixtures/ios/build.sh
+        key: ios_fixture
+        artifact_paths:
+          - features/fixtures/ios/output/Fixture.ipa
+        agents:
+          queue: macos-12-arm
 
+  - group: ":xcode_simulator: Unit Tests"
+    steps:
       - label: "iOS 15"
         command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
         agents:
@@ -20,15 +28,8 @@ steps:
         agents:
           queue: macos-10.15
 
-  - group: ":iphone: E2E Test"
+  - group: ":iphone: E2E Tests"
     steps:
-
-      - label: ":hammer:"
-        command: ./features/fixtures/ios/build.sh
-        key: ios_fixture
-        artifact_paths:
-          - features/fixtures/ios/output/Fixture.ipa
-
       - label: "iOS 15"
         depends_on:
           - ios_fixture
@@ -52,7 +53,6 @@ steps:
         concurrency: 24
         concurrency_group: browserstack-app
         concurrency_method: eager
-
       - label: "iOS 10"
         depends_on:
           - ios_fixture
