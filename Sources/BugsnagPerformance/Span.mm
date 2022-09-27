@@ -41,6 +41,12 @@ Span::Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &s
     IdGenerator::generateTraceIdBytes(traceId);
 }
 
+void
+Span::end(CFAbsoluteTime time) noexcept {
+    endTime = time;
+    onEnd(*this);
+}
+
 NSDictionary *
 Span::encode() const {
     // A Span represents a single operation performed by a single component of the system.

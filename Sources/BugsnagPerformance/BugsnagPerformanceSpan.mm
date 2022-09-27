@@ -19,7 +19,15 @@
 }
 
 - (void)end {
-    _span->end();
+    if (_span) {
+        _span->end();
+    }
+}
+
+- (void)endWithTime:(NSDate *)time {
+    if (_span) {
+        _span->end(time.timeIntervalSinceReferenceDate);
+    }
 }
 
 @end

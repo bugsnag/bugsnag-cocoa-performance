@@ -14,10 +14,7 @@ class Span {
 public:
     Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span));
     
-    void end() {
-        endTime = CFAbsoluteTimeGetCurrent();
-        onEnd(*this);
-    }
+    void end(CFAbsoluteTime time = CFAbsoluteTimeGetCurrent()) noexcept;
     
     NSDictionary * encode() const;
     
