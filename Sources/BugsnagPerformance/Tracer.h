@@ -9,20 +9,16 @@
 
 #import <memory>
 
+// https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
 class Tracer {
 public:
-    Tracer(NSURL *endpoint) : endpoint(endpoint) {
-        NSLog(@"BugsnagPerformance started");
-    }
+    Tracer(NSURL *endpoint) noexcept;
     
-    std::shared_ptr<Span> startSpan(NSString *name, CFAbsoluteTime startTime) {
-        return std::make_shared<Span>(name, startTime, ^(const Span &span) {
-            this->onEnd(span);
-        });
-    }
-    
-    void onEnd(const Span &span);
+    std::shared_ptr<Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
 private:
+    void onEnd(const Span &span) noexcept;
+    
+    NSDictionary *resourceAttributes;
     NSURL *endpoint;
 };
