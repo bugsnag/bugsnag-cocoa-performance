@@ -2,11 +2,22 @@ env:
   LANG: "en_GB.UTF-8"
 
 steps:
-  - label: ":hammer: Example"
-    command: cd Example && xcodebuild -scheme Example -destination generic/platform=iOS
-    agents:
-      queue: macos-12-arm
-  - group: ":xcode_simulator: Test"
+
+  - group: ":hammer:"
+    steps:
+      - label: "Example"
+        command: ./Example/build.sh
+        agents:
+          queue: macos-12-arm
+      - label: "Fixture"
+        command: ./features/fixtures/ios/build.sh
+        key: ios_fixture
+        artifact_paths:
+          - features/fixtures/ios/output/Fixture.ipa
+        agents:
+          queue: macos-12-arm
+
+  - group: ":xcode_simulator: Unit Tests"
     steps:
       - label: "iOS 15"
         command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
@@ -16,3 +27,52 @@ steps:
         command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test SWIFT_VERSION=4.2
         agents:
           queue: macos-10.15
+
+  - group: ":iphone: E2E Tests"
+    steps:
+      - label: "iOS 15"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 5
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: features/fixtures/ios/output/Fixture.ipa
+            upload: "maze_output/failed/**/*"
+          docker-compose#v3.7.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_15"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+      - label: "iOS 10"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 5
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: features/fixtures/ios/output/Fixture.ipa
+            upload: "maze_output/failed/**/*"
+          docker-compose#v3.7.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--appium-version=1.8.0"
+              - "--device=IOS_10"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
