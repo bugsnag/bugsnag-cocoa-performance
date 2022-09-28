@@ -7,6 +7,8 @@
 
 #import "BugsnagPerformanceSpan+Private.h"
 
+using namespace bugsnag;
+
 @implementation BugsnagPerformanceSpan {
     std::shared_ptr<Span> _span;
 }
@@ -19,7 +21,15 @@
 }
 
 - (void)end {
-    _span->end();
+    if (_span) {
+        _span->end(CFAbsoluteTimeGetCurrent());
+    }
+}
+
+- (void)endWithEndTime:(NSDate *)endTime {
+    if (_span) {
+        _span->end(endTime.timeIntervalSinceReferenceDate);
+    }
 }
 
 @end

@@ -5,6 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#spancontext
 
 // A valid span identifier is an 8-byte array with at least one non-zero byte.
@@ -16,11 +17,12 @@ typedef uint8_t TraceId[16];
 // https://opentelemetry.io/docs/reference/specification/trace/sdk/#id-generators
 class IdGenerator {
 public:
-    static void generateSpanIdBytes(SpanId spanId) {
+    static void generateSpanIdBytes(SpanId spanId) noexcept {
         arc4random_buf(spanId, sizeof(SpanId));
     }
     
-    static void generateTraceIdBytes(TraceId traceId) {
+    static void generateTraceIdBytes(TraceId traceId) noexcept {
         arc4random_buf(traceId, sizeof(TraceId));
     }
 };
+}
