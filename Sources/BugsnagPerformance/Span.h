@@ -16,7 +16,7 @@ class Span {
 public:
     Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span)) noexcept;
     
-    void end(CFAbsoluteTime time = CFAbsoluteTimeGetCurrent()) noexcept;
+    void end(CFAbsoluteTime time) noexcept;
     
     TraceId traceId;
     SpanId spanId;

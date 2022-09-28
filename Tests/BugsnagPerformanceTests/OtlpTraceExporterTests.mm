@@ -55,8 +55,10 @@ using namespace bugsnag;
 }
 
 - (void)testEncodeSpan {
-    Span span(@"My span", CFAbsoluteTimeGetCurrent(), ^(const Span &span) {});
-    span.end();
+    auto startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
+    
+    Span span(@"My span", startTime, ^(const Span &span) {});
+    span.end(startTime + 15);
     
     auto json = OtlpTraceExporter::encode(span);
     
@@ -72,8 +74,8 @@ using namespace bugsnag;
     
     XCTAssertEqualObjects(json[@"kind"], @"SPAN_KIND_INTERNAL");
     
-    XCTAssert([json[@"startTimeUnixNano"] isKindOfClass:[NSString class]]);
-    XCTAssert([json[@"endTimeUnixNano"] isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(json[@"startTimeUnixNano"], @"1664352000000000000");
+    XCTAssertEqualObjects(json[@"endTimeUnixNano"], @"1664352015000000000");
 }
 
 @end

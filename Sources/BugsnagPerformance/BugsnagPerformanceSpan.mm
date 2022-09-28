@@ -22,13 +22,13 @@ using namespace bugsnag;
 
 - (void)end {
     if (_span) {
-        _span->end();
+        _span->end(CFAbsoluteTimeGetCurrent());
     }
 }
 
-- (void)endWithTime:(NSDate *)time {
+- (void)endWithEndTime:(NSDate *)endTime {
     if (_span) {
-        _span->end(time.timeIntervalSinceReferenceDate);
+        _span->end(endTime.timeIntervalSinceReferenceDate);
     }
 }
 

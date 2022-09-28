@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)end;
 
-- (void)endWithTime:(NSDate *)time NS_SWIFT_NAME(end(time:));
+- (void)endWithEndTime:(NSDate *)endTime NS_SWIFT_NAME(end(endTime:));
 
 @end
 
