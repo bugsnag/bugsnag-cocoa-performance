@@ -7,6 +7,8 @@
 
 #import "OtlpTraceExporter.h"
 
+using namespace bugsnag;
+
 static NSString * EncodeSpanKind(SpanKind kind) {
     switch (kind) {
         case SPAN_KIND_UNSPECIFIED: return @"SPAN_KIND_UNSPECIFIED";

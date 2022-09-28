@@ -14,6 +14,8 @@
     XCTAssert([obj isKindOfClass:CLASS], @"Expected %@ but got %@", CLASS, obj); \
 })
 
+using namespace bugsnag;
+
 @interface OtlpTraceExporterTests : XCTestCase
 
 @end

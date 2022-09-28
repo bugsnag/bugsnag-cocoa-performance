@@ -10,6 +10,7 @@
 #import "IdGenerator.h"
 #import "SpanKind.h"
 
+namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
 class Span {
 public:
@@ -28,3 +29,4 @@ public:
 private:
     void (^onEnd)(const Span &span);
 };
+}

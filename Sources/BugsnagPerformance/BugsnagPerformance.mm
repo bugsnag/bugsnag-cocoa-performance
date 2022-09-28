@@ -14,6 +14,8 @@
 
 #define LOG_NOT_STARTED() NSLog(@"Error: %s called before +[BugsnagPerformance startWithConfiguration:]", __PRETTY_FUNCTION__)
 
+using namespace bugsnag;
+
 @implementation BugsnagPerformance
 
 static std::shared_ptr<Tracer> tracer;

@@ -5,6 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#spancontext
 
 // A valid span identifier is an 8-byte array with at least one non-zero byte.
@@ -24,3 +25,4 @@ public:
         arc4random_buf(traceId, sizeof(TraceId));
     }
 };
+}

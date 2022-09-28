@@ -7,6 +7,8 @@
 
 #import "BugsnagPerformanceSpan+Private.h"
 
+using namespace bugsnag;
+
 @implementation BugsnagPerformanceSpan {
     std::shared_ptr<Span> _span;
 }

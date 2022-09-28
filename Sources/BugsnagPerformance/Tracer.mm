@@ -9,6 +9,8 @@
 
 #import "OtlpTraceExporter.h"
 
+using namespace bugsnag;
+
 Tracer::Tracer(NSURL *endpoint) noexcept : endpoint(endpoint) {
     auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
     resourceAttributes = @{

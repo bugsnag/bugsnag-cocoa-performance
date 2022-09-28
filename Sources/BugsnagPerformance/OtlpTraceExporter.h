@@ -9,6 +9,7 @@
 
 #import "Span.h"
 
+namespace bugsnag {
 class OtlpTraceExporter {
 public:
     static NSDictionary * encode(const Span &span) noexcept;
@@ -17,3 +18,4 @@ public:
     
     static NSArray<NSDictionary *> * encode(NSDictionary *attributes) noexcept;
 };
+}

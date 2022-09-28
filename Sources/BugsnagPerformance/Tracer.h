@@ -9,6 +9,7 @@
 
 #import <memory>
 
+namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
 class Tracer {
 public:
@@ -22,3 +23,4 @@ private:
     NSDictionary *resourceAttributes;
     NSURL *endpoint;
 };
+}

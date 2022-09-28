@@ -5,6 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+namespace bugsnag {
 enum SpanKind {
     // Unspecified. Do NOT use as default.
     // Implementations MAY assume SpanKind to be INTERNAL when receiving UNSPECIFIED.
@@ -32,3 +33,4 @@ enum SpanKind {
     // between producer and consumer spans.
     SPAN_KIND_CONSUMER = 5,
 };
+}

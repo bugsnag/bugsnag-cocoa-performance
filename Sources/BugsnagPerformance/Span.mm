@@ -7,6 +7,8 @@
 
 #import "Span.h"
 
+using namespace bugsnag;
+
 Span::Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span)) noexcept
 : name([name copy]), startTime(startTime), onEnd(onEnd) {
     IdGenerator::generateSpanIdBytes(spanId);
