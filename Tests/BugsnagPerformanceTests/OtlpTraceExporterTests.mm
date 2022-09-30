@@ -32,9 +32,14 @@ using namespace bugsnag;
     XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.f}}]));
 }
 
-- (void)testEncodeIntValue {
+- (void)testEncodeInt32Value {
     XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @0}}]));
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @ULONG_MAX}), (@[@{@"key": @"key", @"value": @{@"intValue": @ULONG_MAX}}]));
+    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @1}}]));
+    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @2147483647}}]));
+}
+
+- (void)testEncodeInt64Value {
+    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @18446744073709551615ULL}), (@[@{@"key": @"key", @"value": @{@"intValue": @"18446744073709551615"}}]));
 }
 
 - (void)testEncodeStringValue {

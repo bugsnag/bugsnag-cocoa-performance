@@ -174,16 +174,22 @@ OtlpTraceExporter::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberSInt8Type:
                     case kCFNumberSInt16Type:
                     case kCFNumberSInt32Type:
-                    case kCFNumberSInt64Type:
                     case kCFNumberCharType:
                     case kCFNumberShortType:
                     case kCFNumberIntType:
-                    case kCFNumberLongType:
-                    case kCFNumberLongLongType:
-                    case kCFNumberCFIndexType:
-                    case kCFNumberNSIntegerType:
                         [result addObject:@{@"key": key, @"value": @{@"intValue": value}}];
                         break;
+                        
+                    case kCFNumberLongType:
+                    case kCFNumberCFIndexType:
+                    case kCFNumberNSIntegerType:
+                    case kCFNumberSInt64Type:
+                    case kCFNumberLongLongType:
+                        // "JSON value will be a decimal string. Either numbers or strings are accepted."
+                        // https://developers.google.com/protocol-buffers/docs/proto3#json
+                        [result addObject:@{@"key": key, @"value": @{@"intValue": [value stringValue]}}];
+                        break;
+                        
                     case kCFNumberFloat32Type:
                     case kCFNumberFloat64Type:
                     case kCFNumberFloatType:
@@ -191,6 +197,7 @@ OtlpTraceExporter::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberCGFloatType:
                         [result addObject:@{@"key": key, @"value": @{@"doubleValue": value}}];
                         break;
+                        
                     default: break;
                 }
             }
