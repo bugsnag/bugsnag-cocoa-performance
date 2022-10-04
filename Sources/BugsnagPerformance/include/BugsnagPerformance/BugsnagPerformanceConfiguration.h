@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceConfiguration : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
+
 + (instancetype)loadConfig;
 
 @property (nonatomic) NSURL *endpoint;

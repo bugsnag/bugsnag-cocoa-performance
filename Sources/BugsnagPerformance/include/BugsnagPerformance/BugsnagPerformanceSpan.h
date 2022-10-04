@@ -11,6 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
+
 - (void)end;
 
 - (void)endWithEndTime:(NSDate *)endTime NS_SWIFT_NAME(end(endTime:));
