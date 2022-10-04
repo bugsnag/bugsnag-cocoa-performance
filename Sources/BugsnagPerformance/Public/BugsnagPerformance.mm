@@ -7,8 +7,8 @@
 
 #import <BugsnagPerformance/BugsnagPerformance.h>
 
-#import "BugsnagPerformanceSpan+Private.h"
-#import "Tracer.h"
+#import "../Private/BugsnagPerformanceSpan+Private.h"
+#import "../Private/Tracer.h"
 
 #import <memory>
 

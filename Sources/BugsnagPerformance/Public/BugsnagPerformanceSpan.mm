@@ -5,7 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import "BugsnagPerformanceSpan+Private.h"
+#import "../Private/BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 

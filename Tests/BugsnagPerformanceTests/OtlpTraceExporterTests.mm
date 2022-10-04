@@ -7,7 +7,7 @@
 
 #import <XCTest/XCTest.h>
 
-#import "../../Sources/BugsnagPerformance/OtlpTraceExporter.h"
+#import "../../Sources/BugsnagPerformance/Private/OtlpTraceExporter.h"
 
 #define XCTAssertIsKindOfClass(EXPR, CLASS) ({ \
     id obj = EXPR; \
