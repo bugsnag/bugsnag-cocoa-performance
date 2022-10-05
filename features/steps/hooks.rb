@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+BeforeAll do
+  Maze.config.enforce_bugsnag_integrity = false
+end
+
 Maze.hooks.after do |scenario|
   folder1 = File.join(Dir.pwd, 'maze_output')
   folder2 = scenario.failed? ? 'failed' : 'passed'

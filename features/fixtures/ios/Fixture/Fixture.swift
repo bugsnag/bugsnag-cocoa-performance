@@ -42,7 +42,7 @@ func run(command: Command) {
     let scenario = (scenarioClass as! NSObject.Type).init() as! Scenario
     
     let config = BugsnagPerformanceConfiguration.loadConfig()
-    config.endpoint = URL(string: "http://bs-local.com:9339/logs")!
+    config.endpoint = URL(string: "http://bs-local.com:9339/traces")!
     BugsnagPerformance.start(configuration: config)
     
     scenario.run()
