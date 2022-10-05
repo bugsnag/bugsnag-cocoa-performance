@@ -20,6 +20,10 @@ using namespace bugsnag;
 
 static std::shared_ptr<Tracer> tracer;
 
++ (void)start {
+    [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
+}
+
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
     if (tracer) {
         NSLog(@"Error: %s called more than once", __PRETTY_FUNCTION__);

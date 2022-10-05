@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var span: BugsnagPerformanceSpan?
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        BugsnagPerformance.start(configuration: .loadConfig())
+        BugsnagPerformance.start()
         span = BugsnagPerformance.startSpan(name: "App Launch") 
         return true
     }
