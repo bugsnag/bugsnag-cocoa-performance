@@ -38,7 +38,7 @@ static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const Span &span) noexcept {
+OtlpTraceEncoding::encode(const SpanData &span) noexcept {
     return @{
         // A unique identifier for a trace. All spans from the same trace share
         // the same `trace_id`. The ID is a 16-byte array. An ID with all zeroes
@@ -114,10 +114,10 @@ OtlpTraceEncoding::encode(const Span &span) noexcept {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(std::vector<SpanPtr> spans, NSDictionary *resourceAttributes) noexcept {
-    auto spansArray = [NSMutableArray arrayWithCapacity:spans.size()];
-    for (auto &span : spans) {
-        [spansArray addObject:encode(*span)];
+OtlpTraceEncoding::encode(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+    auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
+    for (const auto &span: spans) {
+        [encodedSpans addObject:encode(*span.get())];
     }
     
     // message ExportTraceServiceRequest / message TracesData
@@ -147,7 +147,7 @@ OtlpTraceEncoding::encode(std::vector<SpanPtr> spans, NSDictionary *resourceAttr
                 // @"scope": ...
                 
                 // A list of Spans that originate from an instrumentation scope.
-                @"spans": spansArray,
+                @"spans": encodedSpans,
                 
                 // This schema_url applies to all spans and span events in the "spans" field.
                 // @"schemaUrl": ...

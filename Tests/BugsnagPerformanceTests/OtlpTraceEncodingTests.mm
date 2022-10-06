@@ -8,7 +8,6 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/OtlpTraceEncoding.h"
-#import "NoopSpanProcessor.h"
 
 #define XCTAssertIsKindOfClass(EXPR, CLASS) ({ \
     id obj = EXPR; \
@@ -48,9 +47,8 @@ using namespace bugsnag;
 }
 
 - (void)testEncodeRequest {
-    std::vector<SpanPtr> spans {
-        std::make_shared<Span>(@"", CFAbsoluteTimeGetCurrent(), std::make_shared<NoopSpanProcessor>())
-    };
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"", CFAbsoluteTimeGetCurrent()));
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -66,10 +64,10 @@ using namespace bugsnag;
 - (void)testEncodeSpan {
     auto startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
-    auto span = std::make_shared<Span>(@"My span", startTime, std::make_shared<NoopSpanProcessor>());
-    Span::end(span, startTime + 15);
+    SpanData span(@"My span", startTime);
+    span.endTime = startTime + 15;
     
-    auto json = OtlpTraceEncoding::encode(*span);
+    auto json = OtlpTraceEncoding::encode(span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);

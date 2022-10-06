@@ -9,17 +9,16 @@
 
 #import "../../Sources/BugsnagPerformance/Private/BatchSpanProcessor.h"
 #import "../../Sources/BugsnagPerformance/Private/Span.h"
-#import "NoopSpanProcessor.h"
 
 using namespace bugsnag;
 
 class StubSpanExporter : public SpanExporter {
 public:
-    void exportSpans(std::vector<SpanPtr> spans) noexcept override {
-        collected.insert(collected.end(), spans.begin(), spans.end());
+    void exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept override {
+        std::move(spans.begin(), spans.end(), std::back_inserter(collected));
     }
     
-    std::vector<SpanPtr> collected;
+    std::vector<std::unique_ptr<SpanData>> collected;
 };
 
 @interface BatchSpanProcessorTests : XCTestCase
@@ -29,12 +28,12 @@ public:
 @implementation BatchSpanProcessorTests
 
 - (void)testBatching {
-    auto processor = std::make_shared<BatchSpanProcessor>();
-    processor->onEnd(std::make_shared<Span>(@"First", CFAbsoluteTimeGetCurrent(), processor));
-    processor->onEnd(std::make_shared<Span>(@"Second", CFAbsoluteTimeGetCurrent(), processor));
+    BatchSpanProcessor processor;
+    processor.onEnd(std::make_unique<SpanData>(@"First", CFAbsoluteTimeGetCurrent()));
+    processor.onEnd(std::make_unique<SpanData>(@"Second", CFAbsoluteTimeGetCurrent()));
     
     auto exporter = std::make_shared<StubSpanExporter>();
-    processor->setSpanExporter(exporter);
+    processor.setSpanExporter(exporter);
     XCTAssertEqual(exporter->collected.size(), 2);
     XCTAssertEqualObjects(exporter->collected[0]->name, @"First");
     XCTAssertEqualObjects(exporter->collected[1]->name, @"Second");

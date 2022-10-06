@@ -11,17 +11,18 @@
 
 using namespace bugsnag;
 
-Span::Span(NSString *name, CFAbsoluteTime startTime, std::shared_ptr<SpanProcessor> spanProcessor) noexcept
-: name([name copy]), startTime(startTime), spanProcessor(spanProcessor) {
-    IdGenerator::generateSpanIdBytes(spanId);
-    IdGenerator::generateTraceIdBytes(traceId);
-}
+
+Span::Span(std::unique_ptr<SpanData> data, std::shared_ptr<class SpanProcessor> spanProcessor) noexcept
+: data_(std::move(data))
+, processor_(spanProcessor)
+{}
 
 void
-Span::end(SpanPtr span, CFAbsoluteTime time) noexcept {
-    if (span->endTime) {
+Span::end(CFAbsoluteTime time) noexcept {
+    if (!data_) {
         return;
     }
-    span->endTime = time;
-    span->spanProcessor->onEnd(span);
+    data_->endTime = time;
+    processor_->onEnd(std::move(data_));
+    processor_.reset();
 }

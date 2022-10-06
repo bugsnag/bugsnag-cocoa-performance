@@ -25,13 +25,13 @@ static Tracer tracer;
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
-    auto span = tracer.startSpan(name, CFAbsoluteTimeGetCurrent());
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:span];
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer.startSpan(name, CFAbsoluteTimeGetCurrent())];
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime {
-    auto span = tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate);
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:span];
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
 }
 
 @end

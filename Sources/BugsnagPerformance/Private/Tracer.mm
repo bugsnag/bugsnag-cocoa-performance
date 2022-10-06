@@ -9,11 +9,12 @@
 
 #import "BatchSpanProcessor.h"
 #import "OtlpTraceExporter.h"
+#import "Span.h"
 
 using namespace bugsnag;
 
 Tracer::Tracer() noexcept
-: spanProcessor(std::make_shared<BatchSpanProcessor>())
+: spanProcessor_(std::make_shared<BatchSpanProcessor>())
 {}
 
 void
@@ -26,12 +27,12 @@ Tracer::start(NSURL *endpoint) noexcept {
     };
     
     auto exporter = std::make_shared<OtlpTraceExporter>(endpoint, resourceAttributes);
-    dynamic_cast<BatchSpanProcessor *>(spanProcessor.get())->setSpanExporter(exporter);
+    dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
     
     NSLog(@"BugsnagPerformance started");
 }
 
-SpanPtr
+std::unique_ptr<Span>
 Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
-    return std::make_shared<Span>(name, startTime, spanProcessor);
+    return std::make_unique<Span>(std::make_unique<SpanData>(name, startTime), spanProcessor_);
 }

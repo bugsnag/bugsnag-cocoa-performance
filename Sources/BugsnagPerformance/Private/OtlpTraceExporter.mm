@@ -12,7 +12,7 @@
 using namespace bugsnag;
 
 void
-OtlpTraceExporter::exportSpans(std::vector<SpanPtr> spans) noexcept {
+OtlpTraceExporter::exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept {
     auto request = OtlpTraceEncoding::encode(spans, resourceAttributes_);
     
     NSError *error = nil;

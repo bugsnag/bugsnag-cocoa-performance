@@ -5,8 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import "Span.h"
-
+#import <Foundation/Foundation.h>
 #import <memory>
 
 namespace bugsnag {
@@ -17,9 +16,9 @@ public:
     
     void start(NSURL *endpoint) noexcept;
     
-    SpanPtr startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
+    std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
 private:
-    std::shared_ptr<SpanProcessor> spanProcessor;
+    std::shared_ptr<class SpanProcessor> spanProcessor_;
 };
 }

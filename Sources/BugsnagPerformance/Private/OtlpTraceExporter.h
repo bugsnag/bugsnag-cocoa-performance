@@ -16,7 +16,7 @@ public:
     : endpoint_(endpoint)
     , resourceAttributes_(resourceAttributes) {}
     
-    void exportSpans(std::vector<SpanPtr> spans) noexcept override;
+    void exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept override;
     
 private:
     NSURL *endpoint_;
