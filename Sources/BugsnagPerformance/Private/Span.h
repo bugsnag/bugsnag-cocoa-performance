@@ -10,13 +10,21 @@
 #import "IdGenerator.h"
 #import "SpanKind.h"
 
+#import <memory>
+#import <vector>
+
 namespace bugsnag {
+typedef std::shared_ptr<class Span> SpanPtr;
+
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
 class Span {
 public:
-    Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span)) noexcept;
+    Span(NSString *name, CFAbsoluteTime startTime, std::shared_ptr<class SpanProcessor> spanProcessor) noexcept;
     
-    void end(CFAbsoluteTime time) noexcept;
+    Span(const Span&) = delete;
+    
+    // Declared as a static function to allow shared_ptr to be passed and avoid copying objects.
+    static void end(SpanPtr span, CFAbsoluteTime time) noexcept;
     
     TraceId traceId;
     SpanId spanId;
@@ -24,9 +32,9 @@ public:
     SpanKind kind = SPAN_KIND_INTERNAL;
     NSDictionary *attributes = nil;
     CFAbsoluteTime startTime;
-    CFAbsoluteTime endTime;
+    CFAbsoluteTime endTime = 0;
     
 private:
-    void (^onEnd)(const Span &span);
+    std::shared_ptr<class SpanProcessor> spanProcessor;
 };
 }

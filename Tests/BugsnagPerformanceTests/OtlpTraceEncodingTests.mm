@@ -1,5 +1,5 @@
 //
-//  OtlpTraceExporterTests.mm
+//  OtlpTraceEncodingTests.mm
 //  
 //
 //  Created by Nick Dowell on 27/09/2022.
@@ -7,7 +7,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "../../Sources/BugsnagPerformance/Private/OtlpTraceExporter.h"
+#import "../../Sources/BugsnagPerformance/Private/OtlpTraceEncoding.h"
+#import "NoopSpanProcessor.h"
 
 #define XCTAssertIsKindOfClass(EXPR, CLASS) ({ \
     id obj = EXPR; \
@@ -16,38 +17,41 @@
 
 using namespace bugsnag;
 
-@interface OtlpTraceExporterTests : XCTestCase
+@interface OtlpTraceEncodingTests : XCTestCase
 
 @end
 
-@implementation OtlpTraceExporterTests
+@implementation OtlpTraceEncodingTests
 
 - (void)testEncodeBoolValue {
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @NO}), (@[@{@"key": @"key", @"value": @{@"boolValue": @NO}}]));
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @YES}), (@[@{@"key": @"key", @"value": @{@"boolValue": @YES}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @NO}), (@[@{@"key": @"key", @"value": @{@"boolValue": @NO}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @YES}), (@[@{@"key": @"key", @"value": @{@"boolValue": @YES}}]));
 }
 
 - (void)testEncodeDoubleValue {
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.f}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.f}}]));
 }
 
 - (void)testEncodeInt32Value {
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @0}}]));
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @1}}]));
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @2147483647}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @0}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @1}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @2147483647}}]));
 }
 
 - (void)testEncodeInt64Value {
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @18446744073709551615ULL}), (@[@{@"key": @"key", @"value": @{@"intValue": @"18446744073709551615"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @18446744073709551615ULL}), (@[@{@"key": @"key", @"value": @{@"intValue": @"18446744073709551615"}}]));
 }
 
 - (void)testEncodeStringValue {
-    XCTAssertEqualObjects(OtlpTraceExporter::encode(@{@"key": @"Hello"}), (@[@{@"key": @"key", @"value": @{@"stringValue": @"Hello"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @"Hello"}), (@[@{@"key": @"key", @"value": @{@"stringValue": @"Hello"}}]));
 }
 
 - (void)testEncodeRequest {
-    auto json = OtlpTraceExporter::encode(Span(@"Name", 0, ^(const Span &span) {}), @{});
+    std::vector<SpanPtr> spans {
+        std::make_shared<Span>(@"", CFAbsoluteTimeGetCurrent(), std::make_shared<NoopSpanProcessor>())
+    };
+    auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
@@ -62,10 +66,10 @@ using namespace bugsnag;
 - (void)testEncodeSpan {
     auto startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
-    Span span(@"My span", startTime, ^(const Span &span) {});
-    span.end(startTime + 15);
+    auto span = std::make_shared<Span>(@"My span", startTime, std::make_shared<NoopSpanProcessor>());
+    Span::end(span, startTime + 15);
     
-    auto json = OtlpTraceExporter::encode(span);
+    auto json = OtlpTraceEncoding::encode(*span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);

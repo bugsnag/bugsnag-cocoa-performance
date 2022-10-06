@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */; };
 		01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */; };
 		01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */; };
 		01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanBeforeStartScenario.swift; sourceTree = "<group>"; };
 		01FE4DA528E1AEBD00D1F239 /* Fixture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fixture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
 			);
@@ -184,6 +187,7 @@
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
+				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

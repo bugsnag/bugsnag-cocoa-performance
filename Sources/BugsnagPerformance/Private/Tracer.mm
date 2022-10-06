@@ -7,42 +7,31 @@
 
 #import "Tracer.h"
 
+#import "BatchSpanProcessor.h"
 #import "OtlpTraceExporter.h"
 
 using namespace bugsnag;
 
-Tracer::Tracer(NSURL *endpoint) noexcept : endpoint(endpoint) {
+Tracer::Tracer() noexcept
+: spanProcessor(std::make_shared<BatchSpanProcessor>())
+{}
+
+void
+Tracer::start(NSURL *endpoint) noexcept {
     auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
-    resourceAttributes = @{
+    auto resourceAttributes = @{
         @"service.name": serviceName,
         @"telemetry.sdk.name": @"bugsnag.performance.cocoa",
         @"telemetry.sdk.version": @"0.0",
     };
     
+    auto exporter = std::make_shared<OtlpTraceExporter>(endpoint, resourceAttributes);
+    dynamic_cast<BatchSpanProcessor *>(spanProcessor.get())->setSpanExporter(exporter);
+    
     NSLog(@"BugsnagPerformance started");
 }
 
-std::shared_ptr<Span>
+SpanPtr
 Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
-    return std::make_shared<Span>(name, startTime, ^(const Span &span) {
-        this->onEnd(span);
-    });
-}
-
-void
-Tracer::onEnd(const Span &span) noexcept {
-    auto request = OtlpTraceExporter::encode(span, resourceAttributes);
-    
-    NSError *error = nil;
-    auto data = [NSJSONSerialization dataWithJSONObject:request options:NSJSONWritingPrettyPrinted error:&error];
-    if (!data) {
-        NSCAssert(NO, @"%@", error);
-        return;
-    }
-    
-    auto urlRequest = [NSMutableURLRequest requestWithURL:endpoint];
-    urlRequest.HTTPBody = data;
-    urlRequest.HTTPMethod = @"POST";
-    [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest] resume];
+    return std::make_shared<Span>(name, startTime, spanProcessor);
 }

@@ -7,16 +7,21 @@
 
 #import "Span.h"
 
+#import "SpanProcessor.h"
+
 using namespace bugsnag;
 
-Span::Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span)) noexcept
-: name([name copy]), startTime(startTime), onEnd(onEnd) {
+Span::Span(NSString *name, CFAbsoluteTime startTime, std::shared_ptr<SpanProcessor> spanProcessor) noexcept
+: name([name copy]), startTime(startTime), spanProcessor(spanProcessor) {
     IdGenerator::generateSpanIdBytes(spanId);
     IdGenerator::generateTraceIdBytes(traceId);
 }
 
 void
-Span::end(CFAbsoluteTime time) noexcept {
-    endTime = time;
-    onEnd(*this);
+Span::end(SpanPtr span, CFAbsoluteTime time) noexcept {
+    if (span->endTime) {
+        return;
+    }
+    span->endTime = time;
+    span->spanProcessor->onEnd(span);
 }

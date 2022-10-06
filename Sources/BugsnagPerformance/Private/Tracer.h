@@ -13,14 +13,13 @@ namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
 class Tracer {
 public:
-    Tracer(NSURL *endpoint) noexcept;
+    Tracer() noexcept;
     
-    std::shared_ptr<Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
+    void start(NSURL *endpoint) noexcept;
+    
+    SpanPtr startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
 private:
-    void onEnd(const Span &span) noexcept;
-    
-    NSDictionary *resourceAttributes;
-    NSURL *endpoint;
+    std::shared_ptr<SpanProcessor> spanProcessor;
 };
 }

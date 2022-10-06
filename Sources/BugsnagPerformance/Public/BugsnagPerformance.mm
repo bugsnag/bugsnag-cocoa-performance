@@ -10,42 +10,28 @@
 #import "../Private/BugsnagPerformanceSpan+Private.h"
 #import "../Private/Tracer.h"
 
-#import <memory>
-
-#define LOG_NOT_STARTED() NSLog(@"Error: %s called before +[BugsnagPerformance startWithConfiguration:]", __PRETTY_FUNCTION__)
-
 using namespace bugsnag;
 
 @implementation BugsnagPerformance
 
-static std::shared_ptr<Tracer> tracer;
+static Tracer tracer;
 
 + (void)start {
     [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
-    if (tracer) {
-        NSLog(@"Error: %s called more than once", __PRETTY_FUNCTION__);
-        return;
-    }
-    tracer = std::make_shared<Tracer>(configuration.endpoint);
+    tracer.start(configuration.endpoint);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
-    if (!tracer) {
-        LOG_NOT_STARTED();
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:nil];
-    }
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:tracer->startSpan(name, CFAbsoluteTimeGetCurrent())];
+    auto span = tracer.startSpan(name, CFAbsoluteTimeGetCurrent());
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:span];
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime {
-    if (!tracer) {
-        LOG_NOT_STARTED();
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:nil];
-    }
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:tracer->startSpan(name, startTime.timeIntervalSinceReferenceDate)];
+    auto span = tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate);
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:span];
 }
 
 @end

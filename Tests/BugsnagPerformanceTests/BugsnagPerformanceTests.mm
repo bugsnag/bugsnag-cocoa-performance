@@ -16,7 +16,7 @@
 @implementation BugsnagPerformanceTests
 
 - (void)setUp {
-    [BugsnagPerformance startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
+    [BugsnagPerformance start];
 }
 
 - (void)testStartSpanWithName {
