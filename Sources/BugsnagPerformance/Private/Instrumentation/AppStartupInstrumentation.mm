@@ -10,15 +10,21 @@
 #import "../Span.h"
 #import "../Tracer.h"
 
+#import <array>
 #import <os/trace_base.h>
 #import <sys/sysctl.h>
 
 using namespace bugsnag;
 
+static constexpr CFTimeInterval kMaxDuration = 120;
+
+// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
 static AppStartupInstrumentation *instance;
 static CFAbsoluteTime didBecomeActive;
+// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
 
 static inline bool ActivePrewarm(void) {
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
     return getenv("ActivePrewarm") != nullptr;
 }
 
@@ -59,7 +65,7 @@ AppStartupInstrumentation::start() noexcept {
     
     if (ActivePrewarm()) {
         NSLog(@"[INFO] App startup instrumentation disabled due to ActivePrewarm");
-    } else if (didBecomeActive) {
+    } else if (didBecomeActive != 0) {
         // App is already active
         reportSpan(didBecomeActive);
     } else {
@@ -84,10 +90,10 @@ AppStartupInstrumentation::notificationCallback(CFNotificationCenterRef center,
 void
 AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
     auto startTime = getProcessStartTime();
-    if (!startTime) {
+    if (startTime == 0.0) {
         return;
     }
-    if (endTime > startTime + 120) {
+    if (endTime > startTime + kMaxDuration) {
         NSLog(@"[WARN] Ignoring excessively long app startup span");
         return;
     }
@@ -102,14 +108,15 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
 
 CFAbsoluteTime
 AppStartupInstrumentation::getProcessStartTime() noexcept {
-    int cmd[] = { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
+    std::array<int, 4> cmd { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
     struct kinfo_proc info = {0};
     auto size = sizeof info;
     
-    if (sysctl(cmd, sizeof cmd / sizeof *cmd, &info, &size, NULL, 0)) {
-        return 0;
+    if (sysctl(cmd.data(), cmd.size(), &info, &size, NULL, 0)) {
+        return 0.0;
     }
     
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
     auto timeval = info.kp_proc.p_un.__p_starttime;
     auto usecs = timeval.tv_sec * USEC_PER_SEC + timeval.tv_usec;
     return (CFTimeInterval(usecs) / USEC_PER_SEC + kCFAbsoluteTimeIntervalSince1970);
@@ -117,11 +124,11 @@ AppStartupInstrumentation::getProcessStartTime() noexcept {
 
 // TODO: Remove after integration with Bugsnag
 static uint64_t GetBootTime() {
-    int cmd[] = { CTL_KERN, KERN_BOOTTIME };
+    std::array<int, 3> cmd { CTL_KERN, KERN_BOOTTIME };
     struct timeval timeval = {0};
     auto size = sizeof timeval;
     
-    if (sysctl(cmd, sizeof cmd / sizeof *cmd, &timeval, &size, NULL, 0)) {
+    if (sysctl(cmd.data(), cmd.size(), &timeval, &size, NULL, 0)) {
         return 0;
     }
     
