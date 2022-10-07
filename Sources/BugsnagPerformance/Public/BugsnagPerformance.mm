@@ -21,7 +21,8 @@ static Tracer tracer;
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
-    tracer.start(configuration.endpoint);
+    tracer.start(configuration.endpoint,
+                 configuration.autoInstrumentAppStarts);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {

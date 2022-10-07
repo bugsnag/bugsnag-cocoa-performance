@@ -109,7 +109,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
         // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute
         // Attribute keys MUST be unique (it is not allowed to have more than one
         // attribute with the same key).
-        @"attributes": @[],
+        @"attributes": encode(span.attributes),
     };
 }
 

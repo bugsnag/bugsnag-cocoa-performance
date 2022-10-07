@@ -11,7 +11,6 @@
 
 using namespace bugsnag;
 
-
 Span::Span(std::unique_ptr<SpanData> data, std::shared_ptr<class SpanProcessor> spanProcessor) noexcept
 : data_(std::move(data))
 , processor_(spanProcessor)

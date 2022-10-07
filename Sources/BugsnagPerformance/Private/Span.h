@@ -21,6 +21,10 @@ public:
     
     Span(const Span&) = delete;
     
+    void addAttributes(NSDictionary *attributes) noexcept {
+        data_ ? data_->addAttributes(attributes) : (void)0;
+    }
+    
     void end(CFAbsoluteTime time) noexcept;
     
 private:
