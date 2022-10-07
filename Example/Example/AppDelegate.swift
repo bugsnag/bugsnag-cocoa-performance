@@ -22,7 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BugsnagPerformance.startSpan(name: "Another pre-start span").end()
         
         let startSpan = BugsnagPerformance.startSpan(name: "start")
-        BugsnagPerformance.start()
+        
+        let config = BugsnagPerformanceConfiguration.loadConfig()
+        // Inspect @ https://webhook.site/#!/14b03305-a46e-4e1f-b8b4-8434643631dc
+        config.endpoint = URL(string: "https://webhook.site/14b03305-a46e-4e1f-b8b4-8434643631dc")!
+        BugsnagPerformance.start(configuration: config)
         startSpan.end()
         
         dflSpan.end()
