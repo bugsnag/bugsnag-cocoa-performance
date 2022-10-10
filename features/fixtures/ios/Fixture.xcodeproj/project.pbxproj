@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */; };
+		01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */; };
 		01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */; };
 		01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */; };
 		01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsScenario.swift; sourceTree = "<group>"; };
+		01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadScenario.swift; sourceTree = "<group>"; };
 		01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanBeforeStartScenario.swift; sourceTree = "<group>"; };
 		01FE4DA528E1AEBD00D1F239 /* Fixture.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fixture.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
+				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
 			);
 			path = Scenarios;
@@ -187,6 +190,7 @@
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
+				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,

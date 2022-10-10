@@ -35,4 +35,14 @@ static Tracer tracer;
             tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
 }
 
++ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer.startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
+}
+
++ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType startTime:(NSDate *)startTime {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
+}
+
 @end

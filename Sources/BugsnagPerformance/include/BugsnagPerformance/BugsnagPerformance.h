@@ -7,6 +7,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,6 +22,19 @@ NS_ASSUME_NONNULL_BEGIN
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime NS_SWIFT_NAME(startSpan(name:startTime:));
+
+@end
+
+@interface BugsnagPerformance (/* Manual view load spans */)
+
++ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name
+                                             viewType:(BugsnagPerformanceViewType)viewType
+  NS_SWIFT_NAME(startViewLoadSpan(name:viewType:));
+
++ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name
+                                             viewType:(BugsnagPerformanceViewType)viewType
+                                            startTime:(NSDate *)startTime
+  NS_SWIFT_NAME(startViewLoadSpan(name:viewType:startTime:));
 
 @end
 

@@ -26,3 +26,20 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" attribute "telemetry.sdk.version" equals "0.0"
+
+  Scenario: Starting and ending a span before starting the SDK
+    Given I run "ManualViewLoadScenario"
+    And I wait to receive 2 traces
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ViewLoaded/UIKit/ManualViewController"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.kind" equals "SPAN_KIND_INTERNAL"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.startTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" attribute "bugsnag.span_category" equals "view_load"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" attribute "bugsnag.view_type" equals "UIKit"
+    And I discard the oldest trace
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ViewLoaded/SwiftUI/ManualView"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.kind" equals "SPAN_KIND_INTERNAL"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.startTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" attribute "bugsnag.span_category" equals "view_load"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" attribute "bugsnag.view_type" equals "SwiftUI"
