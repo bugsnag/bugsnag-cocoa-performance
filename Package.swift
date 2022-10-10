@@ -21,5 +21,5 @@ let package = Package(
             name: "BugsnagPerformanceTests",
             dependencies: ["BugsnagPerformance"]),
     ],
-    cxxLanguageStandard: .cxx11
+    cxxLanguageStandard: .cxx14
 )

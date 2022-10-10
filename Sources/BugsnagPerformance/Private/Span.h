@@ -7,26 +7,24 @@
 
 #import <Foundation/Foundation.h>
 
-#import "IdGenerator.h"
-#import "SpanKind.h"
+#import "SpanData.h"
+
+#import <memory>
+#import <vector>
 
 namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
 class Span {
 public:
-    Span(NSString *name, CFAbsoluteTime startTime, void (^onEnd)(const Span &span)) noexcept;
+    Span(std::unique_ptr<SpanData> data,
+         std::shared_ptr<class SpanProcessor> spanProcessor) noexcept;
+    
+    Span(const Span&) = delete;
     
     void end(CFAbsoluteTime time) noexcept;
     
-    TraceId traceId;
-    SpanId spanId;
-    NSString *name;
-    SpanKind kind = SPAN_KIND_INTERNAL;
-    NSDictionary *attributes = nil;
-    CFAbsoluteTime startTime;
-    CFAbsoluteTime endTime;
-    
 private:
-    void (^onEnd)(const Span &span);
+    std::unique_ptr<SpanData> data_;
+    std::shared_ptr<class SpanProcessor> processor_;
 };
 }

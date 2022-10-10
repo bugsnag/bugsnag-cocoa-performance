@@ -2,20 +2,24 @@
 //  OtlpTraceExporter.h
 //  BugsnagPerformance
 //
-//  Created by Nick Dowell on 27/09/2022.
+//  Created by Nick Dowell on 05/10/2022.
 //
 
 #import <Foundation/Foundation.h>
 
-#import "Span.h"
+#import "SpanExporter.h"
 
 namespace bugsnag {
-class OtlpTraceExporter {
+class OtlpTraceExporter: public SpanExporter {
 public:
-    static NSDictionary * encode(const Span &span) noexcept;
+    OtlpTraceExporter(NSURL *endpoint, NSDictionary *resourceAttributes) noexcept
+    : endpoint_(endpoint)
+    , resourceAttributes_(resourceAttributes) {}
     
-    static NSDictionary * encode(const Span &span, NSDictionary *resourceAttributes) noexcept;
+    void exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept override;
     
-    static NSArray<NSDictionary *> * encode(NSDictionary *attributes) noexcept;
+private:
+    NSURL *endpoint_;
+    NSDictionary *resourceAttributes_;
 };
 }

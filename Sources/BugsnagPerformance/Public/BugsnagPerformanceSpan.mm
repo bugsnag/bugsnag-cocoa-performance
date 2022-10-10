@@ -10,12 +10,12 @@
 using namespace bugsnag;
 
 @implementation BugsnagPerformanceSpan {
-    std::shared_ptr<Span> _span;
+    std::unique_ptr<Span> _span;
 }
 
-- (instancetype)initWithSpan:(std::shared_ptr<Span>)span {
+- (instancetype)initWithSpan:(std::unique_ptr<Span>)span {
     if ((self = [super init])) {
-        _span = span;
+        _span = std::move(span);
     }
     return self;
 }
@@ -23,12 +23,14 @@ using namespace bugsnag;
 - (void)end {
     if (_span) {
         _span->end(CFAbsoluteTimeGetCurrent());
+        _span.reset();
     }
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
     if (_span) {
         _span->end(endTime.timeIntervalSinceReferenceDate);
+        _span.reset();
     }
 }
 

@@ -5,7 +5,6 @@
 //  Created by Nick Dowell on 26/09/2022.
 //
 
-import BugsnagPerformance
 import Foundation
 
 func fetchAndExecuteCommand() {
@@ -40,11 +39,7 @@ func fetchAndExecuteCommand() {
 func run(command: Command) {
     let scenarioClass: AnyClass = NSClassFromString("Fixture.\(command.scenario)")!
     let scenario = (scenarioClass as! NSObject.Type).init() as! Scenario
-    
-    let config = BugsnagPerformanceConfiguration.loadConfig()
-    config.endpoint = URL(string: "http://bs-local.com:9339/traces")!
-    BugsnagPerformance.start(configuration: config)
-    
+    scenario.startBugsnag()
     scenario.run()
 }
 

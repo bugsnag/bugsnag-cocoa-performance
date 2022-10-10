@@ -13,17 +13,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    var span: BugsnagPerformanceSpan?
-    
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        BugsnagPerformance.start()
-        span = BugsnagPerformance.startSpan(name: "App Launch") 
-        return true
-    }
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        span?.end()
-        span = nil
+        // Spans can be started and ended before starting the SDK. They will be sent once the SDK has started.
+        let dflSpan = BugsnagPerformance.startSpan(name: "didFinishLaunchingWithOptions")
+        
+        BugsnagPerformance.startSpan(name: "Before start").end()
+        
+        BugsnagPerformance.startSpan(name: "Another pre-start span").end()
+        
+        let startSpan = BugsnagPerformance.startSpan(name: "start")
+        BugsnagPerformance.start()
+        startSpan.end()
+        
+        dflSpan.end()
         return true
     }
 }

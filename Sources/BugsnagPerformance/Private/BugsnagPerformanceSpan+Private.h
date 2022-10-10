@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan ()
 
-- (instancetype)initWithSpan:(std::shared_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSpan:(std::unique_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
 
 @end
 
