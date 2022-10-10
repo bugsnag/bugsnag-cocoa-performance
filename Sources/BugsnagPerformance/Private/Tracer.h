@@ -14,11 +14,15 @@ class Tracer {
 public:
     Tracer() noexcept;
     
-    void start(NSURL *endpoint) noexcept;
+    ~Tracer() noexcept;
+    
+    void start(NSURL *endpoint,
+               bool autoInstrumentAppStarts) noexcept;
     
     std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
 private:
     std::shared_ptr<class SpanProcessor> spanProcessor_;
+    std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
 };
 }

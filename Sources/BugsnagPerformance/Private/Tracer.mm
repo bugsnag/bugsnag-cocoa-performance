@@ -8,6 +8,7 @@
 #import "Tracer.h"
 
 #import "BatchSpanProcessor.h"
+#import "Instrumentation/AppStartupInstrumentation.h"
 #import "OtlpTraceExporter.h"
 #import "Span.h"
 
@@ -17,8 +18,12 @@ Tracer::Tracer() noexcept
 : spanProcessor_(std::make_shared<BatchSpanProcessor>())
 {}
 
+Tracer::~Tracer() noexcept
+{}
+
 void
-Tracer::start(NSURL *endpoint) noexcept {
+Tracer::start(NSURL *endpoint,
+              bool autoInstrumentAppStarts) noexcept {
     auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
     auto resourceAttributes = @{
         @"service.name": serviceName,
@@ -28,6 +33,11 @@ Tracer::start(NSURL *endpoint) noexcept {
     
     auto exporter = std::make_shared<OtlpTraceExporter>(endpoint, resourceAttributes);
     dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
+    
+    if (autoInstrumentAppStarts) {
+        appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
+        appStartupInstrumentation_->start();
+    }
     
     NSLog(@"BugsnagPerformance started");
 }

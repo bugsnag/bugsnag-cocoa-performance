@@ -20,11 +20,13 @@ public:
     
     SpanData(const SpanData&) = delete;
     
+    void addAttributes(NSDictionary *attributes) noexcept;
+    
     TraceId traceId;
     SpanId spanId;
     NSString *name;
     SpanKind kind = SPAN_KIND_INTERNAL;
-    NSDictionary *attributes = nil;
+    NSMutableDictionary *attributes;
     CFAbsoluteTime startTime;
     CFAbsoluteTime endTime = 0;
 };

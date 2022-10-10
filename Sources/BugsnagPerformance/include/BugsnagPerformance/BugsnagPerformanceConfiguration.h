@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)loadConfig;
 
+@property (nonatomic) BOOL autoInstrumentAppStarts;
+
 @property (nonatomic) NSURL *endpoint;
 
 @end

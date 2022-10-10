@@ -11,8 +11,8 @@
 
 - (instancetype)init {
     if ((self = [super init])) {
-        // Inspect @ https://webhook.site/#!/14b03305-a46e-4e1f-b8b4-8434643631dc
-        _endpoint = [NSURL URLWithString:@"https://webhook.site/14b03305-a46e-4e1f-b8b4-8434643631dc"];
+        _autoInstrumentAppStarts = YES;
+        _endpoint = [NSURL URLWithString:@"https://127.0.0.0"];
     }
     return self;
 }
