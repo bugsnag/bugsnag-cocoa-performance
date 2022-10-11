@@ -5,7 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import <Foundation/Foundation.h>
+#import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <memory>
 
 namespace bugsnag {
@@ -20,6 +20,10 @@ public:
                bool autoInstrumentAppStarts) noexcept;
     
     std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
+    
+    std::unique_ptr<class Span> startViewLoadedSpan(BugsnagPerformanceViewType viewType,
+                                                    NSString *className,
+                                                    CFAbsoluteTime startTime) noexcept;
     
 private:
     std::shared_ptr<class SpanProcessor> spanProcessor_;

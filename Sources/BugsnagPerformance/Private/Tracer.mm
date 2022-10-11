@@ -46,3 +46,22 @@ std::unique_ptr<Span>
 Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
     return std::make_unique<Span>(std::make_unique<SpanData>(name, startTime), spanProcessor_);
 }
+
+std::unique_ptr<class Span>
+Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
+                            NSString *className,
+                            CFAbsoluteTime startTime) noexcept {
+    NSString *type;
+    switch (viewType) {
+        case BugsnagPerformanceViewTypeSwiftUI: type = @"SwiftUI"; break;
+        case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
+        default:                                type = @"?"; break;
+    }
+    NSString *name = [NSString stringWithFormat:@"ViewLoaded/%@/%@", type, className];
+    auto span = startSpan(name, startTime);
+    span->addAttributes(@{
+        @"bugsnag.span_category": @"view_load",
+        @"bugsnag.view_type": type
+    });
+    return span;
+}
