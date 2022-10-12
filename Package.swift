@@ -16,7 +16,10 @@ let package = Package(
     targets: [
         .target(
             name: "BugsnagPerformance",
-            dependencies: []),
+            linkerSettings: [
+                .linkedFramework("UIKit")
+            ]
+        ),
         .testTarget(
             name: "BugsnagPerformanceTests",
             dependencies: ["BugsnagPerformance"]),

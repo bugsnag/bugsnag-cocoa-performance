@@ -9,6 +9,7 @@
 
 #import "BatchSpanProcessor.h"
 #import "Instrumentation/AppStartupInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation.h"
 #import "OtlpTraceExporter.h"
 #import "Span.h"
 
@@ -22,8 +23,7 @@ Tracer::~Tracer() noexcept
 {}
 
 void
-Tracer::start(NSURL *endpoint,
-              bool autoInstrumentAppStarts) noexcept {
+Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
     auto resourceAttributes = @{
         @"service.name": serviceName,
@@ -31,12 +31,19 @@ Tracer::start(NSURL *endpoint,
         @"telemetry.sdk.version": @"0.0",
     };
     
-    auto exporter = std::make_shared<OtlpTraceExporter>(endpoint, resourceAttributes);
-    dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
+    if (configuration.endpoint) {
+        auto exporter = std::make_shared<OtlpTraceExporter>(configuration.endpoint, resourceAttributes);
+        dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
+    }
     
-    if (autoInstrumentAppStarts) {
+    if (configuration.autoInstrumentAppStarts) {
         appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
         appStartupInstrumentation_->start();
+    }
+    
+    if (configuration.autoInstrumentViewControllers) {
+        viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
+        viewLoadInstrumentation_->start();
     }
     
     NSLog(@"BugsnagPerformance started");

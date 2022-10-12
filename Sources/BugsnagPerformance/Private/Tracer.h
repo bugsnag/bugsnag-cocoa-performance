@@ -5,6 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+#import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <memory>
 
@@ -16,8 +17,7 @@ public:
     
     ~Tracer() noexcept;
     
-    void start(NSURL *endpoint,
-               bool autoInstrumentAppStarts) noexcept;
+    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
     std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
@@ -28,5 +28,6 @@ public:
 private:
     std::shared_ptr<class SpanProcessor> spanProcessor_;
     std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
+    std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
 };
 }

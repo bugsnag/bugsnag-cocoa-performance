@@ -32,7 +32,9 @@ func fetchAndExecuteCommand() {
             return
         }
         
-        run(command: command)
+        DispatchQueue.main.async {
+            run(command: command)
+        }
     }.resume()
 }
 
