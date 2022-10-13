@@ -15,6 +15,7 @@ class Scenario: NSObject {
     override init() {
         config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
+        config.autoInstrumentViewControllers = false
         config.endpoint = URL(string: "http://bs-local.com:9339/traces")!
     }
     

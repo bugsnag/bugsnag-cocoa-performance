@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */; };
 		01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */; };
 		01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */; };
 		01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentViewLoadScenario.swift; sourceTree = "<group>"; };
 		01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsScenario.swift; sourceTree = "<group>"; };
 		01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadScenario.swift; sourceTree = "<group>"; };
 		01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanBeforeStartScenario.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
+				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
@@ -152,7 +155,7 @@
 				};
 			};
 			buildConfigurationList = 01FE4DA028E1AEBD00D1F239 /* Build configuration list for PBXProject "Fixture" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -187,6 +190,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,

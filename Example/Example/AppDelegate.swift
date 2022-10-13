@@ -15,21 +15,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Spans can be started and ended before starting the SDK. They will be sent once the SDK has started.
-        let dflSpan = BugsnagPerformance.startSpan(name: "didFinishLaunchingWithOptions")
-        
         BugsnagPerformance.startSpan(name: "Before start").end()
-        
-        BugsnagPerformance.startSpan(name: "Another pre-start span").end()
-        
-        let startSpan = BugsnagPerformance.startSpan(name: "start")
         
         let config = BugsnagPerformanceConfiguration.loadConfig()
         // Inspect @ https://webhook.site/#!/14b03305-a46e-4e1f-b8b4-8434643631dc
         config.endpoint = URL(string: "https://webhook.site/14b03305-a46e-4e1f-b8b4-8434643631dc")!
-        BugsnagPerformance.start(configuration: config)
-        startSpan.end()
         
-        dflSpan.end()
+        // Disable automatic app startup instrumentation:
+        //config.autoInstrumentAppStarts = false
+        
+        // Disable automatic view controller instrumentation to prevent swizzling...
+        //config.autoInstrumentViewControllers = false
+        
+        // ... or control whether spans are created on a per-instance basis:
+        config.viewControllerInstrumentationCallback = {
+            !($0 is IgnoredViewController)
+        }
+        
+        BugsnagPerformance.start(configuration: config)
+        
         return true
     }
 }

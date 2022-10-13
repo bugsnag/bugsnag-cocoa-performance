@@ -5,9 +5,11 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
 
 @interface BugsnagPerformanceConfiguration : NSObject
 
@@ -17,7 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) BOOL autoInstrumentAppStarts;
 
+@property (nonatomic) BOOL autoInstrumentViewControllers;
+
 @property (nonatomic) NSURL *endpoint;
+
+@property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 
 @end
 
