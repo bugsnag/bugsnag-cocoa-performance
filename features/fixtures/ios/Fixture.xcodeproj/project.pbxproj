@@ -21,6 +21,7 @@
 		01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */; };
 		01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC428E1AF9600D1F239 /* Scenario.swift */; };
 		01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC628E1D5A400D1F239 /* Fixture.swift */; };
+		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanScenario.swift; sourceTree = "<group>"; };
 		01FE4DC428E1AF9600D1F239 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		01FE4DC628E1D5A400D1F239 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
+		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
+				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -196,6 +199,7 @@
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
+				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,

@@ -25,6 +25,9 @@ public:
                                                     NSString *className,
                                                     CFAbsoluteTime startTime) noexcept;
     
+    std::unique_ptr<class Span> startNetworkSpan(NSURLSessionTask *task,
+                                                 NSURLSessionTaskMetrics *metrics) noexcept;
+
 private:
     std::shared_ptr<class SpanProcessor> spanProcessor_;
     std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;

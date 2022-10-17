@@ -9,8 +9,41 @@ When('I run {string}') do |scenario_name|
   raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
-Then('the {word} payload field {string} attribute {string} equals {string}') do |request_type, field, key, expected|
+Then('the {word} payload field {string} string attribute {string} equals {string}') do |request_type, field, key, expected|
   list = Maze::Server.list_for(request_type)
   attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
   Maze.check.equal attributes.find { |a| a['key'] == key }, { 'key' => key, 'value' => { 'stringValue' => expected } }
+end
+
+Then('the {word} payload field {string} string attribute {string} matches the regex {string}') do |request_type, field, key, regex_string|
+  regex = Regexp.new(regex_string)
+  list = Maze::Server.list_for(request_type)
+  attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
+  attribute = attributes.find { |a| a['key'] == key }
+  value = attribute["value"]["stringValue"]
+  Maze.check.match(regex, value)
+end
+
+Then('the {word} payload field {string} string attribute {string} exists') do |request_type, field, key|
+  list = Maze::Server.list_for(request_type)
+  attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
+  attribute = attributes.find { |a| a['key'] == key }
+  value = attribute["value"]["stringValue"]
+  Maze.check.not_nil(value)
+end
+
+Then('the {word} payload field {string} integer attribute {string} equals {int}') do |request_type, field, key, expected|
+  list = Maze::Server.list_for(request_type)
+  attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
+  attribute = attributes.find { |a| a['key'] == key }
+  value = attribute["value"]["intValue"].to_i
+  Maze.check.equal(expected, value)
+end
+
+Then('the {word} payload field {string} integer attribute {string} is greater than {int}') do |request_type, field, key, int_value|
+  list = Maze::Server.list_for(request_type)
+  attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
+  attribute = attributes.find { |a| a['key'] == key }
+  value = attribute["value"]["intValue"].to_i
+  Maze.check.operator(value, :>, int_value, "The payload field '#{field}' attribute '#{key}' (#{value}) is not greater than '#{int_value}'")
 end

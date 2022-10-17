@@ -38,4 +38,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@interface BugsnagPerformance (/* Manual network spans */)
+
++ (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
+                                 metrics:(NSURLSessionTaskMetrics *)metrics
+  NS_SWIFT_NAME(reportNetworkRequestSpan(task:metrics:));
+
+@end
+
 NS_ASSUME_NONNULL_END
