@@ -72,3 +72,74 @@ Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
     });
     return span;
 }
+
+static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
+    if (metrics.transactionMetrics.count > 0) {
+        NSString *protocolName = metrics.transactionMetrics[0].networkProtocolName;
+        if ([protocolName isEqualToString:@"http/1.1"]) {
+            return @"1.1";
+        }
+        if ([protocolName isEqualToString:@"h2"]) {
+            return @"2.0";
+        }
+        if ([protocolName isEqualToString:@"h3"]) {
+            return @"3.0";
+        }
+        if ([protocolName hasPrefix:@"spdy/"]) {
+            return @"SPDY";
+        }
+    }
+    return nil;
+}
+
+static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) {
+    if (task.error.code == NSURLErrorNotConnectedToInternet) {
+        return @"unavailable";
+    }
+    if (@available(macos 10.15 , ios 13.0 , watchos 6.0 , tvos 13.0, *)) {
+        if (metrics.transactionMetrics.count > 0 && metrics.transactionMetrics[0].cellular) {
+            return @"cell";
+        }
+    }
+    return @"wifi";
+}
+
+static void addNonNull(NSMutableDictionary *dict, NSString *key, NSObject *value) {
+    if (value != nil) {
+        dict[key] = value;
+    }
+}
+
+static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value) {
+    if (value.floatValue != 0) {
+        dict[key] = value;
+    }
+}
+
+std::unique_ptr<class Span>
+Tracer::startNetworkSpan(NSURLSessionTask *task,
+                         NSURLSessionTaskMetrics *metrics) noexcept {
+    if (![task.response isKindOfClass:[NSHTTPURLResponse class]]) {
+        return;
+    }
+
+    auto interval = metrics.taskInterval;
+    auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
+    auto httpResponse = (NSHTTPURLResponse *)task.response;
+
+    auto span = startSpan(name, interval.startDate.timeIntervalSinceReferenceDate);
+
+    auto attributes = [NSMutableDictionary new];
+    attributes[@"bugsnag.span_category"] = @"network";
+    addNonNull(attributes, @"http.method", task.originalRequest.HTTPMethod);
+    addNonNull(attributes, @"http.url", task.originalRequest.URL.absoluteString);
+    addNonZero(attributes, @"http.status_code", @(httpResponse.statusCode));
+    addNonNull(attributes, @"http.flavor", getHTTPFlavour(metrics));
+    addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
+    addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
+    addNonNull(attributes, @"net.host.connection.type", getConnectionType(task, metrics));
+    span->addAttributes(attributes);
+
+    span->end(interval.endDate.timeIntervalSinceReferenceDate);
+    return span;
+}

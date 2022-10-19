@@ -10,13 +10,15 @@ import Foundation
 
 class Scenario: NSObject {
     
+    static var mazeRunnerURL = URL(string: "http://bs-local.com:9339")!;
+
     let config: BugsnagPerformanceConfiguration
     
     override init() {
         config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
         config.autoInstrumentViewControllers = false
-        config.endpoint = URL(string: "http://bs-local.com:9339/traces")!
+        config.endpoint = Scenario.mazeRunnerURL.appendingPathComponent("traces")
     }
     
     func startBugsnag() {
