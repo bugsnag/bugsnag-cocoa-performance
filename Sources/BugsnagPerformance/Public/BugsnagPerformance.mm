@@ -44,10 +44,8 @@ static Tracer tracer;
             tracer.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
 }
 
-+ (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
-                                 metrics:(NSURLSessionTaskMetrics *)metrics {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer.startNetworkSpan(task, metrics)];
++ (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task metrics:(NSURLSessionTaskMetrics *)metrics {
+    tracer.reportNetworkSpan(task, metrics);
 }
 
 @end
