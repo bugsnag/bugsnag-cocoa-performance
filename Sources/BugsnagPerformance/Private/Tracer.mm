@@ -116,9 +116,8 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
     }
 }
 
-std::unique_ptr<class Span>
-Tracer::startNetworkSpan(NSURLSessionTask *task,
-                         NSURLSessionTaskMetrics *metrics) noexcept {
+void
+Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     if (![task.response isKindOfClass:[NSHTTPURLResponse class]]) {
         return;
     }
@@ -141,5 +140,4 @@ Tracer::startNetworkSpan(NSURLSessionTask *task,
     span->addAttributes(attributes);
 
     span->end(interval.endDate.timeIntervalSinceReferenceDate);
-    return span;
 }
