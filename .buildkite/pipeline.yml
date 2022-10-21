@@ -23,9 +23,9 @@ steps:
   - group: ":xcode_simulator: Unit Tests"
     steps:
       - label: "iOS 15"
-        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
+        command: xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
       - label: "iOS 10"
-        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test SWIFT_VERSION=4.2
+        command: xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test SWIFT_VERSION=4.2
         agents:
           queue: macos-10.15
 

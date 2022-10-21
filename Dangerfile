@@ -3,8 +3,8 @@
 # vim: set ft=ruby
 
 def framework_size
-  old_binary = 'DerivedData.old/Build/Products/Release-iphoneos/BugsnagPerformance.o'
-  new_binary = 'DerivedData.new/Build/Products/Release-iphoneos/BugsnagPerformance.o'
+  old_binary = 'DerivedData.old/Build/Products/Release-iphoneos/BugsnagPerformance.framework/BugsnagPerformance'
+  new_binary = 'DerivedData.new/Build/Products/Release-iphoneos/BugsnagPerformance.framework/BugsnagPerformance'
 
   markdown <<~MARKDOWN
     ```
