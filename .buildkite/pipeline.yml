@@ -8,6 +8,8 @@ steps:
 
   - group: ":hammer:"
     steps:
+      - label: "Carthage"
+        command: ./features/fixtures/carthage/build.sh
       - label: "CocoaPods"
         command: pod lib lint BugsnagPerformance.podspec.json
       - label: "Example"
