@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 @interface BugsnagPerformanceSpan : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
