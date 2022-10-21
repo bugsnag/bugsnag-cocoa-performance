@@ -11,6 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
 
+OBJC_EXPORT
 @interface BugsnagPerformanceConfiguration : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
