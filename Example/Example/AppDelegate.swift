@@ -26,6 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Disable automatic view controller instrumentation to prevent swizzling...
         //config.autoInstrumentViewControllers = false
+
+        config.autoInstrumentNetwork = true
         
         // ... or control whether spans are created on a per-instance basis:
         config.viewControllerInstrumentationCallback = {

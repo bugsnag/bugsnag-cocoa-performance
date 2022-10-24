@@ -29,5 +29,6 @@ private:
     std::shared_ptr<class SpanProcessor> spanProcessor_;
     std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
+    std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
 };
 }

@@ -42,6 +42,10 @@
 		0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */; };
 		0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */; };
 		0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */; };
+		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
+		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
+		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
+		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +96,10 @@
 		0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
+		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
+		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
+		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +197,7 @@
 		0122C22929019770002D243C /* Instrumentation */ = {
 			isa = PBXGroup;
 			children = (
+				CB34771929068C350033759C /* NetworkInstrumentation */,
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
 				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
@@ -245,6 +254,17 @@
 			);
 			sourceTree = "<group>";
 		};
+		CB34771929068C350033759C /* NetworkInstrumentation */ = {
+			isa = PBXGroup;
+			children = (
+				CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */,
+				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */,
+				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
+				CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */,
+			);
+			path = NetworkInstrumentation;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -253,6 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0122C25229019770002D243C /* OtlpTraceExporter.h in Headers */,
+				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				0122C24729019770002D243C /* SpanData.h in Headers */,
 				0122C25429019770002D243C /* SpanExporter.h in Headers */,
@@ -270,6 +291,7 @@
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24629019770002D243C /* SpanProcessor.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
+				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,12 +405,14 @@
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
 				0122C24329019770002D243C /* BatchSpanProcessor.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
+				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				0122C25529019770002D243C /* OtlpTraceExporter.mm in Sources */,
 				0122C24529019770002D243C /* Span.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
+				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
