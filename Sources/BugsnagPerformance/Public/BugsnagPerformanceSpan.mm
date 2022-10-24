@@ -20,6 +20,9 @@ using namespace bugsnag;
     return self;
 }
 
+// We want direct ivar access to avoid accessors copying unique_ptrs
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+
 - (void)end {
     if (_span) {
         _span->end(CFAbsoluteTimeGetCurrent());

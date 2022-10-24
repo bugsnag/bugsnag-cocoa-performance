@@ -77,8 +77,8 @@ void
 AppStartupInstrumentation::notificationCallback(CFNotificationCenterRef center,
                                                 void *observer,
                                                 CFNotificationName name,
-                                                const void *object,
-                                                CFDictionaryRef userInfo) noexcept {
+                                                __unused const void *object,
+                                                __unused CFDictionaryRef userInfo) noexcept {
     didBecomeActive = CFAbsoluteTimeGetCurrent();
     if (instance) {
         instance->reportSpan(didBecomeActive);
@@ -109,7 +109,7 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
 CFAbsoluteTime
 AppStartupInstrumentation::getProcessStartTime() noexcept {
     std::array<int, 4> cmd { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
-    struct kinfo_proc info = {0};
+    struct kinfo_proc info = {{{{0}}}};
     auto size = sizeof info;
     
     if (sysctl(cmd.data(), cmd.size(), &info, &size, NULL, 0)) {
@@ -118,7 +118,7 @@ AppStartupInstrumentation::getProcessStartTime() noexcept {
     
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
     auto timeval = info.kp_proc.p_un.__p_starttime;
-    auto usecs = timeval.tv_sec * USEC_PER_SEC + timeval.tv_usec;
+    auto usecs = (uint64_t)timeval.tv_sec * USEC_PER_SEC + (uint64_t)timeval.tv_usec;
     return (CFTimeInterval(usecs) / USEC_PER_SEC + kCFAbsoluteTimeIntervalSince1970);
 }
 
@@ -132,5 +132,5 @@ static uint64_t GetBootTime() {
         return 0;
     }
     
-    return timeval.tv_sec * USEC_PER_SEC + timeval.tv_usec;
+    return (uint64_t)timeval.tv_sec * USEC_PER_SEC + (uint64_t)timeval.tv_usec;
 }

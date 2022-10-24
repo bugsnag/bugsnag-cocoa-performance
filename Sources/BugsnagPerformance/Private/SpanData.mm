@@ -19,6 +19,6 @@ SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
 }
 
 void
-SpanData::addAttributes(NSDictionary *attributes) noexcept {
-    [this->attributes addEntriesFromDictionary:attributes];
+SpanData::addAttributes(NSDictionary *dictionary) noexcept {
+    [this->attributes addEntriesFromDictionary:dictionary];
 }

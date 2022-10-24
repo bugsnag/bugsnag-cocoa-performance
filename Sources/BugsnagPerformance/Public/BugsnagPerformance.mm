@@ -14,6 +14,7 @@ using namespace bugsnag;
 
 @implementation BugsnagPerformance
 
+[[clang::no_destroy]]
 static Tracer tracer;
 
 + (void)start {

@@ -13,7 +13,7 @@
     if ((self = [super init])) {
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
-        _endpoint = [NSURL URLWithString:@"https://127.0.0.0"];
+        _endpoint = (NSURL *_Nonnull)[NSURL URLWithString:@"https://127.0.0.0"];
     }
     return self;
 }

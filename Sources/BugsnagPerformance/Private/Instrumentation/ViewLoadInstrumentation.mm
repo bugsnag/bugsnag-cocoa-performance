@@ -112,7 +112,7 @@ ViewLoadInstrumentation::viewControllerSubclasses(const char *image) noexcept {
     auto count = 0U;
     auto names = objc_copyClassNamesForImage(image, &count);
     if (names) {
-        for (int i = 0; i < count; i++) {
+        for (unsigned int i = 0; i < count; i++) {
             auto cls = objc_getClass(names[i]);
             if (isViewControllerSubclass(cls)) {
                 classes.push_back(cls);
