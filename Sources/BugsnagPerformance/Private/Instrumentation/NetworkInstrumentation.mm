@@ -23,4 +23,5 @@ using namespace bugsnag;
 
 void
 NetworkInstrumentation::start() noexcept {
+    Trace(@"NetworkInstrumentation::start()");
 }

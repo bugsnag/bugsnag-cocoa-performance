@@ -15,8 +15,6 @@ class Tracer {
 public:
     Tracer() noexcept;
     
-    ~Tracer() noexcept;
-    
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
     std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;

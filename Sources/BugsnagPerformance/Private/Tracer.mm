@@ -19,9 +19,6 @@ Tracer::Tracer() noexcept
 : spanProcessor_(std::make_shared<BatchSpanProcessor>())
 {}
 
-Tracer::~Tracer() noexcept
-{}
-
 void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;

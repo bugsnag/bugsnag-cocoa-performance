@@ -90,6 +90,7 @@
 		0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceTests.mm; sourceTree = "<group>"; };
 		0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceEncodingTests.mm; sourceTree = "<group>"; };
 		0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -236,6 +237,7 @@
 		C6D4AAD24D6356218C22BEBE = {
 			isa = PBXGroup;
 			children = (
+				01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */,
 				0122C21329019770002D243C /* Sources */,
 				0122C25B29019C05002D243C /* Tests */,
 				450CB5014AAED50046482044 /* Products */,
@@ -317,7 +319,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1300;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
@@ -441,10 +443,11 @@
 		};
 		289EE8EA8C7DF1558B8359CA /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -468,10 +471,11 @@
 		};
 		4229D9CAB6AC2A2AB4597A50 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -526,6 +530,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -588,6 +593,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
