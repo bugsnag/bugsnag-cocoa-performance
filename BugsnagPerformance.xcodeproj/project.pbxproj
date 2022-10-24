@@ -323,11 +323,6 @@
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
-						DevelopmentTeam = 372ZUL2ZB7;
-						ProvisioningStyle = Automatic;
-					};
-					B4A4A4DE1EA43C6C4D6D3894 = {
-						DevelopmentTeam = 372ZUL2ZB7;
 					};
 				};
 			};
