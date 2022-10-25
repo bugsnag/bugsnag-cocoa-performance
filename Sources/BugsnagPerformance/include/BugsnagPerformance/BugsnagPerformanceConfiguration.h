@@ -22,6 +22,8 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentViewControllers;
 
+@property (nonatomic) BOOL autoInstrumentNetwork;
+
 @property (nonatomic) NSURL *endpoint;
 
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;

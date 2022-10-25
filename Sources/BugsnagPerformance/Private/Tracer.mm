@@ -10,6 +10,7 @@
 #import "BatchSpanProcessor.h"
 #import "Instrumentation/AppStartupInstrumentation.h"
 #import "Instrumentation/ViewLoadInstrumentation.h"
+#import "Instrumentation/NetworkInstrumentation.h"
 #import "OtlpTraceExporter.h"
 #import "Span.h"
 
@@ -43,7 +44,11 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
         viewLoadInstrumentation_->start();
     }
     
-    NSLog(@"BugsnagPerformance started");
+    if (configuration.autoInstrumentNetwork) {
+        NSString *baseEndpoint = configuration.endpoint.absoluteString ?: @"";
+        networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, baseEndpoint);
+        networkInstrumentation_->start();
+    }
 }
 
 std::unique_ptr<Span>

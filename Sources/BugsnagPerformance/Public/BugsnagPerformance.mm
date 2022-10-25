@@ -45,7 +45,8 @@ static Tracer tracer;
             tracer.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
 }
 
-+ (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task metrics:(NSURLSessionTaskMetrics *)metrics {
++ (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
+                                 metrics:(NSURLSessionTaskMetrics *)metrics {
     tracer.reportNetworkSpan(task, metrics);
 }
 

@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="I5S-OR-fvf">
-                                <rect key="frame" x="101.5" y="355" width="211.5" height="186"/>
+                                <rect key="frame" x="101.5" y="330" width="211.5" height="236.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0ga-0O-hoa">
                                         <rect key="frame" x="0.0" y="0.0" width="211.5" height="34.5"/>
@@ -50,6 +50,14 @@
                                         <buttonConfiguration key="configuration" style="plain" title="IgnoredViewController &gt;"/>
                                         <connections>
                                             <segue destination="V48-0c-1l8" kind="show" id="gAB-0C-fPE"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WLB-9O-ylx">
+                                        <rect key="frame" x="28" y="202" width="155" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Network Request"/>
+                                        <connections>
+                                            <action selector="DoNetworkRequest:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Llg-LD-ytB"/>
                                         </connections>
                                     </button>
                                 </subviews>

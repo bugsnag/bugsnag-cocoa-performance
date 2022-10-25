@@ -20,4 +20,20 @@ class ViewController: UIViewController {
                 preferredStyle: .alert), animated: true)
         }
     }
+
+    func query(string: String) {
+        let url = URL(string: "https://bugsnag.com")!
+        let semaphore = DispatchSemaphore(value: 0)
+
+        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+            semaphore.signal()
+        }
+        task.resume()
+        semaphore.wait()
+        Thread.sleep(forTimeInterval: 1)
+    }
+
+    @IBAction func DoNetworkRequest(_ sender: Any) {
+        query(string: "x")
+    }
 }

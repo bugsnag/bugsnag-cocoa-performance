@@ -5,20 +5,20 @@
 //  Created by Karl Stenerud on 14.10.22.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "../Tracer.h"
 
-#import <vector>
+@interface BSGURLSessionPerformanceDelegate : NSObject
+@end
 
 namespace bugsnag {
 class NetworkInstrumentation {
 public:
-    NetworkInstrumentation(class Tracer &tracer) noexcept
-    : tracer_(tracer)
-    {}
-    
+    NetworkInstrumentation(Tracer &tracer, NSString * _Nonnull baseEndpoint) noexcept;
     void start() noexcept;
     
 private:
-    class Tracer &tracer_;
+    BSGURLSessionPerformanceDelegate * _Nonnull delegate_;
+    Tracer &tracer_;
 };
 }
