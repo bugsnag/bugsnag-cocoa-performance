@@ -24,6 +24,8 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentNetwork;
 
+@property (nonatomic) double samplingProbability;
+
 @property (nonatomic) NSURL *endpoint;
 
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;

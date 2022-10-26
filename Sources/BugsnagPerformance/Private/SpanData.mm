@@ -14,6 +14,7 @@ SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
 , spanId(IdGenerator::generateSpanIdBytes())
 , name([name copy])
 , attributes([NSMutableDictionary dictionary])
+, samplingProbability(1.0)
 , startTime(startTime)
 {
 }
@@ -21,4 +22,12 @@ SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
 void
 SpanData::addAttributes(NSDictionary *dictionary) noexcept {
     [this->attributes addEntriesFromDictionary:dictionary];
+}
+
+void
+SpanData::updateSamplingProbability(double value) noexcept {
+    if (samplingProbability > value) {
+        samplingProbability = value;
+        attributes[@"bugsnag.sampling.p"] = @(value);
+    }
 }

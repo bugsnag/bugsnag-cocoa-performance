@@ -16,13 +16,20 @@ namespace bugsnag {
  */
 class BatchSpanProcessor: public SpanProcessor {
 public:
+    BatchSpanProcessor(std::shared_ptr<class Sampler> sampler) noexcept;
+    
     void onEnd(std::unique_ptr<SpanData> span) noexcept override;
     
     void setSpanExporter(std::shared_ptr<SpanExporter> exporter) noexcept;
     
 private:
+    bool shouldSample(std::unique_ptr<SpanData> &span) noexcept;
+    
+    void exportSpans() noexcept;
+    
     std::mutex mutex_;
     std::shared_ptr<SpanExporter> exporter_;
+    std::shared_ptr<class Sampler> sampler_;
     std::vector<std::unique_ptr<SpanData>> spans_;
 };
 }

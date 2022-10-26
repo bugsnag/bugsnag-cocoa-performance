@@ -8,6 +8,7 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/BatchSpanProcessor.h"
+#import "../../Sources/BugsnagPerformance/Private/Sampler.h"
 #import "../../Sources/BugsnagPerformance/Private/Span.h"
 
 using namespace bugsnag;
@@ -28,7 +29,7 @@ public:
 @implementation BatchSpanProcessorTests
 
 - (void)testBatching {
-    BatchSpanProcessor processor;
+    BatchSpanProcessor processor(std::make_shared<Sampler>(1.0));
     processor.onEnd(std::make_unique<SpanData>(@"First", CFAbsoluteTimeGetCurrent()));
     processor.onEnd(std::make_unique<SpanData>(@"Second", CFAbsoluteTimeGetCurrent()));
     

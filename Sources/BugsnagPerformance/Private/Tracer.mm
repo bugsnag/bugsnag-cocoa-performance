@@ -12,12 +12,14 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "Instrumentation/NetworkInstrumentation.h"
 #import "OtlpTraceExporter.h"
+#import "Sampler.h"
 #import "Span.h"
 
 using namespace bugsnag;
 
 Tracer::Tracer() noexcept
-: spanProcessor_(std::make_shared<BatchSpanProcessor>())
+: sampler_(std::make_shared<Sampler>(1.0))
+, spanProcessor_(std::make_shared<BatchSpanProcessor>(sampler_))
 {}
 
 void
@@ -28,6 +30,8 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
         @"telemetry.sdk.name": @"bugsnag.performance.cocoa",
         @"telemetry.sdk.version": @"0.0",
     };
+    
+    sampler_->setFallbackProbability(configuration.samplingProbability);
     
     if (configuration.endpoint) {
         auto exporter = std::make_shared<OtlpTraceExporter>(configuration.endpoint, resourceAttributes);
