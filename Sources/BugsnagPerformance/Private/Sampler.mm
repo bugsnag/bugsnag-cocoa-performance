@@ -49,6 +49,18 @@ Sampler::setProbability(double probability, CFAbsoluteTime expiry) noexcept {
      forKey:kUserDefaultsKey];
 }
 
+void
+Sampler::setProbabilityFromResponseHeaders(NSDictionary *headers) noexcept {
+    NSString *probability = headers[@"Bugsnag-Sampling-Probability"];
+    NSString *duration    = headers[@"Bugsnag-Sampling-Probability-Duration"];
+    if (probability && duration) {
+        auto expiry = [[NSDate dateWithTimeIntervalSinceNow:
+                        [duration doubleValue]]
+                       timeIntervalSinceReferenceDate];
+        setProbability([probability doubleValue], expiry);
+    }
+}
+
 Sampler::Decision
 Sampler::shouldSample(TraceId traceId) noexcept {
     auto p = getProbability();

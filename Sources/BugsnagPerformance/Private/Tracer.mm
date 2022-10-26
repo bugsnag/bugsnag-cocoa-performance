@@ -35,6 +35,9 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     
     if (configuration.endpoint) {
         auto exporter = std::make_shared<OtlpTraceExporter>(configuration.endpoint, resourceAttributes);
+        exporter->setResponseObserver(^(NSHTTPURLResponse *response) {
+            sampler_->setProbabilityFromResponseHeaders(response.allHeaderFields);
+        });
         dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
     }
     
