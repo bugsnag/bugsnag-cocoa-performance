@@ -7,6 +7,7 @@
 
 #import "SpanData.h"
 
+#import <Foundation/Foundation.h>
 #import <memory>
 #import <vector>
 
@@ -16,5 +17,7 @@ public:
     virtual ~SpanExporter() = default;
     
     virtual void exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept = 0;
+    
+    virtual void setResponseObserver(void (^)(NSHTTPURLResponse *response)) noexcept {};
 };
 }

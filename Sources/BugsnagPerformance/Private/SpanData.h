@@ -22,11 +22,14 @@ public:
     
     void addAttributes(NSDictionary *attributes) noexcept;
     
+    void updateSamplingProbability(double value) noexcept;
+    
     TraceId traceId;
     SpanId spanId;
     NSString *name;
     SpanKind kind = SPAN_KIND_INTERNAL;
     NSMutableDictionary *attributes;
+    double samplingProbability;
     CFAbsoluteTime startTime;
     CFAbsoluteTime endTime = 0;
 };

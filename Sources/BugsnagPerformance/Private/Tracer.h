@@ -26,6 +26,7 @@ public:
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
 
 private:
+    std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<class SpanProcessor> spanProcessor_;
     std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;

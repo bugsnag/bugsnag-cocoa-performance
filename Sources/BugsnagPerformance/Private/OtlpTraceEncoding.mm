@@ -20,16 +20,18 @@ static NSString * EncodeSpanKind(SpanKind kind) {
     }
 }
 
-static NSString * EncodeSpanId(SpanId const spanId) {
+static NSString * EncodeSpanId(SpanId const &spanId) {
+    auto ptr = reinterpret_cast<unsigned const char *>(std::begin(spanId));
     return [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x",
-            spanId[0], spanId[1], spanId[2], spanId[3], spanId[4], spanId[5], spanId[6], spanId[7]];
+            ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7]];
 }
 
-static NSString * EncodeTraceId(TraceId const traceId) {
+static NSString * EncodeTraceId(TraceId const &traceId) {
+    auto ptr = reinterpret_cast<unsigned const char *>(std::begin(traceId));
     return [NSString stringWithFormat:
             @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-            traceId[0], traceId[1], traceId[2], traceId[3], traceId[4], traceId[5], traceId[6], traceId[7],
-            traceId[8], traceId[9], traceId[10], traceId[11], traceId[12], traceId[13], traceId[14], traceId[15]];
+            ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7],
+            ptr[8], ptr[9], ptr[10], ptr[11], ptr[12], ptr[13], ptr[14], ptr[15]];
 }
 
 static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {

@@ -26,5 +26,10 @@ OtlpTraceExporter::exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noe
     urlRequest.HTTPBody = data;
     urlRequest.HTTPMethod = @"POST";
     [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest] resume];
+    [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest completionHandler:
+      ^(__unused NSData *responseData, NSURLResponse *response, __unused NSError *taskError) {
+        if (responseObserver_ && [response isKindOfClass:[NSHTTPURLResponse class]]) {
+            responseObserver_((NSHTTPURLResponse *_Nonnull)response);
+        }
+    }] resume];
 }

@@ -10,15 +10,24 @@
 using namespace bugsnag;
 
 SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
-: name([name copy])
+: traceId(IdGenerator::generateTraceIdBytes())
+, spanId(IdGenerator::generateSpanIdBytes())
+, name([name copy])
 , attributes([NSMutableDictionary dictionary])
+, samplingProbability(1.0)
 , startTime(startTime)
 {
-    IdGenerator::generateTraceIdBytes(traceId);
-    IdGenerator::generateSpanIdBytes(spanId);
 }
 
 void
 SpanData::addAttributes(NSDictionary *dictionary) noexcept {
     [this->attributes addEntriesFromDictionary:dictionary];
+}
+
+void
+SpanData::updateSamplingProbability(double value) noexcept {
+    if (samplingProbability > value) {
+        samplingProbability = value;
+        attributes[@"bugsnag.sampling.p"] = @(value);
+    }
 }
