@@ -23,6 +23,11 @@ class Scenario: NSObject {
         config.endpoint = Scenario.mazeRunnerURL.appendingPathComponent("traces")
     }
     
+    func clearPersistentData() {
+        UserDefaults.standard.removePersistentDomain(
+            forName: Bundle.main.bundleIdentifier!)
+    }
+    
     func startBugsnag() {
         BugsnagPerformance.start(configuration: config)
     }

@@ -9,6 +9,7 @@ class AutoInstrumentAppStartsScenario: Scenario {
     
     override func startBugsnag() {
         config.autoInstrumentAppStarts = true
+        clearPersistentData() 
         super.startBugsnag()
     }
     
