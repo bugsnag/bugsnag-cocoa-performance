@@ -17,7 +17,9 @@ class Scenario: NSObject {
     override init() {
         config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
+        config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false
+        config.samplingProbability = 1
         config.endpoint = Scenario.mazeRunnerURL.appendingPathComponent("traces")
     }
     
