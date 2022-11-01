@@ -36,21 +36,12 @@ using namespace bugsnag;
     }
 }
 
-- (void)testProbabilityExpiry {
-    auto defaultProbability = 1.0;
-    Sampler sampler(defaultProbability);
-    XCTAssertEqual(sampler.getProbability(), defaultProbability);
-    
-    sampler.setProbability(0.1, 123.0);
-    XCTAssertEqual(sampler.getProbability(), defaultProbability);
-}
-
 - (void)testProbabilityPersistence {
     auto defaultProbability = 1.0;
     Sampler sampler(defaultProbability);
     XCTAssertEqual(sampler.getProbability(), defaultProbability);
     
-    sampler.setProbability(0.5, [NSDate distantFuture].timeIntervalSinceReferenceDate);
+    sampler.setProbability(0.5);
     XCTAssertEqual(Sampler(1.0).getProbability(), 0.5);
 }
 

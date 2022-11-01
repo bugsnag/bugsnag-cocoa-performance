@@ -9,6 +9,8 @@
 
 using namespace bugsnag;
 
+static const CFTimeInterval kProbabilityDuration = 24 * 3600;
+
 static NSString *kUserDefaultsKey = @"BugsnagPerformanceSampler";
 static NSString *kProbabilityKey = @"p";
 static NSString *kExpiryKey = @"e";
@@ -38,7 +40,8 @@ Sampler::getProbability() noexcept {
 }
 
 void
-Sampler::setProbability(double probability, CFAbsoluteTime expiry) noexcept {
+Sampler::setProbability(double probability) noexcept {
+    auto expiry = CFAbsoluteTimeGetCurrent() + kProbabilityDuration;
     probability_ = probability;
     probabilityExpiry_ = expiry;
     
@@ -52,12 +55,8 @@ Sampler::setProbability(double probability, CFAbsoluteTime expiry) noexcept {
 void
 Sampler::setProbabilityFromResponseHeaders(NSDictionary *headers) noexcept {
     NSString *probability = headers[@"Bugsnag-Sampling-Probability"];
-    NSString *duration    = headers[@"Bugsnag-Sampling-Probability-Duration"];
-    if (probability && duration) {
-        auto expiry = [[NSDate dateWithTimeIntervalSinceNow:
-                        [duration doubleValue]]
-                       timeIntervalSinceReferenceDate];
-        setProbability([probability doubleValue], expiry);
+    if (probability) {
+        setProbability([probability doubleValue]);
     }
 }
 

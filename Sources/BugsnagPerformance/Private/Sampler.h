@@ -20,7 +20,7 @@ public:
         fallbackProbability_ = value;
     }
     
-    void setProbability(double probability, CFAbsoluteTime expiry) noexcept;
+    void setProbability(double probability) noexcept;
     
     struct Decision {
         /// Whether this span should be included in data sent to the back-end.
