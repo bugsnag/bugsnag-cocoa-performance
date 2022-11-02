@@ -2,6 +2,8 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span
     Given I run "ManualSpanScenario"
+    And I wait to receive an error
+    And the error payload field "events.0.device.id" is stored as the value "bugsnag_device_id"
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ManualSpanScenario"
@@ -10,7 +12,17 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.kind" equals "SPAN_KIND_INTERNAL"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.startTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "1"
+    * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "production"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.id" equals the stored value "bugsnag_device_id"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.manufacturer" equals "Apple"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.model.identifier" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "host.arch" matches the regex "arm64|amd64"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.name" equals "iOS"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.type" equals "darwin"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.version" exists
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "1.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 

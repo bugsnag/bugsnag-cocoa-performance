@@ -42,6 +42,10 @@
 		0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */; };
 		0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */; };
 		0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */; };
+		015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 015836BF29125E7A002F54C8 /* ResourceAttributes.h */; };
+		015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 015836C029125E7A002F54C8 /* ResourceAttributes.mm */; };
+		015836C4291264E0002F54C8 /* Version.h in Headers */ = {isa = PBXBuildFile; fileRef = 015836C3291264E0002F54C8 /* Version.h */; };
+		01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */; };
 		01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 01A58C0C29092D25006E4DF7 /* Sampler.h */; };
 		01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C0D29092D25006E4DF7 /* Sampler.mm */; };
 		01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C10290931A5006E4DF7 /* SamplerTests.mm */; };
@@ -97,6 +101,10 @@
 		0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceTests.mm; sourceTree = "<group>"; };
 		0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceEncodingTests.mm; sourceTree = "<group>"; };
 		0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		015836BF29125E7A002F54C8 /* ResourceAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceAttributes.h; sourceTree = "<group>"; };
+		015836C029125E7A002F54C8 /* ResourceAttributes.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourceAttributes.mm; sourceTree = "<group>"; };
+		015836C3291264E0002F54C8 /* Version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
+		01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourceAttributesTests.mm; sourceTree = "<group>"; };
 		01A58C0C29092D25006E4DF7 /* Sampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sampler.h; sourceTree = "<group>"; };
 		01A58C0D29092D25006E4DF7 /* Sampler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Sampler.mm; sourceTree = "<group>"; };
 		01A58C10290931A5006E4DF7 /* SamplerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SamplerTests.mm; sourceTree = "<group>"; };
@@ -187,6 +195,8 @@
 				0122C23029019770002D243C /* OtlpTraceEncoding.mm */,
 				0122C23429019770002D243C /* OtlpTraceExporter.h */,
 				0122C23729019770002D243C /* OtlpTraceExporter.mm */,
+				015836BF29125E7A002F54C8 /* ResourceAttributes.h */,
+				015836C029125E7A002F54C8 /* ResourceAttributes.mm */,
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
 				01A58C0D29092D25006E4DF7 /* Sampler.mm */,
 				0122C23529019770002D243C /* Span.h */,
@@ -198,6 +208,7 @@
 				0122C22729019770002D243C /* SpanProcessor.h */,
 				0122C23329019770002D243C /* Tracer.h */,
 				0122C22529019770002D243C /* Tracer.mm */,
+				015836C3291264E0002F54C8 /* Version.h */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -238,6 +249,7 @@
 				0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
+				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
@@ -287,6 +299,7 @@
 				0122C24729019770002D243C /* SpanData.h in Headers */,
 				0122C25429019770002D243C /* SpanExporter.h in Headers */,
 				0122C24F29019770002D243C /* BatchSpanProcessor.h in Headers */,
+				015836C4291264E0002F54C8 /* Version.h in Headers */,
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
@@ -296,6 +309,7 @@
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
+				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
@@ -402,6 +416,7 @@
 			files = (
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
+				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 			);
@@ -425,6 +440,7 @@
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
+				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
