@@ -15,6 +15,7 @@ class Scenario: NSObject {
     let config: BugsnagPerformanceConfiguration
     
     override init() {
+        bsg_autoTriggerExportOnBatchSize = 1;
         config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false
