@@ -22,7 +22,9 @@
 		01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */; };
 		01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC428E1AF9600D1F239 /* Scenario.swift */; };
 		01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC628E1D5A400D1F239 /* Fixture.swift */; };
+		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */; };
+		CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +46,10 @@
 		01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanScenario.swift; sourceTree = "<group>"; };
 		01FE4DC428E1AF9600D1F239 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		01FE4DC628E1D5A400D1F239 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
+		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkScenario.swift; sourceTree = "<group>"; };
+		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
+		CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,6 +95,7 @@
 				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
 				01FE4DB328E1AEBF00D1F239 /* LaunchScreen.storyboard */,
 				01FE4DB628E1AEBF00D1F239 /* Info.plist */,
+				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
 			);
 			path = Fixture;
 			sourceTree = "<group>";
@@ -115,6 +121,8 @@
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
+				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
+				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
@@ -160,6 +168,7 @@
 				TargetAttributes = {
 					01FE4DA428E1AEBD00D1F239 = {
 						CreatedOnToolsVersion = 14.0;
+						LastSwiftMigration = 1400;
 					};
 				};
 			};
@@ -202,6 +211,7 @@
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
+				CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
@@ -209,6 +219,7 @@
 				CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */,
 				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
+				CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
@@ -356,6 +367,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -375,6 +387,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Fixture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -385,6 +399,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 372ZUL2ZB7;
@@ -404,6 +419,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.Fixture;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
