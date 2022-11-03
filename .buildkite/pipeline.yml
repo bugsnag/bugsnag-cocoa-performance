@@ -16,6 +16,8 @@ steps:
         command: ./Example/build.sh
       - label: "Fixture"
         command: ./features/fixtures/ios/build.sh
+        # Because Xcode 14 doesn't support targeting iOS 10
+        env: {DEVELOPER_DIR: /Applications/Xcode13.4.app}
         key: ios_fixture
         artifact_paths:
           - features/fixtures/ios/output/Fixture.ipa
