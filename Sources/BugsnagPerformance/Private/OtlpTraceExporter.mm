@@ -13,23 +13,29 @@ using namespace bugsnag;
 
 void
 OtlpTraceExporter::exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept {
-    auto request = OtlpTraceEncoding::encode(spans, resourceAttributes_);
-    
-    NSError *error = nil;
-    auto data = [NSJSONSerialization dataWithJSONObject:request options:0 error:&error];
-    if (!data) {
-        NSCAssert(NO, @"%@", error);
+    const auto package = buildPackage(spans);
+    if (package == nullptr) {
         return;
     }
+
+    uploader_.upload(*package, ^(__unused UploadResult result) {
+        // Nothing to do yet
+    });
+}
+
+std::unique_ptr<OtlpPackage> OtlpTraceExporter::buildPackage(std::vector<std::unique_ptr<SpanData>> &spans) {
+    auto encodedSpans = OtlpTraceEncoding::encode(spans, resourceAttributes_);
     
-    auto urlRequest = [NSMutableURLRequest requestWithURL:endpoint_];
-    urlRequest.HTTPBody = data;
-    urlRequest.HTTPMethod = @"POST";
-    [urlRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest completionHandler:
-      ^(__unused NSData *responseData, NSURLResponse *response, __unused NSError *taskError) {
-        if (responseObserver_ && [response isKindOfClass:[NSHTTPURLResponse class]]) {
-            responseObserver_((NSHTTPURLResponse *_Nonnull)response);
-        }
-    }] resume];
+    NSError *error = nil;
+    auto payload = [NSJSONSerialization dataWithJSONObject:encodedSpans options:0 error:&error];
+    if (!payload) {
+        NSCAssert(NO, @"%@", error);
+        return nullptr;
+    }
+
+    auto headers = @{
+        @"Content-Type": @"application/json",
+    };
+    
+    return std::make_unique<OtlpPackage>(payload, headers);
 }

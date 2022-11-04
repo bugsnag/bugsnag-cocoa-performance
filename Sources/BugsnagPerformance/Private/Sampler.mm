@@ -52,14 +52,6 @@ Sampler::setProbability(double probability) noexcept {
      forKey:kUserDefaultsKey];
 }
 
-void
-Sampler::setProbabilityFromResponseHeaders(NSDictionary *headers) noexcept {
-    NSString *probability = headers[@"Bugsnag-Sampling-Probability"];
-    if (probability) {
-        setProbability([probability doubleValue]);
-    }
-}
-
 Sampler::Decision
 Sampler::shouldSample(TraceId traceId) noexcept {
     auto p = getProbability();

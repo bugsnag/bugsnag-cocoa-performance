@@ -8,25 +8,23 @@
 #import <Foundation/Foundation.h>
 
 #import "SpanExporter.h"
+#import "OtlpPackage.h"
+#import "BugsnagPerformanceUploader.h"
 
 namespace bugsnag {
 class OtlpTraceExporter: public SpanExporter {
 public:
-    OtlpTraceExporter(NSURL *endpoint, NSDictionary *resourceAttributes) noexcept
-    : endpoint_(endpoint)
-    , resourceAttributes_(resourceAttributes)
-    , responseObserver_(nil)
+    OtlpTraceExporter(NSURL *endpoint, NSDictionary *resourceAttributes, NewProbabilityCallback newProbabilityCallback) noexcept
+    : resourceAttributes_(resourceAttributes)
+    , uploader_(endpoint, newProbabilityCallback)
     {}
     
     void exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept override;
     
-    void setResponseObserver(void (^ observer)(NSHTTPURLResponse *response)) noexcept override {
-        responseObserver_ = observer;
-    }
-    
 private:
-    NSURL *endpoint_;
     NSDictionary *resourceAttributes_;
-    void (^ responseObserver_)(NSHTTPURLResponse *response);
+    BugsnagPerformanceUploader uploader_;
+
+    std::unique_ptr<OtlpPackage> buildPackage(std::vector<std::unique_ptr<SpanData>> &spans);
 };
 }

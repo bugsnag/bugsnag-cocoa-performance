@@ -32,8 +32,6 @@ public:
     
     Decision shouldSample(TraceId traceId) noexcept;
     
-    void setProbabilityFromResponseHeaders(NSDictionary *headers) noexcept;
-    
 private:
     double fallbackProbability_;
     double probability_;
