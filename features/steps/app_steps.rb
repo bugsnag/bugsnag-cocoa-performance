@@ -24,6 +24,16 @@ Then('the {word} payload field {string} string attribute {string} matches the re
   Maze.check.match(regex, value)
 end
 
+Then('the {word} payload field {string} string attribute {string} equals the stored value {string}') do |request_type, field, attr_key, stored_key|
+  list = Maze::Server.list_for(request_type)
+  attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")
+  attribute = attributes.find { |a| a['key'] == attr_key }
+  payload_value = attribute["value"]["stringValue"]
+  stored_value = Maze::Store.values[stored_key]
+  result = Maze::Compare.value(payload_value, stored_value)
+  Maze.check.true(result.equal?, "Payload value: #{payload_value} does not equal stored value: #{stored_value}")
+end
+
 Then('the {word} payload field {string} string attribute {string} exists') do |request_type, field, key|
   list = Maze::Server.list_for(request_type)
   attributes = Maze::Helper.read_key_path(list.current[:body], "#{field}.attributes")

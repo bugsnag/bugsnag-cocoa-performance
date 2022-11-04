@@ -32,4 +32,10 @@ OBJC_EXPORT
 
 @end
 
+@interface BugsnagPerformanceConfiguration (/* App metadata */)
+
+@property (copy, nonatomic) NSString *releaseStage;
+
+@end
+
 NS_ASSUME_NONNULL_END

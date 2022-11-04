@@ -12,6 +12,7 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "Instrumentation/NetworkInstrumentation.h"
 #import "OtlpTraceExporter.h"
+#import "ResourceAttributes.h"
 #import "Sampler.h"
 #import "Span.h"
 
@@ -24,12 +25,7 @@ Tracer::Tracer() noexcept
 
 void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    auto serviceName = NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
-    auto resourceAttributes = @{
-        @"service.name": serviceName,
-        @"telemetry.sdk.name": @"bugsnag.performance.cocoa",
-        @"telemetry.sdk.version": @"0.0",
-    };
+    auto resourceAttributes = ResourceAttributes(configuration).get();
     
     sampler_->setFallbackProbability(configuration.samplingProbability);
     
