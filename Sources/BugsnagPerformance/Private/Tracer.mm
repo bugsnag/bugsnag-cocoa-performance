@@ -109,10 +109,12 @@ static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetri
     return @"wifi";
 }
 
-static void addNonNull(NSMutableDictionary *dict, NSString *key, NSObject *value) {
-    if (value != nil) {
-        dict[key] = value;
+template<typename T>
+static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
+    if ([obj isKindOfClass:[T class]]) {
+        return obj;
     }
+    return nil;
 }
 
 static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value) {
@@ -123,25 +125,19 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
 
 void
 Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-    if (![task.response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return;
-    }
-
     auto interval = metrics.taskInterval;
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
-    auto httpResponse = (NSHTTPURLResponse *)task.response;
-
     auto span = startSpan(name, interval.startDate.timeIntervalSinceReferenceDate);
 
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span_category"] = @"network";
-    addNonNull(attributes, @"http.method", task.originalRequest.HTTPMethod);
-    addNonNull(attributes, @"http.url", task.originalRequest.URL.absoluteString);
-    addNonZero(attributes, @"http.status_code", @(httpResponse.statusCode));
-    addNonNull(attributes, @"http.flavor", getHTTPFlavour(metrics));
+    attributes[@"http.flavor"] = getHTTPFlavour(metrics);
+    attributes[@"http.method"] = task.originalRequest.HTTPMethod;
+    attributes[@"http.status_code"] = @(BSGDynamicCast<NSHTTPURLResponse>(task.response).statusCode);
+    attributes[@"http.url"] = task.originalRequest.URL.absoluteString;
+    attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
     addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
     addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
-    addNonNull(attributes, @"net.host.connection.type", getConnectionType(task, metrics));
     span->addAttributes(attributes);
 
     span->end(interval.endDate.timeIntervalSinceReferenceDate);
