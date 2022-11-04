@@ -17,7 +17,8 @@ let package = Package(
         .target(
             name: "BugsnagPerformance",
             linkerSettings: [
-                .linkedFramework("UIKit")
+                .linkedFramework("SystemConfiguration"),
+                .linkedFramework("UIKit"),
             ]
         ),
         .testTarget(

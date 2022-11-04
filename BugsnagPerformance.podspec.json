@@ -21,7 +21,10 @@
   "source_files": "Sources/BugsnagPerformance/**/*",
   "public_header_files": "Sources/BugsnagPerformance/include/BugsnagPerformance/*.h",
   "prefix_header_file": false,
-  "frameworks": "UIKit",
+  "frameworks": [
+    "SystemConfiguration",
+    "UIKit"
+  ],
   "libraries": "c++",
   "pod_target_xcconfig": {
     "CLANG_CXX_LIBRARY": "libc++",
