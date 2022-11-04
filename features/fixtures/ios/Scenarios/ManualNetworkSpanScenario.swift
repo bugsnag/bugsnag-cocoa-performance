@@ -11,7 +11,7 @@ import os
 class MyNetworkDelegate: NSObject {
     static let shared = MyNetworkDelegate()
     public let urlConfiguration = URLSessionConfiguration.default
-    public var urlSession: URLSession?
+    public var urlSession: URLSession!
  
     private override init() {
         super.init()
@@ -35,13 +35,7 @@ class ManualNetworkSpanScenario: Scenario {
 
     func query(string: String) {
         let url = URL(string: string, relativeTo: baseURL)!
-        let semaphore = DispatchSemaphore(value: 0)
-
-        let task = MyNetworkDelegate.shared.urlSession?.dataTask(with: url) {(data, response, error) in
-            semaphore.signal()
-        }
-        task?.resume()
-        semaphore.wait()
+        MyNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
     }
 
     override func run() {
