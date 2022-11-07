@@ -49,14 +49,16 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.startTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.span_category" equals "view_load"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view_type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.name" equals "ManualViewController"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.type" equals "UIKit"
     And I discard the oldest trace
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ViewLoaded/SwiftUI/ManualView"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.kind" equals "SPAN_KIND_INTERNAL"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.startTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.span_category" equals "view_load"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view_type" equals "SwiftUI"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.name" equals "ManualView"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.type" equals "SwiftUI"
 
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario"
