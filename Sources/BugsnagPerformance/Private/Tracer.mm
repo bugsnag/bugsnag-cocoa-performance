@@ -15,6 +15,7 @@
 #import "ResourceAttributes.h"
 #import "Sampler.h"
 #import "Span.h"
+#import "SpanAttributes.h"
 
 using namespace bugsnag;
 
@@ -56,7 +57,9 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
 
 std::unique_ptr<Span>
 Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
-    return std::make_unique<Span>(std::make_unique<SpanData>(name, startTime), spanProcessor_);
+    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, startTime), spanProcessor_);
+    span->addAttributes(SpanAttributes::get());
+    return span;
 }
 
 std::unique_ptr<class Span>
