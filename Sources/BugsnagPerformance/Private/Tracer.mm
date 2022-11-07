@@ -16,6 +16,8 @@
 #import "Sampler.h"
 #import "Span.h"
 #import "SpanAttributes.h"
+#import "Reachability.h"
+#import "OtlpUploader.h"
 
 using namespace bugsnag;
 
@@ -31,11 +33,20 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     sampler_->setFallbackProbability(configuration.samplingProbability);
     
     if (configuration.endpoint) {
-        auto exporter = std::make_shared<OtlpTraceExporter>(configuration.endpoint, resourceAttributes,
-                                                            ^(double newProbability) {
+        std::shared_ptr<Uploader> uploader = std::make_shared<OtlpUploader>(configuration.endpoint, ^(double newProbability) {
             sampler_->setProbability(newProbability);
         });
+        auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
         dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
+        Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
+            switch (connectivity) {
+                case Reachability::Cellular: case Reachability::Wifi:
+                    exporter->notifyConnectivityReestablished();
+                    break;
+                case Reachability::Unknown: case Reachability::None:
+                    break;
+            }
+        });
     }
     
     if (configuration.autoInstrumentAppStarts) {

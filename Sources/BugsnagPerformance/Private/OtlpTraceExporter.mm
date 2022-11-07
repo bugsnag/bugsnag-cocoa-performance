@@ -13,17 +13,41 @@ using namespace bugsnag;
 
 void
 OtlpTraceExporter::exportSpans(std::vector<std::unique_ptr<SpanData>> spans) noexcept {
-    const auto package = buildPackage(spans);
+    uploadPackage(buildPackage(spans));
+}
+
+void OtlpTraceExporter::uploadPackage(std::unique_ptr<OtlpPackage> package) noexcept {
     if (package == nullptr) {
         return;
     }
+    __block std::unique_ptr<OtlpPackage> blockPackage = std::move(package);
 
-    uploader_.upload(*package, ^(__unused UploadResult result) {
-        // Nothing to do yet
+    uploader_->upload(*blockPackage, ^(__unused UploadResult result) {
+        switch (result) {
+            case BSG_UPLOAD_SUCCESSFUL:
+                sendNextRetry();
+                break;
+            case BSG_UPLOAD_FAILED_CAN_RETRY:
+                retryQueue_.push(std::move(blockPackage));
+                break;
+            case BSG_UPLOAD_FAILED_CANNOT_RETRY:
+                // We can't do anything with it, so throw it out.
+                break;
+        }
     });
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceExporter::buildPackage(std::vector<std::unique_ptr<SpanData>> &spans) {
+void OtlpTraceExporter::sendNextRetry(void) noexcept {
+    auto retry = retryQueue_.pop();
+    uploadPackage(std::move(retry));
+}
+
+void
+OtlpTraceExporter::notifyConnectivityReestablished() noexcept {
+    sendNextRetry();
+}
+
+std::unique_ptr<OtlpPackage> OtlpTraceExporter::buildPackage(const std::vector<std::unique_ptr<SpanData>> &spans) const noexcept {
     auto encodedSpans = OtlpTraceEncoding::encode(spans, resourceAttributes_);
     
     NSError *error = nil;

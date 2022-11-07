@@ -8,28 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
+#import "Uploader.h"
 #import "OtlpPackage.h"
 #import <memory>
 
 namespace bugsnag {
 
-typedef enum {
-    BSG_UPLOAD_SUCCESSFUL,
-    BSG_UPLOAD_FAILED_CAN_RETRY,
-    BSG_UPLOAD_FAILED_CANNOT_RETRY,
-} UploadResult;
-
-typedef void (^NewProbabilityCallback)(double newProbability);
-typedef void (^UploadResultCallback)(UploadResult result);
-
-class BugsnagPerformanceUploader {
+class OtlpUploader: public Uploader {
 public:
-    BugsnagPerformanceUploader(NSURL *endpoint, NewProbabilityCallback newProbabilityCallback) noexcept
+    OtlpUploader(NSURL *endpoint, NewProbabilityCallback newProbabilityCallback) noexcept
     : endpoint_(endpoint)
     , newProbabilityCallback_(newProbabilityCallback)
     {}
+    virtual ~OtlpUploader() = default;
 
-    void upload(const OtlpPackage &package, UploadResultCallback callback) const noexcept;
+    void upload(OtlpPackage &package, UploadResultCallback callback) noexcept override;
 
 private:
     const NSURL *endpoint_;

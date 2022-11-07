@@ -6,7 +6,7 @@
 //  Copyright © 2022 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagPerformanceUploader.h"
+#import "OtlpUploader.h"
 
 using namespace bugsnag;
 
@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
     HTTPStatusCodeTooManyRequests = 429,
 };
 
-void BugsnagPerformanceUploader::upload(const OtlpPackage &package, UploadResultCallback callback) const noexcept {
+void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) noexcept {
     auto urlRequest = [NSMutableURLRequest requestWithURL:(NSURL *)endpoint_];
     package.fillURLRequest(urlRequest);
 
@@ -45,7 +45,7 @@ void BugsnagPerformanceUploader::upload(const OtlpPackage &package, UploadResult
     }] resume];
 }
 
-UploadResult BugsnagPerformanceUploader::getUploadResult(NSURLResponse *response) const {
+UploadResult OtlpUploader::getUploadResult(NSURLResponse *response) const {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
         return BSG_UPLOAD_FAILED_CANNOT_RETRY;
     }
@@ -68,7 +68,7 @@ UploadResult BugsnagPerformanceUploader::getUploadResult(NSURLResponse *response
     return BSG_UPLOAD_FAILED_CAN_RETRY;
 }
 
-double BugsnagPerformanceUploader::getNewProbability(NSURLResponse *response) const {
+double OtlpUploader::getNewProbability(NSURLResponse *response) const {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
         return -1;
     }
