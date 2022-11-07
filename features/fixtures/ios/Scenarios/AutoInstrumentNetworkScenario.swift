@@ -22,14 +22,7 @@ class AutoInstrumentNetworkScenario: Scenario {
 
     func query(string: String) {
         let url = URL(string: string, relativeTo: baseURL)!
-        let semaphore = DispatchSemaphore(value: 0)
-
-        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-            semaphore.signal()
-        }
-        task.resume()
-        semaphore.wait()
-        Thread.sleep(forTimeInterval: 1)
+        URLSession.shared.dataTask(with: url).resume()
     }
 
     override func run() {
