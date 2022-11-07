@@ -76,7 +76,8 @@ Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
     auto span = startSpan(name, startTime);
     span->addAttributes(@{
         @"bugsnag.span_category": @"view_load",
-        @"bugsnag.view_type": type
+        @"bugsnag.view.name": className,
+        @"bugsnag.view.type": type
     });
     return span;
 }
