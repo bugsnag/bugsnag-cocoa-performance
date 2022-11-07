@@ -126,6 +126,8 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
 void
 Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     auto interval = metrics.taskInterval;
+    auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
+
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
     auto span = startSpan(name, interval.startDate.timeIntervalSinceReferenceDate);
 
@@ -133,7 +135,7 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     attributes[@"bugsnag.span_category"] = @"network";
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = task.originalRequest.HTTPMethod;
-    attributes[@"http.status_code"] = @(BSGDynamicCast<NSHTTPURLResponse>(task.response).statusCode);
+    attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;
     attributes[@"http.url"] = task.originalRequest.URL.absoluteString;
     attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
     addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
