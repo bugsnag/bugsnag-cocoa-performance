@@ -14,9 +14,15 @@ typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewC
 OBJC_EXPORT
 @interface BugsnagPerformanceConfiguration : NSObject
 
+- (instancetype)initWithApiKey:(NSString *)apiKey NS_DESIGNATED_INITIALIZER;
+
 - (instancetype)init NS_UNAVAILABLE;
 
 + (instancetype)loadConfig;
+
+@property (nonatomic) NSString *apiKey;
+
+@property (nonatomic) NSString *endpoint;
 
 @property (nonatomic) BOOL autoInstrumentAppStarts;
 
@@ -25,8 +31,6 @@ OBJC_EXPORT
 @property (nonatomic) BOOL autoInstrumentNetwork;
 
 @property (nonatomic) double samplingProbability;
-
-@property (nonatomic) NSURL *endpoint;
 
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 

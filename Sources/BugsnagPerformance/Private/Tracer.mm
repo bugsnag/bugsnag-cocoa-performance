@@ -9,15 +9,16 @@
 
 #import "BatchSpanProcessor.h"
 #import "Instrumentation/AppStartupInstrumentation.h"
-#import "Instrumentation/ViewLoadInstrumentation.h"
 #import "Instrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation.h"
 #import "OtlpTraceExporter.h"
+#import "OtlpUploader.h"
+#import "Reachability.h"
 #import "ResourceAttributes.h"
 #import "Sampler.h"
 #import "Span.h"
 #import "SpanAttributes.h"
-#import "Reachability.h"
-#import "OtlpUploader.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -32,8 +33,8 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     
     sampler_->setFallbackProbability(configuration.samplingProbability);
     
-    if (configuration.endpoint) {
-        std::shared_ptr<Uploader> uploader = std::make_shared<OtlpUploader>(configuration.endpoint, ^(double newProbability) {
+    if (auto url = [NSURL URLWithString:configuration.endpoint]) {
+        auto uploader = std::make_shared<OtlpUploader>(url, configuration.apiKey, ^(double newProbability) {
             sampler_->setProbability(newProbability);
         });
         auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
@@ -60,8 +61,7 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     }
     
     if (configuration.autoInstrumentNetwork) {
-        NSString *baseEndpoint = configuration.endpoint.absoluteString ?: @"";
-        networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, baseEndpoint);
+        networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, configuration.endpoint);
         networkInstrumentation_->start();
     }
 }
@@ -122,14 +122,6 @@ static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetri
         }
     }
     return @"wifi";
-}
-
-template<typename T>
-static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
-    if ([obj isKindOfClass:[T class]]) {
-        return obj;
-    }
-    return nil;
 }
 
 static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value) {

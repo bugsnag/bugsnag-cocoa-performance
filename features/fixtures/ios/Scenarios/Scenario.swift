@@ -10,8 +10,8 @@ import Foundation
 
 class Scenario: NSObject {
     
-    static var mazeRunnerURL = URL(string: "http://bs-local.com:9339")!;
-
+    static let mazeRunnerURL = "http://bs-local.com:9339"
+    
     let config: BugsnagPerformanceConfiguration
     
     override init() {
@@ -21,7 +21,7 @@ class Scenario: NSObject {
         config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false
         config.samplingProbability = 1
-        config.endpoint = Scenario.mazeRunnerURL.appendingPathComponent("traces")
+        config.endpoint = "\(Scenario.mazeRunnerURL)/traces"
     }
     
     func clearPersistentData() {

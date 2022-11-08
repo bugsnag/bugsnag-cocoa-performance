@@ -20,16 +20,19 @@ namespace bugsnag {
  */
 class OtlpUploader: public Uploader {
 public:
-    OtlpUploader(NSURL *endpoint, NewProbabilityCallback newProbabilityCallback) noexcept
+    OtlpUploader(NSURL *endpoint, NSString *apiKey, NewProbabilityCallback newProbabilityCallback) noexcept
     : endpoint_(endpoint)
+    , apiKey_(apiKey)
     , newProbabilityCallback_(newProbabilityCallback)
     {}
+
     virtual ~OtlpUploader() = default;
 
     void upload(OtlpPackage &package, UploadResultCallback callback) noexcept override;
 
 private:
     const NSURL *endpoint_;
+    NSString *apiKey_;
     NewProbabilityCallback newProbabilityCallback_;
 
     UploadResult getUploadResult(NSURLResponse *response) const;

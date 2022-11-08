@@ -18,16 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BugsnagPerformance.startSpan(name: "Before start").end()
         
         let config = BugsnagPerformanceConfiguration.loadConfig()
-        // Inspect @ https://webhook.site/#!/14b03305-a46e-4e1f-b8b4-8434643631dc
-        config.endpoint = URL(string: "https://webhook.site/14b03305-a46e-4e1f-b8b4-8434643631dc")!
         
         // Disable automatic app startup instrumentation:
         //config.autoInstrumentAppStarts = false
         
         // Disable automatic view controller instrumentation to prevent swizzling...
         //config.autoInstrumentViewControllers = false
-
-        config.autoInstrumentNetwork = true
+        
+        // Disable automatic URLSession request instrumentation:
+        //config.autoInstrumentNetwork = false
         
         // ... or control whether spans are created on a per-instance basis:
         config.viewControllerInstrumentationCallback = {

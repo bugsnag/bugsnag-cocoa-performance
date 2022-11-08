@@ -8,7 +8,7 @@
 import Foundation
 
 func fetchAndExecuteCommand() {
-    let url = Scenario.mazeRunnerURL.appendingPathComponent("command")
+    let url = URL(string: "\(Scenario.mazeRunnerURL)/command")!
     
     var request = URLRequest(url: url)
     request.setValue("application/json", forHTTPHeaderField: "Accept")
