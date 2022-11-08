@@ -44,12 +44,12 @@ Reachability::callback(__unused SCNetworkReachabilityRef target,
         This->connectivity_ = Connectivity::None;
     }
     
-    std::for_each(std::begin(This->callbacks), std::end(This->callbacks), [This](void (^callback)(Connectivity)) {
+    std::for_each(std::begin(This->callbacks_), std::end(This->callbacks_), [This](auto callback) {
         callback(This->connectivity_);
     });
 }
 
 void
 Reachability::addCallback(void (^callback)(Connectivity)) {
-    callbacks.push_back(callback);
+    callbacks_.push_back(callback);
 }

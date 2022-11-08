@@ -11,15 +11,18 @@
 
 namespace bugsnag {
 
-typedef enum {
-    BSG_UPLOAD_SUCCESSFUL,
-    BSG_UPLOAD_FAILED_CAN_RETRY,
-    BSG_UPLOAD_FAILED_CANNOT_RETRY,
-} UploadResult;
+enum class UploadResult {
+    SUCCESSFUL,
+    FAILED_CAN_RETRY,
+    FAILED_CANNOT_RETRY,
+};
 
-typedef void (^NewProbabilityCallback)(double newProbability);
-typedef void (^UploadResultCallback)(UploadResult result);
+using NewProbabilityCallback = void (^)(double newProbability);
+using UploadResultCallback = void (^)(UploadResult result);
 
+/**
+ * An uploader attempts to send a package to a server, and informs the result via callback.
+ */
 class Uploader {
 public:
     virtual ~Uploader() = default;

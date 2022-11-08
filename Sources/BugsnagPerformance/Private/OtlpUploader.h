@@ -14,6 +14,10 @@
 
 namespace bugsnag {
 
+/**
+ * Bugsnag backend uploader.
+ * Also informs via callback any changes the backend makes to the probability value.
+ */
 class OtlpUploader: public Uploader {
 public:
     OtlpUploader(NSURL *endpoint, NewProbabilityCallback newProbabilityCallback) noexcept

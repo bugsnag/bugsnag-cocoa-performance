@@ -47,14 +47,14 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
 
 UploadResult OtlpUploader::getUploadResult(NSURLResponse *response) const {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return BSG_UPLOAD_FAILED_CANNOT_RETRY;
+        return UploadResult::FAILED_CANNOT_RETRY;
     }
 
     auto httpResponse = (NSHTTPURLResponse *_Nonnull)response;
     auto statusCode = httpResponse.statusCode;
 
     if (statusCode / 100 == 2) {
-        return BSG_UPLOAD_SUCCESSFUL;
+        return UploadResult::SUCCESSFUL;
     }
 
     if (statusCode / 100 == 4 &&
@@ -62,10 +62,10 @@ UploadResult OtlpUploader::getUploadResult(NSURLResponse *response) const {
         statusCode != HTTPStatusCodeProxyAuthenticationRequired &&
         statusCode != HTTPStatusCodeClientTimeout &&
         statusCode != HTTPStatusCodeTooManyRequests) {
-        return BSG_UPLOAD_FAILED_CANNOT_RETRY;
+        return UploadResult::FAILED_CANNOT_RETRY;
     }
 
-    return BSG_UPLOAD_FAILED_CAN_RETRY;
+    return UploadResult::FAILED_CAN_RETRY;
 }
 
 double OtlpUploader::getNewProbability(NSURLResponse *response) const {

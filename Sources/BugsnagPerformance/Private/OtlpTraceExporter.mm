@@ -24,13 +24,13 @@ void OtlpTraceExporter::uploadPackage(std::unique_ptr<OtlpPackage> package) noex
 
     uploader_->upload(*blockPackage, ^(__unused UploadResult result) {
         switch (result) {
-            case BSG_UPLOAD_SUCCESSFUL:
+            case UploadResult::SUCCESSFUL:
                 sendNextRetry();
                 break;
-            case BSG_UPLOAD_FAILED_CAN_RETRY:
+            case UploadResult::FAILED_CAN_RETRY:
                 retryQueue_.push(std::move(blockPackage));
                 break;
-            case BSG_UPLOAD_FAILED_CANNOT_RETRY:
+            case UploadResult::FAILED_CANNOT_RETRY:
                 // We can't do anything with it, so throw it out.
                 break;
         }

@@ -1,5 +1,15 @@
 Feature: Manual creation of spans
 
+  Scenario: X
+    Given I set the HTTP status code for the next request to 500
+    And I run "RetryScenario"
+    And I wait to receive 3 traces
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
+    And I discard the oldest trace
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "Success"
+    And I discard the oldest trace
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
+
   Scenario: Manually start and end a span
     Given I run "ManualSpanScenario"
     And I wait to receive an error

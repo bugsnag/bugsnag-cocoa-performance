@@ -37,7 +37,7 @@ private:
         return CFSTR("bugsnag::Reachability");
     }
     
-    std::vector<void (^)(Connectivity)> callbacks;
+    std::vector<void (^)(Connectivity)> callbacks_;
     dispatch_queue_t queue_{nullptr};
     SCNetworkReachabilityContext context_{
         .version = 0,

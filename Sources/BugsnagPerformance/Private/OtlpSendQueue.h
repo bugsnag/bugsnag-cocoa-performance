@@ -13,9 +13,17 @@
 #import "OtlpPackage.h"
 
 namespace bugsnag {
+
+/**
+ * Queues packages in a threadsafe manner (FIFO ordering).
+ */
 class OtlpSendQueue {
 public:
     void push(std::unique_ptr<OtlpPackage> package) noexcept;
+    
+    /**
+     * Pops the least recently added package (if any) from the queue. Returns nullptr if the queue is empty.
+     */
     std::unique_ptr<OtlpPackage> pop() noexcept;
 private:
     std::mutex mutex_;

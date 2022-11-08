@@ -35,7 +35,7 @@ private:
 @implementation OtlpTraceExporterTests
 
 - (void)testUploadSuccessful {
-    auto stubUploader = std::make_shared<StubUploader>(BSG_UPLOAD_SUCCESSFUL);
+    auto stubUploader = std::make_shared<StubUploader>(UploadResult::SUCCESSFUL);
     OtlpTraceExporter exporter(nil, stubUploader);
 
     std::vector<std::unique_ptr<SpanData>> v;
@@ -51,7 +51,7 @@ private:
 }
 
 - (void)testCannotRetry {
-    auto stubUploader = std::make_shared<StubUploader>(BSG_UPLOAD_FAILED_CANNOT_RETRY);
+    auto stubUploader = std::make_shared<StubUploader>(UploadResult::FAILED_CANNOT_RETRY);
     OtlpTraceExporter exporter(nil, stubUploader);
 
     std::vector<std::unique_ptr<SpanData>> v;
@@ -67,7 +67,7 @@ private:
 }
 
 - (void)testCanRetryConnectivity {
-    auto stubUploader = std::make_shared<StubUploader>(BSG_UPLOAD_FAILED_CAN_RETRY);
+    auto stubUploader = std::make_shared<StubUploader>(UploadResult::FAILED_CAN_RETRY);
     OtlpTraceExporter exporter(nil, stubUploader);
 
     std::vector<std::unique_ptr<SpanData>> v;
@@ -82,7 +82,7 @@ private:
     v.push_back(std::make_unique<SpanData>(@"Next", CFAbsoluteTimeGetCurrent()));
     exporter.exportSpans(std::move(v));
     XCTAssertEqual(stubUploader->uploadAttempts, 4);
-    stubUploader->setNextResult(BSG_UPLOAD_SUCCESSFUL);
+    stubUploader->setNextResult(UploadResult::SUCCESSFUL);
     exporter.notifyConnectivityReestablished();
     XCTAssertEqual(stubUploader->uploadAttempts, 6);
     exporter.notifyConnectivityReestablished();
@@ -90,7 +90,7 @@ private:
 }
 
 - (void)testCanRetryNewUpload {
-    auto stubUploader = std::make_shared<StubUploader>(BSG_UPLOAD_FAILED_CAN_RETRY);
+    auto stubUploader = std::make_shared<StubUploader>(UploadResult::FAILED_CAN_RETRY);
     OtlpTraceExporter exporter(nil, stubUploader);
 
     std::vector<std::unique_ptr<SpanData>> v;
@@ -105,7 +105,7 @@ private:
     v.push_back(std::make_unique<SpanData>(@"Next", CFAbsoluteTimeGetCurrent()));
     exporter.exportSpans(std::move(v));
     XCTAssertEqual(stubUploader->uploadAttempts, 4);
-    stubUploader->setNextResult(BSG_UPLOAD_SUCCESSFUL);
+    stubUploader->setNextResult(UploadResult::SUCCESSFUL);
     v.push_back(std::make_unique<SpanData>(@"Next", CFAbsoluteTimeGetCurrent()));
     exporter.exportSpans(std::move(v));
     XCTAssertEqual(stubUploader->uploadAttempts, 7);

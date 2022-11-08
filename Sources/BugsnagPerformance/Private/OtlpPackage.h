@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 
 namespace bugsnag {
+
+/**
+ * Contains the information necessary to send an HTTP request to the server.
+ */
 class OtlpPackage {
 public:
     OtlpPackage(const NSData *payload, const NSDictionary *headers) noexcept
@@ -16,6 +20,9 @@ public:
     , headers_(headers)
     {}
 
+    /**
+     * Fill a request with everything necessary to send to the server.
+     */
     void fillURLRequest(NSMutableURLRequest *request) const noexcept;
 
 private:
