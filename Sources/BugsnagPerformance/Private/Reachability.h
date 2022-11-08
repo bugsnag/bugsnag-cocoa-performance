@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
+#import <vector>
 
 namespace bugsnag {
 class Reachability {
@@ -23,6 +24,8 @@ public:
     
     Connectivity getConnectivity() noexcept { return connectivity_; }
     
+    void addCallback(void (^)(Connectivity));
+    
 private:
     Reachability() noexcept;
     
@@ -34,6 +37,7 @@ private:
         return CFSTR("bugsnag::Reachability");
     }
     
+    std::vector<void (^)(Connectivity)> callbacks_;
     dispatch_queue_t queue_{nullptr};
     SCNetworkReachabilityContext context_{
         .version = 0,
