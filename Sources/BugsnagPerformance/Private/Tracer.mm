@@ -49,6 +49,10 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
                     break;
             }
         });
+
+        // Send an initial empty request to fetch the probability value from the server.
+        auto emptyPackage = OtlpPackage([NSData data], resourceAttributes);
+        uploader->upload(emptyPackage, nil);
     } else {
         BSGLogError(@"Invalid URL supplied for endpoint: \"%@\"", configuration.endpoint);
     }
