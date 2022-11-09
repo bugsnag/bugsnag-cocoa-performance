@@ -33,7 +33,8 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     
     sampler_->setFallbackProbability(configuration.samplingProbability);
     
-    if (auto url = [NSURL URLWithString:configuration.endpoint]) {
+    auto url = [NSURL URLWithString:configuration.endpoint];
+    if ([url.scheme hasPrefix:@"http"]) {
         auto uploader = std::make_shared<OtlpUploader>(url, configuration.apiKey, ^(double newProbability) {
             sampler_->setProbability(newProbability);
         });
@@ -48,6 +49,8 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
                     break;
             }
         });
+    } else {
+        BSGLogError(@"Invalid URL supplied for endpoint: \"%@\"", configuration.endpoint);
     }
     
     if (configuration.autoInstrumentAppStarts) {
