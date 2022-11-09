@@ -9,8 +9,9 @@ import BugsnagPerformance
 
 class ManualSpanBeforeStartScenario: Scenario {
     
-    override init() {
+    override func startBugsnag() {
         BugsnagPerformance.startSpan(name: "BeforeStart").end()
+        super.startBugsnag()
     }
     
     override func run() {

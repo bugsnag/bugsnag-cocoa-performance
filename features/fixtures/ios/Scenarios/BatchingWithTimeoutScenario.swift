@@ -10,7 +10,6 @@ import BugsnagPerformance
 class BatchingWithTimeoutScenario: Scenario {
     
     override func startBugsnag() {
-        clearPersistentData()
         super.startBugsnag()
         bsg_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC
     }

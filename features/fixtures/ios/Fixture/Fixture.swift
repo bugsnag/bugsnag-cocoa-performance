@@ -41,6 +41,8 @@ func fetchAndExecuteCommand() {
 func run(command: Command) {
     let scenarioClass: AnyClass = NSClassFromString("Fixture.\(command.scenario)")!
     let scenario = (scenarioClass as! NSObject.Type).init() as! Scenario
+    scenario.configure()
+    scenario.clearPersistentData()
     scenario.startBugsnag()
     scenario.run()
 }

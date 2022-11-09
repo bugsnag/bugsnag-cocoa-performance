@@ -12,11 +12,10 @@ class Scenario: NSObject {
     
     static let mazeRunnerURL = "http://bs-local.com:9339"
     
-    let config: BugsnagPerformanceConfiguration
+    var config = BugsnagPerformanceConfiguration.loadConfig()
     
-    override init() {
+    func configure() {
         bsg_autoTriggerExportOnBatchSize = 1;
-        config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false
@@ -25,6 +24,7 @@ class Scenario: NSObject {
     }
     
     func clearPersistentData() {
+        NSLog("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
     }

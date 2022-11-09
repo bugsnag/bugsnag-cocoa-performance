@@ -10,7 +10,6 @@ import BugsnagPerformance
 class RetryScenario: Scenario {
     
     override func startBugsnag() {
-        clearPersistentData()
         super.startBugsnag()
         bsg_autoTriggerExportOnBatchSize = 1
     }
