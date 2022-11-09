@@ -101,14 +101,21 @@ BatchSpanProcessor::tryExportSpans() noexcept {
 void
 BatchSpanProcessor::exportSpans() noexcept {
     stopTimer();
-    // Resample in case probability changed
-    std::remove_if(std::begin(spans_), std::end(spans_), [&](auto &span){
-        return !shouldSample(span);
-    });
-    if (!exporter_ || spans_.empty()) {
+    if (!exporter_) {
         return;
     }
-    exporter_->exportSpans(std::move(spans_));
+    // Resample in case probability changed
+    std::vector<std::unique_ptr<SpanData>> sampled;
+    for (auto &span: spans_) {
+        if (shouldSample(span)) {
+            sampled.push_back(std::move(span));
+        }
+    }
+    spans_.clear();
+    if (sampled.empty()) {
+        return;
+    }
+    exporter_->exportSpans(std::move(sampled));
     NSCParameterAssert(spans_.empty());
 }
 
