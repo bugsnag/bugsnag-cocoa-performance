@@ -9,6 +9,8 @@
 
 #import "../Private/Utils.h"
 
+using namespace bugsnag;
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
