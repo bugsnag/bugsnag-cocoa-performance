@@ -9,15 +9,19 @@ import BugsnagPerformance
 
 class SamplingProbabilityZeroScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
         config.autoInstrumentAppStarts = true
         config.autoInstrumentNetwork = true
         config.autoInstrumentViewControllers = true
         config.samplingProbability = 0
+    }
+    
+    override func startBugsnag() {
+        BugsnagPerformance.startSpan(name: "Pre-start").end()
         super.startBugsnag()
     }
     
     override func run() {
-        BugsnagPerformance.startSpan(name: "Testing").end()
+        BugsnagPerformance.startSpan(name: "Post-start").end()
     }
 }

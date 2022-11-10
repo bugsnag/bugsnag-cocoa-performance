@@ -7,6 +7,8 @@
 
 #import "NSURLSession+Instrumentation.h"
 #import "BSGURLSessionPerformanceProxy.h"
+#import "../../Utils.h"
+
 #import <objc/runtime.h>
 
 
@@ -15,7 +17,7 @@ static IMP set_class_imp(Class _Nonnull clazz, SEL selector, id _Nonnull impleme
     if (method) {
         return method_setImplementation(method, imp_implementationWithBlock(implementationBlock));
     } else {
-        NSLog(@"WARNING: Could not set IMP for selector %s on class %@", sel_getName(selector), clazz);
+        BSGLogWarning(@"Could not set IMP for selector %s on class %@", sel_getName(selector), clazz);
         return nil;
     }
 }

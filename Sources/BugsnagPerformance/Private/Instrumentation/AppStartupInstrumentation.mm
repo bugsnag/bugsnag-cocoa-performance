@@ -9,6 +9,7 @@
 
 #import "../Span.h"
 #import "../Tracer.h"
+#import "../Utils.h"
 
 #import <array>
 #import <os/trace_base.h>
@@ -64,7 +65,7 @@ AppStartupInstrumentation::start() noexcept {
     [userDefaults setObject:launchId forKey:launchIdKey];
     
     if (ActivePrewarm()) {
-        NSLog(@"[INFO] App startup instrumentation disabled due to ActivePrewarm");
+        BSGLogInfo(@"App startup instrumentation disabled due to ActivePrewarm");
     } else if (didBecomeActive != 0) {
         // App is already active
         reportSpan(didBecomeActive);
@@ -94,7 +95,7 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
         return;
     }
     if (endTime > startTime + kMaxDuration) {
-        NSLog(@"[WARN] Ignoring excessively long app startup span");
+        BSGLogWarning(@"Ignoring excessively long app startup span");
         return;
     }
     auto name = isCold_ ? @"AppStart/Cold" : @"AppStart/Warm"; 

@@ -10,21 +10,21 @@ import Foundation
 
 class Scenario: NSObject {
     
-    static var mazeRunnerURL = URL(string: "http://bs-local.com:9339")!;
-
-    let config: BugsnagPerformanceConfiguration
+    static let mazeRunnerURL = "http://bs-local.com:9339"
     
-    override init() {
+    var config = BugsnagPerformanceConfiguration.loadConfig()
+    
+    func configure() {
         bsg_autoTriggerExportOnBatchSize = 1;
-        config = BugsnagPerformanceConfiguration.loadConfig()
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false
         config.samplingProbability = 1
-        config.endpoint = Scenario.mazeRunnerURL.appendingPathComponent("traces")
+        config.endpoint = "\(Scenario.mazeRunnerURL)/traces"
     }
     
     func clearPersistentData() {
+        NSLog("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
     }

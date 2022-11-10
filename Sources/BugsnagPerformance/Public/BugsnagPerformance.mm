@@ -14,40 +14,43 @@ using namespace bugsnag;
 
 @implementation BugsnagPerformance
 
-[[clang::no_destroy]]
-static Tracer tracer;
+static Tracer& getTracer() {
+    [[clang::no_destroy]]
+    static Tracer tracer;
+    return tracer;
+}
 
 + (void)start {
     [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
-    tracer.start(configuration);
+    getTracer().start(configuration);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
     return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer.startSpan(name, CFAbsoluteTimeGetCurrent())];
+            getTracer().startSpan(name, CFAbsoluteTimeGetCurrent())];
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime {
     return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
+            getTracer().startSpan(name, startTime.timeIntervalSinceReferenceDate)];
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
     return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer.startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
+            getTracer().startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType startTime:(NSDate *)startTime {
     return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
+            getTracer().startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
 }
 
 + (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
                                  metrics:(NSURLSessionTaskMetrics *)metrics {
-    tracer.reportNetworkSpan(task, metrics);
+    getTracer().reportNetworkSpan(task, metrics);
 }
 
 @end

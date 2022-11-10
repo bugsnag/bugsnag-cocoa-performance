@@ -10,7 +10,7 @@ import Foundation
 class AutoInstrumentNetworkScenario: Scenario {
 
     lazy var baseURL: URL = {
-        var components = URLComponents(string: Scenario.mazeRunnerURL.absoluteString)!
+        var components = URLComponents(string: Scenario.mazeRunnerURL)!
         components.port = 9340 // `/reflect` listens on a different port :-((
         return components.url!
     }()

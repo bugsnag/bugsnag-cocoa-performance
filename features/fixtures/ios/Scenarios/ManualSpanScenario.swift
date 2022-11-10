@@ -14,8 +14,8 @@ class ManualSpanScenario: Scenario {
         Bugsnag.start(with: {
             let config = BugsnagConfiguration.loadConfig()
             config.apiKey = "12312312312312312312312312312312"
-            config.endpoints.notify = "\(Scenario.mazeRunnerURL.absoluteString)/notify"
-            config.endpoints.sessions = "\(Scenario.mazeRunnerURL.absoluteString)/sessions"
+            config.endpoints.notify = "\(Scenario.mazeRunnerURL)/notify"
+            config.endpoints.sessions = "\(Scenario.mazeRunnerURL)/sessions"
             return config
         }())
         
