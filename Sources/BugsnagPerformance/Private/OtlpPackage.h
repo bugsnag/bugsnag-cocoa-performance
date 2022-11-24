@@ -15,10 +15,7 @@ namespace bugsnag {
  */
 class OtlpPackage {
 public:
-    OtlpPackage(const NSData *payload, const NSDictionary *headers) noexcept
-    : payload_(payload)
-    , headers_(headers)
-    {}
+    OtlpPackage(const NSData *payload, const NSDictionary *headers) noexcept;
 
     /**
      * Fill a request with everything necessary to send to the server.
