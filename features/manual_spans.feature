@@ -1,6 +1,6 @@
 Feature: Manual creation of spans
 
-  Scenario: X
+  Scenario: Retry a manual span
     Given I set the HTTP status code for the next request to 500
     And I run "RetryScenario"
     And I wait to receive 3 traces
@@ -16,6 +16,7 @@ Feature: Manual creation of spans
     And the error payload field "events.0.device.id" is stored as the value "bugsnag_device_id"
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ManualSpanScenario"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.traceId" matches the regex "^[A-Fa-f0-9]{32}$"
