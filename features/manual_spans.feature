@@ -1,7 +1,12 @@
 Feature: Manual creation of spans
 
+  # Workaround to clear out the initial startup P request
+  Background:
+    Given I wait to receive a trace
+    And I discard the oldest trace
+
   Scenario: Retry a manual span
-    Given I set the HTTP status code for the next request to 500
+    Given I set the HTTP status code for the next requests to "500,200,200"
     And I run "RetryScenario"
     And I wait to receive 3 traces
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"

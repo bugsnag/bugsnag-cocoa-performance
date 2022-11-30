@@ -28,6 +28,13 @@ Tracer::Tracer() noexcept
 {}
 
 void
+Tracer::sendInitialPValueRequest(std::shared_ptr<OtlpUploader> uploader) noexcept {
+    auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
+    auto emptyPackage = OtlpPackage(emptyPayload, @{});
+    uploader->upload(emptyPackage, nil);
+}
+
+void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     auto resourceAttributes = ResourceAttributes(configuration).get();
     
@@ -50,9 +57,7 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
             }
         });
 
-        // Send an initial empty request to fetch the probability value from the server.
-        auto emptyPackage = OtlpPackage([NSData data], resourceAttributes);
-        uploader->upload(emptyPackage, nil);
+        sendInitialPValueRequest(uploader);
     } else {
         BSGLogError(@"Invalid URL supplied for endpoint: \"%@\"", configuration.endpoint);
     }
