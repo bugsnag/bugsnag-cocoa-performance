@@ -16,7 +16,7 @@ using namespace bugsnag;
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
         _apiKey = [apiKey copy];
-        _endpoint = @"https://127.0.0.0";
+        _endpoint = @"https://otlp.bugsnag.com/v1/traces";
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetwork = YES;

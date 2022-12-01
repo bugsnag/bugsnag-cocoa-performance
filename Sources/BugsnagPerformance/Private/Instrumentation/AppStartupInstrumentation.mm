@@ -119,8 +119,7 @@ AppStartupInstrumentation::getProcessStartTime() noexcept {
     
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
     auto timeval = info.kp_proc.p_un.__p_starttime;
-    auto usecs = (uint64_t)timeval.tv_sec * USEC_PER_SEC + (uint64_t)timeval.tv_usec;
-    return (CFTimeInterval(usecs) / USEC_PER_SEC + kCFAbsoluteTimeIntervalSince1970);
+    return (CFTimeInterval(timeval.tv_sec) + CFTimeInterval(timeval.tv_usec) / USEC_PER_SEC) - kCFAbsoluteTimeIntervalSince1970;
 }
 
 // TODO: Remove after integration with Bugsnag
