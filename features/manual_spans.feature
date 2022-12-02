@@ -1,14 +1,13 @@
 Feature: Manual creation of spans
 
   # Workaround to clear out the initial startup P request
-  Background:
-    Given I wait to receive a trace
-    And I discard the oldest trace
 
   Scenario: Retry a manual span
-    Given I set the HTTP status code for the next requests to "500,200,200"
+    Given I set the HTTP status code for the next requests to "200,500,200,200"
     And I run "RetryScenario"
-    And I wait to receive 3 traces
+    And I wait to receive 4 traces
+    And the trace payload field "resourceSpans" is an array with 0 elements
+    And I discard the oldest trace
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
     And I discard the oldest trace
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "Success"
@@ -16,7 +15,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
 
   Scenario: Manually start and end a span
-    Given I run "ManualSpanScenario"
+    Given I run "ManualSpanScenario" and discard the initial p-value request
     And I wait to receive an error
     And the error payload field "events.0.device.id" is stored as the value "bugsnag_device_id"
     And I wait to receive a trace
@@ -45,7 +44,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: Starting and ending a span before starting the SDK
-    Given I run "ManualSpanBeforeStartScenario"
+    Given I run "ManualSpanBeforeStartScenario" and discard the initial p-value request
     And I wait to receive a trace
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "BeforeStart"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -58,7 +57,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: Manually report a view load span
-    Given I run "ManualViewLoadScenario"
+    Given I run "ManualViewLoadScenario" and discard the initial p-value request
     And I wait to receive 2 traces
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ViewLoaded/UIKit/ManualViewController"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.kind" equals "SPAN_KIND_INTERNAL"
@@ -77,7 +76,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.type" equals "SwiftUI"
 
   Scenario: Manually start a network span
-    Given I run "ManualNetworkSpanScenario"
+    Given I run "ManualNetworkSpanScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "HTTP/GET"
@@ -97,7 +96,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: Manually start and end a span with batching
-    Given I run "BatchingScenario"
+    Given I run "BatchingScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "Span1"
@@ -117,7 +116,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: Manually start and end a span with batching
-    Given I run "BatchingScenario"
+    Given I run "BatchingScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "Span1"
