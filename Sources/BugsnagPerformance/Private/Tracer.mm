@@ -45,6 +45,8 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
         auto uploader = std::make_shared<OtlpUploader>(url, configuration.apiKey, ^(double newProbability) {
             sampler_->setProbability(newProbability);
         });
+        sendInitialPValueRequest(uploader);
+
         auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
         dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
         Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
@@ -56,8 +58,6 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
                     break;
             }
         });
-
-        sendInitialPValueRequest(uploader);
     } else {
         BSGLogError(@"Invalid URL supplied for endpoint: \"%@\"", configuration.endpoint);
     }
