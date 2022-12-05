@@ -47,6 +47,9 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
         });
         sendInitialPValueRequest(uploader);
 
+        // TODO: Remove this when implementing on-disk queueing.
+        [NSThread sleepForTimeInterval:0.5];
+
         auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
         dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
         Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {

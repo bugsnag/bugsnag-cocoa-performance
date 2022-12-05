@@ -16,6 +16,7 @@ class Scenario: NSObject {
     
     func configure() {
         bsg_autoTriggerExportOnBatchSize = 1;
+        config.apiKey = "12312312312312312312312312312312"
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false

@@ -10,6 +10,7 @@ import BugsnagPerformance
 class SamplingProbabilityZeroScenario: Scenario {
     
     override func configure() {
+        super.configure()
         config.autoInstrumentAppStarts = true
         config.autoInstrumentNetwork = true
         config.autoInstrumentViewControllers = true
@@ -22,6 +23,8 @@ class SamplingProbabilityZeroScenario: Scenario {
     }
     
     override func run() {
+        // Make sure this happens after the app start span
+        Thread.sleep(forTimeInterval: 0.1)
         BugsnagPerformance.startSpan(name: "Post-start").end()
     }
 }
