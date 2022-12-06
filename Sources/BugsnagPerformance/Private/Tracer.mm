@@ -28,6 +28,13 @@ Tracer::Tracer() noexcept
 {}
 
 void
+Tracer::sendInitialPValueRequest(std::shared_ptr<OtlpUploader> uploader) noexcept {
+    auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
+    auto emptyPackage = OtlpPackage(emptyPayload, @{});
+    uploader->upload(emptyPackage, nil);
+}
+
+void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     auto resourceAttributes = ResourceAttributes(configuration).get();
     
@@ -38,6 +45,11 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
         auto uploader = std::make_shared<OtlpUploader>(url, configuration.apiKey, ^(double newProbability) {
             sampler_->setProbability(newProbability);
         });
+        sendInitialPValueRequest(uploader);
+
+        // TODO: Remove this when implementing on-disk queueing.
+        [NSThread sleepForTimeInterval:0.5];
+
         auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
         dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
         Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {

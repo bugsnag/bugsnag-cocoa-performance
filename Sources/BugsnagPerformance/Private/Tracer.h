@@ -8,6 +8,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <memory>
+#import "OtlpUploader.h"
 
 namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
@@ -24,12 +25,14 @@ public:
                                                     CFAbsoluteTime startTime) noexcept;
     
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
-
+    
 private:
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<class SpanProcessor> spanProcessor_;
     std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
+    
+    void sendInitialPValueRequest(std::shared_ptr<OtlpUploader> uploader) noexcept;
 };
 }

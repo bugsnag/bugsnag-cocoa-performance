@@ -9,13 +9,10 @@ import BugsnagPerformance
 
 class RetryScenario: Scenario {
     
-    override func startBugsnag() {
-        super.startBugsnag()
-        bsg_autoTriggerExportOnBatchSize = 1
-    }
-    
     override func run() {
+        Thread.sleep(forTimeInterval: 0.5)
         BugsnagPerformance.startSpan(name: "WillRetry").end()
+        Thread.sleep(forTimeInterval: 0.5)
         BugsnagPerformance.startSpan(name: "Success").end()
     }
 }

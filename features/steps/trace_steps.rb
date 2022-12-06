@@ -40,6 +40,15 @@ Then('the trace payload field {string} string attribute {string} exists') do |fi
   Maze.check.not_nil value
 end
 
+Then("I run {string} and discard the initial p-value request") do |scenario|
+  steps %Q{
+    When I run "#{scenario}"
+    And I wait to receive a trace
+    And the trace payload field "resourceSpans" is an array with 0 elements
+    And I discard the oldest trace
+  }
+end
+
 def get_attribute_value(field, attribute, attr_type)
   list = Maze::Server.list_for 'trace'
   attributes = Maze::Helper.read_key_path list.current[:body], "#{field}.attributes"

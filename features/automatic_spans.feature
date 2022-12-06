@@ -1,7 +1,7 @@
 Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentAppStartsScenario
-    Given I run "AutoInstrumentAppStartsScenario"
+    Given I run "AutoInstrumentAppStartsScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "AppStart/Cold"
@@ -17,7 +17,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: AutoInstrumentViewLoadScenario
-    Given I run "AutoInstrumentViewLoadScenario"
+    Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ViewLoaded/UIKit/Fixture.AutoInstrumentViewLoadScenario_ViewController"
@@ -34,7 +34,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
 
   Scenario: Automatically start a network span
-    Given I run "AutoInstrumentNetworkScenario"
+    Given I run "AutoInstrumentNetworkScenario" and discard the initial p-value request
     And I wait to receive a trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "HTTP/GET"
