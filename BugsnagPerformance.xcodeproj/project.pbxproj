@@ -66,6 +66,8 @@
 		CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */; };
 		CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
+		CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */; };
+		CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75C29641B59002A3FB6 /* BatchTests.mm */; };
 		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
@@ -76,6 +78,9 @@
 		CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */; };
 		CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */; };
 		CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */; };
+		CBE8EA1A294B5AB800702950 /* Worker.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA18294B5AB800702950 /* Worker.h */; };
+		CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA19294B5AB800702950 /* Worker.mm */; };
+		CBE8EA1E294B5E1500702950 /* Batch.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA1C294B5E1500702950 /* Batch.h */; };
 		CBF6210729194543004BEE0B /* OtlpTraceExporterTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */; };
 /* End PBXBuildFile section */
 
@@ -158,6 +163,8 @@
 		CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceErrors.m; sourceTree = "<group>"; };
 		CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceErrors.h; sourceTree = "<group>"; };
 		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
+		CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkerTests.mm; sourceTree = "<group>"; };
+		CB0AD75C29641B59002A3FB6 /* BatchTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BatchTests.mm; sourceTree = "<group>"; };
 		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
@@ -168,6 +175,9 @@
 		CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGInternalConfig.c; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
 		CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceImpl.mm; sourceTree = "<group>"; };
+		CBE8EA18294B5AB800702950 /* Worker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Worker.h; sourceTree = "<group>"; };
+		CBE8EA19294B5AB800702950 /* Worker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Worker.mm; sourceTree = "<group>"; };
+		CBE8EA1C294B5E1500702950 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Batch.h; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
 		CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceExporterTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -253,6 +263,8 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				0122C22929019770002D243C /* Instrumentation */,
+				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				0122C23129019770002D243C /* BatchSpanProcessor.h */,
 				0122C22429019770002D243C /* BatchSpanProcessor.mm */,
 				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
@@ -261,7 +273,6 @@
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
 				0122C22229019770002D243C /* IdGenerator.h */,
-				0122C22929019770002D243C /* Instrumentation */,
 				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
 				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
 				CB04969529150D860097E526 /* OtlpPackage.h */,
@@ -294,6 +305,8 @@
 				CBF621052919418F004BEE0B /* Uploader.h */,
 				01EAF97F291AAF19007AC627 /* Utils.h */,
 				015836C3291264E0002F54C8 /* Version.h */,
+				CBE8EA18294B5AB800702950 /* Worker.h */,
+				CBE8EA19294B5AB800702950 /* Worker.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -335,11 +348,13 @@
 			children = (
 				0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */,
 				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
+				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
 				CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
+				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -416,8 +431,10 @@
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
 				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
 				CB04969F29154FD50097E526 /* OtlpSendQueue.h in Headers */,
+				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
+				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
@@ -556,7 +573,9 @@
 			files = (
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
+				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
+				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
@@ -580,6 +599,7 @@
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
+				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				0122C25529019770002D243C /* OtlpTraceExporter.mm in Sources */,
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,

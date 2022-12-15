@@ -12,6 +12,7 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "Span.h"
 #import "OtlpUploader.h"
+#import "Batch.h"
 
 #import <memory>
 
@@ -19,7 +20,7 @@ namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
 class Tracer {
 public:
-    Tracer() noexcept;
+    Tracer(std::shared_ptr<Batch> batch) noexcept;
     
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
@@ -38,6 +39,8 @@ private:
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     
+    std::shared_ptr<Batch> batch_;
+
     void sendInitialPValueRequest(std::shared_ptr<OtlpUploader> uploader) noexcept;
 };
 }
