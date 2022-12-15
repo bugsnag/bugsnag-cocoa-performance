@@ -8,9 +8,6 @@
 #import "Tracer.h"
 
 #import "BatchSpanProcessor.h"
-#import "Instrumentation/AppStartupInstrumentation.h"
-#import "Instrumentation/NetworkInstrumentation.h"
-#import "Instrumentation/ViewLoadInstrumentation.h"
 #import "OtlpTraceExporter.h"
 #import "OtlpUploader.h"
 #import "Reachability.h"
