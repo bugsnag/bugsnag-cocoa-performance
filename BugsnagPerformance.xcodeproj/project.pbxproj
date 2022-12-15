@@ -65,6 +65,8 @@
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
+		CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */; };
+		CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */; };
 		CBF6210729194543004BEE0B /* OtlpTraceExporterTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */; };
 /* End PBXBuildFile section */
 
@@ -139,6 +141,8 @@
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
+		CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGInternalConfig.h; sourceTree = "<group>"; };
+		CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGInternalConfig.c; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
 		CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceExporterTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -249,6 +253,8 @@
 				CBF621052919418F004BEE0B /* Uploader.h */,
 				01EAF97F291AAF19007AC627 /* Utils.h */,
 				015836C3291264E0002F54C8 /* Version.h */,
+				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
+				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -349,6 +355,7 @@
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
+				CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
@@ -496,6 +503,7 @@
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
+				CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

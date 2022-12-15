@@ -53,6 +53,7 @@
 		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
 		CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
+		CBE8EA0B294A220600702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BSGInternalConfig.h; path = ../../../../Sources/BugsnagPerformance/Private/BSGInternalConfig.h; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +100,7 @@
 				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
 				01FE4DB328E1AEBF00D1F239 /* LaunchScreen.storyboard */,
 				01FE4DB628E1AEBF00D1F239 /* Info.plist */,
+				CBE8EA0B294A220600702950 /* BSGInternalConfig.h */,
 				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
 			);
 			path = Fixture;

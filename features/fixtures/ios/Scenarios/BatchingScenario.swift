@@ -11,7 +11,7 @@ class BatchingScenario: Scenario {
     
     override func startBugsnag() {
         super.startBugsnag()
-        bsg_autoTriggerExportOnBatchSize = 2
+        bsgp_autoTriggerExportOnBatchSize = 2
     }
     
     override func run() {

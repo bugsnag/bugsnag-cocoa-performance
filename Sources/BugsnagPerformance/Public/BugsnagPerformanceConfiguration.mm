@@ -13,10 +13,18 @@ using namespace bugsnag;
 
 @implementation BugsnagPerformanceConfiguration
 
+static NSURL *urlWithString(NSString * _Nonnull str) {
+    auto url = [NSURL URLWithString:str];
+    if (url == nil) {
+        [NSException raise:@"Invalid configuration" format:@"Invalid URL: \"%@\"", str];
+    }
+    return url;
+}
+
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
         _apiKey = [apiKey copy];
-        _endpoint = @"https://otlp.bugsnag.com/v1/traces";
+        _endpoint = urlWithString(@"https://otlp.bugsnag.com/v1/traces");
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetwork = YES;
@@ -35,6 +43,12 @@ using namespace bugsnag;
     auto apiKey = BSGDynamicCast<NSString>(dict[@"apiKey"]);
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
     return config;
+}
+
+- (void) validate {
+    if (![self.endpoint.scheme hasPrefix:@"http"]) {
+        [NSException raise:@"Invalid configuration" format:@"Invalid URL supplied for endpoint: \"%@\"", self.endpoint];
+    }
 }
 
 @end

@@ -20,9 +20,11 @@ OBJC_EXPORT
 
 + (instancetype)loadConfig;
 
+- (void) validate;
+
 @property (nonatomic) NSString *apiKey;
 
-@property (nonatomic) NSString *endpoint;
+@property (nonatomic) NSURL *endpoint;
 
 @property (nonatomic) BOOL autoInstrumentAppStarts;
 

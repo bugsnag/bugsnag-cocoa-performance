@@ -25,6 +25,7 @@ static Tracer& getTracer() {
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
+    [configuration validate];
     getTracer().start(configuration);
 }
 
