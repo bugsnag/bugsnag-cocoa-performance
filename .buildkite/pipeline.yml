@@ -107,7 +107,7 @@ steps:
             command:
               - "--app=@build/ipa_url.txt"
               - "--appium-version=1.21.0"
-              - "--device=IOS_1"
+              - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
