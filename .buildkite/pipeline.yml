@@ -6,19 +6,25 @@ agents:
 
 steps:
 
-  - group: ":hammer:"
+  - group: ":hammer: Builds"
     steps:
       - label: "Carthage"
         command: ./features/fixtures/carthage/build.sh
+
       - label: "CocoaPods"
         command: pod lib lint BugsnagPerformance.podspec.json
+
       - label: "Example"
         command: ./Example/build.sh
+
       - label: "Fixture"
-        command: ./features/fixtures/ios/build.sh
         key: ios_fixture
+        commands:
+          - ./features/fixtures/ios/build.sh
+          - bundle install
+          - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
         artifact_paths:
-          - features/fixtures/ios/output/Fixture.ipa
+          - features/fixtures/ios/output/ipa_url.txt
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
@@ -45,13 +51,13 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: features/fixtures/ios/output/Fixture.ipa
+            download: "features/fixtures/ios/output/ipa_url.txt"
             upload: "maze_output/failed/**/*"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
             command:
-              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--app=@build/ipa_url.txt"
               - "--appium-version=1.21.0"
               - "--device=IOS_15"
               - "--fail-fast"
@@ -69,13 +75,13 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: features/fixtures/ios/output/Fixture.ipa
+            download: "features/fixtures/ios/output/ipa_url.txt"
             upload: "maze_output/failed/**/*"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
-              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--app=@build/ipa_url.txt"
               - "--appium-version=1.21.0"
               - "--device=IOS_14"
               - "--fail-fast"
@@ -93,13 +99,13 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: features/fixtures/ios/output/Fixture.ipa
+            download: "features/fixtures/ios/output/ipa_url.txt"
             upload: "maze_output/failed/**/*"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
-              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--app=@build/ipa_url.txt"
               - "--appium-version=1.21.0"
               - "--device=IOS_1"
               - "--fail-fast"
@@ -117,13 +123,13 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: features/fixtures/ios/output/Fixture.ipa
+            download: "features/fixtures/ios/output/ipa_url.txt"
             upload: "maze_output/failed/**/*"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
-              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--app=@build/ipa_url.txt"
               - "--appium-version=1.8.0"
               - "--device=IOS_12"
               - "--fail-fast"
@@ -141,13 +147,13 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: features/fixtures/ios/output/Fixture.ipa
+            download: "features/fixtures/ios/output/ipa_url.txt"
             upload: "maze_output/failed/**/*"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
-              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--app=@build/ipa_url.txt"
               - "--appium-version=1.8.0"
               - "--device=IOS_11"
               - "--fail-fast"
