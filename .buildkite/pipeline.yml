@@ -40,7 +40,7 @@ steps:
       - label: "iOS 15 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 5
+        timeout_in_minutes: 10
         agents:
           queue: opensource
         plugins:
@@ -60,11 +60,82 @@ steps:
         concurrency: 24
         concurrency_group: browserstack-app
         concurrency_method: eager
+
+      - label: "iOS 14 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: features/fixtures/ios/output/Fixture.ipa
+            upload: "maze_output/failed/**/*"
+          docker-compose#v3.7.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_14"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 13 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: features/fixtures/ios/output/Fixture.ipa
+            upload: "maze_output/failed/**/*"
+          docker-compose#v3.7.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_1"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 12 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: features/fixtures/ios/output/Fixture.ipa
+            upload: "maze_output/failed/**/*"
+          docker-compose#v3.7.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=features/fixtures/ios/output/Fixture.ipa"
+              - "--appium-version=1.8.0"
+              - "--device=IOS_12"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
       - label: "iOS 11 E2E Tests"
         depends_on:
           - ios_fixture
-        # More time than other steps as the BrowserStack iOS 11 devices seem particularly unstable and
-        # sessions need resetting frequently, taking a minute or more each time.
         timeout_in_minutes: 10
         agents:
           queue: opensource
