@@ -47,7 +47,7 @@ steps:
           artifacts#v1.5.0:
             download: features/fixtures/ios/output/Fixture.ipa
             upload: "maze_output/failed/**/*"
-          docker-compose#v3.7.0:
+          docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
             command:
@@ -71,7 +71,7 @@ steps:
           artifacts#v1.5.0:
             download: features/fixtures/ios/output/Fixture.ipa
             upload: "maze_output/failed/**/*"
-          docker-compose#v3.7.0:
+          docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
@@ -95,7 +95,7 @@ steps:
           artifacts#v1.5.0:
             download: features/fixtures/ios/output/Fixture.ipa
             upload: "maze_output/failed/**/*"
-          docker-compose#v3.7.0:
+          docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
@@ -119,7 +119,7 @@ steps:
           artifacts#v1.5.0:
             download: features/fixtures/ios/output/Fixture.ipa
             upload: "maze_output/failed/**/*"
-          docker-compose#v3.7.0:
+          docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
@@ -143,7 +143,7 @@ steps:
           artifacts#v1.5.0:
             download: features/fixtures/ios/output/Fixture.ipa
             upload: "maze_output/failed/**/*"
-          docker-compose#v3.7.0:
+          docker-compose#v4.8.0:
             pull: cocoa-maze-runner-legacy
             run: cocoa-maze-runner-legacy
             command:
