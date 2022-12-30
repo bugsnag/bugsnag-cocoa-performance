@@ -19,19 +19,30 @@ using namespace bugsnag;
 @implementation ResourceAttributesTests
 
 - (void)testDeploymentEnvironment {
-    auto attributes = ResourceAttributes([BugsnagPerformanceConfiguration loadConfig]).get();
+    NSError *error = nil;
+    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
+    XCTAssertNotNil(config);
+    XCTAssertNil(error);
+    auto attributes = ResourceAttributes(config).get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"development");
 }
 
 - (void)testDeploymentEnvironmentFromReleaseStage {
-    auto config = [BugsnagPerformanceConfiguration loadConfig];
+    NSError *error = nil;
+    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
+    XCTAssertNotNil(config);
+    XCTAssertNil(error);
     config.releaseStage = @"staging";
     auto attributes = ResourceAttributes(config).get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"staging");
 }
 
 - (void)testDeviceModelIdentifier {
-    auto attributes = ResourceAttributes([BugsnagPerformanceConfiguration loadConfig]).get();
+    NSError *error = nil;
+    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
+    XCTAssertNotNil(config);
+    XCTAssertNil(error);
+    auto attributes = ResourceAttributes(config).get();
     auto modelId = (NSString *)attributes[@"device.model.identifier"];
     XCTAssertGreaterThan(modelId.length, 0);
     XCTAssertTrue([modelId containsString:@","]);

@@ -14,13 +14,13 @@ typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewC
 OBJC_EXPORT
 @interface BugsnagPerformanceConfiguration : NSObject
 
-- (instancetype)initWithApiKey:(NSString *)apiKey NS_DESIGNATED_INITIALIZER;
+- (instancetype _Nullable)initWithApiKey:(NSString *)apiKey error:(NSError **)error NS_SWIFT_NAME(init(apiKey:)) NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 
-+ (instancetype)loadConfig;
++ (instancetype _Nullable)loadConfig:(NSError **)error NS_SWIFT_NAME(loadConfig());
 
-- (void) validate;
+- (BOOL) validate:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(validate());
 
 @property (nonatomic) NSString *apiKey;
 

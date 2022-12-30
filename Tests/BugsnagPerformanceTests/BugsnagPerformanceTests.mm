@@ -16,7 +16,9 @@
 @implementation BugsnagPerformanceTests
 
 - (void)setUp {
-    [BugsnagPerformance start];
+    NSError *error = nil;
+    XCTAssertTrue([BugsnagPerformance start:&error]);
+    XCTAssertNil(error);
 }
 
 - (void)testStartSpanWithName {

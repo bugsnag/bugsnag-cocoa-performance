@@ -12,7 +12,7 @@ class Scenario: NSObject {
     
     static let mazeRunnerURL = "http://bs-local.com:9339"
     
-    var config = BugsnagPerformanceConfiguration.loadConfig()
+    var config = try! BugsnagPerformanceConfiguration.loadConfig()
     
     func configure() {
         bsgp_autoTriggerExportOnBatchSize = 1;
@@ -31,7 +31,7 @@ class Scenario: NSObject {
     }
     
     func startBugsnag() {
-        BugsnagPerformance.start(configuration: config)
+        try! BugsnagPerformance.start(configuration: config)
     }
     
     func run() {

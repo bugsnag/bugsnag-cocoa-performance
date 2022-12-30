@@ -16,25 +16,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Spans can be started and ended before starting the SDK. They will be sent once the SDK has started.
         BugsnagPerformance.startSpan(name: "Before start").end()
-        
-        let config = BugsnagPerformanceConfiguration.loadConfig()
-        
-        // Disable automatic app startup instrumentation:
-        //config.autoInstrumentAppStarts = false
-        
-        // Disable automatic view controller instrumentation to prevent swizzling...
-        //config.autoInstrumentViewControllers = false
-        
-        // Disable automatic URLSession request instrumentation:
-        //config.autoInstrumentNetwork = false
-        
-        // ... or control whether spans are created on a per-instance basis:
-        config.viewControllerInstrumentationCallback = {
-            !($0 is IgnoredViewController)
+
+        do {
+            //        BugsnagPerformanceConfiguration(apiKey: "a")
+            let config = try BugsnagPerformanceConfiguration.loadConfig()
+
+            // Disable automatic app startup instrumentation:
+            //config.autoInstrumentAppStarts = false
+
+            // Disable automatic view controller instrumentation to prevent swizzling...
+            //config.autoInstrumentViewControllers = false
+
+            // Disable automatic URLSession request instrumentation:
+            //config.autoInstrumentNetwork = false
+
+            // ... or control whether spans are created on a per-instance basis:
+            config.viewControllerInstrumentationCallback = {
+                !($0 is IgnoredViewController)
+            }
+
+            try BugsnagPerformance.start(configuration: config)
+        } catch {
+            print("Failed to start BugsnagPerformance: \(error).")
         }
-        
-        BugsnagPerformance.start(configuration: config)
-        
+
         return true
     }
 }
