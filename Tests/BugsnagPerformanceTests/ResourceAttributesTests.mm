@@ -14,35 +14,36 @@ using namespace bugsnag;
 
 @interface ResourceAttributesTests : XCTestCase
 
+@property(nonatomic,readwrite,strong) BugsnagPerformanceConfiguration *config;
+
 @end
 
 @implementation ResourceAttributesTests
 
-- (void)testDeploymentEnvironment {
+- (void)setUp {
     NSError *error = nil;
-    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
-    XCTAssertNotNil(config);
+    self.config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef" error:&error];
     XCTAssertNil(error);
-    auto attributes = ResourceAttributes(config).get();
+    XCTAssertNotNil(self.config);
+}
+
+- (void)tearDown {
+    self.config = nil;
+}
+
+- (void)testDeploymentEnvironment {
+    auto attributes = ResourceAttributes(self.config).get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"development");
 }
 
 - (void)testDeploymentEnvironmentFromReleaseStage {
-    NSError *error = nil;
-    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
-    XCTAssertNotNil(config);
-    XCTAssertNil(error);
-    config.releaseStage = @"staging";
-    auto attributes = ResourceAttributes(config).get();
+    self.config.releaseStage = @"staging";
+    auto attributes = ResourceAttributes(self.config).get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"staging");
 }
 
 - (void)testDeviceModelIdentifier {
-    NSError *error = nil;
-    auto config = [BugsnagPerformanceConfiguration loadConfig:&error];
-    XCTAssertNotNil(config);
-    XCTAssertNil(error);
-    auto attributes = ResourceAttributes(config).get();
+    auto attributes = ResourceAttributes(self.config).get();
     auto modelId = (NSString *)attributes[@"device.model.identifier"];
     XCTAssertGreaterThan(modelId.length, 0);
     XCTAssertTrue([modelId containsString:@","]);

@@ -5,6 +5,8 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+#import <BugsnagPerformance/BugsnagPerformanceErrors.h>
+
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN

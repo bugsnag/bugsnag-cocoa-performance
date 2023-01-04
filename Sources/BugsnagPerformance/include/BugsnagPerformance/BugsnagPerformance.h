@@ -6,6 +6,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+#import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 

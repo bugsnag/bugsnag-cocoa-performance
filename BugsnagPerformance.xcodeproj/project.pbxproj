@@ -61,6 +61,9 @@
 		CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969A2915194E0097E526 /* OtlpUploader.mm */; };
 		CB04969F29154FD50097E526 /* OtlpSendQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969D29154FD50097E526 /* OtlpSendQueue.h */; };
 		CB0496A029154FD50097E526 /* OtlpSendQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969E29154FD50097E526 /* OtlpSendQueue.mm */; };
+		CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */; };
+		CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
 		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
@@ -139,6 +142,9 @@
 		CB04969A2915194E0097E526 /* OtlpUploader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpUploader.mm; sourceTree = "<group>"; };
 		CB04969D29154FD50097E526 /* OtlpSendQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpSendQueue.h; sourceTree = "<group>"; };
 		CB04969E29154FD50097E526 /* OtlpSendQueue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpSendQueue.mm; sourceTree = "<group>"; };
+		CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceErrors.m; sourceTree = "<group>"; };
+		CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceErrors.h; sourceTree = "<group>"; };
+		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
 		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
@@ -203,6 +209,7 @@
 			children = (
 				0122C21A29019770002D243C /* BugsnagPerformance.h */,
 				0122C21929019770002D243C /* BugsnagPerformanceConfiguration.h */,
+				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
 				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
 			);
@@ -214,6 +221,7 @@
 			children = (
 				0122C21D29019770002D243C /* BugsnagPerformance.mm */,
 				0122C21C29019770002D243C /* BugsnagPerformanceConfiguration.mm */,
+				CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */,
 				0122C21E29019770002D243C /* BugsnagPerformanceSpan.mm */,
 			);
 			path = Public;
@@ -300,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */,
+				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
@@ -374,6 +383,7 @@
 				CB04969F29154FD50097E526 /* OtlpSendQueue.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
+				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24629019770002D243C /* SpanProcessor.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
@@ -432,6 +442,7 @@
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
+						LastSwiftMigration = 1400;
 					};
 				};
 			};
@@ -481,6 +492,7 @@
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
+				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
 				CBF6210729194543004BEE0B /* OtlpTraceExporterTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -489,6 +501,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */,
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
@@ -529,13 +542,18 @@
 		0122C26D29019CE1002D243C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagPerformanceTests/BugsnagPerformance-iOSTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -543,13 +561,17 @@
 		0122C26E29019CE1002D243C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagPerformanceTests/BugsnagPerformance-iOSTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};

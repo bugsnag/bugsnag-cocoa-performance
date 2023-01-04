@@ -61,7 +61,28 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         return NO;
     }
 
+    if (![self isValidApiKey:self.apiKey]) {
+        *error = [NSError errorWithDomain:BugsnagPerformanceConfigurationErrorDomain
+                                     code:BugsnagPerformanceConfigurationBadApiKey
+                                 userInfo:@{
+            NSLocalizedDescriptionKey: @"Invalid configuration",
+            NSLocalizedFailureReasonErrorKey: [NSString stringWithFormat:@"Invalid API key: \"%@\"", self.apiKey],
+        }];
+        return NO;
+    }
+
+    *error = nil;
     return YES;
+}
+
+- (BOOL)isValidApiKey:(NSString *)apiKey {
+    static const int BSGApiKeyLength = 32;
+    NSCharacterSet *chars = [[NSCharacterSet
+        characterSetWithCharactersInString:@"0123456789ABCDEF"] invertedSet];
+
+    BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
+
+    return isHex && [apiKey length] == BSGApiKeyLength;
 }
 
 @end
