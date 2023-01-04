@@ -212,3 +212,20 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     }
     return result;
 }
+
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+    auto encodedSpans = encode(spans, resourceAttributes);
+
+    NSError *error = nil;
+    auto payload = [NSJSONSerialization dataWithJSONObject:encodedSpans options:0 error:&error];
+    if (!payload) {
+        NSCAssert(NO, @"%@", error);
+        return nullptr;
+    }
+
+    auto headers = @{
+        @"Content-Type": @"application/json",
+    };
+
+    return std::make_unique<OtlpPackage>(payload, headers);
+}

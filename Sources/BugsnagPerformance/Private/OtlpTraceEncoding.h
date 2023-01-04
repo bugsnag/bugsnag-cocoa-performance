@@ -10,10 +10,20 @@
 #import <Foundation/Foundation.h>
 
 #import "Span.h"
+#import "OtlpPackage.h"
+
+#import <vector>
 
 namespace bugsnag {
 class OtlpTraceEncoding {
+
 public:
+    /**
+     * Build a package suitable for upload to the backend server.
+     */
+    static std::unique_ptr<OtlpPackage> buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept;
+
+public: // Public for testing only
     static NSDictionary * encode(const SpanData &span) noexcept;
     
     static NSDictionary * encode(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept;

@@ -18,10 +18,7 @@
 		0122C24029019770002D243C /* SpanData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22129019770002D243C /* SpanData.mm */; };
 		0122C24129019770002D243C /* IdGenerator.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C22229019770002D243C /* IdGenerator.h */; };
 		0122C24229019770002D243C /* SpanKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C22329019770002D243C /* SpanKind.h */; };
-		0122C24329019770002D243C /* BatchSpanProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22429019770002D243C /* BatchSpanProcessor.mm */; };
 		0122C24429019770002D243C /* Tracer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22529019770002D243C /* Tracer.mm */; };
-		0122C24529019770002D243C /* Span.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22629019770002D243C /* Span.mm */; };
-		0122C24629019770002D243C /* SpanProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C22729019770002D243C /* SpanProcessor.h */; };
 		0122C24729019770002D243C /* SpanData.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C22829019770002D243C /* SpanData.h */; };
 		0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22A29019770002D243C /* NetworkInstrumentation.mm */; };
 		0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22B29019770002D243C /* AppStartupInstrumentation.mm */; };
@@ -30,17 +27,12 @@
 		0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C22E29019770002D243C /* NetworkInstrumentation.h */; };
 		0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C22F29019770002D243C /* ViewLoadInstrumentation.mm */; };
 		0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C23029019770002D243C /* OtlpTraceEncoding.mm */; };
-		0122C24F29019770002D243C /* BatchSpanProcessor.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23129019770002D243C /* BatchSpanProcessor.h */; };
 		0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */; };
 		0122C25129019770002D243C /* Tracer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23329019770002D243C /* Tracer.h */; };
-		0122C25229019770002D243C /* OtlpTraceExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23429019770002D243C /* OtlpTraceExporter.h */; };
 		0122C25329019770002D243C /* Span.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23529019770002D243C /* Span.h */; };
-		0122C25429019770002D243C /* SpanExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23629019770002D243C /* SpanExporter.h */; };
-		0122C25529019770002D243C /* OtlpTraceExporter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C23729019770002D243C /* OtlpTraceExporter.mm */; };
 		0122C25829019904002D243C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0122C25729019904002D243C /* UIKit.framework */; };
 		0122C26929019CE1002D243C /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */; };
-		0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */; };
 		0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */; };
 		015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 015836BF29125E7A002F54C8 /* ResourceAttributes.h */; };
 		015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 015836C029125E7A002F54C8 /* ResourceAttributes.mm */; };
@@ -61,13 +53,11 @@
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
 		CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969A2915194E0097E526 /* OtlpUploader.mm */; };
-		CB04969F29154FD50097E526 /* OtlpSendQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969D29154FD50097E526 /* OtlpSendQueue.h */; };
-		CB0496A029154FD50097E526 /* OtlpSendQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969E29154FD50097E526 /* OtlpSendQueue.mm */; };
+		CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */; };
+		CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75C29641B59002A3FB6 /* BatchTests.mm */; };
 		CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */; };
 		CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
-		CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */; };
-		CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD75C29641B59002A3FB6 /* BatchTests.mm */; };
 		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
@@ -81,7 +71,6 @@
 		CBE8EA1A294B5AB800702950 /* Worker.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA18294B5AB800702950 /* Worker.h */; };
 		CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA19294B5AB800702950 /* Worker.mm */; };
 		CBE8EA1E294B5E1500702950 /* Batch.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA1C294B5E1500702950 /* Batch.h */; };
-		CBF6210729194543004BEE0B /* OtlpTraceExporterTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,10 +102,7 @@
 		0122C22129019770002D243C /* SpanData.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanData.mm; sourceTree = "<group>"; };
 		0122C22229019770002D243C /* IdGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdGenerator.h; sourceTree = "<group>"; };
 		0122C22329019770002D243C /* SpanKind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpanKind.h; sourceTree = "<group>"; };
-		0122C22429019770002D243C /* BatchSpanProcessor.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BatchSpanProcessor.mm; sourceTree = "<group>"; };
 		0122C22529019770002D243C /* Tracer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Tracer.mm; sourceTree = "<group>"; };
-		0122C22629019770002D243C /* Span.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Span.mm; sourceTree = "<group>"; };
-		0122C22729019770002D243C /* SpanProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpanProcessor.h; sourceTree = "<group>"; };
 		0122C22829019770002D243C /* SpanData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpanData.h; sourceTree = "<group>"; };
 		0122C22A29019770002D243C /* NetworkInstrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkInstrumentation.mm; sourceTree = "<group>"; };
 		0122C22B29019770002D243C /* AppStartupInstrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentation.mm; sourceTree = "<group>"; };
@@ -125,15 +111,10 @@
 		0122C22E29019770002D243C /* NetworkInstrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentation.h; sourceTree = "<group>"; };
 		0122C22F29019770002D243C /* ViewLoadInstrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadInstrumentation.mm; sourceTree = "<group>"; };
 		0122C23029019770002D243C /* OtlpTraceEncoding.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceEncoding.mm; sourceTree = "<group>"; };
-		0122C23129019770002D243C /* BatchSpanProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatchSpanProcessor.h; sourceTree = "<group>"; };
 		0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpan+Private.h"; sourceTree = "<group>"; };
 		0122C23329019770002D243C /* Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tracer.h; sourceTree = "<group>"; };
-		0122C23429019770002D243C /* OtlpTraceExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtlpTraceExporter.h; sourceTree = "<group>"; };
 		0122C23529019770002D243C /* Span.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Span.h; sourceTree = "<group>"; };
-		0122C23629019770002D243C /* SpanExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpanExporter.h; sourceTree = "<group>"; };
-		0122C23729019770002D243C /* OtlpTraceExporter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceExporter.mm; sourceTree = "<group>"; };
 		0122C25729019904002D243C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BatchSpanProcessorTests.mm; sourceTree = "<group>"; };
 		0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceTests.mm; sourceTree = "<group>"; };
 		0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceEncodingTests.mm; sourceTree = "<group>"; };
 		0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,13 +139,11 @@
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
 		CB04969A2915194E0097E526 /* OtlpUploader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpUploader.mm; sourceTree = "<group>"; };
-		CB04969D29154FD50097E526 /* OtlpSendQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpSendQueue.h; sourceTree = "<group>"; };
-		CB04969E29154FD50097E526 /* OtlpSendQueue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpSendQueue.mm; sourceTree = "<group>"; };
+		CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkerTests.mm; sourceTree = "<group>"; };
+		CB0AD75C29641B59002A3FB6 /* BatchTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BatchTests.mm; sourceTree = "<group>"; };
 		CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceErrors.m; sourceTree = "<group>"; };
 		CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceErrors.h; sourceTree = "<group>"; };
 		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
-		CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkerTests.mm; sourceTree = "<group>"; };
-		CB0AD75C29641B59002A3FB6 /* BatchTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BatchTests.mm; sourceTree = "<group>"; };
 		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
@@ -179,7 +158,6 @@
 		CBE8EA19294B5AB800702950 /* Worker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Worker.mm; sourceTree = "<group>"; };
 		CBE8EA1C294B5E1500702950 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Batch.h; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
-		CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceExporterTests.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,8 +243,6 @@
 			children = (
 				0122C22929019770002D243C /* Instrumentation */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
-				0122C23129019770002D243C /* BatchSpanProcessor.h */,
-				0122C22429019770002D243C /* BatchSpanProcessor.mm */,
 				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
 				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
 				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
@@ -277,12 +253,8 @@
 				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
 				CB04969529150D860097E526 /* OtlpPackage.h */,
 				CB04969629150D860097E526 /* OtlpPackage.mm */,
-				CB04969D29154FD50097E526 /* OtlpSendQueue.h */,
-				CB04969E29154FD50097E526 /* OtlpSendQueue.mm */,
 				0122C22029019770002D243C /* OtlpTraceEncoding.h */,
 				0122C23029019770002D243C /* OtlpTraceEncoding.mm */,
-				0122C23429019770002D243C /* OtlpTraceExporter.h */,
-				0122C23729019770002D243C /* OtlpTraceExporter.mm */,
 				CB0496992915194E0097E526 /* OtlpUploader.h */,
 				CB04969A2915194E0097E526 /* OtlpUploader.mm */,
 				01A414CF2913C238003152A4 /* Reachability.h */,
@@ -292,14 +264,11 @@
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
 				01A58C0D29092D25006E4DF7 /* Sampler.mm */,
 				0122C23529019770002D243C /* Span.h */,
-				0122C22629019770002D243C /* Span.mm */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
 				0122C22829019770002D243C /* SpanData.h */,
 				0122C22129019770002D243C /* SpanData.mm */,
-				0122C23629019770002D243C /* SpanExporter.h */,
 				0122C22329019770002D243C /* SpanKind.h */,
-				0122C22729019770002D243C /* SpanProcessor.h */,
 				0122C23329019770002D243C /* Tracer.h */,
 				0122C22529019770002D243C /* Tracer.mm */,
 				CBF621052919418F004BEE0B /* Uploader.h */,
@@ -346,12 +315,10 @@
 		0122C25C29019C05002D243C /* BugsnagPerformanceTests */ = {
 			isa = PBXGroup;
 			children = (
-				0122C25D29019C05002D243C /* BatchSpanProcessorTests.mm */,
 				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
-				CBF6210629194543004BEE0B /* OtlpTraceExporterTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
@@ -407,14 +374,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
-				0122C25229019770002D243C /* OtlpTraceExporter.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				0122C24729019770002D243C /* SpanData.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
-				0122C25429019770002D243C /* SpanExporter.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
-				0122C24F29019770002D243C /* BatchSpanProcessor.h in Headers */,
 				015836C4291264E0002F54C8 /* Version.h in Headers */,
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
@@ -430,7 +394,6 @@
 				0122C25129019770002D243C /* Tracer.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
 				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
-				CB04969F29154FD50097E526 /* OtlpSendQueue.h in Headers */,
 				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
@@ -438,7 +401,6 @@
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
-				0122C24629019770002D243C /* SpanProcessor.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
 				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 			);
@@ -576,10 +538,8 @@
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
-				0122C27029019CEF002D243C /* BatchSpanProcessorTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
-				CBF6210729194543004BEE0B /* OtlpTraceExporterTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,19 +551,15 @@
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
-				CB0496A029154FD50097E526 /* OtlpSendQueue.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
-				0122C24329019770002D243C /* BatchSpanProcessor.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
-				0122C25529019770002D243C /* OtlpTraceExporter.mm in Sources */,
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
-				0122C24529019770002D243C /* Span.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,

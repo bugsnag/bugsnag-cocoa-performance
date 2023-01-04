@@ -7,59 +7,19 @@
 
 #import "Tracer.h"
 
-#import "BatchSpanProcessor.h"
-#import "OtlpTraceExporter.h"
-#import "OtlpUploader.h"
-#import "Reachability.h"
 #import "ResourceAttributes.h"
-#import "Sampler.h"
-#import "Span.h"
 #import "SpanAttributes.h"
 #import "Utils.h"
 
 using namespace bugsnag;
 
-Tracer::Tracer(std::shared_ptr<Batch> batch) noexcept
-: sampler_(std::make_shared<Sampler>(1.0))
+Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch) noexcept
+: sampler_(sampler)
 , batch_(batch)
-, spanProcessor_(std::make_shared<BatchSpanProcessor>(sampler_))
 {}
 
 void
-Tracer::sendInitialPValueRequest(std::shared_ptr<OtlpUploader> uploader) noexcept {
-    auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
-    auto emptyPackage = OtlpPackage(emptyPayload, @{});
-    uploader->upload(emptyPackage, nil);
-}
-
-void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    auto resourceAttributes = ResourceAttributes(configuration).get();
-    
-    sampler_->setFallbackProbability(configuration.samplingProbability);
-    
-    auto uploader = std::make_shared<OtlpUploader>(configuration.endpoint,
-                                                   configuration.apiKey,
-                                                   ^(double newProbability) {
-        sampler_->setProbability(newProbability);
-    });
-    sendInitialPValueRequest(uploader);
-
-    // TODO: Remove this when implementing on-disk queueing.
-    [NSThread sleepForTimeInterval:0.5];
-
-    auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
-    dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
-    Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
-        switch (connectivity) {
-            case Reachability::Cellular: case Reachability::Wifi:
-                exporter->notifyConnectivityReestablished();
-                break;
-            case Reachability::Unknown: case Reachability::None:
-                break;
-        }
-    });
-
     if (configuration.autoInstrumentAppStarts) {
         appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
         appStartupInstrumentation_->start();
@@ -78,9 +38,19 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
 
 std::unique_ptr<Span>
 Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
-    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, startTime), spanProcessor_);
+    __block auto blockThis = this;
+    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, startTime),
+                                       ^void(std::unique_ptr<SpanData> spanData) {
+        blockThis->tryAddSpanToBatch(std::move(spanData));
+    });
     span->addAttributes(SpanAttributes::get());
     return span;
+}
+
+void Tracer::tryAddSpanToBatch(std::unique_ptr<SpanData> spanData) {
+    if (sampler_->sampled(*spanData)) {
+        batch_->add(std::move(spanData));
+    }
 }
 
 std::unique_ptr<class Span>
