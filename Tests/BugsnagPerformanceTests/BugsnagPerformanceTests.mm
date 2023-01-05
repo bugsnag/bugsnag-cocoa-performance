@@ -16,7 +16,11 @@
 @implementation BugsnagPerformanceTests
 
 - (void)setUp {
-    [BugsnagPerformance start];
+    NSError *error = nil;
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef" error:&error];
+    XCTAssertNil(error);
+    XCTAssertTrue([BugsnagPerformance startWithConfiguration:config error:&error]);
+    XCTAssertNil(error);
 }
 
 - (void)testStartSpanWithName {

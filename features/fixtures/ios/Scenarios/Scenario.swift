@@ -12,16 +12,16 @@ class Scenario: NSObject {
     
     static let mazeRunnerURL = "http://bs-local.com:9339"
     
-    var config = BugsnagPerformanceConfiguration.loadConfig()
+    var config = try! BugsnagPerformanceConfiguration.loadConfig()
     
     func configure() {
-        bsg_autoTriggerExportOnBatchSize = 1;
+        bsgp_autoTriggerExportOnBatchSize = 1;
         config.apiKey = "12312312312312312312312312312312"
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false
         config.autoInstrumentViewControllers = false
         config.samplingProbability = 1
-        config.endpoint = "\(Scenario.mazeRunnerURL)/traces"
+        config.endpoint = URL(string:"\(Scenario.mazeRunnerURL)/traces")!
     }
     
     func clearPersistentData() {
@@ -31,7 +31,7 @@ class Scenario: NSObject {
     }
     
     func startBugsnag() {
-        BugsnagPerformance.start(configuration: config)
+        try! BugsnagPerformance.start(configuration: config)
     }
     
     func run() {

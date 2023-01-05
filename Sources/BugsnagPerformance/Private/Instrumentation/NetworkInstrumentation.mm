@@ -23,18 +23,18 @@ using namespace bugsnag;
 @interface BSGURLSessionPerformanceDelegate () <NSURLSessionTaskDelegate>
 
 @property(readonly,nonatomic) Tracer *tracer;
-@property(readonly,strong,nonatomic) NSString * _Nonnull baseEndpoint;
+@property(readonly,strong,nonatomic) NSString * _Nonnull baseEndpointStr;
 
-- (instancetype) initWithTracer:(Tracer *)tracer  baseEndpoint:(NSString * _Nonnull)baseEndpoint;
+- (instancetype) initWithTracer:(Tracer *)tracer  baseEndpoint:(NSURL * _Nonnull)baseEndpoint;
 
 @end
 
 @implementation BSGURLSessionPerformanceDelegate
 
-- (instancetype) initWithTracer:(Tracer *)tracer baseEndpoint:(NSString * _Nonnull)baseEndpoint {
+- (instancetype) initWithTracer:(Tracer *)tracer baseEndpoint:(NSURL * _Nonnull)baseEndpoint {
     if ((self = [super init]) != nil) {
         _tracer = tracer;
-        _baseEndpoint = baseEndpoint;
+        _baseEndpointStr = (NSString * _Nonnull)baseEndpoint.absoluteString;
     }
     return self;
 }
@@ -42,7 +42,7 @@ using namespace bugsnag;
 - (void)URLSession:(__unused NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 
-    if (self.baseEndpoint.length > 0 && [task.originalRequest.URL.absoluteString hasPrefix:self.baseEndpoint]) {
+    if (self.baseEndpointStr.length > 0 && [task.originalRequest.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
         return;
     }
 
@@ -52,7 +52,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 @end
 
 
-NetworkInstrumentation::NetworkInstrumentation(Tracer &tracer, NSString * _Nonnull baseEndpoint) noexcept
+NetworkInstrumentation::NetworkInstrumentation(Tracer &tracer, NSURL * _Nonnull baseEndpoint) noexcept
 : tracer_(tracer)
 , delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:&tracer baseEndpoint:baseEndpoint])
 {}

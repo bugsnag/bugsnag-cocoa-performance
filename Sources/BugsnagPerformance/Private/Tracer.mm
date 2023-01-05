@@ -40,31 +40,28 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     
     sampler_->setFallbackProbability(configuration.samplingProbability);
     
-    auto url = [NSURL URLWithString:configuration.endpoint];
-    if ([url.scheme hasPrefix:@"http"]) {
-        auto uploader = std::make_shared<OtlpUploader>(url, configuration.apiKey, ^(double newProbability) {
-            sampler_->setProbability(newProbability);
-        });
-        sendInitialPValueRequest(uploader);
+    auto uploader = std::make_shared<OtlpUploader>(configuration.endpoint,
+                                                   configuration.apiKey,
+                                                   ^(double newProbability) {
+        sampler_->setProbability(newProbability);
+    });
+    sendInitialPValueRequest(uploader);
 
-        // TODO: Remove this when implementing on-disk queueing.
-        [NSThread sleepForTimeInterval:0.5];
+    // TODO: Remove this when implementing on-disk queueing.
+    [NSThread sleepForTimeInterval:0.5];
 
-        auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
-        dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
-        Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
-            switch (connectivity) {
-                case Reachability::Cellular: case Reachability::Wifi:
-                    exporter->notifyConnectivityReestablished();
-                    break;
-                case Reachability::Unknown: case Reachability::None:
-                    break;
-            }
-        });
-    } else {
-        BSGLogError(@"Invalid URL supplied for endpoint: \"%@\"", configuration.endpoint);
-    }
-    
+    auto exporter = std::make_shared<OtlpTraceExporter>(resourceAttributes, uploader);
+    dynamic_cast<BatchSpanProcessor *>(spanProcessor_.get())->setSpanExporter(exporter);
+    Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
+        switch (connectivity) {
+            case Reachability::Cellular: case Reachability::Wifi:
+                exporter->notifyConnectivityReestablished();
+                break;
+            case Reachability::Unknown: case Reachability::None:
+                break;
+        }
+    });
+
     if (configuration.autoInstrumentAppStarts) {
         appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
         appStartupInstrumentation_->start();

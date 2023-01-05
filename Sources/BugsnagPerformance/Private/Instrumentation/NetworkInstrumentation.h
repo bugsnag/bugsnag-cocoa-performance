@@ -14,7 +14,7 @@
 namespace bugsnag {
 class NetworkInstrumentation {
 public:
-    NetworkInstrumentation(Tracer &tracer, NSString * _Nonnull baseEndpoint) noexcept;
+    NetworkInstrumentation(Tracer &tracer, NSURL * _Nonnull baseEndpoint) noexcept;
     void start() noexcept;
     
 private:

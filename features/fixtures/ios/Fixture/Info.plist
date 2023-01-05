@@ -26,5 +26,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>0123456789abcdef0123456789abcdef</string>
+	</dict>
 </dict>
 </plist>

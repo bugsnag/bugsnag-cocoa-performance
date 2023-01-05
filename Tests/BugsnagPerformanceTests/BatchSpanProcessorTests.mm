@@ -10,9 +10,8 @@
 #import "../../Sources/BugsnagPerformance/Private/BatchSpanProcessor.h"
 #import "../../Sources/BugsnagPerformance/Private/Sampler.h"
 #import "../../Sources/BugsnagPerformance/Private/Span.h"
+#import "../../Sources/BugsnagPerformance/Private/BSGInternalConfig.h"
 
-extern uint64_t bsg_autoTriggerExportOnBatchSize;
-extern dispatch_time_t bsg_autoTriggerExportOnTimeDuration;
 
 using namespace bugsnag;
 
@@ -45,7 +44,7 @@ public:
 
 - (void)testAutoSendOnBatchFull {
     const int entriesBeforeForcedExport = 20;
-    bsg_autoTriggerExportOnBatchSize = entriesBeforeForcedExport;
+    bsgp_autoTriggerExportOnBatchSize = entriesBeforeForcedExport;
 
     BatchSpanProcessor processor(std::make_shared<Sampler>(1.0));
     auto exporter = std::make_shared<StubSpanExporter>();
@@ -66,7 +65,7 @@ public:
 }
 
 - (void)testAutoSendOnTimeout {
-    bsg_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC;
+    bsgp_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC;
     BatchSpanProcessor processor(std::make_shared<Sampler>(1.0));
     auto exporter = std::make_shared<StubSpanExporter>();
     processor.setSpanExporter(exporter);
@@ -82,7 +81,7 @@ public:
 }
 
 - (void)testAutoSendNoTimeout {
-    bsg_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC;
+    bsgp_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC;
     BatchSpanProcessor processor(std::make_shared<Sampler>(1.0));
     auto exporter = std::make_shared<StubSpanExporter>();
     processor.setSpanExporter(exporter);

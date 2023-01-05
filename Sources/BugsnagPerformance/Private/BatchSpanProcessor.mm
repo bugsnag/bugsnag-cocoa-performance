@@ -8,14 +8,9 @@
 #import "BatchSpanProcessor.h"
 
 #import "Sampler.h"
+#import "BSGInternalConfig.h"
 #import <time.h>
 
-// Exposed internally for unit tests
-extern uint64_t bsg_autoTriggerExportOnBatchSize;
-extern dispatch_time_t bsg_autoTriggerExportOnTimeDuration;
-
-uint64_t bsg_autoTriggerExportOnBatchSize = 100;
-dispatch_time_t bsg_autoTriggerExportOnTimeDuration = 30 * NSEC_PER_SEC;
 
 using namespace bugsnag;
 
@@ -90,7 +85,7 @@ BatchSpanProcessor::tryExportSpans() noexcept {
 
     // Try all conditions to automatically export the current batch
 
-    if (spans_.size() >= bsg_autoTriggerExportOnBatchSize) {
+    if (spans_.size() >= bsgp_autoTriggerExportOnBatchSize) {
         exportSpans();
         return true;
     }
@@ -143,7 +138,7 @@ BatchSpanProcessor::startTimer() noexcept {
     [timerCallbackValidityMarker setLength:1];
     __weak auto validityMarker = timerCallbackValidityMarker;
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, int64_t(bsg_autoTriggerExportOnTimeDuration)),
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, int64_t(bsgp_autoTriggerExportOnTimeDuration)),
                    dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
                    ^(void){
 #pragma GCC diagnostic ignored "-Warc-repeated-use-of-weak"

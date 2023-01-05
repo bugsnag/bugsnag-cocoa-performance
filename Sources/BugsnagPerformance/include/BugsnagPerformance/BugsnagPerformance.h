@@ -6,6 +6,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+#import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 
@@ -16,9 +17,9 @@ OBJC_EXPORT
 
 - (instancetype)init NS_UNAVAILABLE;
 
-+ (void)start;
++ (BOOL)start:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(start());
 
-+ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration NS_SWIFT_NAME(start(configuration:));
++ (BOOL)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration error:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(start(configuration:));
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 

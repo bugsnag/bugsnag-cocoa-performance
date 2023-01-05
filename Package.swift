@@ -24,6 +24,9 @@ let package = Package(
         .testTarget(
             name: "BugsnagPerformanceTests",
             dependencies: ["BugsnagPerformance"]),
+        .testTarget(
+            name: "BugsnagPerformanceTestsSwift",
+            dependencies: ["BugsnagPerformance"]),
     ],
     cxxLanguageStandard: .cxx14
 )

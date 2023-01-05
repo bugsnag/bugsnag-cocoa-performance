@@ -14,8 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        let config = BugsnagPerformanceConfiguration.loadConfig()
-        BugsnagPerformance.start(configuration: config)
+        let config = try! BugsnagPerformanceConfiguration.loadConfig()
+        try! BugsnagPerformance.start(configuration: config)
         return true
     }
 }

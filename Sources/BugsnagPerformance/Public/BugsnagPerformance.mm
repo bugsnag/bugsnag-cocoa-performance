@@ -20,12 +20,21 @@ static Tracer& getTracer() {
     return tracer;
 }
 
-+ (void)start {
-    [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
++ (BOOL)start:(NSError * __autoreleasing _Nullable *)error {
+    auto config = [BugsnagPerformanceConfiguration loadConfig:error];
+    if (config == nil) {
+        return NO;
+    }
+    return [self startWithConfiguration:config error:error];
 }
 
-+ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
++ (BOOL)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration error:(NSError * __autoreleasing _Nullable *)error {
+    if (![configuration validate:error]) {
+        return NO;
+    }
+
     getTracer().start(configuration);
+    return YES;
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
