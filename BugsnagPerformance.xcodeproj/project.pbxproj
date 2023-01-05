@@ -55,6 +55,8 @@
 		01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C0D29092D25006E4DF7 /* Sampler.mm */; };
 		01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C10290931A5006E4DF7 /* SamplerTests.mm */; };
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
+		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -77,6 +79,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		0122C26A29019CE1002D243C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
+		8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
 			proxyType = 1;
@@ -136,6 +145,8 @@
 		01EAF97F291AAF19007AC627 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
+		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -172,6 +183,14 @@
 			files = (
 				01A414D42913CAE7003152A4 /* SystemConfiguration.framework in Frameworks */,
 				0122C25829019904002D243C /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A80DA842966CE940035BDA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +318,7 @@
 		0122C25B29019C05002D243C /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				8A80DA882966CE940035BDA9 /* BugsnagPerformanceTestsSwift */,
 				0122C25C29019C05002D243C /* BugsnagPerformanceTests */,
 			);
 			path = Tests;
@@ -323,8 +343,17 @@
 			children = (
 				72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */,
 				0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */,
+				8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8A80DA882966CE940035BDA9 /* BugsnagPerformanceTestsSwift */ = {
+			isa = PBXGroup;
+			children = (
+				8A80DA80296588840035BDA9 /* ConfigurationTests.swift */,
+			);
+			path = BugsnagPerformanceTestsSwift;
 			sourceTree = "<group>";
 		};
 		C6D4AAD24D6356218C22BEBE = {
@@ -412,6 +441,24 @@
 			productReference = 0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */;
+			buildPhases = (
+				8A80DA832966CE940035BDA9 /* Sources */,
+				8A80DA842966CE940035BDA9 /* Frameworks */,
+				8A80DA852966CE940035BDA9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
+			);
+			name = "BugsnagPerformance-SwiftTests";
+			productName = BugsnagPerformanceTestsSwift;
+			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 073082B000051B24366A195F /* Build configuration list for PBXNativeTarget "BugsnagPerformance-iOS" */;
@@ -436,13 +483,18 @@
 		5DB9DB2E409A040615FFD4FE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1300;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
 						LastSwiftMigration = 1400;
+					};
+					8A80DA862966CE940035BDA9 = {
+						CreatedOnToolsVersion = 13.4;
+						DevelopmentTeam = 372ZUL2ZB7;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -461,6 +513,7 @@
 			targets = (
 				B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */,
 				0122C26429019CE1002D243C /* BugsnagPerformance-iOSTests */,
+				8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */,
 			);
 		};
 /* End PBXProject section */
@@ -474,6 +527,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		7233AB245A6358C7D13BD9EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A80DA852966CE940035BDA9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -528,6 +588,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8A80DA832966CE940035BDA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -535,6 +603,11 @@
 			isa = PBXTargetDependency;
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 0122C26A29019CE1002D243C /* PBXContainerItemProxy */;
+		};
+		8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -551,7 +624,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagPerformanceTests/BugsnagPerformance-iOSTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -570,7 +642,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "Tests/BugsnagPerformanceTests/BugsnagPerformance-iOSTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -746,6 +817,43 @@
 			};
 			name = Release;
 		};
+		8A80DA8F2966CE940035BDA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8A80DA902966CE940035BDA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -772,6 +880,15 @@
 			buildConfigurations = (
 				847B99B58ADDD0724CB13018 /* Debug */,
 				848AE17A2C599C5B06C4ECC7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A80DA8F2966CE940035BDA9 /* Debug */,
+				8A80DA902966CE940035BDA9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
