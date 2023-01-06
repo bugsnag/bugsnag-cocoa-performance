@@ -7,17 +7,16 @@
 
 #import <BugsnagPerformance/BugsnagPerformance.h>
 
-#import "../Private/BugsnagPerformanceSpan+Private.h"
-#import "../Private/Tracer.h"
+#import "../Private/BugsnagPerformanceImpl.h"
 
 using namespace bugsnag;
 
 @implementation BugsnagPerformance
 
-static Tracer& getTracer() {
+static BugsnagPerformanceImpl& getImpl() {
     [[clang::no_destroy]]
-    static Tracer tracer;
-    return tracer;
+    static BugsnagPerformanceImpl impl;
+    return impl;
 }
 
 + (BOOL)start:(NSError * __autoreleasing _Nullable *)error {
@@ -33,33 +32,28 @@ static Tracer& getTracer() {
         return NO;
     }
 
-    getTracer().start(configuration);
-    return YES;
+    return getImpl().start(configuration, error);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            getTracer().startSpan(name, CFAbsoluteTimeGetCurrent())];
+    return getImpl().startSpan(name);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            getTracer().startSpan(name, startTime.timeIntervalSinceReferenceDate)];
+    return getImpl().startSpan(name, startTime);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            getTracer().startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
+    return getImpl().startViewLoadSpan(name, viewType);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType startTime:(NSDate *)startTime {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            getTracer().startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
+    return getImpl().startViewLoadSpan(name, viewType, startTime);
 }
 
 + (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
                                  metrics:(NSURLSessionTaskMetrics *)metrics {
-    getTracer().reportNetworkSpan(task, metrics);
+    getImpl().reportNetworkSpan(task, metrics);
 }
 
 @end

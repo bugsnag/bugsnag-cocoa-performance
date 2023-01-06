@@ -7,8 +7,13 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import <memory>
+#import "Instrumentation/AppStartupInstrumentation.h"
+#import "Instrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation.h"
+#import "Span.h"
 #import "OtlpUploader.h"
+
+#import <memory>
 
 namespace bugsnag {
 // https://opentelemetry.io/docs/reference/specification/trace/api/#tracer
