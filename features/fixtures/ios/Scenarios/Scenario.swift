@@ -37,4 +37,14 @@ class Scenario: NSObject {
     func run() {
         fatalError("To be implemented by subclass")
     }
+
+    func waitForInitialPResponse() {
+        // Guess that it won't take longer than 2 seconds
+        Thread.sleep(forTimeInterval: 2.0)
+    }
+
+    func waitForCurrentBatch() {
+        // Wait long enough to allow the current batch to be packaged and sent
+        Thread.sleep(forTimeInterval: 0.5)
+    }
 }

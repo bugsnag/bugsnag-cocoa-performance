@@ -10,9 +10,9 @@ import BugsnagPerformance
 class RetryScenario: Scenario {
     
     override func run() {
-        Thread.sleep(forTimeInterval: 0.5)
+        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "WillRetry").end()
-        Thread.sleep(forTimeInterval: 0.5)
+        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Success").end()
     }
 }

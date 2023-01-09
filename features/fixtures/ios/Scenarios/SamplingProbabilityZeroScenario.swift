@@ -23,8 +23,7 @@ class SamplingProbabilityZeroScenario: Scenario {
     }
     
     override func run() {
-        // Make sure this happens after the app start span
-        Thread.sleep(forTimeInterval: 0.1)
+        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Post-start").end()
     }
 }

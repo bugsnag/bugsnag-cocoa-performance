@@ -15,6 +15,7 @@ class BatchingScenario: Scenario {
     }
     
     override func run() {
+        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Span1").end()
         BugsnagPerformance.startSpan(name: "Span2").end()
     }
