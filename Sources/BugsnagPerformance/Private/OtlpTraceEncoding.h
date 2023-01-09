@@ -5,6 +5,8 @@
 //  Created by Nick Dowell on 27/09/2022.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 
 #import "Span.h"

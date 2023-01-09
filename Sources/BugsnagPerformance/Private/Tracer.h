@@ -5,6 +5,8 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import "Instrumentation/AppStartupInstrumentation.h"

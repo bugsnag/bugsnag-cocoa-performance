@@ -8,6 +8,8 @@
 
 #import "ObjCUtils.h"
 
+namespace bugsnag {
+
 NSURL * _Nullable nsurlWithString(NSString * _Nonnull str, NSError * __autoreleasing _Nullable * _Nullable error) {
     if (error != nil) {
         *error = nil;
@@ -19,5 +21,7 @@ NSURL * _Nullable nsurlWithString(NSString * _Nonnull str, NSError * __autorelea
         }];
     }
     return url;
+}
+
 }
 
