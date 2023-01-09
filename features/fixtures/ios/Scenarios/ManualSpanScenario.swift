@@ -23,6 +23,7 @@ class ManualSpanScenario: Scenario {
     }
     
     override func run() {
+        waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "ManualSpanScenario")
         Bugsnag.notifyError(NSError(domain: "Test", code: 0))
         span.end()

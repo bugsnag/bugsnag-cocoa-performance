@@ -24,6 +24,7 @@
 		01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC428E1AF9600D1F239 /* Scenario.swift */; };
 		01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC628E1D5A400D1F239 /* Fixture.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
+		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
 		CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */; };
 		CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
@@ -49,6 +50,7 @@
 		01FE4DC428E1AF9600D1F239 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		01FE4DC628E1D5A400D1F239 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
+		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
 		CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkScenario.swift; sourceTree = "<group>"; };
 		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
 		CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingScenario.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
+				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
@@ -226,6 +229,7 @@
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
+				CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */,

@@ -11,7 +11,7 @@ class ManualViewLoadScenario: Scenario {
     
     override func run() {
         BugsnagPerformance.startViewLoadSpan(name: "ManualViewController", viewType: .uiKit).end()
-        
+        waitForCurrentBatch()
         BugsnagPerformance.startViewLoadSpan(name: "ManualView", viewType: .swiftUI, startTime: Date()).end()
     }
 }
