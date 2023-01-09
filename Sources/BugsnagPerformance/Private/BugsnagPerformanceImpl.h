@@ -10,44 +10,57 @@
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import "Tracer.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "Worker.h"
+
+#import <mutex>
 
 namespace bugsnag {
 class BugsnagPerformanceImpl {
 public:
-    BugsnagPerformanceImpl() noexcept {};
+    BugsnagPerformanceImpl() noexcept
+    : batch_(std::make_shared<Batch>())
+    , tracer_(batch_)
+    {};
     
     bool start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept;
     
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-        tracer.reportNetworkSpan(task, metrics);
+        tracer_.reportNetworkSpan(task, metrics);
     }
 
     BugsnagPerformanceSpan *startSpan(NSString *name) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer.startSpan(name, CFAbsoluteTimeGetCurrent())];
+                tracer_.startSpan(name, CFAbsoluteTimeGetCurrent())];
     }
 
     BugsnagPerformanceSpan *startSpan(NSString *name, NSDate *startTime) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
+                tracer_.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
     }
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer.startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
+                tracer_.startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
     }
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, NSDate *startTime) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
+                tracer_.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
     }
 
     void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) {
-        tracer.reportNetworkSpan(task, metrics);
+        tracer_.reportNetworkSpan(task, metrics);
     }
 
 
 private:
-    Tracer tracer;
+    NSArray<Task> *buildInitialTasks();
+    NSArray<Task> *buildRecurringTasks();
+
+    bool started_;
+    std::shared_ptr<Batch> batch_;
+    Tracer tracer_;
+    Worker *worker_;
+    std::mutex mutex_;
 };
 }

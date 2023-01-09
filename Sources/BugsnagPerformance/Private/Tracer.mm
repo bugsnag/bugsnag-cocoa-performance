@@ -19,8 +19,9 @@
 
 using namespace bugsnag;
 
-Tracer::Tracer() noexcept
+Tracer::Tracer(std::shared_ptr<Batch> batch) noexcept
 : sampler_(std::make_shared<Sampler>(1.0))
+, batch_(batch)
 , spanProcessor_(std::make_shared<BatchSpanProcessor>(sampler_))
 {}
 
