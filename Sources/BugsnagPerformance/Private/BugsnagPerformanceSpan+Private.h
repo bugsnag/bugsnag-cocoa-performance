@@ -5,6 +5,8 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 #import "Span.h"

@@ -5,6 +5,8 @@
 //  Created by Nick Dowell on 06/10/2022.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 
 #import "IdGenerator.h"

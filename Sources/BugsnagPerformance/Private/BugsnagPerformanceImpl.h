@@ -6,6 +6,8 @@
 //  Copyright © 2022 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import "Tracer.h"

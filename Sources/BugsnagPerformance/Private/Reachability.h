@@ -6,6 +6,8 @@
 //  Copyright © 2022 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <vector>
