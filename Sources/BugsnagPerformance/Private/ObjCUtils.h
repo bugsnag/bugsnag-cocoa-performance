@@ -15,4 +15,3 @@ namespace bugsnag {
 NSURL * _Nullable nsurlWithString(NSString * _Nonnull str, NSError * __autoreleasing _Nullable * _Nullable error);
 
 }
-

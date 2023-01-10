@@ -52,8 +52,7 @@ Sampler::setProbability(double probability) noexcept {
      forKey:kUserDefaultsKey];
 }
 
-Sampler::Decision
-Sampler::shouldSample(TraceId traceId) noexcept {
+bool Sampler::sampled(SpanData &span) noexcept {
     auto p = getProbability();
     uint64_t idUpperBound;
     if (p <= 0.0) {
@@ -63,5 +62,22 @@ Sampler::shouldSample(TraceId traceId) noexcept {
     } else {
         idUpperBound = uint64_t(p * double(UINT64_MAX));
     }
-    return { traceId[0] < idUpperBound, p };
+    bool isSampled = span.traceId[0] < idUpperBound;
+    if (isSampled) {
+        span.updateSamplingProbability(p);
+    }
+
+    return isSampled;
+
+}
+
+std::unique_ptr<std::vector<std::unique_ptr<SpanData>>>
+Sampler::sampled(std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans) noexcept {
+    auto sampledSpans = std::make_unique<std::vector<std::unique_ptr<SpanData>>>();
+    for (size_t i = 0; i < spans->size(); i++) {
+        if (sampled(*(*spans)[i])) {
+            sampledSpans->push_back(std::move((*spans)[i]));
+        }
+    }
+    return sampledSpans;
 }

@@ -8,7 +8,5 @@ Feature: Sampling
   Scenario: But if the server changes the probability, we must honor that
     Given I set the sampling probability to "1.0"
     And I run "SamplingProbabilityZeroScenario" and discard the initial p-value request
-    And I wait for 3 spans
-    * a span field "name" equals "Pre-start"
-    * a span field "name" equals "AppStart/Cold"
+    And I wait for 1 span
     * a span field "name" equals "Post-start"

@@ -49,7 +49,8 @@ using namespace bugsnag;
     auto numSamplesTries = 1'000;
     auto count = 0;
     for (auto i = 0; i < numSamplesTries; i++) {
-        if (sampler.shouldSample(IdGenerator::generateTraceIdBytes()).isSampled) {
+        SpanData spanData(@"a", 0);
+        if (sampler.sampled(spanData)) {
             count++;
         }
     }

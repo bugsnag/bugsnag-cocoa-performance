@@ -7,19 +7,26 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
-
 #import "SpanData.h"
 
 #import <memory>
-#import <vector>
 
 namespace bugsnag {
+
+typedef void (^OnSpanEnd)(std::unique_ptr<SpanData>);
+
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
+
+/**
+ * A span represents an OpenTelemetry span as it progresses, and wraps a data object that contains all data accumulated.
+ * Calls the specified callback when it ends.
+ */
 class Span {
 public:
-    Span(std::unique_ptr<SpanData> data,
-         std::shared_ptr<class SpanProcessor> spanProcessor) noexcept;
+    Span(std::unique_ptr<SpanData> data, OnSpanEnd onEnd) noexcept
+    : data_(std::move(data))
+    , onEnd_(onEnd)
+    {};
     
     Span(const Span&) = delete;
     
@@ -27,10 +34,17 @@ public:
         data_ ? data_->addAttributes(attributes) : (void)0;
     }
     
-    void end(CFAbsoluteTime time) noexcept;
+    void end(CFAbsoluteTime time) noexcept {
+        if (!data_) {
+            return;
+        }
+        data_->endTime = time;
+        onEnd_(std::move(data_));
+    }
     
 private:
     std::unique_ptr<SpanData> data_;
-    std::shared_ptr<class SpanProcessor> processor_;
+    OnSpanEnd onEnd_;
 };
+
 }
