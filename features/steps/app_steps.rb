@@ -8,3 +8,11 @@ When('I run {string}') do |scenario_name|
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
   raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
+
+When("I run {string} and discard the initial p-value request") do |scenario|
+  steps %Q{
+    When I run "#{scenario}"
+    And I receive and discard the initial p-value request
+  }
+end
+
