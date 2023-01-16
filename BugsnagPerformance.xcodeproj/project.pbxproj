@@ -71,6 +71,19 @@
 		CBE8EA1A294B5AB800702950 /* Worker.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA18294B5AB800702950 /* Worker.h */; };
 		CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA19294B5AB800702950 /* Worker.mm */; };
 		CBE8EA1E294B5E1500702950 /* Batch.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA1C294B5E1500702950 /* Batch.h */; };
+		CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51B6296D8386009C0CE3 /* Persistence.h */; };
+		CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51B7296D8386009C0CE3 /* Persistence.mm */; };
+		CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51BA296D9EED009C0CE3 /* PersistentState.h */; };
+		CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */; };
+		CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51BE296DB311009C0CE3 /* JSON.h */; };
+		CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51BF296DB311009C0CE3 /* JSON.mm */; };
+		CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */; };
+		CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */; };
+		CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */; };
+		CBEC51CE296EEF52009C0CE3 /* PersistenceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */; };
+		CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51D42976BCAD009C0CE3 /* Filesystem.h */; };
+		CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.m */; };
+		CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +170,20 @@
 		CBE8EA18294B5AB800702950 /* Worker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Worker.h; sourceTree = "<group>"; };
 		CBE8EA19294B5AB800702950 /* Worker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Worker.mm; sourceTree = "<group>"; };
 		CBE8EA1C294B5E1500702950 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Batch.h; sourceTree = "<group>"; };
+		CBEC51B6296D8386009C0CE3 /* Persistence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Persistence.h; sourceTree = "<group>"; };
+		CBEC51B7296D8386009C0CE3 /* Persistence.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Persistence.mm; sourceTree = "<group>"; };
+		CBEC51BA296D9EED009C0CE3 /* PersistentState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistentState.h; sourceTree = "<group>"; };
+		CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistentState.mm; sourceTree = "<group>"; };
+		CBEC51BE296DB311009C0CE3 /* JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
+		CBEC51BF296DB311009C0CE3 /* JSON.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = JSON.mm; sourceTree = "<group>"; };
+		CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = JSONTests.mm; sourceTree = "<group>"; };
+		CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistentStateTests.mm; sourceTree = "<group>"; };
+		CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileBasedTest.h; sourceTree = "<group>"; };
+		CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileBasedTest.m; sourceTree = "<group>"; };
+		CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistenceTests.mm; sourceTree = "<group>"; };
+		CBEC51D42976BCAD009C0CE3 /* Filesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Filesystem.h; sourceTree = "<group>"; };
+		CBEC51D52976BCAD009C0CE3 /* Filesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Filesystem.m; sourceTree = "<group>"; };
+		CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilesystemTests.m; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -241,14 +268,18 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				0122C22929019770002D243C /* Instrumentation */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
 				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
 				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
+				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
 				0122C22229019770002D243C /* IdGenerator.h */,
+				0122C22929019770002D243C /* Instrumentation */,
+				CBEC51BE296DB311009C0CE3 /* JSON.h */,
+				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
 				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
 				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
 				CB04969529150D860097E526 /* OtlpPackage.h */,
@@ -257,6 +288,10 @@
 				0122C23029019770002D243C /* OtlpTraceEncoding.mm */,
 				CB0496992915194E0097E526 /* OtlpUploader.h */,
 				CB04969A2915194E0097E526 /* OtlpUploader.mm */,
+				CBEC51B6296D8386009C0CE3 /* Persistence.h */,
+				CBEC51B7296D8386009C0CE3 /* Persistence.mm */,
+				CBEC51BA296D9EED009C0CE3 /* PersistentState.h */,
+				CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */,
 				01A414CF2913C238003152A4 /* Reachability.h */,
 				01A414D02913C238003152A4 /* Reachability.mm */,
 				015836BF29125E7A002F54C8 /* ResourceAttributes.h */,
@@ -315,10 +350,16 @@
 		0122C25C29019C05002D243C /* BugsnagPerformanceTests */ = {
 			isa = PBXGroup;
 			children = (
-				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
+				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
+				CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */,
+				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
+				CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */,
+				CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
+				CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */,
+				CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
@@ -384,7 +425,9 @@
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
+				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */,
+				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
@@ -398,10 +441,12 @@
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
+				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
+				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
 				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -534,9 +579,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
+				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
+				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
+				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
+				CBEC51CE296EEF52009C0CE3 /* PersistenceTests.mm in Sources */,
+				CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */,
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
@@ -553,6 +603,9 @@
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
+				CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */,
+				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
+				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
@@ -560,6 +613,7 @@
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
+				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
