@@ -84,6 +84,10 @@
 		CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51D42976BCAD009C0CE3 /* Filesystem.h */; };
 		CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.m */; };
 		CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */; };
+		CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */; };
+		CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */; };
+		CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */; };
+		CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -184,6 +188,10 @@
 		CBEC51D42976BCAD009C0CE3 /* Filesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Filesystem.h; sourceTree = "<group>"; };
 		CBEC51D52976BCAD009C0CE3 /* Filesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Filesystem.m; sourceTree = "<group>"; };
 		CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilesystemTests.m; sourceTree = "<group>"; };
+		CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetryQueue.h; sourceTree = "<group>"; };
+		CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueue.mm; sourceTree = "<group>"; };
+		CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackageTests.mm; sourceTree = "<group>"; };
+		CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueueTests.mm; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -296,6 +304,8 @@
 				01A414D02913C238003152A4 /* Reachability.mm */,
 				015836BF29125E7A002F54C8 /* ResourceAttributes.h */,
 				015836C029125E7A002F54C8 /* ResourceAttributes.mm */,
+				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
+				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
 				01A58C0D29092D25006E4DF7 /* Sampler.mm */,
 				0122C23529019770002D243C /* Span.h */,
@@ -357,10 +367,12 @@
 				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
 				CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */,
 				CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */,
+				CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
 				CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */,
 				CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
+				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
@@ -433,6 +445,7 @@
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
+				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
@@ -578,10 +591,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
+				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
 				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
@@ -608,6 +623,7 @@
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
+				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,

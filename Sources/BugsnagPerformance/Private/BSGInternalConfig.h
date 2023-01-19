@@ -26,4 +26,6 @@ extern dispatch_time_t bsgp_autoTriggerExportOnTimeDuration;
 
 extern NSTimeInterval bsgp_performWorkInterval;
 
+extern NSTimeInterval bsgp_maxRetryAge;
+
 #endif /* BSGInternalConfig_h */

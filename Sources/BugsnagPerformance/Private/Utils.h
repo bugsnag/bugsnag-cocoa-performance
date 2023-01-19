@@ -54,4 +54,13 @@ static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
     }
     return nil;
 }
+
+static inline dispatch_time_t absoluteTimeToNanoseconds(CFAbsoluteTime time) {
+    return (dispatch_time_t) ((time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC);
+}
+
+static inline dispatch_time_t intervalToNanoseconds(NSTimeInterval interval) {
+    return (dispatch_time_t) (interval * NSEC_PER_SEC);
+}
+
 }
