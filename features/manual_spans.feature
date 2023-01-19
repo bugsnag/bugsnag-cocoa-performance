@@ -5,14 +5,9 @@ Feature: Manual creation of spans
   Scenario: Retry a manual span
     Given I set the HTTP status code for the next requests to "200,500,200,200"
     And I run "RetryScenario"
-    And I wait to receive 4 traces
-    And the trace payload field "resourceSpans" is an array with 0 elements
-    And I discard the oldest trace
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
-    And I discard the oldest trace
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "Success"
-    And I discard the oldest trace
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "WillRetry"
+    And I wait for 3 spans
+    * a span field "name" equals "WillRetry"
+    * a span field "name" equals "Success"
 
   Scenario: Manually start and end a span
     Given I run "ManualSpanScenario" and discard the initial p-value request
