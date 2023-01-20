@@ -78,7 +78,7 @@ private:
     NSArray<Task> *buildRecurringTasks();
     bool sendCurrentBatchTask();
     bool sendRetriesTask();
-    bool sendInitialPValueRequestTask();
+    bool sendPValueRequestTask();
     bool maybePersistStateTask();
 
     // Event reactions
@@ -91,6 +91,5 @@ private:
     // Utility
     void wakeWorker() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
-    std::unique_ptr<OtlpPackage> buildPackage(const std::vector<std::unique_ptr<SpanData>> &spans) const noexcept;
 };
 }

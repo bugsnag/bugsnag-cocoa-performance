@@ -85,4 +85,35 @@ using namespace bugsnag;
     XCTAssertEqualObjects(json[@"endTimeUnixNano"], @"1664352015000000000");
 }
 
+- (void)testBuildPValueRequestPackage {
+    auto package = OtlpTraceEncoding::buildPValueRequestPackage();
+    XCTAssertEqual(0, package->timestamp);
+    NSError *error = nil;
+    NSDictionary *deserialized = [NSJSONSerialization JSONObjectWithData:(NSData * _Nonnull)package->getPayloadForUnitTest()
+                                                                 options:0
+                                                                   error:&error];
+    XCTAssertNil(error);
+    XCTAssertEqualObjects(@{@"resourceSpans": @[]}, deserialized);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"application/json", headers[@"Content-Type"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Integrity"]);
+}
+
+- (void)testBuildUploadPackage {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test", 0));
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    XCTAssertGreaterThan(package->timestamp, 0);
+    XCTAssertNotNil(package->getPayloadForUnitTest());
+    XCTAssertNotNil(package->getHeadersForUnitTest());
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"gzip", headers[@"Content-Encoding"]);
+    XCTAssertEqualObjects(@"application/json", headers[@"Content-Type"]);
+    XCTAssertNotNil(headers[@"Bugsnag-Integrity"]);
+}
+
 @end

@@ -6,7 +6,9 @@
 //
 
 #import "OtlpTraceEncoding.h"
+#import <CommonCrypto/CommonCrypto.h>
 #import "Utils.h"
+#import "Gzip.h"
 
 using namespace bugsnag;
 
@@ -223,7 +225,20 @@ static dispatch_time_t getLatestTimestamp(const std::vector<std::unique_ptr<Span
     return absoluteTimeToNanoseconds(endTime);
 }
 
+static NSString *integrityDigestForData(NSData *payload) {
+    unsigned char md[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1(payload.bytes, (CC_LONG)payload.length, md);
+    return [NSString stringWithFormat:@"sha1 %02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                   md[0], md[1], md[2], md[3], md[4],
+                   md[5], md[6], md[7], md[8], md[9],
+                   md[10], md[11], md[12], md[13], md[14],
+                   md[15], md[16], md[17], md[18], md[19]];
+}
+
 std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+    // Anything smaller won't compress
+    static const int MIN_SIZE_FOR_GZIP = 128;
+
     auto encodedSpans = encode(spans, resourceAttributes);
 
     NSError *error = nil;
@@ -235,7 +250,27 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
 
     auto headers = @{
         @"Content-Type": @"application/json",
+        @"Bugsnag-Integrity": integrityDigestForData(payload),
     };
 
+    if (payload.length > MIN_SIZE_FOR_GZIP) {
+        payload = [Gzip gzipped:payload error:&error];
+        if (payload == nil || error != nil) {
+            BSGLogError(@"error compressing payload: %@", error);
+            return nullptr;
+        }
+        NSMutableDictionary *newHeaders = [headers mutableCopy];
+        newHeaders[@"Content-Encoding"] = @"gzip";
+        headers = newHeaders;
+    }
+
     return std::make_unique<OtlpPackage>(getLatestTimestamp(spans), payload, headers);
+}
+
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildPValueRequestPackage() noexcept {
+    auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
+    return std::make_unique<OtlpPackage>(0, emptyPayload, @{
+        @"Content-Type": @"application/json",
+        @"Bugsnag-Integrity": integrityDigestForData(emptyPayload),
+    });
 }

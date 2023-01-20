@@ -88,6 +88,9 @@
 		CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */; };
 		CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */; };
 		CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */; };
+		CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF7C5DF297A8E9100D47719 /* Gzip.h */; };
+		CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF7C5E0297A8E9100D47719 /* Gzip.m */; };
+		CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBF7C5E3297A963A00D47719 /* libz.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -193,6 +196,9 @@
 		CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackageTests.mm; sourceTree = "<group>"; };
 		CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueueTests.mm; sourceTree = "<group>"; };
 		CBF621052919418F004BEE0B /* Uploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Uploader.h; sourceTree = "<group>"; };
+		CBF7C5DF297A8E9100D47719 /* Gzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gzip.h; sourceTree = "<group>"; };
+		CBF7C5E0297A8E9100D47719 /* Gzip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gzip.m; sourceTree = "<group>"; };
+		CBF7C5E3297A963A00D47719 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A414D42913CAE7003152A4 /* SystemConfiguration.framework in Frameworks */,
+				CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */,
 				0122C25829019904002D243C /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,6 +328,8 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
+				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
+				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -342,6 +351,7 @@
 		0122C25629019904002D243C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CBF7C5E3297A963A00D47719 /* libz.tbd */,
 				01A414D32913CAE7003152A4 /* SystemConfiguration.framework */,
 				0122C25729019904002D243C /* UIKit.framework */,
 			);
@@ -436,6 +446,7 @@
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
+				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */,
@@ -631,6 +642,7 @@
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
+				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
