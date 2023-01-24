@@ -6,6 +6,7 @@
 //
 
 #import "OtlpTraceEncoding.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -35,8 +36,7 @@ static NSString * EncodeTraceId(TraceId const &traceId) {
 }
 
 static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
-    auto nanos = (time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC;
-    return [NSString stringWithFormat:@"%lld", (int64_t)nanos];
+    return [NSString stringWithFormat:@"%llu", absoluteTimeToNanoseconds(time)];
 }
 
 NSDictionary *
@@ -213,6 +213,16 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     return result;
 }
 
+static dispatch_time_t getLatestTimestamp(const std::vector<std::unique_ptr<SpanData>> &spans) {
+    CFAbsoluteTime endTime = 0;
+    for (auto &span: spans) {
+        if (span->endTime > endTime) {
+            endTime = span->endTime;
+        }
+    }
+    return absoluteTimeToNanoseconds(endTime);
+}
+
 std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     auto encodedSpans = encode(spans, resourceAttributes);
 
@@ -227,5 +237,5 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
         @"Content-Type": @"application/json",
     };
 
-    return std::make_unique<OtlpPackage>(payload, headers);
+    return std::make_unique<OtlpPackage>(getLatestTimestamp(spans), payload, headers);
 }

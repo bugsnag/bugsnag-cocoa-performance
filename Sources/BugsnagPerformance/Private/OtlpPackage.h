@@ -9,6 +9,9 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import <memory>
+
+NS_ASSUME_NONNULL_BEGIN
 
 namespace bugsnag {
 
@@ -17,17 +20,37 @@ namespace bugsnag {
  */
 class OtlpPackage {
 public:
-    OtlpPackage(const NSData *payload, const NSDictionary *headers) noexcept;
+    OtlpPackage(const dispatch_time_t ts, const NSData *payload, const NSDictionary *headers) noexcept;
 
     /**
      * Fill a request with everything necessary to send to the server.
      */
     void fillURLRequest(NSMutableURLRequest *request) const noexcept;
 
+    NSData *serialize() noexcept;
+
+    const dispatch_time_t timestamp;
+
+
 private:
+    friend bool operator==(const OtlpPackage &lhs, const OtlpPackage &rhs);
     OtlpPackage() = delete;
 
     const NSData *payload_;
     const NSDictionary *headers_;
 };
+
+inline bool operator==(const OtlpPackage &lhs, const OtlpPackage &rhs) {
+    return lhs.timestamp == rhs.timestamp &&
+    [lhs.headers_ isEqualToDictionary:(NSDictionary * _Nonnull)rhs.headers_] &&
+    [lhs.payload_ isEqualToData:(NSData * _Nonnull)rhs.payload_];
 }
+
+/**
+ * Deserialize an Otlp package. Returns a null pointer if the data is corrupted.
+ */
+std::unique_ptr<OtlpPackage> deserializeOtlpPackage(const dispatch_time_t ts, const NSData *fileContents) noexcept;
+
+}
+
+NS_ASSUME_NONNULL_END

@@ -11,6 +11,7 @@
 #import "BSGInternalConfig.h"
 #import "OtlpTraceEncoding.h"
 #import "ResourceAttributes.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -65,9 +66,14 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     resourceAttributes_ = ResourceAttributes(configuration).get();
 
     if ((*error = persistence_->start()) != nil) {
-        NSLog(@"BugsnagPerformance: Error starting persistence: %@", *error);
+        BSGLogError(@"error while starting persistence: %@", *error);
         return false;
     }
+
+    retryQueue_ = std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]);
+    retryQueue_->setOnFilesystemError(^{
+        blockThis->onFilesystemError();
+    });
 
     sampler_->setFallbackProbability(configuration.samplingProbability);
 
@@ -112,44 +118,45 @@ NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() {
 NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
     __block auto blockThis = this;
     return @[
-        ^bool() { return blockThis->sendCurrentBatchAndRetriesTask(); },
         ^bool() { return blockThis->maybePersistStateTask(); },
+        ^bool() { return blockThis->sendCurrentBatchTask(); },
+        ^bool() { return blockThis->sendRetriesTask(); },
     ];
 }
 
 bool BugsnagPerformanceImpl::sendInitialPValueRequestTask() {
     auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
-    auto emptyPackage = OtlpPackage(emptyPayload, @{});
+    auto emptyPackage = OtlpPackage(0, emptyPayload, @{});
     uploader_->upload(emptyPackage, nil);
-    return true;
-}
-
-bool BugsnagPerformanceImpl::sendCurrentBatchAndRetriesTask() {
-    if (retryQueue_.size() == 0) {
-        return sendCurrentBatchTask();
-    }
-
-    // save retries before sending the current batch
-    auto retries = std::move(retryQueue_);
-    retryQueue_ = std::vector<std::unique_ptr<OtlpPackage>>();
-
-    // We don't care about this result because we already know there is retry work to be done.
-    sendCurrentBatchTask();
-    
-    for (size_t i = 0; i < retries.size(); i++) {
-        uploadPackage(std::move(retries[i]));
-    }
-
     return true;
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
     auto spans = sampler_->sampled(batch_->drain());
-
-    if (spans->size() > 0) {
-        uploadPackage(buildPackage(*spans));
-        return true;
+    if (spans->size() == 0) {
+        return false;
     }
+
+    uploadPackage(buildPackage(*spans), false);
+    return true;
+}
+
+bool BugsnagPerformanceImpl::sendRetriesTask() {
+    retryQueue_->sweep();
+
+    auto retries = retryQueue_->list();
+    if (retries.size() == 0) {
+        return false;
+    }
+
+    for (auto &&timestamp: retries) {
+        auto retry = retryQueue_->get(timestamp);
+        if (retry != nullptr) {
+            uploadPackage(std::move(retry), true);
+        }
+    }
+
+    // Retries never count as work, otherwise we'd loop endlessly on a network outage.
     return false;
 }
 
@@ -157,8 +164,8 @@ bool BugsnagPerformanceImpl::maybePersistStateTask() {
     if (shouldPersistState_) {
         auto error = persistentState_->persist();
         if (error != nil) {
-            NSLog(@"BugsnagPerformance: Error persisting state: %@", error);
-            persistence_->clear();
+            BSGLogError(@"error while persisting state: %@", error);
+            onFilesystemError();
         }
         return true;
     }
@@ -166,6 +173,10 @@ bool BugsnagPerformanceImpl::maybePersistStateTask() {
 }
 
 #pragma mark Event Reactions
+
+void BugsnagPerformanceImpl::onFilesystemError() noexcept {
+    persistence_->clear();
+}
 
 void BugsnagPerformanceImpl::onBatchFull() noexcept {
     wakeWorker();
@@ -198,30 +209,45 @@ void BugsnagPerformanceImpl::wakeWorker() noexcept {
     [worker_ wake];
 }
 
-void BugsnagPerformanceImpl::queueRetry(std::unique_ptr<OtlpPackage> package) noexcept {
-    retryQueue_.push_back(std::move(package));
-}
-
-void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package) noexcept {
+void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
     if (package == nullptr) {
         return;
     }
-    
+
+    // Give up waiting for the upload after 20 seconds
+    NSTimeInterval maxWaitInterval = 20.0;
+
     __block auto blockThis = this;
     __block std::unique_ptr<OtlpPackage> blockPackage = std::move(package);
+    __block auto condition = [NSCondition new];
 
+    [condition lock];
     uploader_->upload(*blockPackage, ^(UploadResult result) {
         switch (result) {
             case UploadResult::SUCCESSFUL:
+                if (isRetry) {
+                    blockThis->retryQueue_->remove(blockPackage->timestamp);
+                }
                 break;
             case UploadResult::FAILED_CAN_RETRY:
-                blockThis->queueRetry(std::move(blockPackage));
+                if (!isRetry) {
+                    blockThis->retryQueue_->add(*blockPackage);
+                }
                 break;
             case UploadResult::FAILED_CANNOT_RETRY:
                 // We can't do anything with it, so throw it out.
+                if (isRetry) {
+                    blockThis->retryQueue_->remove(blockPackage->timestamp);
+                }
                 break;
         }
+        [condition lock];
+        [condition signal];
+        [condition unlock];
     });
+    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
+    [condition waitUntilDate:timeoutDate];
+    [condition unlock];
 }
 
 std::unique_ptr<OtlpPackage> BugsnagPerformanceImpl::buildPackage(const std::vector<std::unique_ptr<SpanData>> &spans) const noexcept {
