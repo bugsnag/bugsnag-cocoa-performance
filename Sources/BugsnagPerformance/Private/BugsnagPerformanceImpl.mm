@@ -111,7 +111,7 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
 NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() {
     __block auto blockThis = this;
     return @[
-        ^bool() { return blockThis->sendInitialPValueRequestTask(); },
+        ^bool() { return blockThis->sendPValueRequestTask(); },
     ];
 }
 
@@ -124,10 +124,8 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
     ];
 }
 
-bool BugsnagPerformanceImpl::sendInitialPValueRequestTask() {
-    auto emptyPayload = [@"{\"resourceSpans\": []}" dataUsingEncoding:NSUTF8StringEncoding];
-    auto emptyPackage = OtlpPackage(0, emptyPayload, @{});
-    uploader_->upload(emptyPackage, nil);
+bool BugsnagPerformanceImpl::sendPValueRequestTask() {
+    uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
     return true;
 }
 
@@ -137,7 +135,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
         return false;
     }
 
-    uploadPackage(buildPackage(*spans), false);
+    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_), false);
     return true;
 }
 
@@ -248,8 +246,4 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
     NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
     [condition waitUntilDate:timeoutDate];
     [condition unlock];
-}
-
-std::unique_ptr<OtlpPackage> BugsnagPerformanceImpl::buildPackage(const std::vector<std::unique_ptr<SpanData>> &spans) const noexcept {
-    return OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes_);
 }

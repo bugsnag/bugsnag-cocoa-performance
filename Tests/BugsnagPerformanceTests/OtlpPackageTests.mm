@@ -29,7 +29,7 @@ using namespace bugsnag;
     XCTAssertTrue(package == package);
 
     NSData *serialized = package.serialize();
-    XCTAssertEqualObjects(@"a: b\r\nc: d\r\nBugsnag-Integrity: sha1 5bf1fd927dfb8679496a2e6cf00cbe50c1c87145\r\n\r\nblah",
+    XCTAssertEqualObjects(@"a: b\r\nc: d\r\n\r\nblah",
                           [[NSString alloc] initWithData:serialized encoding:NSUTF8StringEncoding]);
 
     auto deserialized = deserializeOtlpPackage(ts, serialized);

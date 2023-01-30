@@ -20,7 +20,11 @@ namespace bugsnag {
  */
 class OtlpPackage {
 public:
-    OtlpPackage(const dispatch_time_t ts, const NSData *payload, const NSDictionary *headers) noexcept;
+    OtlpPackage(const dispatch_time_t ts, const NSData *payload, const NSDictionary *headers) noexcept
+    : timestamp(ts)
+    , payload_(payload)
+    , headers_(headers)
+    {}
 
     /**
      * Fill a request with everything necessary to send to the server.
@@ -38,6 +42,10 @@ private:
 
     const NSData *payload_;
     const NSDictionary *headers_;
+
+public: // For testing only
+    const NSData *getPayloadForUnitTest() {return payload_;}
+    const NSDictionary *getHeadersForUnitTest() {return headers_;}
 };
 
 inline bool operator==(const OtlpPackage &lhs, const OtlpPackage &rhs) {
