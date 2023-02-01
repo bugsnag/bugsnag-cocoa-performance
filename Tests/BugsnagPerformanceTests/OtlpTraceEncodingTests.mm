@@ -116,4 +116,96 @@ using namespace bugsnag;
     XCTAssertNotNil(headers[@"Bugsnag-Integrity"]);
 }
 
+- (void)testPValueHistogram1 {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    spans[0]->updateSamplingProbability(0.3);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"0.3:1", headers[@"Bugsnag-Span-Sampling"]);
+}
+
+- (void)testPValueHistogram2 {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    spans[0]->updateSamplingProbability(0.3);
+    spans[1]->updateSamplingProbability(0.1);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"0.1:1;0.3:1", headers[@"Bugsnag-Span-Sampling"]);
+}
+
+- (void)testPValueHistogram2Same {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    spans[0]->updateSamplingProbability(0.5);
+    spans[1]->updateSamplingProbability(0.5);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"0.5:2", headers[@"Bugsnag-Span-Sampling"]);
+}
+
+- (void)testPValueHistogram5 {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
+    spans[0]->updateSamplingProbability(0.3);
+    spans[1]->updateSamplingProbability(0.1);
+    spans[2]->updateSamplingProbability(0.3);
+    spans[3]->updateSamplingProbability(0.5);
+    spans[4]->updateSamplingProbability(0.1);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"0.1:2;0.3:2;0.5:1", headers[@"Bugsnag-Span-Sampling"]);
+}
+
+- (void)testPValueHistogram11 {
+    std::vector<std::unique_ptr<SpanData>> spans;
+    spans.push_back(std::make_unique<SpanData>(@"test0", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test6", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test7", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test8", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test9", 0));
+    spans.push_back(std::make_unique<SpanData>(@"test10", 0));
+    spans[0]->updateSamplingProbability(0.0);
+    spans[1]->updateSamplingProbability(0.1);
+    spans[2]->updateSamplingProbability(0.2);
+    spans[3]->updateSamplingProbability(0.3);
+    spans[4]->updateSamplingProbability(0.4);
+    spans[5]->updateSamplingProbability(0.5);
+    spans[6]->updateSamplingProbability(0.6);
+    spans[7]->updateSamplingProbability(0.7);
+    spans[8]->updateSamplingProbability(0.8);
+    spans[9]->updateSamplingProbability(0.9);
+    spans[10]->updateSamplingProbability(1);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertEqualObjects(@"0:1;0.1:1;0.2:1;0.3:1;0.4:1;0.5:1;0.6:1;0.7:1;0.8:1;0.9:1;1:1", headers[@"Bugsnag-Span-Sampling"]);
+}
+
 @end
