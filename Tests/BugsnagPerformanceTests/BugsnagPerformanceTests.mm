@@ -18,6 +18,7 @@
 - (void)setUp {
     NSError *error = nil;
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef" error:&error];
+    config.endpoint = [NSURL URLWithString:@"http://localhost"];
     XCTAssertNil(error);
     XCTAssertTrue([BugsnagPerformance startWithConfiguration:config error:&error]);
     XCTAssertNil(error);
