@@ -54,10 +54,10 @@ Feature: Manual creation of spans
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario" and discard the initial p-value request
     And I wait for 2 spans
-    * a span field "name" equals "ViewLoaded/UIKit/ManualViewController"
+    * a span field "name" equals "ViewLoad/UIKit/ManualViewController"
     * a span string attribute "bugsnag.view.name" equals "ManualViewController"
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * a span field "name" equals "ViewLoaded/SwiftUI/ManualView"
+    * a span field "name" equals "ViewLoad/SwiftUI/ManualView"
     * a span string attribute "bugsnag.view.name" equals "ManualView"
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
     * every span field "kind" equals "SPAN_KIND_INTERNAL"
@@ -68,13 +68,13 @@ Feature: Manual creation of spans
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario" and discard the initial p-value request
     And I wait for 1 span
-    * every span field "name" equals "ViewLoaded/UIKit/UIViewController"
+    * every span field "name" equals "ViewLoad/UIKit/UIViewController"
     * every span string attribute "bugsnag.view.name" equals "UIViewController"
     * every span string attribute "bugsnag.view.type" equals "UIKit"
     * every span field "kind" equals "SPAN_KIND_INTERNAL"
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span string attribute "bugsnag.span_category" equals "view_load"
+    * every span string attribute "bugsnag.span.category" equals "view_load"
 
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario" and discard the initial p-value request

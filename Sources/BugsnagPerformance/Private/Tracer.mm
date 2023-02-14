@@ -54,7 +54,7 @@ void Tracer::tryAddSpanToBatch(std::unique_ptr<SpanData> spanData) {
 }
 
 std::unique_ptr<class Span>
-Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
+Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                             NSString *className,
                             CFAbsoluteTime startTime) noexcept {
     NSString *type;
@@ -63,7 +63,7 @@ Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
         case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
         default:                                type = @"?"; break;
     }
-    NSString *name = [NSString stringWithFormat:@"ViewLoaded/%@/%@", type, className];
+    NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     auto span = startSpan(name, startTime);
     span->addAttributes(@{
         @"bugsnag.span.category": @"view_load",

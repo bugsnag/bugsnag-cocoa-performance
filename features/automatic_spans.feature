@@ -20,7 +20,7 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * every span field "name" equals "ViewLoaded/UIKit/Fixture.AutoInstrumentViewLoadScenario_ViewController"
+    * every span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals "SPAN_KIND_INTERNAL"

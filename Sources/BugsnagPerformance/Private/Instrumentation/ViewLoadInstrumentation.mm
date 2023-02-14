@@ -61,7 +61,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     }
     
     auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-                 tracer_.startViewLoadedSpan(BugsnagPerformanceViewTypeUIKit,
+                 tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
                                              NSStringFromClass([viewController class]),
                                              CFAbsoluteTimeGetCurrent())];
     
