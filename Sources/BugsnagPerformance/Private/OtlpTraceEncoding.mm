@@ -235,6 +235,46 @@ static NSString *integrityDigestForData(NSData *payload) {
                    md[15], md[16], md[17], md[18], md[19]];
 }
 
+static NSString *pValueHistogramForSpans(const std::vector<std::unique_ptr<SpanData>> &spans) {
+    // Calculate P value histogram the hard way because ObjC doesn't have such conveniences.
+
+    NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.size()];
+    NSMutableDictionary<NSNumber *, NSNumber *> *counts = [NSMutableDictionary new];
+
+    for (const std::unique_ptr<SpanData> &span: spans) {
+        auto probability = @(span->samplingProbability);
+        auto count = counts[probability];
+        if (count == nil) {
+            [ordered addObject:probability];
+            counts[probability] = @(1);
+        } else {
+            counts[probability] = @(count.unsignedIntValue + 1);
+        }
+    }
+
+    [ordered sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        auto flt1 = [obj1 doubleValue];
+        auto flt2 = [obj2 doubleValue];
+        if (flt1 == flt2) {
+            return NSOrderedSame;
+        }
+        if (flt1 < flt2) {
+            return NSOrderedAscending;
+        }
+        return NSOrderedDescending;
+    }];
+
+    NSMutableString *str = [[NSMutableString alloc] init];
+    for (NSUInteger i = 0; i < ordered.count; i++) {
+        if (i > 0 && i <= ordered.count-1) {
+            [str appendString:@";"];
+        }
+        NSNumber *probability = ordered[i];
+        [str appendFormat:@"%@:%@", probability, counts[probability]];
+    }
+    return str;
+}
+
 std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
@@ -251,6 +291,7 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
     auto headers = @{
         @"Content-Type": @"application/json",
         @"Bugsnag-Integrity": integrityDigestForData(payload),
+        @"Bugsnag-Span-Sampling": pValueHistogramForSpans(spans),
     };
 
     if (payload.length > MIN_SIZE_FOR_GZIP) {
