@@ -30,11 +30,13 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_)
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
+                                                valueOptions:NSMapTableStrongMemory])
 {}
 
 bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept {
     {
-        std::lock_guard<std::mutex> guard(mutex_);
+        std::lock_guard<std::mutex> guard(instanceMutex_);
         if (started_) {
             return true;
         }
@@ -246,4 +248,35 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
     NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
     [condition waitUntilDate:timeoutDate];
     [condition unlock];
+}
+
+#pragma mark Spans
+
+void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, NSDate *startTime) {
+    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer_.startViewLoadedSpan(BugsnagPerformanceViewTypeUIKit,
+                                        [NSString stringWithUTF8String:object_getClassName(controller)],
+                                        startTime.timeIntervalSinceReferenceDate)];
+
+    std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
+    [viewControllersToSpans_ setObject:span forKey:controller];
+}
+
+void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) {
+    /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
+     * until certain internal operations occur (such as the map resizing itself).
+     * http://cocoamine.net/blog/2013/12/13/nsmaptable-and-zeroing-weak-references/
+     *
+     * This means that any spans the user forgets to end could linger beyond the deallocation
+     * of their associated view controller. These span objects are small, however, so the
+     * impact until the next automatic sweep are minimal.
+     */
+
+    BugsnagPerformanceSpan *span = nil;
+    {
+        std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
+        span = [viewControllersToSpans_ objectForKey:controller];
+        [viewControllersToSpans_ removeObjectForKey:controller];
+    }
+    [span endWithEndTime:endTime];
 }

@@ -51,6 +51,16 @@ static BugsnagPerformanceImpl& getImpl() {
     return getImpl().startViewLoadSpan(name, viewType, startTime);
 }
 
++ (void)startViewLoadSpanWithController:(UIViewController *)controller
+                              startTime:(NSDate *)startTime {
+    getImpl().startViewLoadSpan(controller, startTime);
+}
+
++ (void)endViewLoadSpanWithController:(UIViewController *)controller
+                              endTime:(NSDate *)endTime {
+    getImpl().endViewLoadSpan(controller, endTime);
+}
+
 + (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
                                  metrics:(NSURLSessionTaskMetrics *)metrics {
     getImpl().reportNetworkSpan(task, metrics);
