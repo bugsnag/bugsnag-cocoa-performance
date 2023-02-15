@@ -54,14 +54,17 @@ public:
                 tracer_.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
     }
 
+    void startViewLoadSpan(UIViewController *controller, NSDate *startTime);
+
+    void endViewLoadSpan(UIViewController *controller, NSDate *endTime);
+
     void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) {
         tracer_.reportNetworkSpan(task, metrics);
     }
 
-
 private:
     bool started_;
-    std::mutex mutex_;
+    std::mutex instanceMutex_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
@@ -72,6 +75,8 @@ private:
     std::unique_ptr<RetryQueue> retryQueue_;
     NSDictionary *resourceAttributes_;
     bool shouldPersistState_;
+    std::mutex viewControllersToSpansMutex_;
+    NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
@@ -91,5 +96,8 @@ private:
     // Utility
     void wakeWorker() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
+
+public: // For testing
+    NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
 };
 }

@@ -65,6 +65,17 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span_category" equals "view_load"
 
+  Scenario: Manually report a UIViewController load span
+    Given I run "ManualUIViewLoadScenario" and discard the initial p-value request
+    And I wait for 1 span
+    * every span field "name" equals "ViewLoaded/UIKit/UIViewController"
+    * every span string attribute "bugsnag.view.name" equals "UIViewController"
+    * every span string attribute "bugsnag.view.type" equals "UIKit"
+    * every span field "kind" equals "SPAN_KIND_INTERNAL"
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span string attribute "bugsnag.span_category" equals "view_load"
+
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario" and discard the initial p-value request
     And I wait for 1 span

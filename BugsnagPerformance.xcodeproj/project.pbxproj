@@ -62,6 +62,7 @@
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
+		CB7FD929299BA5AD00499E13 /* ViewControllerSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */; };
 		CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */; };
 		CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */; };
 		CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */; };
@@ -168,6 +169,7 @@
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
+		CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewControllerSpanTests.mm; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGInternalConfig.h; sourceTree = "<group>"; };
@@ -385,6 +387,7 @@
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
+				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
+				CB7FD929299BA5AD00499E13 /* ViewControllerSpanTests.mm in Sources */,
 				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
 				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,

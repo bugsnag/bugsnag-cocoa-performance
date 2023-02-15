@@ -38,6 +38,14 @@ OBJC_EXPORT
                                             startTime:(NSDate *)startTime
   NS_SWIFT_NAME(startViewLoadSpan(name:viewType:startTime:));
 
++ (void)startViewLoadSpanWithController:(UIViewController *)controller
+                              startTime:(NSDate *)startTime
+  NS_SWIFT_NAME(startViewLoadSpan(controller:startTime:));
+
++ (void)endViewLoadSpanWithController:(UIViewController *)controller
+                              endTime:(NSDate *)endTime
+  NS_SWIFT_NAME(endViewLoadSpan(controller:endTime:));
+
 @end
 
 @interface BugsnagPerformance (/* Manual network spans */)
