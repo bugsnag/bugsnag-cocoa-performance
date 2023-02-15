@@ -63,7 +63,7 @@ Feature: Manual creation of spans
     * every span field "kind" equals "SPAN_KIND_INTERNAL"
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span string attribute "bugsnag.span_category" equals "view_load"
+    * every span string attribute "bugsnag.span.category" equals "view_load"
 
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario" and discard the initial p-value request

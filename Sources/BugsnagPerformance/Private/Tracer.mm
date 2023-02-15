@@ -66,7 +66,7 @@ Tracer::startViewLoadedSpan(BugsnagPerformanceViewType viewType,
     NSString *name = [NSString stringWithFormat:@"ViewLoaded/%@/%@", type, className];
     auto span = startSpan(name, startTime);
     span->addAttributes(@{
-        @"bugsnag.span_category": @"view_load",
+        @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
         @"bugsnag.view.type": type
     });
@@ -119,7 +119,7 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     auto span = startSpan(name, interval.startDate.timeIntervalSinceReferenceDate);
 
     auto attributes = [NSMutableDictionary new];
-    attributes[@"bugsnag.span_category"] = @"network";
+    attributes[@"bugsnag.span.category"] = @"network";
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = task.originalRequest.HTTPMethod;
     attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;

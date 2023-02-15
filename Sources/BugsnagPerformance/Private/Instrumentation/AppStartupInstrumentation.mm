@@ -102,7 +102,7 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
     auto span = tracer_.startSpan(name, startTime);
     span->addAttributes(@{
         @"bugsnag.app_start.type": isCold_ ? @"cold" : @"warm",
-        @"bugsnag.span_category": @"app_start",
+        @"bugsnag.span.category": @"app_start",
     });
     span->end(endTime);
 }
