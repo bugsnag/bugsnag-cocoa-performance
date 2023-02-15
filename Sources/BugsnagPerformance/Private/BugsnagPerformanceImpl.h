@@ -46,12 +46,12 @@ public:
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startViewLoadedSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
+                tracer_.startViewLoadSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
     }
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, NSDate *startTime) {
         return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startViewLoadedSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
+                tracer_.startViewLoadSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
     }
 
     void startViewLoadSpan(UIViewController *controller, NSDate *startTime);

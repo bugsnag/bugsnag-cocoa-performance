@@ -32,7 +32,7 @@ public:
     
     std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
     
-    std::unique_ptr<class Span> startViewLoadedSpan(BugsnagPerformanceViewType viewType,
+    std::unique_ptr<class Span> startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                                     NSString *className,
                                                     CFAbsoluteTime startTime) noexcept;
     

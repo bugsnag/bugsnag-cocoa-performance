@@ -254,7 +254,7 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, NSDate *startTime) {
     auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startViewLoadedSpan(BugsnagPerformanceViewTypeUIKit,
+            tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
                                         [NSString stringWithUTF8String:object_getClassName(controller)],
                                         startTime.timeIntervalSinceReferenceDate)];
 
