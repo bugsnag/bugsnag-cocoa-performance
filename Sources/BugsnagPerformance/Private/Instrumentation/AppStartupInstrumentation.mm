@@ -99,7 +99,7 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
         return;
     }
     auto name = isCold_ ? @"AppStart/Cold" : @"AppStart/Warm"; 
-    auto span = tracer_.startSpan(name, startTime);
+    auto span = tracer_.startSpan(name, defaultSpanOptionsForInternal());
     span->addAttributes(@{
         @"bugsnag.app_start.type": isCold_ ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
@@ -119,7 +119,7 @@ AppStartupInstrumentation::getProcessStartTime() noexcept {
     
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
     auto timeval = info.kp_proc.p_un.__p_starttime;
-    return (CFTimeInterval(timeval.tv_sec) + CFTimeInterval(timeval.tv_usec) / USEC_PER_SEC) - kCFAbsoluteTimeIntervalSince1970;
+    return timevalToAbsoluteTime(timeval);
 }
 
 // TODO: Remove after integration with Bugsnag

@@ -5,12 +5,12 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import <Foundation/Foundation.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 OBJC_EXPORT
-@interface BugsnagPerformanceSpan : NSObject
+@interface BugsnagPerformanceSpan : NSObject<BugsnagPerformanceSpanContext>
 
 - (instancetype)init NS_UNAVAILABLE;
 

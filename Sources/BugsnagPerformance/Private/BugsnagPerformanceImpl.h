@@ -34,27 +34,17 @@ public:
         tracer_.reportNetworkSpan(task, metrics);
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name) {
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startSpan(name, CFAbsoluteTimeGetCurrent())];
-    }
+    BugsnagPerformanceSpan *startSpan(NSString *name);
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, NSDate *startTime) {
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startSpan(name, startTime.timeIntervalSinceReferenceDate)];
-    }
+    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options);
 
-    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startViewLoadSpan(viewType, name, CFAbsoluteTimeGetCurrent())];
-    }
+    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType);
 
-    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, NSDate *startTime) {
-        return [[BugsnagPerformanceSpan alloc] initWithSpan:
-                tracer_.startViewLoadSpan(viewType, name, startTime.timeIntervalSinceReferenceDate)];
-    }
+    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name,
+                                              BugsnagPerformanceViewType viewType,
+                                              BugsnagPerformanceSpanOptions *options);
 
-    void startViewLoadSpan(UIViewController *controller, NSDate *startTime);
+    void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options);
 
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime);
 

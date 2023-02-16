@@ -6,6 +6,7 @@
 //
 
 #import "../Private/BugsnagPerformanceSpan+Private.h"
+#import "../Private/Utils.h"
 
 using namespace bugsnag;
 
@@ -32,9 +33,17 @@ using namespace bugsnag;
 
 - (void)endWithEndTime:(NSDate *)endTime {
     if (_span) {
-        _span->end(endTime.timeIntervalSinceReferenceDate);
+        _span->end(dateToAbsoluteTime(endTime));
         _span.reset();
     }
+}
+
+- (TraceId)traceId {
+    return _span->traceId();
+}
+
+- (SpanId)spanId {
+    return _span->spanId();
 }
 
 @end

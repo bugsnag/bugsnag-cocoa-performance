@@ -62,7 +62,7 @@ using namespace bugsnag;
 }
 
 - (void)testEncodeSpan {
-    auto startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
+    CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
     SpanData span(@"My span", startTime);
     span.endTime = startTime + 15;

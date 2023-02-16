@@ -7,7 +7,7 @@
 
 #pragma once
 
-#import <Foundation/Foundation.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 #import "IdGenerator.h"
 #import "SpanKind.h"

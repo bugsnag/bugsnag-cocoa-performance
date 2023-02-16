@@ -10,8 +10,10 @@ import BugsnagPerformance
 class ManualUIViewLoadScenario: Scenario {
 
     override func run() {
-        var controller = UIViewController()
-        BugsnagPerformance.startViewLoadSpan(controller: controller, startTime: Date())
+        let controller = UIViewController()
+        let options = BugsnagPerformanceSpanOptions()
+        options.startTime = Date()
+        BugsnagPerformance.startViewLoadSpan(controller: controller, options: options)
         BugsnagPerformance.endViewLoadSpan(controller: controller, endTime: Date())
         waitForCurrentBatch()
     }

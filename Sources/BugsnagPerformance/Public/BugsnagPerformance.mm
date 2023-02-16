@@ -39,21 +39,21 @@ static BugsnagPerformanceImpl& getImpl() {
     return getImpl().startSpan(name);
 }
 
-+ (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime {
-    return getImpl().startSpan(name, startTime);
++ (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options {
+    return getImpl().startSpan(name, options);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
     return getImpl().startViewLoadSpan(name, viewType);
 }
 
-+ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType startTime:(NSDate *)startTime {
-    return getImpl().startViewLoadSpan(name, viewType, startTime);
++ (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType options:(BugsnagPerformanceSpanOptions *)options {
+    return getImpl().startViewLoadSpan(name, viewType, options);
 }
 
 + (void)startViewLoadSpanWithController:(UIViewController *)controller
-                              startTime:(NSDate *)startTime {
-    getImpl().startViewLoadSpan(controller, startTime);
+                                options:(BugsnagPerformanceSpanOptions *)options {
+    getImpl().startViewLoadSpan(controller, options);
 }
 
 + (void)endViewLoadSpanWithController:(UIViewController *)controller

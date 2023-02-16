@@ -55,10 +55,38 @@ static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
     return nil;
 }
 
+/**
+ * Convert an NSDate into a CFAbsoluteTime.
+ * CFAbsoluteTime is a double containing the number of seconds since (00:00:00 1 January 2001).
+ */
+static inline CFAbsoluteTime dateToAbsoluteTime(NSDate *date) {
+    return date.timeIntervalSinceReferenceDate;
+}
+
+/**
+ * Convert a struct timeval to a CFAbsoluteTime.
+ * struct timeval is the number of seconds and microseconds since (00:00:00 1 January 1970).
+ * CFAbsoluteTime is a double containing the number of seconds since (00:00:00 1 January 2001).
+ */
+static inline CFAbsoluteTime timevalToAbsoluteTime(struct timeval &tv) {
+    CFAbsoluteTime time = CFAbsoluteTime(tv.tv_sec) + (CFAbsoluteTime(tv.tv_usec) / USEC_PER_SEC);
+    return time - kCFAbsoluteTimeIntervalSince1970;
+}
+
+/**
+ * Convert a CFAbsoluteTime to a dispatch_time_t.
+ * CFAbsoluteTime is a double containing the number of seconds since (00:00:00 1 January 2001).
+ * dispatch_time_t is the number of nanoseconds since (00:00:00 1 January 1970).
+ */
 static inline dispatch_time_t absoluteTimeToNanoseconds(CFAbsoluteTime time) {
     return (dispatch_time_t) ((time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC);
 }
 
+/**
+ * Convert an NSTimeInterval to a dispatch_time_t.
+ * NSTimeInterval is a double containing the time interval in seconds.
+ * dispatch_time_t is the time interval in nanoseconds.
+ */
 static inline dispatch_time_t intervalToNanoseconds(NSTimeInterval interval) {
     return (dispatch_time_t) (interval * NSEC_PER_SEC);
 }
