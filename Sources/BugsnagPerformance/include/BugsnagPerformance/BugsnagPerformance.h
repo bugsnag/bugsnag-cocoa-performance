@@ -8,6 +8,8 @@
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -23,7 +25,7 @@ OBJC_EXPORT
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 
-+ (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name startTime:(NSDate *)startTime NS_SWIFT_NAME(startSpan(name:startTime:));
++ (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options NS_SWIFT_NAME(startSpan(name:options:));
 
 @end
 
@@ -35,12 +37,12 @@ OBJC_EXPORT
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name
                                              viewType:(BugsnagPerformanceViewType)viewType
-                                            startTime:(NSDate *)startTime
-  NS_SWIFT_NAME(startViewLoadSpan(name:viewType:startTime:));
+                                              options:(BugsnagPerformanceSpanOptions *)options
+  NS_SWIFT_NAME(startViewLoadSpan(name:viewType:options:));
 
 + (void)startViewLoadSpanWithController:(UIViewController *)controller
-                              startTime:(NSDate *)startTime
-  NS_SWIFT_NAME(startViewLoadSpan(controller:startTime:));
+                                options:(BugsnagPerformanceSpanOptions *)options
+  NS_SWIFT_NAME(startViewLoadSpan(controller:options:));
 
 + (void)endViewLoadSpanWithController:(UIViewController *)controller
                               endTime:(NSDate *)endTime

@@ -21,7 +21,7 @@ using namespace bugsnag;
     BugsnagPerformanceImpl perf;
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
-        perf.startViewLoadSpan(controller, [NSDate date]);
+        perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
         XCTAssertEqual(1, perf.testing_getViewControllersToSpansCount());
         perf.endViewLoadSpan(controller, [NSDate date]);
         XCTAssertEqual(0, perf.testing_getViewControllersToSpansCount());
@@ -33,7 +33,7 @@ using namespace bugsnag;
 
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
-        perf.startViewLoadSpan(controller, [NSDate date]);
+        perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
         XCTAssertEqual(1, perf.testing_getViewControllersToSpansCount());
     }
 
@@ -47,7 +47,7 @@ using namespace bugsnag;
     @autoreleasepool {
         for (int i = 0; i < 100; i++) {
             UIViewController *controller = [UIViewController new];
-            perf.startViewLoadSpan(controller, [NSDate date]);
+            perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
         }
 
         XCTAssertLessThan(perf.testing_getViewControllersToSpansCount(), 100);

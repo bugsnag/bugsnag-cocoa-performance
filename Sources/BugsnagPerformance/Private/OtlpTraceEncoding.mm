@@ -24,17 +24,11 @@ static NSString * EncodeSpanKind(SpanKind kind) {
 }
 
 static NSString * EncodeSpanId(SpanId const &spanId) {
-    auto ptr = reinterpret_cast<unsigned const char *>(std::begin(spanId));
-    return [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x",
-            ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7]];
+    return [NSString stringWithFormat:@"%016llx", spanId];
 }
 
 static NSString * EncodeTraceId(TraceId const &traceId) {
-    auto ptr = reinterpret_cast<unsigned const char *>(std::begin(traceId));
-    return [NSString stringWithFormat:
-            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-            ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7],
-            ptr[8], ptr[9], ptr[10], ptr[11], ptr[12], ptr[13], ptr[14], ptr[15]];
+    return [NSString stringWithFormat:@"%016llx%016llx", traceId.hi, traceId.lo];
 }
 
 static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {

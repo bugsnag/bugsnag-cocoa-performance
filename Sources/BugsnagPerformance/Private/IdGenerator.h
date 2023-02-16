@@ -7,37 +7,27 @@
 
 #pragma once
 
-#import <array>
+#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
+
 #import <stdlib.h>
 
 namespace bugsnag {
-// https://opentelemetry.io/docs/reference/specification/trace/api/#spancontext
-
-using SpanId = std::array<uint64_t, 1>;
-
-static_assert(sizeof(SpanId) == 8,
-              "A valid span identifier is an 8-byte array with at least one non-zero byte.");
-
-using TraceId = std::array<uint64_t, 2>;
-
-static_assert(sizeof(TraceId) == 16,
-              "A valid trace identifier is a 16-byte array with at least one non-zero byte.");
 
 // https://opentelemetry.io/docs/reference/specification/trace/sdk/#id-generators
 class IdGenerator {
 public:
-    static SpanId generateSpanIdBytes() noexcept {
+    static SpanId generateSpanId() noexcept {
         return random<SpanId>();
     }
     
-    static TraceId generateTraceIdBytes() noexcept {
+    static TraceId generateTraceId() noexcept {
         return random<TraceId>();
     }
     
 private:
     template<typename T> static T random() noexcept {
         T result;
-        arc4random_buf(std::begin(result), sizeof result);
+        arc4random_buf(&result, sizeof result);
         return result;
     }
 };

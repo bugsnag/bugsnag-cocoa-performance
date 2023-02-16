@@ -41,7 +41,10 @@ public:
         data_->endTime = time;
         onEnd_(std::move(data_));
     }
-    
+
+    TraceId traceId() {return data_->traceId;}
+    SpanId spanId() {return data_->spanId;}
+
 private:
     std::unique_ptr<SpanData> data_;
     OnSpanEnd onEnd_;

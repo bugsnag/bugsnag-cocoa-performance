@@ -252,11 +252,31 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, NSDate *startTime) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer_.startSpan(name, defaultSpanOptionsForCustom())];
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *options) {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer_.startSpan(name, SpanOptions(options))];
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer_.startViewLoadSpan(viewType, name, defaultSpanOptionsForViewLoad())];
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *options) {
+    return [[BugsnagPerformanceSpan alloc] initWithSpan:
+            tracer_.startViewLoadSpan(viewType, name, SpanOptions(options))];
+}
+
+void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) {
     auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
             tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
                                         [NSString stringWithUTF8String:object_getClassName(controller)],
-                                        startTime.timeIntervalSinceReferenceDate)];
+                                      SpanOptions(options))];
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];

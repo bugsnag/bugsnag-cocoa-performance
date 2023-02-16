@@ -37,9 +37,9 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
 }
 
 std::unique_ptr<Span>
-Tracer::startSpan(NSString *name, CFAbsoluteTime startTime) noexcept {
+Tracer::startSpan(NSString *name, SpanOptions options) noexcept {
     __block auto blockThis = this;
-    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, startTime),
+    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, options.startTime),
                                        ^void(std::unique_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(std::move(spanData));
     });
@@ -55,8 +55,8 @@ void Tracer::tryAddSpanToBatch(std::unique_ptr<SpanData> spanData) {
 
 std::unique_ptr<class Span>
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
-                            NSString *className,
-                            CFAbsoluteTime startTime) noexcept {
+                          NSString *className,
+                          SpanOptions options) noexcept {
     NSString *type;
     switch (viewType) {
         case BugsnagPerformanceViewTypeSwiftUI: type = @"SwiftUI"; break;
@@ -64,7 +64,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         default:                                type = @"?"; break;
     }
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
-    auto span = startSpan(name, startTime);
+    auto span = startSpan(name, options);
     span->addAttributes(@{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
@@ -116,7 +116,7 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
-    auto span = startSpan(name, interval.startDate.timeIntervalSinceReferenceDate);
+    auto span = startSpan(name, defaultSpanOptionsForNetwork(dateToAbsoluteTime(interval.startDate)));
 
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span.category"] = @"network";
@@ -129,5 +129,5 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
     span->addAttributes(attributes);
 
-    span->end(interval.endDate.timeIntervalSinceReferenceDate);
+    span->end(dateToAbsoluteTime(interval.endDate));
 }

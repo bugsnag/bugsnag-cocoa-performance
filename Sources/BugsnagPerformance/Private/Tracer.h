@@ -15,6 +15,7 @@
 #import "Span.h"
 #import "Sampler.h"
 #import "Batch.h"
+#import "SpanOptions.h"
 
 #import <memory>
 
@@ -30,11 +31,11 @@ public:
     
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
-    std::unique_ptr<class Span> startSpan(NSString *name, CFAbsoluteTime startTime) noexcept;
+    std::unique_ptr<class Span> startSpan(NSString *name, SpanOptions options) noexcept;
     
     std::unique_ptr<class Span> startViewLoadSpan(BugsnagPerformanceViewType viewType,
-                                                    NSString *className,
-                                                    CFAbsoluteTime startTime) noexcept;
+                                                  NSString *className,
+                                                  SpanOptions options) noexcept;
     
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
     
