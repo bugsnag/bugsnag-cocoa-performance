@@ -125,3 +125,20 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+
+  Scenario: Manually start and end parent and child spans
+    Given I run "ParentSpanScenario" and discard the initial p-value request
+    And I wait for 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * a span field "name" equals "SpanParent"
+    * a span field "name" equals "SpanChild"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals "SPAN_KIND_INTERNAL"
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    # Note: The child span ends up first in the list of spans.
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentId" matches the regex "^[A-Fa-f0-9]{16}$"

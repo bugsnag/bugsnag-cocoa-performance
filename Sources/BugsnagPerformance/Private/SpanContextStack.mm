@@ -23,7 +23,7 @@
  * Span contexts can sometimes cross thread boundaries when a dispatch queue automatically
  * moves the work onto one of its dispatch queue threads. This impacts the thread safety
  * of any span context stack implementation because it voids any single-thread-access
- * guarantees.
+ * guarantees like you'd get from a thread-local.
  *
  * Activity scopes are partially managed using Objective-C's ARC to ensure proper cleanup
  * (see ActivityRef) if a span context is dropped. This also requires careful use of

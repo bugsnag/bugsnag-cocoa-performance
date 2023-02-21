@@ -22,7 +22,8 @@ using namespace bugsnag;
 @implementation SpanContextStackTests
 
 static BugsnagPerformanceSpan *newSpan() {
-    auto data = std::make_unique<SpanData>(@"test", 0);
+    TraceId tid = {.value = 1};
+    auto data = std::make_unique<SpanData>(@"test", tid, 1, 0, 0);
     auto span = std::make_unique<Span>(std::move(data), ^(std::unique_ptr<SpanData>) {});
     return [[BugsnagPerformanceSpan alloc] initWithSpan:std::move(span)];
 }
@@ -48,6 +49,9 @@ static BugsnagPerformanceSpan *newSpan() {
     static const int iteration_count = 100000;
     static const int queue_count = 10;
     dispatch_queue_t queues[queue_count];
+    
+    sleep(1);
+    const auto beginCount = SpanContextStack.current.stacks.count;
 
     for (int i = 0; i < queue_count; i++) {
         NSString *name = [NSString stringWithFormat:@"test-%d", i];
@@ -66,7 +70,7 @@ static BugsnagPerformanceSpan *newSpan() {
     }
 
     sleep(5);
-    XCTAssertEqual(SpanContextStack.current.stacks.count, 0);
+    XCTAssertEqual(SpanContextStack.current.stacks.count, beginCount);
 }
 
 - (void)testCurrent {
