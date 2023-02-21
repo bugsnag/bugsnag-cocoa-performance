@@ -29,6 +29,7 @@
 		CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */; };
 		CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */; };
 		CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */; };
+		CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,7 @@
 		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
 		CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingScenario.swift; sourceTree = "<group>"; };
 		CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbabilityExpiryScenario.swift; sourceTree = "<group>"; };
+		CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentSpanScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
 		CBE8EA0B294A220600702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BSGInternalConfig.h; path = ../../../../Sources/BugsnagPerformance/Private/BSGInternalConfig.h; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
+				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
@@ -247,6 +250,7 @@
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
+				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

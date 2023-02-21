@@ -21,9 +21,10 @@
 }
 
 - (instancetype)init {
+    // These defaults must match the defaults in SpanOptions.h
     return [self initWithStartTime:nil
                      parentContext:nil
-                makeContextCurrent:false
+                makeContextCurrent:true
                       isFirstClass:BSGFirstClassUnset];
 }
 

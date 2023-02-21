@@ -9,9 +9,10 @@
 
 using namespace bugsnag;
 
-SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
-: traceId(IdGenerator::generateTraceId())
-, spanId(IdGenerator::generateSpanId())
+SpanData::SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parentId, CFAbsoluteTime startTime) noexcept
+: traceId(traceId)
+, spanId(spanId)
+, parentId(parentId)
 , name([name copy])
 , attributes([NSMutableDictionary dictionary])
 , samplingProbability(1.0)

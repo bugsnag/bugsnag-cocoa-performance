@@ -409,11 +409,11 @@
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
-				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
-				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
+				CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
-				CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */,
+				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
+				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
