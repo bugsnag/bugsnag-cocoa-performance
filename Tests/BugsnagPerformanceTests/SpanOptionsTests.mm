@@ -35,7 +35,7 @@ using namespace bugsnag;
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     XCTAssertNil(objcOptions.parentContext);
     XCTAssertNil(objcOptions.startTime);
-    XCTAssertFalse(objcOptions.makeContextCurrent);
+    XCTAssertTrue(objcOptions.makeContextCurrent);
     XCTAssertEqual(objcOptions.isFirstClass, BSGFirstClassUnset);
 }
 
@@ -44,7 +44,7 @@ using namespace bugsnag;
     SpanOptions cOptions(objcOptions);
     XCTAssertNil(cOptions.parentContext);
     XCTAssertTrue(abs(cOptions.startTime - CFAbsoluteTimeGetCurrent()) < 1);
-    XCTAssertFalse(cOptions.makeContextCurrent);
+    XCTAssertTrue(cOptions.makeContextCurrent);
     XCTAssertEqual(cOptions.isFirstClass, BSGFirstClassUnset);
 }
 

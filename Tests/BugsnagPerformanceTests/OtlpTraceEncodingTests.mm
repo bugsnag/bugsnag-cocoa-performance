@@ -48,7 +48,8 @@ using namespace bugsnag;
 
 - (void)testEncodeRequest {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"", CFAbsoluteTimeGetCurrent()));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent()));
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -64,19 +65,57 @@ using namespace bugsnag;
 - (void)testEncodeSpan {
     CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
-    SpanData span(@"My span", startTime);
+    TraceId tid = {
+        .hi=0xfedcba9876543210,
+        .lo=0x0123456789abcdef
+    };
+    SpanData span(@"My span", tid, 0xface, 0, startTime);
     span.endTime = startTime + 15;
     
     auto json = OtlpTraceEncoding::encode(span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(traceId.length, 32U, @"traceId should be a hex encoded 16-byte array");
+    XCTAssertEqualObjects(traceId, @"fedcba98765432100123456789abcdef");
     
     NSString *spanId = json[@"spanId"];
     XCTAssert([spanId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(spanId.length, 16U, @"spanId should be a hex encoded 8-byte array");
+    XCTAssertEqualObjects(spanId, @"000000000000face");
+
+    XCTAssertNil(json[@"parentId"]);
+
+    XCTAssertEqualObjects(json[@"name"], @"My span");
     
+    XCTAssertEqualObjects(json[@"kind"], @"SPAN_KIND_INTERNAL");
+    
+    XCTAssertEqualObjects(json[@"startTimeUnixNano"], @"1664352000000000000");
+    XCTAssertEqualObjects(json[@"endTimeUnixNano"], @"1664352015000000000");
+}
+
+- (void)testEncodeSpanWithParent {
+    CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
+    
+    TraceId tid = {
+        .hi=0xfedcba9876543210,
+        .lo=0x0123456789abcdef
+    };
+    SpanData span(@"My span", tid, 0xface, 0xcafe, startTime);
+    span.endTime = startTime + 15;
+    
+    auto json = OtlpTraceEncoding::encode(span);
+    
+    NSString *traceId = json[@"traceId"];
+    XCTAssert([traceId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(traceId, @"fedcba98765432100123456789abcdef");
+    
+    NSString *spanId = json[@"spanId"];
+    XCTAssert([spanId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(spanId, @"000000000000face");
+
+    NSString *parentId = json[@"parentId"];
+    XCTAssert([parentId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(parentId, @"000000000000cafe");
+
     XCTAssertEqualObjects(json[@"name"], @"My span");
     
     XCTAssertEqualObjects(json[@"kind"], @(SPAN_KIND_INTERNAL));
@@ -102,7 +141,8 @@ using namespace bugsnag;
 
 - (void)testBuildUploadPackage {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test", tid, 1, 0, 0));
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
 
@@ -118,7 +158,8 @@ using namespace bugsnag;
 
 - (void)testPValueHistogram1 {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0));
     spans[0]->updateSamplingProbability(0.3);
 
     auto resourceAttributes = @{};
@@ -130,8 +171,9 @@ using namespace bugsnag;
 
 - (void)testPValueHistogram2 {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0));
     spans[0]->updateSamplingProbability(0.3);
     spans[1]->updateSamplingProbability(0.1);
 
@@ -144,8 +186,9 @@ using namespace bugsnag;
 
 - (void)testPValueHistogram2Same {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0));
     spans[0]->updateSamplingProbability(0.5);
     spans[1]->updateSamplingProbability(0.5);
 
@@ -158,11 +201,12 @@ using namespace bugsnag;
 
 - (void)testPValueHistogram5 {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 3, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 4, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 5, 0, 0));
     spans[0]->updateSamplingProbability(0.3);
     spans[1]->updateSamplingProbability(0.1);
     spans[2]->updateSamplingProbability(0.3);
@@ -178,17 +222,18 @@ using namespace bugsnag;
 
 - (void)testPValueHistogram11 {
     std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test0", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test6", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test7", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test8", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test9", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test10", 0));
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test0", tid, 1, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 2, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 3, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 4, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 5, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 6, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test6", tid, 7, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test7", tid, 8, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test8", tid, 9, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test9", tid, 10, 0, 0));
+    spans.push_back(std::make_unique<SpanData>(@"test10", tid, 11, 0, 0));
     spans[0]->updateSamplingProbability(0.0);
     spans[1]->updateSamplingProbability(0.1);
     spans[2]->updateSamplingProbability(0.2);
