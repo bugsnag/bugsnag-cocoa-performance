@@ -91,19 +91,6 @@ static const char * const ActivityRefKey = "BSGActivityRef";
     return self;
 }
 
-static bool isContextValid(id<BugsnagPerformanceSpanContext> context) {
-    if (context == nil) {
-        return false;
-    }
-
-    if ([context isKindOfClass:[BugsnagPerformanceSpan class]]) {
-        return ![(BugsnagPerformanceSpan *)context isEnded];
-    }
-
-    // We don't know what kind it is, so we have to assume it is valid.
-    return true;
-}
-
 static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
     if (stack.count > 0) {
         return (__bridge id<BugsnagPerformanceSpanContext>)[stack pointerAtIndex:stack.count-1];
@@ -115,7 +102,7 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
     @synchronized (stack) {
         while (stack.count > 0) {
             auto context = (__bridge id<BugsnagPerformanceSpanContext>)[stack pointerAtIndex:stack.count-1];
-            if (!isContextValid(context)) {
+            if (!context.isValid) {
                 // Remove the invalid context in multiple steps:
 
                 // Remove the context from our current stack.

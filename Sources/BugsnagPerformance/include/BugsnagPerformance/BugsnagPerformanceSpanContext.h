@@ -29,6 +29,7 @@ OBJC_EXPORT
 
 @property(nonatomic,readonly) TraceId traceId;
 @property(nonatomic,readonly) SpanId spanId;
+@property(nonatomic,readonly) BOOL isValid;
 
 @end
 
