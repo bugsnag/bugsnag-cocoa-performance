@@ -86,7 +86,7 @@ using namespace bugsnag;
 
     XCTAssertEqualObjects(json[@"name"], @"My span");
     
-    XCTAssertEqualObjects(json[@"kind"], @"SPAN_KIND_INTERNAL");
+    XCTAssertEqualObjects(json[@"kind"], @1);
     
     XCTAssertEqualObjects(json[@"startTimeUnixNano"], @"1664352000000000000");
     XCTAssertEqualObjects(json[@"endTimeUnixNano"], @"1664352015000000000");

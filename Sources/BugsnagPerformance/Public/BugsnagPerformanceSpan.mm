@@ -48,4 +48,8 @@ using namespace bugsnag;
     return _span->spanId();
 }
 
+- (BOOL)isValid {
+    return !_isEnded;
+}
+
 @end

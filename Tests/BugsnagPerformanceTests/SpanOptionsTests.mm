@@ -26,6 +26,8 @@ using namespace bugsnag;
 
 @implementation MockContext
 
+@synthesize isValid;
+
 @end
 
 
