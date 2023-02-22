@@ -31,10 +31,18 @@ public:
     {}
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
-    : parentContext(options.parentContext)
-    , startTime(defaultTimeIfNil(options.startTime))
-    , makeContextCurrent(options.makeContextCurrent)
-    , isFirstClass(options.isFirstClass)
+    : SpanOptions(options.parentContext,
+                  defaultTimeIfNil(options.startTime),
+                  options.makeContextCurrent,
+                  options.isFirstClass)
+    {}
+    
+    SpanOptions()
+    // These defaults must match the defaults in BugsnagPerformanceSpanOptions.m
+    : SpanOptions(nil,
+                  CFAbsoluteTimeGetCurrent(),
+                  true,
+                  BSGFirstClassUnset)
     {}
     
     id<BugsnagPerformanceSpanContext> parentContext;
@@ -44,20 +52,20 @@ public:
 };
 
 static inline SpanOptions defaultSpanOptionsForCustom() {
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), false, BSGFirstClassYes);
+    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassYes);
 }
 
 static inline SpanOptions defaultSpanOptionsForInternal() {
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), false, BSGFirstClassUnset);
+    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassUnset);
 }
 
 static inline SpanOptions defaultSpanOptionsForViewLoad() {
     // TODO: This will check the stack for a view load in a later PR
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), false, BSGFirstClassYes);
+    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassYes);
 }
 
 static inline SpanOptions defaultSpanOptionsForNetwork(CFAbsoluteTime startTime) {
-    return SpanOptions(nil, startTime, false, BSGFirstClassUnset);
+    return SpanOptions(nil, startTime, true, BSGFirstClassUnset);
 }
 }
 

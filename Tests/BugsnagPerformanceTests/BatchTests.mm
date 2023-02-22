@@ -21,6 +21,11 @@ using namespace bugsnag;
 
 @implementation BatchTests
 
+static std::unique_ptr<SpanData> newSpanData() {
+    TraceId tid = {.value = 1};
+    return std::make_unique<SpanData>(@"test", tid, 1, 0, 0);
+}
+
 - (void)setUp {
     self.batchSize = bsgp_autoTriggerExportOnBatchSize;
 }
@@ -40,7 +45,7 @@ using namespace bugsnag;
     });
     
     // Drain not allowed until explicitly allowed
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     auto drained = batch.drain();
     XCTAssertEqual(drained->size(), 0);
     XCTAssertEqual(callbackCalls, 0);
@@ -52,14 +57,14 @@ using namespace bugsnag;
     XCTAssertEqual(callbackCalls, 0);
 
     // Drain only allowed once per allow
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 0);
     XCTAssertEqual(callbackCalls, 0);
 
     // Allow another drain and also add another span for a total of 2
     batch.allowDrain();
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 2);
     XCTAssertEqual(callbackCalls, 0);
@@ -76,7 +81,7 @@ using namespace bugsnag;
     });
     
     // Auto triggers at size 1
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     auto drained = batch.drain();
     XCTAssertEqual(drained->size(), 1);
     XCTAssertEqual(callbackCalls, 1);
@@ -85,26 +90,26 @@ using namespace bugsnag;
     callbackCalls = 0;
     
     // Doesn't trigger after 1 entry, and drain not explicitly allowed
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 0);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 2nd entry
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 2);
     XCTAssertEqual(callbackCalls, 1);
     
     // Doesn't trigger after 3rd entry (1st entry after draining)
     callbackCalls = 0;
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 0);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 4th entry (2nd entry after draining)
-    batch.add(std::make_unique<SpanData>(@"", 0));
+    batch.add(newSpanData());
     drained = batch.drain();
     XCTAssertEqual(drained->size(), 2);
     XCTAssertEqual(callbackCalls, 1);
@@ -123,7 +128,7 @@ using namespace bugsnag;
     }];
 
     for(int i = 0; i < 500000; i++) {
-        batch->add(std::make_unique<SpanData>(@"", 0));
+        batch->add(newSpanData());
     }
     
     stopThread = true;
