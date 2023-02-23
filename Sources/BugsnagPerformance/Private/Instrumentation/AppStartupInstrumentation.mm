@@ -98,8 +98,10 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
         BSGLogWarning(@"Ignoring excessively long app startup span");
         return;
     }
-    auto name = isCold_ ? @"AppStart/Cold" : @"AppStart/Warm"; 
-    auto span = tracer_.startSpan(name, defaultSpanOptionsForInternal());
+    auto name = isCold_ ? @"AppStart/Cold" : @"AppStart/Warm";
+    auto options = defaultSpanOptionsForInternal();
+    options.startTime = startTime;
+    auto span = tracer_.startSpan(name, options);
     span->addAttributes(@{
         @"bugsnag.app_start.type": isCold_ ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
