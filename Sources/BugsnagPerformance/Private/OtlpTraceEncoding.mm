@@ -307,5 +307,6 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildPValueRequestPackage() noex
     return std::make_unique<OtlpPackage>(0, emptyPayload, @{
         @"Content-Type": @"application/json",
         @"Bugsnag-Integrity": integrityDigestForData(emptyPayload),
+        @"Bugsnag-Span-Sampling": @"1:0",
     });
 }

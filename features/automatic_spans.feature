@@ -4,6 +4,7 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentAppStartsScenario" and discard the initial p-value request
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "AppStart/Cold"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
@@ -20,6 +21,7 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
@@ -37,6 +39,7 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentNetworkScenario" and discard the initial p-value request
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "HTTP/GET"
     * every span string attribute "http.flavor" exists
     * every span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
