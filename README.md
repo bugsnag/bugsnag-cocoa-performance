@@ -1,13 +1,28 @@
-# BugsnagPerformance
+# BugSnag performance monitoring for iOS
 
-Development repository for [ROAD-847 - Client-side performance monitoring](https://smartbear.atlassian.net/wiki/spaces/PROD/pages/3287256229)
+Monitor the start-up, screen loading and network requests of your app and see the results in your [BugSnag](https://www.bugsnag.com) dashboard.
 
-Slack: [#bugsnag-proj-client-side-performance](https://smartbear.slack.com/archives/C039590SDQD)
+## Features
 
-Once sufficiently developed, the intention is to merge the code from this repository into [bugsnag-cocoa](https://github.com/bugsnag/bugsnag-cocoa) and add support for CocoaPods and Carthage.
+- Reporting of app startup time
+- Automatic measurement of `UIViewController` loading times
+- Report `NSURLSession` request times
 
-## Organization
+## Getting started
 
-The library in this repository is structured as a [Swift Package](https://www.swift.org/getting-started/#using-the-package-manager), following SPM's default directory structure.
+_This functionality is currently in its preview phase – please [contact us](mailto:support@bugsnag.com) for more information._
 
-Double-click `Package.swift` to open the project in Xcode, or select the folder in Xcode's `Open...` dialog.
+For integration instructions, see our online docs: [docs.bugsnag.com/performance](https://docs.bugsnag.com/performance)
+
+## Pre-releases
+
+We are currently publishing pre-1.0 releases. These releases may contain breaking changes, which are documented in the [CHANGELOG.md](./CHANGELOG.md).
+## Support
+
+* [Read the integration guide](https://docs.bugsnag.com/performance/cocoa/)
+* [Search open and closed issues](https://github.com/bugsnag/bugsnag-cocoa-performance/issues?utf8=✓&q=is%3Aissue) for similar problems
+* [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-cocoa-performance/issues/new)
+
+## License
+
+The BugSnag Cocoa Performance SDK is free software released under the MIT License. See the [LICENSE](https://github.com/bugsnag/bugsnag-cocoa-performance/blob/master/LICENSE) for details.
