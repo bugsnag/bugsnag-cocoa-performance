@@ -12,17 +12,6 @@
 
 using namespace bugsnag;
 
-static NSString * EncodeSpanKind(SpanKind kind) {
-    switch (kind) {
-        case SPAN_KIND_UNSPECIFIED: return @"SPAN_KIND_UNSPECIFIED";
-        case SPAN_KIND_INTERNAL:    return @"SPAN_KIND_INTERNAL";
-        case SPAN_KIND_SERVER:      return @"SPAN_KIND_SERVER";
-        case SPAN_KIND_CLIENT:      return @"SPAN_KIND_CLIENT";
-        case SPAN_KIND_PRODUCER:    return @"SPAN_KIND_PRODUCER";
-        case SPAN_KIND_CONSUMER:    return @"SPAN_KIND_CONSUMER";
-    }
-}
-
 static NSString * EncodeSpanId(SpanId const &spanId) {
     return [NSString stringWithFormat:@"%016llx", spanId];
 }
@@ -83,7 +72,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
         // Distinguishes between spans generated in a particular context. For example,
         // two spans with the same name may be distinguished using `CLIENT` (caller)
         // and `SERVER` (callee) to identify queueing latency associated with the span.
-        @"kind": EncodeSpanKind(span.kind),
+        @"kind": @(span.kind),
         
         // start_time_unix_nano is the start time of the span. On the client side, this is the time
         // kept by the local machine where the span execution starts. On the server side, this
