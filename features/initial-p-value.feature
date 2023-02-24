@@ -21,3 +21,9 @@ Feature: Initial P values
     * the trace "Bugsnag-Span-Sampling" header equals "1:0"
     And I discard the oldest trace
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+
+  Scenario: ProbabilityExpiryScenario
+    Given I run "ProbabilityExpiryScenario"
+    And I wait to receive 2 traces
+    * the trace "Bugsnag-Span-Sampling" header equals "1:0"
+    * the trace payload field "resourceSpans" is an array with 0 elements

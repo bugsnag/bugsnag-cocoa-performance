@@ -52,6 +52,8 @@ public:
         tracer_.reportNetworkSpan(task, metrics);
     }
 
+    void onSpanStarted() noexcept;
+
 private:
     bool started_;
     std::mutex instanceMutex_;
@@ -67,6 +69,8 @@ private:
     bool shouldPersistState_;
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
+    CFAbsoluteTime probabilityExpiry_;
+    CFAbsoluteTime pausePValueRequestsUntil_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
@@ -85,6 +89,7 @@ private:
 
     // Utility
     void wakeWorker() noexcept;
+    void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
 
 public: // For testing

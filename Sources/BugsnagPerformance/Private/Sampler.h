@@ -25,9 +25,7 @@ class Sampler {
 public:
     Sampler(double fallbackProbability) noexcept;
     
-    void setFallbackProbability(double value) noexcept {
-        fallbackProbability_ = value;
-    }
+    void setFallbackProbability(double value) noexcept;
 
     /**
      * Sets the probability value to use in all sampling for the next 24 hours.
@@ -50,8 +48,6 @@ public:
     sampled(std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans) noexcept;
 
 private:
-    double fallbackProbability_;
     double probability_;
-    CFAbsoluteTime probabilityExpiry_;
 };
 }

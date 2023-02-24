@@ -13,9 +13,10 @@
 
 using namespace bugsnag;
 
-Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch) noexcept
+Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept
 : sampler_(sampler)
 , batch_(batch)
+, onSpanStarted_(onSpanStarted)
 {}
 
 void
@@ -44,6 +45,9 @@ Tracer::startSpan(NSString *name, SpanOptions options) noexcept {
         blockThis->tryAddSpanToBatch(std::move(spanData));
     });
     span->addAttributes(SpanAttributes::get());
+    if (onSpanStarted_) {
+        onSpanStarted_();
+    }
     return span;
 }
 

@@ -27,7 +27,7 @@ namespace bugsnag {
  */
 class Tracer {
 public:
-    Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch) noexcept;
+    Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept;
     
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
@@ -46,6 +46,7 @@ private:
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     
     std::shared_ptr<Batch> batch_;
+    void (^onSpanStarted_)();
     
     void tryAddSpanToBatch(std::unique_ptr<SpanData> spanData);
 };
