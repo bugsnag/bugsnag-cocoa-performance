@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
+#import "BugsnagPerformanceSpanOptions+Private.h"
 #import "SpanOptions.h"
 
 using namespace bugsnag;
@@ -21,6 +21,7 @@ using namespace bugsnag;
 
 @property(nonatomic,readonly) TraceId traceId;
 @property(nonatomic,readonly) SpanId spanId;
+@property(nonatomic,readonly) bool isValid;
 
 @end
 
@@ -36,16 +37,18 @@ using namespace bugsnag;
     XCTAssertNil(objcOptions.parentContext);
     XCTAssertNil(objcOptions.startTime);
     XCTAssertTrue(objcOptions.makeContextCurrent);
-    XCTAssertEqual(objcOptions.isFirstClass, BSGFirstClassUnset);
+    XCTAssertFalse(objcOptions.isFirstClass);
+    XCTAssertFalse(objcOptions.wasFirstClassSet);
 }
 
 - (void)testConversionDefaults {
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
-    SpanOptions cOptions(objcOptions);
+    SpanOptions cOptions = SpanOptionsForCustom(objcOptions);
     XCTAssertNil(cOptions.parentContext);
     XCTAssertTrue(abs(cOptions.startTime - CFAbsoluteTimeGetCurrent()) < 1);
     XCTAssertTrue(cOptions.makeContextCurrent);
-    XCTAssertEqual(cOptions.isFirstClass, BSGFirstClassUnset);
+    XCTAssertFalse(objcOptions.isFirstClass);
+    XCTAssertFalse(objcOptions.wasFirstClassSet);
 }
 
 - (void)testConversion {
@@ -54,13 +57,41 @@ using namespace bugsnag;
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = context;
     objcOptions.makeContextCurrent = true;
-    objcOptions.isFirstClass = BSGFirstClassNo;
+    objcOptions.isFirstClass = false;
 
-    SpanOptions cOptions(objcOptions);
+    SpanOptions cOptions = SpanOptionsForCustom(objcOptions);
     XCTAssertEqual(1.0, cOptions.startTime);
     XCTAssertEqual(context, cOptions.parentContext);
     XCTAssertEqual(true, cOptions.makeContextCurrent);
-    XCTAssertEqual(BSGFirstClassNo, cOptions.isFirstClass);
+    XCTAssertFalse(objcOptions.isFirstClass);
+    XCTAssertTrue(objcOptions.wasFirstClassSet);
+
+
+    objcOptions = [BugsnagPerformanceSpanOptions new];
+    objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
+    objcOptions.parentContext = context;
+    objcOptions.makeContextCurrent = true;
+    objcOptions.isFirstClass = true;
+
+    cOptions = SpanOptionsForCustom(objcOptions);
+    XCTAssertEqual(1.0, cOptions.startTime);
+    XCTAssertEqual(context, cOptions.parentContext);
+    XCTAssertEqual(true, cOptions.makeContextCurrent);
+    XCTAssertTrue(objcOptions.isFirstClass);
+    XCTAssertTrue(objcOptions.wasFirstClassSet);
+
+
+    objcOptions = [BugsnagPerformanceSpanOptions new];
+    objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
+    objcOptions.parentContext = context;
+    objcOptions.makeContextCurrent = true;
+
+    cOptions = SpanOptionsForCustom(objcOptions);
+    XCTAssertEqual(1.0, cOptions.startTime);
+    XCTAssertEqual(context, cOptions.parentContext);
+    XCTAssertEqual(true, cOptions.makeContextCurrent);
+    XCTAssertFalse(objcOptions.isFirstClass);
+    XCTAssertFalse(objcOptions.wasFirstClassSet);
 }
 
 @end

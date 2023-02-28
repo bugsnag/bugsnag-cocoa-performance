@@ -73,6 +73,7 @@
 		CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */; };
 		CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */; };
+		CBE43A9F29AE2F8D000B4205 /* BugsnagPerformanceSpanOptions+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE43A9E29AE1512000B4205 /* BugsnagPerformanceSpanOptions+Private.h */; };
 		CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */; };
 		CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */; };
 		CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */; };
@@ -189,6 +190,7 @@
 		CB7FD935299D330500499E13 /* SpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanOptions.h; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
+		CBE43A9E29AE1512000B4205 /* BugsnagPerformanceSpanOptions+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanOptions+Private.h"; sourceTree = "<group>"; };
 		CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGInternalConfig.h; sourceTree = "<group>"; };
 		CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGInternalConfig.c; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
@@ -311,6 +313,7 @@
 				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				CBE43A9E29AE1512000B4205 /* BugsnagPerformanceSpanOptions+Private.h */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
 				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
@@ -499,6 +502,7 @@
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
+				CBE43A9F29AE2F8D000B4205 /* BugsnagPerformanceSpanOptions+Private.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,

@@ -6,14 +6,35 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-#import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
+#import "../Private/BugsnagPerformanceSpanOptions+Private.h"
 
 @implementation BugsnagPerformanceSpanOptions
+
+- (instancetype)initWithStartTime:(NSDate *)startTime
+                    parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
+               makeContextCurrent:(BOOL)makeContextCurrent
+                     isFirstClass:(BOOL)isFirstClass
+                 wasFirstClassSet:(BOOL)wasFirstClassSet {
+    if ((self = [super init])) {
+        _startTime = startTime;
+        _parentContext = parentContext;
+        _makeContextCurrent = makeContextCurrent;
+        _isFirstClass = isFirstClass;
+        _wasFirstClassSet = wasFirstClassSet;
+    }
+    return self;
+}
+
+- (void)setIsFirstClass:(BOOL)isFirstClass {
+    _isFirstClass = isFirstClass;
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    _wasFirstClassSet = true;
+}
 
 + (instancetype)optionsWithStartTime:(NSDate *)startTime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                   makeContextCurrent:(BOOL)makeContextCurrent
-                        isFirstClass:(BSGFirstClass)isFirstClass {
+                        isFirstClass:(BOOL)isFirstClass {
     return [[self alloc] initWithStartTime:startTime
                              parentContext:parentContext
                         makeContextCurrent:makeContextCurrent
@@ -25,28 +46,28 @@
     return [self initWithStartTime:nil
                      parentContext:nil
                 makeContextCurrent:true
-                      isFirstClass:BSGFirstClassUnset];
+                      isFirstClass:false
+                  wasFirstClassSet:false];
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                makeContextCurrent:(BOOL)makeContextCurrent
-                     isFirstClass:(BSGFirstClass)isFirstClass {
-    if ((self = [super init])) {
-        _startTime = startTime;
-        _parentContext = parentContext;
-        _makeContextCurrent = makeContextCurrent;
-        _isFirstClass = isFirstClass;
-    }
-    return self;
+                     isFirstClass:(BOOL)isFirstClass {
+    return [self initWithStartTime:startTime
+                     parentContext:parentContext
+                makeContextCurrent:makeContextCurrent
+                      isFirstClass:isFirstClass
+                  wasFirstClassSet:false];
 }
 
 - (instancetype)clone {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
-    return [BugsnagPerformanceSpanOptions optionsWithStartTime:_startTime
-                                                 parentContext:_parentContext
-                                            makeContextCurrent:_makeContextCurrent
-                                                  isFirstClass:_isFirstClass];
+    return [[BugsnagPerformanceSpanOptions alloc] initWithStartTime:_startTime
+                                                      parentContext:_parentContext
+                                                 makeContextCurrent:_makeContextCurrent
+                                                       isFirstClass:_isFirstClass
+                                                   wasFirstClassSet:_wasFirstClassSet];
 }
 
 @end

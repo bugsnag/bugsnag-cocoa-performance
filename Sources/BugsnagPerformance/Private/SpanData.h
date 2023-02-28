@@ -18,7 +18,12 @@ namespace bugsnag {
  */
 class SpanData {
 public:
-    SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parentId, CFAbsoluteTime startTime) noexcept;
+    SpanData(NSString *name,
+             TraceId traceId,
+             SpanId spanId,
+             SpanId parentId,
+             CFAbsoluteTime startTime,
+             bool isFirstClass) noexcept;
     
     SpanData(const SpanData&) = delete;
     

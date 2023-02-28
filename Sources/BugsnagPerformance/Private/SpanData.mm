@@ -9,7 +9,12 @@
 
 using namespace bugsnag;
 
-SpanData::SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parentId, CFAbsoluteTime startTime) noexcept
+SpanData::SpanData(NSString *name,
+                   TraceId traceId,
+                   SpanId spanId,
+                   SpanId parentId,
+                   CFAbsoluteTime startTime,
+                   bool isFirstClass) noexcept
 : traceId(traceId)
 , spanId(spanId)
 , parentId(parentId)
@@ -18,6 +23,9 @@ SpanData::SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parent
 , samplingProbability(1.0)
 , startTime(startTime)
 {
+    if (isFirstClass) {
+        attributes[@"bugsnag.span.first_class"] = @(true);
+    }
 }
 
 void

@@ -23,7 +23,7 @@ using namespace bugsnag;
 
 static std::unique_ptr<SpanData> newSpanData() {
     TraceId tid = {.value = 1};
-    return std::make_unique<SpanData>(@"test", tid, 1, 0, 0);
+    return std::make_unique<SpanData>(@"test", tid, 1, 0, 0, false);
 }
 
 - (void)setUp {

@@ -8,12 +8,6 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 
-typedef NS_ENUM(uint8_t, BSGFirstClass) {
-    BSGFirstClassNo = 0,
-    BSGFirstClassYes = 1,
-    BSGFirstClassUnset = 2,
-};
-
 // Span options allow the user to affect how spans are created.
 OBJC_EXPORT
 @interface BugsnagPerformanceSpanOptions: NSObject
@@ -28,17 +22,17 @@ OBJC_EXPORT
 @property(nonatomic,readwrite) BOOL makeContextCurrent;
 
 // If true, this span will be considered "first class" on the dashboard.
-@property(nonatomic,readwrite) BSGFirstClass isFirstClass;
+@property(nonatomic,readwrite) BOOL isFirstClass;
 
 + (instancetype)optionsWithStartTime:(NSDate *)starttime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                   makeContextCurrent:(BOOL)makeContextCurrent
-                        isFirstClass:(BSGFirstClass)isFirstClass;
+                        isFirstClass:(BOOL)isFirstClass;
 
 - (instancetype)initWithStartTime:(NSDate *)starttime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                makeContextCurrent:(BOOL)makeContextCurrent
-                     isFirstClass:(BSGFirstClass)isFirstClass;
+                     isFirstClass:(BOOL)isFirstClass;
 
 - (instancetype)clone;
 

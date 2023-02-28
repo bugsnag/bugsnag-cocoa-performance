@@ -23,7 +23,7 @@ using namespace bugsnag;
 
 static BugsnagPerformanceSpan *newSpan() {
     TraceId tid = {.value = 1};
-    auto data = std::make_unique<SpanData>(@"test", tid, 1, 0, 0);
+    auto data = std::make_unique<SpanData>(@"test", tid, 1, 0, 0, false);
     auto span = std::make_unique<Span>(std::move(data), ^(std::unique_ptr<SpanData>) {});
     return [[BugsnagPerformanceSpan alloc] initWithSpan:std::move(span)];
 }

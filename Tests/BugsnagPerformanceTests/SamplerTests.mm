@@ -49,7 +49,7 @@ using namespace bugsnag;
     auto numSamplesTries = 1'000;
     auto count = 0;
     for (auto i = 0; i < numSamplesTries; i++) {
-        SpanData spanData(@"a", IdGenerator::generateTraceId(), IdGenerator::generateSpanId(), 0, 0);
+        SpanData spanData(@"a", IdGenerator::generateTraceId(), IdGenerator::generateSpanId(), 0, 0, false);
         if (sampler.sampled(spanData)) {
             count++;
         }

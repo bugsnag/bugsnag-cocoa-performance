@@ -51,7 +51,8 @@ Tracer::startSpan(NSString *name, SpanOptions options) noexcept {
                                                                   traceId,
                                                                   spanId,
                                                                   currentContext.spanId,
-                                                                  options.startTime),
+                                                                  options.startTime,
+                                                                  options.isFirstClass),
                                        ^void(std::unique_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(std::move(spanData));
     });

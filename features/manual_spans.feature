@@ -9,6 +9,7 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * a span field "name" equals "WillRetry"
     * a span field "name" equals "Success"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end a span
     Given I run "ManualSpanScenario" and discard the initial p-value request
@@ -39,6 +40,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "1.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Starting and ending a span before starting the SDK
     Given I run "ManualSpanBeforeStartScenario" and discard the initial p-value request
@@ -53,6 +55,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario" and discard the initial p-value request
@@ -68,6 +71,7 @@ Feature: Manual creation of spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario" and discard the initial p-value request
@@ -80,6 +84,7 @@ Feature: Manual creation of spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario" and discard the initial p-value request
@@ -101,6 +106,7 @@ Feature: Manual creation of spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" does not exist
 
   Scenario: Manually start and end a span field "with" batching
     Given I run "BatchingScenario" and discard the initial p-value request
@@ -117,6 +123,7 @@ Feature: Manual creation of spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end a span field "with" batching
     Given I run "BatchingScenario" and discard the initial p-value request
@@ -133,6 +140,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end parent and child spans
     Given I run "ParentSpanScenario" and discard the initial p-value request
@@ -145,8 +153,39 @@ Feature: Manual creation of spans
     * a span field "name" equals "SpanChild"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
-    * every span field "kind" equals "SPAN_KIND_INTERNAL"
+    * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     # Note: The child span ends up first in the list of spans.
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+
+  Scenario: Manually start and end first class span
+    Given I run "FirstClassYesScenario" and discard the initial p-value request
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * every span field "name" equals "FirstClassYesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+
+  Scenario: Manually start and end non-first-class span
+    Given I run "FirstClassNoScenario" and discard the initial p-value request
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" equals "0.0"
+    * every span field "name" equals "FirstClassNoScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" does not exist
