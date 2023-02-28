@@ -16,3 +16,9 @@ When("I run {string} and discard the initial p-value request") do |scenario|
   }
 end
 
+Then('every span field {string} equals {int}') do |key, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_keys = spans.map { |span| span[key] == expected }
+  Maze.check.not_includes selected_keys, false
+end
+
