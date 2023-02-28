@@ -9,47 +9,48 @@
 
 using namespace bugsnag;
 
-static const CFTimeInterval kProbabilityDuration = 24 * 3600;
-
 static NSString *kUserDefaultsKey = @"BugsnagPerformanceSampler";
 static NSString *kProbabilityKey = @"p";
-static NSString *kExpiryKey = @"e";
 
-Sampler::Sampler(double fallbackProbability) noexcept
-: fallbackProbability_(fallbackProbability)
-, probability_(0.0)
-, probabilityExpiry_(0.0)
-{
-    if (NSDictionary *dict = [[NSUserDefaults standardUserDefaults]
-                              dictionaryForKey:kUserDefaultsKey]) {
-        id p = dict[kProbabilityKey], e = dict[kExpiryKey];
-        if ([p isKindOfClass:[NSNumber class]] &&
-            [e isKindOfClass:[NSNumber class]]) {
-            probability_ = [p doubleValue];
-            probabilityExpiry_ = [e doubleValue];
+static double loadProbabilityOrDefault(double defaultProbability) {
+    NSDictionary *dict = [[NSUserDefaults standardUserDefaults]
+                          dictionaryForKey:kUserDefaultsKey];
+
+    if (dict != nil) {
+        id p = dict[kProbabilityKey];
+        if ([p isKindOfClass:[NSNumber class]]) {
+            return [p doubleValue];
         }
     }
+    return defaultProbability;
+}
+
+static void storeProbability(double probability) {
+    [[NSUserDefaults standardUserDefaults]
+     setObject:@{
+            kProbabilityKey: @(probability),
+        }
+     forKey:kUserDefaultsKey];
+}
+
+Sampler::Sampler(double fallbackProbability) noexcept
+: probability_(loadProbabilityOrDefault(fallbackProbability))
+{
+}
+
+void Sampler::setFallbackProbability(double value) noexcept {
+    probability_ = loadProbabilityOrDefault(value);
 }
 
 double
 Sampler::getProbability() noexcept {
-    if (CFAbsoluteTimeGetCurrent() < probabilityExpiry_) {
         return probability_;
-    }
-    return fallbackProbability_;
 }
 
 void
 Sampler::setProbability(double probability) noexcept {
-    auto expiry = CFAbsoluteTimeGetCurrent() + kProbabilityDuration;
     probability_ = probability;
-    probabilityExpiry_ = expiry;
-    
-    [[NSUserDefaults standardUserDefaults]
-     setObject:@{
-        kProbabilityKey: @(probability),
-        kExpiryKey: @(expiry)}
-     forKey:kUserDefaultsKey];
+    storeProbability(probability);
 }
 
 bool Sampler::sampled(SpanData &span) noexcept {

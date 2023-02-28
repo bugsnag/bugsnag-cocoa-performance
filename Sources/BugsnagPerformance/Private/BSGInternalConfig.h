@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <dispatch/time.h>
+#include <CoreFoundation/CFDate.h>
 
 #ifdef __OBJC__
 #import <Foundation/Foundation.h>
@@ -27,5 +28,8 @@ extern dispatch_time_t bsgp_autoTriggerExportOnTimeDuration;
 extern NSTimeInterval bsgp_performWorkInterval;
 
 extern NSTimeInterval bsgp_maxRetryAge;
+
+extern CFTimeInterval bsgp_probabilityValueExpiresAfterSeconds;
+extern CFTimeInterval bsgp_probabilityRequestsPauseForSeconds;
 
 #endif /* BSGInternalConfig_h */

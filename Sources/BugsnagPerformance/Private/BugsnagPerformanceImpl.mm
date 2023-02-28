@@ -25,10 +25,17 @@ static NSString *getPersistenceDir() {
     return [cachesDir stringByAppendingPathComponent:topDir];
 }
 
+void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
+    __block auto blockImpl = impl;
+  return ^{
+      blockImpl->onSpanStarted();
+  };
+}
+
 BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
 : batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>(initialProbability))
-, tracer_(sampler_, batch_)
+, tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
@@ -127,7 +134,7 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
 }
 
 bool BugsnagPerformanceImpl::sendPValueRequestTask() {
-    uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
+    uploadPValueRequest();
     return true;
 }
 
@@ -194,6 +201,7 @@ void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity co
 }
 
 void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcept {
+    probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + bsgp_probabilityValueExpiresAfterSeconds;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
 }
@@ -203,10 +211,28 @@ void BugsnagPerformanceImpl::onPersistentStateChanged() noexcept {
     wakeWorker();
 }
 
+void BugsnagPerformanceImpl::onSpanStarted() noexcept {
+    // If a span starts before we've started Bugsnag, there won't be an uploader yet.
+    if (uploader_ != nullptr) {
+        if (CFAbsoluteTimeGetCurrent() > probabilityExpiry_) {
+            uploadPValueRequest();
+        }
+    }
+}
+
 #pragma mark Utility
 
 void BugsnagPerformanceImpl::wakeWorker() noexcept {
     [worker_ wake];
+}
+
+void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
+    auto currentTime = CFAbsoluteTimeGetCurrent();
+    if (currentTime > pausePValueRequestsUntil_) {
+        // Pause P-value requests so that we don't flood the server on every span start
+        pausePValueRequestsUntil_ = currentTime + bsgp_probabilityRequestsPauseForSeconds;
+        uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
+    }
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
