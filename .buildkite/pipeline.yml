@@ -1,18 +1,188 @@
 env:
   LANG: "en_GB.UTF-8"
 
+agents:
+  queue: macos-12-arm
+
 steps:
-  - label: ":lint-roller: Lint"
-    commands:
-    - brew bundle install
-    - brew bundle exec -- swiftlint --strict Sources
-  - group: ":xcode_simulator: Test"
+
+  - group: ":hammer: Builds"
     steps:
-      - label: "iOS 15"
-        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test
+      - label: "Carthage"
+        command: ./features/fixtures/carthage/build.sh
+
+      - label: "CocoaPods"
+        command: pod lib lint BugsnagPerformance.podspec.json
+
+      - label: "Example"
+        command: ./Example/build.sh
+
+      - label: "Fixture"
+        key: ios_fixture
+        commands:
+          - ./features/fixtures/ios/build.sh
+          - bundle install
+          - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
+        artifact_paths:
+          - features/fixtures/ios/output/ipa_url.txt
+
+  - group: ":xcode_simulator: Unit Tests"
+    steps:
+      - label: "iOS 15 Unit Tests"
+        commands:
+          - xcodebuild -version
+          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' -quiet build-for-testing
+          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test-without-building
+      - label: "iOS 11 Unit Tests"
+        commands:
+          - xcodebuild -version
+          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' -quiet build-for-testing SWIFT_VERSION=4.2
+          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' test-without-building
         agents:
-          queue: macos-12-arm
-      - label: "iOS 10"
-        command: xcodebuild -scheme BugsnagPerformance -destination 'platform=iOS Simulator,name=iPhone 5s,OS=10.3.1' test SWIFT_VERSION=4.2
+          queue: macos-11
+
+  - group: ":iphone: E2E Tests"
+    steps:
+      - label: "iOS 16 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
         agents:
-          queue: macos-10.15
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_16"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 15 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_15"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 14 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_14"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 13 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_13"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 12 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.8.0"
+              - "--device=IOS_12"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: "iOS 11 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 10
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload: "maze_output/failed/**/*"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.8.0"
+              - "--device=IOS_11"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+        concurrency: 24
+        concurrency_group: browserstack-app
+        concurrency_method: eager

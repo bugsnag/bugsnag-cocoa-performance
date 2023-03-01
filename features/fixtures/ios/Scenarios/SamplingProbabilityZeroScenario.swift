@@ -1,0 +1,29 @@
+//
+//  SamplingProbabilityZeroScenario.swift
+//  Fixture
+//
+//  Created by Nick Dowell on 26/10/2022.
+//
+
+import BugsnagPerformance
+
+class SamplingProbabilityZeroScenario: Scenario {
+    
+    override func configure() {
+        super.configure()
+        config.autoInstrumentAppStarts = true
+        config.autoInstrumentNetwork = true
+        config.autoInstrumentViewControllers = true
+        config.samplingProbability = 0
+    }
+    
+    override func startBugsnag() {
+        BugsnagPerformance.startSpan(name: "Pre-start").end()
+        super.startBugsnag()
+    }
+    
+    override func run() {
+        waitForCurrentBatch()
+        BugsnagPerformance.startSpan(name: "Post-start").end()
+    }
+}

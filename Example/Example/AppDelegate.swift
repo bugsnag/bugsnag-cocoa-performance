@@ -14,8 +14,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        print(BugsnagPerformance().text)
+        // Spans can be started and ended before starting the SDK. They will be sent once the SDK has started.
+        BugsnagPerformance.startSpan(name: "Before start").end()
+
+        let config = try! BugsnagPerformanceConfiguration.loadConfig()
+
+        // Disable automatic app startup instrumentation:
+        //config.autoInstrumentAppStarts = false
+
+        // Disable automatic view controller instrumentation to prevent swizzling...
+        //config.autoInstrumentViewControllers = false
+
+        // Disable automatic URLSession request instrumentation:
+        //config.autoInstrumentNetwork = false
+
+        // ... or control whether spans are created on a per-instance basis:
+        config.viewControllerInstrumentationCallback = {
+            !($0 is IgnoredViewController)
+        }
+
+        try! BugsnagPerformance.start(configuration: config)
+
         return true
     }
 }

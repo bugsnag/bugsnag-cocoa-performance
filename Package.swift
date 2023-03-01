@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "BugsnagPerformance",
     platforms: [
-        .iOS(.v10),
+        .iOS(.v11),
     ],
     products: [
         .library(
@@ -16,10 +16,17 @@ let package = Package(
     targets: [
         .target(
             name: "BugsnagPerformance",
-            dependencies: []),
+            linkerSettings: [
+                .linkedFramework("SystemConfiguration"),
+                .linkedFramework("UIKit"),
+            ]
+        ),
         .testTarget(
             name: "BugsnagPerformanceTests",
             dependencies: ["BugsnagPerformance"]),
+        .testTarget(
+            name: "BugsnagPerformanceTestsSwift",
+            dependencies: ["BugsnagPerformance"]),
     ],
-    swiftLanguageVersions: [.v5, .v4_2]
+    cxxLanguageStandard: .cxx14
 )
