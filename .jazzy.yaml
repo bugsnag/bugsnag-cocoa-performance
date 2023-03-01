@@ -1,0 +1,16 @@
+author_url: "https://www.bugsnag.com"
+author: "Bugsnag Inc"
+clean: false # avoid deleting docs/.git
+framework_root: "BugsnagPerformance"
+github_file_prefix: "https://github.com/bugsnag/bugsnag-cocoa-performance/tree/v0.1.0/Bugsnag"
+github_url: "https://github.com/bugsnag/bugsnag-cocoa-performance"
+hide_documentation_coverage: true
+module: "BugsnagPerformance"
+module_version: "0.1.0"
+objc: true
+output: "docs"
+readme: "README.md"
+root_url: "https://bugsnag.github.io/bugsnag-cocoa-performance"
+source_directory: "Sources/BugsnagPerformance"
+theme: "apple"
+umbrella_header: "Sources/BugsnagPerformance/include/BugsnagPerformance/BugsnagPerformance.h"
