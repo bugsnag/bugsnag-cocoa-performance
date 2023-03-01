@@ -1,0 +1,10 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -scheme BugsnagPerformance-iOS -derivedDataPath DerivedData -sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 8,OS=latest" -configuration Debug build
+
+User defaults from command line:
+    IDEDerivedDataPathOverride = /Users/karl/work/code/bugsnag-cocoa-performance/DerivedData
+    IDEPackageSupportUseBuiltinSCM = YES
+
+Build settings from command line:
+    SDKROOT = iphonesimulator16.2
+

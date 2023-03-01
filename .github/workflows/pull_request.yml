@@ -3,7 +3,7 @@ on: [pull_request]
 
 jobs:
   danger:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
     - name: Checkout target branch
       uses: actions/checkout@v2
