@@ -20,6 +20,7 @@
 #import "PersistentState.h"
 #import "Reachability.h"
 #import "RetryQueue.h"
+#import "AppStateTracker.h"
 
 #import <mutex>
 
@@ -72,6 +73,7 @@ private:
     CFAbsoluteTime probabilityExpiry_;
     CFAbsoluteTime pausePValueRequestsUntil_;
     NSTimer *workerTimer_;
+    AppStateTracker *appStateTracker_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
@@ -88,6 +90,7 @@ private:
     void onPersistentStateChanged() noexcept;
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
+    void onAppEnteredForeground() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

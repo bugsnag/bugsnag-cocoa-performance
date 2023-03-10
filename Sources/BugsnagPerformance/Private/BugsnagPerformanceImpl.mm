@@ -37,6 +37,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, appStateTracker_([AppStateTracker new])
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}
@@ -110,6 +111,10 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     batch_->setBatchFullCallback(^{
         blockThis->onBatchFull();
     });
+
+    appStateTracker_.onTransitionToForeground = ^{
+        blockThis->onAppEnteredForeground();
+    };
 
     tracer_.start(configuration);
 
@@ -226,6 +231,11 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
+    batch_->allowDrain();
+    wakeWorker();
+}
+
+void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     batch_->allowDrain();
     wakeWorker();
 }
