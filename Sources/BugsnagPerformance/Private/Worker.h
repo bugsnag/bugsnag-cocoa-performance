@@ -19,7 +19,7 @@ typedef bool (^Task)();
  */
 @interface Worker : NSObject
 
-- (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks recurringTasks:(NSArray<Task> *)recurringTasks workInterval:(NSTimeInterval)workInterval;
+- (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks recurringTasks:(NSArray<Task> *)recurringTasks;
 
 /**
  * Start the worker thread, running the initial tasks and one run of the recurring tasks right away.

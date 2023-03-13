@@ -66,11 +66,12 @@ private:
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
     NSDictionary *resourceAttributes_;
-    bool shouldPersistState_;
+    std::atomic<bool> shouldPersistState_;
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
     CFAbsoluteTime probabilityExpiry_;
     CFAbsoluteTime pausePValueRequestsUntil_;
+    NSTimer *workerTimer_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
@@ -86,6 +87,7 @@ private:
     void onProbabilityChanged(double newProbability) noexcept;
     void onPersistentStateChanged() noexcept;
     void onFilesystemError() noexcept;
+    void onWorkInterval() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

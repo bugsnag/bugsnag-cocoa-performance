@@ -98,9 +98,14 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     });
 
     worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
-                                    recurringTasks:buildRecurringTasks()
-                                      workInterval:bsgp_performWorkInterval];
+                                    recurringTasks:buildRecurringTasks()];
     [worker_ start];
+
+    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:bsgp_performWorkInterval
+                                                   repeats:YES
+                                                     block:^(__unused NSTimer * _Nonnull timer) {
+        blockThis->onWorkInterval();
+    }];
 
     batch_->setBatchFullCallback(^{
         blockThis->onBatchFull();
@@ -168,7 +173,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() {
 }
 
 bool BugsnagPerformanceImpl::maybePersistStateTask() {
-    if (shouldPersistState_) {
+    if (shouldPersistState_.exchange(false)) {
         auto error = persistentState_->persist();
         if (error != nil) {
             BSGLogError(@"error while persisting state: %@", error);
@@ -218,6 +223,11 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
             uploadPValueRequest();
         }
     }
+}
+
+void BugsnagPerformanceImpl::onWorkInterval() noexcept {
+    batch_->allowDrain();
+    wakeWorker();
 }
 
 #pragma mark Utility

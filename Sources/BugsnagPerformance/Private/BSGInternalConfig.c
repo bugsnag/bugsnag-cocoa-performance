@@ -11,8 +11,6 @@
 
 uint64_t bsgp_autoTriggerExportOnBatchSize = 100;
 
-dispatch_time_t bsgp_autoTriggerExportOnTimeDuration = 30 * NSEC_PER_SEC;
-
 NSTimeInterval bsgp_performWorkInterval = 30;
 
 NSTimeInterval bsgp_maxRetryAge = 24 * 60 * 60;
