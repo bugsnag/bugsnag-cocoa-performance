@@ -19,20 +19,12 @@ static BugsnagPerformanceImpl& getImpl() {
     return impl;
 }
 
-+ (BOOL)start:(NSError * __autoreleasing _Nullable *)error {
-    auto config = [BugsnagPerformanceConfiguration loadConfig:error];
-    if (config == nil) {
-        return NO;
-    }
-    return [self startWithConfiguration:config error:error];
++ (void)start {
+    [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
 }
 
-+ (BOOL)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration error:(NSError * __autoreleasing _Nullable *)error {
-    if (![configuration validate:error]) {
-        return NO;
-    }
-
-    return getImpl().start(configuration, error);
++ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
+    getImpl().start(configuration);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {

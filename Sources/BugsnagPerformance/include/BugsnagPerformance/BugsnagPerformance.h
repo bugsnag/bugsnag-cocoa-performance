@@ -19,9 +19,9 @@ OBJC_EXPORT
 
 - (instancetype)init NS_UNAVAILABLE;
 
-+ (BOOL)start:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(start());
++ (void)start;
 
-+ (BOOL)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration error:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(start(configuration:));
++ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration;
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 

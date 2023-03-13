@@ -16,18 +16,10 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 
 @implementation BugsnagPerformanceConfiguration
 
-- (instancetype)initWithApiKey:(NSString *)apiKey error:(NSError * __autoreleasing _Nullable *)error {
-    if (error != nil) {
-        *error = nil;
-    }
+- (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
         _apiKey = [apiKey copy];
-        auto endpoint = nsurlWithString(defaultEndpoint, error);
-        if (endpoint == nil) {
-            NSLog(@"Initialization error: %@", *error);
-            return nil;
-        }
-        _endpoint = endpoint;
+        _endpoint = nsurlWithString(defaultEndpoint, nil);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetwork = YES;
@@ -37,22 +29,21 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         _releaseStage = @"production";
 #endif
         _samplingProbability = 1.0;
-
-        if (![self validate:error]) {
-            return nil;
-        }
     }
     return self;
 }
 
-+ (instancetype)loadConfig:(NSError * __autoreleasing _Nullable *)error {
++ (instancetype)loadConfig {
     auto dict = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
     auto apiKey = BSGDynamicCast<NSString>(dict[@"apiKey"]);
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey error:error];
-    return config;
+    return [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
 }
 
 - (BOOL) validate:(NSError * __autoreleasing _Nullable *)error {
+    if (self.apiKey.length == 0) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:
+                        @"No Bugsnag API key has been provided" userInfo:nil];
+    }
     if (![self.endpoint.scheme hasPrefix:@"http"]) {
         *error = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:@{
             NSLocalizedDescriptionKey: @"Invalid configuration",

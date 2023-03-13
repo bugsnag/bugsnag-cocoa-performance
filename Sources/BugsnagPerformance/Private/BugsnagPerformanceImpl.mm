@@ -42,17 +42,19 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
                                                 valueOptions:NSMapTableStrongMemory])
 {}
 
-bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept {
+void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     {
         std::lock_guard<std::mutex> guard(instanceMutex_);
         if (started_) {
-            return true;
+            return;
         }
         started_ = true;
     }
+    
+    NSError *__autoreleasing error = nil;
 
-    if (![configuration validate:error]) {
-        return false;
+    if (![configuration validate:&error]) {
+        BSGLogError(@"Configuration validation failed with error: %@", error);
     }
 
     /* Note: Be careful about initialization order!
@@ -67,17 +69,11 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
      */
 
     __block auto blockThis = this;
-    NSError *__autoreleasing concreteError = nil;
-    if (error == nil) {
-        error = &concreteError;
-    }
-    *error = nil;
 
     resourceAttributes_ = ResourceAttributes(configuration).get();
 
-    if ((*error = persistence_->start()) != nil) {
-        BSGLogError(@"error while starting persistence: %@", *error);
-        return false;
+    if ((error = persistence_->start()) != nil) {
+        BSGLogError(@"error while starting persistence: %@", error);
     }
 
     retryQueue_ = std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]);
@@ -121,8 +117,6 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
-
-    return true;
 }
 
 #pragma mark Tasks
