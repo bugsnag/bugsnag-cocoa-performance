@@ -62,6 +62,8 @@
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
+		CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB572EA829BB783200FD7A2A /* AppStateTracker.h */; };
+		CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB572EA929BB783200FD7A2A /* AppStateTracker.m */; };
 		CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */; };
 		CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D20299E5458003CA1B4 /* TimeTests.mm */; };
 		CB7FD929299BA5AD00499E13 /* ViewControllerSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */; };
@@ -174,6 +176,8 @@
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
+		CB572EA829BB783200FD7A2A /* AppStateTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStateTracker.h; sourceTree = "<group>"; };
+		CB572EA929BB783200FD7A2A /* AppStateTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStateTracker.m; sourceTree = "<group>"; };
 		CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanOptionsTests.mm; sourceTree = "<group>"; };
 		CB747D20299E5458003CA1B4 /* TimeTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeTests.mm; sourceTree = "<group>"; };
 		CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewControllerSpanTests.mm; sourceTree = "<group>"; };
@@ -299,6 +303,8 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
+				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
 				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
@@ -478,6 +484,7 @@
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
+				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
@@ -658,6 +665,7 @@
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
+				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
