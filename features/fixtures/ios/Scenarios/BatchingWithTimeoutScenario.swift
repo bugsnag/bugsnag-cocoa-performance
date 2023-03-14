@@ -11,7 +11,8 @@ class BatchingWithTimeoutScenario: Scenario {
     
     override func startBugsnag() {
         super.startBugsnag()
-        bsgp_autoTriggerExportOnTimeDuration = 10 * NSEC_PER_MSEC
+        bsgp_autoTriggerExportOnBatchSize = 100;
+        bsgp_performWorkInterval = 10;
     }
     
     override func run() {

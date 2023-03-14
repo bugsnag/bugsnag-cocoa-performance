@@ -37,21 +37,24 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, appStateTracker_([AppStateTracker new])
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}
 
-bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept {
+void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     {
         std::lock_guard<std::mutex> guard(instanceMutex_);
         if (started_) {
-            return true;
+            return;
         }
         started_ = true;
     }
+    
+    NSError *__autoreleasing error = nil;
 
-    if (![configuration validate:error]) {
-        return false;
+    if (![configuration validate:&error]) {
+        BSGLogError(@"Configuration validation failed with error: %@", error);
     }
 
     /* Note: Be careful about initialization order!
@@ -66,17 +69,11 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
      */
 
     __block auto blockThis = this;
-    NSError *__autoreleasing concreteError = nil;
-    if (error == nil) {
-        error = &concreteError;
-    }
-    *error = nil;
 
     resourceAttributes_ = ResourceAttributes(configuration).get();
 
-    if ((*error = persistence_->start()) != nil) {
-        BSGLogError(@"error while starting persistence: %@", *error);
-        return false;
+    if ((error = persistence_->start()) != nil) {
+        BSGLogError(@"error while starting persistence: %@", error);
     }
 
     retryQueue_ = std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]);
@@ -98,21 +95,28 @@ bool BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     });
 
     worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
-                                    recurringTasks:buildRecurringTasks()
-                                      workInterval:bsgp_performWorkInterval];
+                                    recurringTasks:buildRecurringTasks()];
     [worker_ start];
+
+    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:bsgp_performWorkInterval
+                                                   repeats:YES
+                                                     block:^(__unused NSTimer * _Nonnull timer) {
+        blockThis->onWorkInterval();
+    }];
 
     batch_->setBatchFullCallback(^{
         blockThis->onBatchFull();
     });
+
+    appStateTracker_.onTransitionToForeground = ^{
+        blockThis->onAppEnteredForeground();
+    };
 
     tracer_.start(configuration);
 
     Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
-
-    return true;
 }
 
 #pragma mark Tasks
@@ -168,7 +172,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() {
 }
 
 bool BugsnagPerformanceImpl::maybePersistStateTask() {
-    if (shouldPersistState_) {
+    if (shouldPersistState_.exchange(false)) {
         auto error = persistentState_->persist();
         if (error != nil) {
             BSGLogError(@"error while persisting state: %@", error);
@@ -218,6 +222,16 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
             uploadPValueRequest();
         }
     }
+}
+
+void BugsnagPerformanceImpl::onWorkInterval() noexcept {
+    batch_->allowDrain();
+    wakeWorker();
+}
+
+void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
+    batch_->allowDrain();
+    wakeWorker();
 }
 
 #pragma mark Utility

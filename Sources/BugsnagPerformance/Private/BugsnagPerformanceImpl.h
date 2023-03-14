@@ -20,6 +20,7 @@
 #import "PersistentState.h"
 #import "Reachability.h"
 #import "RetryQueue.h"
+#import "AppStateTracker.h"
 
 #import <mutex>
 
@@ -28,7 +29,7 @@ class BugsnagPerformanceImpl {
 public:
     BugsnagPerformanceImpl() noexcept;
     
-    bool start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept;
+    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
@@ -66,11 +67,13 @@ private:
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
     NSDictionary *resourceAttributes_;
-    bool shouldPersistState_;
+    std::atomic<bool> shouldPersistState_;
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
     CFAbsoluteTime probabilityExpiry_;
     CFAbsoluteTime pausePValueRequestsUntil_;
+    NSTimer *workerTimer_;
+    AppStateTracker *appStateTracker_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
@@ -86,6 +89,8 @@ private:
     void onProbabilityChanged(double newProbability) noexcept;
     void onPersistentStateChanged() noexcept;
     void onFilesystemError() noexcept;
+    void onWorkInterval() noexcept;
+    void onAppEnteredForeground() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

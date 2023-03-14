@@ -11,7 +11,6 @@
 @interface Worker ()
 
 @property(readwrite,atomic) BOOL shouldEnd;
-@property(readonly,nonatomic) NSTimeInterval workInterval;
 @property(readonly,nonatomic) NSCondition *condition;
 @property(readonly,nonatomic) NSThread *thread;
 @property(readwrite,nonatomic) NSArray<Task> *initialTasks;
@@ -22,10 +21,8 @@
 @implementation Worker
 
 - (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks
-                       recurringTasks:(NSArray<Task> *)recurringTasks
-                         workInterval:(NSTimeInterval)workInterval {
+                       recurringTasks:(NSArray<Task> *)recurringTasks {
     if ((self = [super init])) {
-        _workInterval = workInterval;
         _condition = [[NSCondition alloc] init];
         _thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         _initialTasks = initialTasks;
@@ -67,9 +64,8 @@
             }
 
             // Once there's no work getting done, go to sleep.
-            NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:self.workInterval];
             [self.condition lock];
-            [self.condition waitUntilDate:timeoutDate];
+            [self.condition wait];
             [self.condition unlock];
         }
     }

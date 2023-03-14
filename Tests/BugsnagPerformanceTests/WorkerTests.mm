@@ -17,126 +17,134 @@
 @interface WorkerTester: NSObject
 
 + (instancetype) workerWithInitialTaskCount:(int)initialTaskCount
-                      recurringTaskCount:(int)recurringTaskCount
-                       recurringRuns:(int)recurringRuns
-                        workInterval:(NSTimeInterval)workInterval
-                                  sleepTime:(NSTimeInterval)sleepTime;
+                      recurringTaskCount:(int)recurringTaskCount;
 
 - (instancetype) initWithInitialTaskCount:(int)initialTaskCount
-                       recurringTaskCount:(int)recurringTaskCount
-                        recurringRuns:(int)recurringRuns
-                         workInterval:(NSTimeInterval)workInterval
-                            sleepTime:(NSTimeInterval)sleepTime;
+                       recurringTaskCount:(int)recurringTaskCount;
 
-@property(nonatomic,readonly) int initialTaskCount;
-@property(nonatomic,readonly) int recurringTaskCount;
-@property(nonatomic,readonly) NSTimeInterval workInterval;
-@property(nonatomic,readonly) NSTimeInterval sleepTime;
-@property(nonatomic,readwrite) int recurringRuns;
 @property(nonatomic,readwrite) int initialTaskCounter;
 @property(nonatomic,readwrite) int recurringTaskCounter;
+@property(nonatomic,readwrite) int remainingRecurringRuns;
 
-- (void) run;
+@property(nonatomic,readonly) Worker *worker;
 
 @end
 
 
 @implementation WorkerTests
 
-- (void)test0Initial0Recurring1Run {
+- (void)testNoTasks {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:0
-                                              recurringTaskCount:0
-                                                   recurringRuns:1
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
-
+                                              recurringTaskCount:0];
+    
+    auto worker = workerTester.worker;
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker start];
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker wake];
+    
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
 }
 
-- (void)test1Initial0Recurring1Run {
+- (void)test1InitialTask {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:1
-                                              recurringTaskCount:0
-                                                   recurringRuns:1
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
+                                              recurringTaskCount:0];
+    
+    auto worker = workerTester.worker;
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 1);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
 
     XCTAssertEqual(workerTester.initialTaskCounter, 1);
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
 }
 
-- (void)test0Initial1Recurring1Run {
+- (void)test1RecurringTask {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:0
-                                              recurringTaskCount:1
-                                                   recurringRuns:1
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
-
+                                              recurringTaskCount:1];
+    
+    auto worker = workerTester.worker;
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+    
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 1);
+    
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 2);
 }
 
-- (void)test1Initial1Recurring1Run {
+- (void)test1Initial1RecurringTask {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:1
-                                              recurringTaskCount:1
-                                                   recurringRuns:1
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
-
+                                              recurringTaskCount:1];
+    
+    auto worker = workerTester.worker;
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+    
     XCTAssertEqual(workerTester.initialTaskCounter, 1);
     XCTAssertEqual(workerTester.recurringTaskCounter, 1);
-}
-
-- (void)test1Initial1Recurring2Runs {
-    auto workerTester = [WorkerTester workerWithInitialTaskCount:1
-                                              recurringTaskCount:1
-                                                   recurringRuns:2
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
+    
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
 
     XCTAssertEqual(workerTester.initialTaskCounter, 1);
     XCTAssertEqual(workerTester.recurringTaskCounter, 2);
 }
 
-- (void)test2Initial2Recurring1Run {
+- (void)test2Initial2RecurringTask {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:2
-                                              recurringTaskCount:2
-                                                   recurringRuns:1
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
-
+                                              recurringTaskCount:2];
+    
+    auto worker = workerTester.worker;
+    
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+    
+    [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+    
     XCTAssertEqual(workerTester.initialTaskCounter, 2);
     XCTAssertEqual(workerTester.recurringTaskCounter, 2);
-}
-
-- (void)test2Initial2Recurring2Runs {
-    auto workerTester = [WorkerTester workerWithInitialTaskCount:2
-                                              recurringTaskCount:2
-                                                   recurringRuns:2
-                                                    workInterval:30
-                                                       sleepTime:0.2];
-    [workerTester run];
+    
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
 
     XCTAssertEqual(workerTester.initialTaskCounter, 2);
     XCTAssertEqual(workerTester.recurringTaskCounter, 4);
-}
+    
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
 
-- (void)test1Initial1Recurring1RunSmallInterval {
-    auto workerTester = [WorkerTester workerWithInitialTaskCount:1
-                                              recurringTaskCount:1
-                                                   recurringRuns:1
-                                                    workInterval:0.1
-                                                       sleepTime:0.4];
-    [workerTester run];
-
-    XCTAssertEqual(workerTester.initialTaskCounter, 1);
-    XCTAssertTrue(workerTester.recurringTaskCounter > 1);
+    XCTAssertEqual(workerTester.initialTaskCounter, 2);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 6);
 }
 
 @end
@@ -145,65 +153,47 @@
 @implementation WorkerTester
 
 + (instancetype) workerWithInitialTaskCount:(int)initialTaskCount
-                      recurringTaskCount:(int)recurringTaskCount
-                       recurringRuns:(int)recurringRuns
-                        workInterval:(NSTimeInterval)workInterval
-                               sleepTime:(NSTimeInterval)sleepTime {
+                      recurringTaskCount:(int)recurringTaskCount {
     return [[self alloc] initWithInitialTaskCount:initialTaskCount
-                               recurringTaskCount:recurringTaskCount
-                                    recurringRuns:recurringRuns
-                                     workInterval:workInterval
-                                        sleepTime:sleepTime];
+                               recurringTaskCount:recurringTaskCount];
 }
 
 - (instancetype) initWithInitialTaskCount:(int)initialTaskCount
-                       recurringTaskCount:(int)recurringTaskCount
-                        recurringRuns:(int)recurringRuns
-                         workInterval:(NSTimeInterval)workInterval
-                            sleepTime:(NSTimeInterval)sleepTime {
+                       recurringTaskCount:(int)recurringTaskCount {
     if ((self = [super init])) {
-        _initialTaskCount = initialTaskCount;
-        _recurringTaskCount = recurringTaskCount;
-        _recurringRuns = recurringRuns;
-        _workInterval = workInterval;
-        _sleepTime = sleepTime;
+        _remainingRecurringRuns = 1;
+        auto initialTasks = [NSMutableArray array];
+        for (int i = 0; i < initialTaskCount; i++) {
+            [initialTasks addObject:[self newInitialTask]];
+        }
+
+        auto recurringTasks = [NSMutableArray array];
+        for (int i = 0; i < recurringTaskCount; i++) {
+            [recurringTasks addObject:[self newRecurringTask]];
+        }
+
+        _worker = [[Worker alloc] initWithInitialTasks:initialTasks
+                                        recurringTasks:recurringTasks];
     }
     return self;
 }
 
+
 - (Task) newInitialTask {
+    __block auto blockSelf = self;
     return ^bool(){
-        self.initialTaskCounter++;
+        blockSelf.initialTaskCounter++;
         return false;
     };
 }
 
 - (Task) newRecurringTask {
+    __block auto blockSelf = self;
     return ^bool(){
-        self.recurringTaskCounter++;
-        self.recurringRuns--;
-        return self.recurringRuns > 0;
+        blockSelf.recurringTaskCounter++;
+        blockSelf.remainingRecurringRuns--;
+        return blockSelf.remainingRecurringRuns > 0;
     };
-}
-
-- (void) run {
-    auto initialTasks = [NSMutableArray array];
-    for (int i = 0; i < self.initialTaskCount; i++) {
-        [initialTasks addObject:[self newInitialTask]];
-    }
-
-    auto recurringTasks = [NSMutableArray array];
-    for (int i = 0; i < self.recurringTaskCount; i++) {
-        [recurringTasks addObject:[self newRecurringTask]];
-    }
-
-    auto worker = [[Worker alloc] initWithInitialTasks:initialTasks
-                                        recurringTasks:recurringTasks
-                                          workInterval:self.workInterval];
-
-    [worker start];
-    [NSThread sleepForTimeInterval:self.sleepTime];
-    [worker destroy];
 }
 
 @end
