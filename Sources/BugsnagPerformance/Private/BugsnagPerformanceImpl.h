@@ -29,7 +29,7 @@ class BugsnagPerformanceImpl {
 public:
     BugsnagPerformanceImpl() noexcept;
     
-    bool start(BugsnagPerformanceConfiguration *configuration, NSError **error) noexcept;
+    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
