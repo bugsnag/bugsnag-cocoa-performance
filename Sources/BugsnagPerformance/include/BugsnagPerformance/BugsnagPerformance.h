@@ -21,7 +21,7 @@ OBJC_EXPORT
 
 + (void)start;
 
-+ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration;
++ (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration NS_SWIFT_NAME(start(configuration:));
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 
