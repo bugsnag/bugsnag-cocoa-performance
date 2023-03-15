@@ -17,7 +17,7 @@
 		011C69DD28F5747200C5BA3C /* SomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DC28F5747200C5BA3C /* SomeView.swift */; };
 		011C69E128F5CA1E00C5BA3C /* IgnoredViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69E028F5CA1E00C5BA3C /* IgnoredViewController.swift */; };
 		0185C46728F6C04B006F9BDC /* ExampleLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 0185C46628F6C04B006F9BDC /* ExampleLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0185C47028F6C05D006F9BDC /* AnotherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DE28F57F1500C5BA3C /* AnotherViewController.swift */; };
+		CB572EF429C1B96100FD7A2A /* AnotherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DE28F57F1500C5BA3C /* AnotherViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -232,6 +232,7 @@
 			files = (
 				011C69DD28F5747200C5BA3C /* SomeView.swift in Sources */,
 				010656AC28DB2E8C00F2A9A6 /* ViewController.swift in Sources */,
+				CB572EF429C1B96100FD7A2A /* AnotherViewController.swift in Sources */,
 				010656A828DB2E8C00F2A9A6 /* AppDelegate.swift in Sources */,
 				010656AA28DB2E8C00F2A9A6 /* SceneDelegate.swift in Sources */,
 				011C69E128F5CA1E00C5BA3C /* IgnoredViewController.swift in Sources */,
@@ -242,7 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0185C47028F6C05D006F9BDC /* AnotherViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
