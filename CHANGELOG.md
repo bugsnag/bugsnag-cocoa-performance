@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Restructure the example app for preview release.
+  [66](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/66)
+
 ## 0.1.1 (2023-03-14)
 
 ### Bug fixes
