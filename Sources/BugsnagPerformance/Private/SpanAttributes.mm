@@ -14,21 +14,21 @@
 
 using namespace bugsnag;
 
-static bool appInForeground() noexcept {
-    auto inner = [](){
-        return UIApplication.sharedApplication.applicationState != UIApplicationStateBackground;
-    };
-
-    if ([NSThread isMainThread]) {
-        return inner();
-    }
-
-    bool __block result;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        result = inner();
-    });
-    return result;
-}
+//static bool appInForeground() noexcept {
+//    auto inner = [](){
+//        return UIApplication.sharedApplication.applicationState != UIApplicationStateBackground;
+//    };
+//
+//    if ([NSThread isMainThread]) {
+//        return inner();
+//    }
+//
+//    bool __block result;
+//    dispatch_sync(dispatch_get_main_queue(), ^{
+//        result = inner();
+//    });
+//    return result;
+//}
 
 static NSString *hostConnectionType() noexcept {
     switch (Reachability::get().getConnectivity()) {
