@@ -18,26 +18,34 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="I5S-OR-fvf">
-                                <rect key="frame" x="101.5" y="330" width="211.5" height="236.5"/>
+                                <rect key="frame" x="86.5" y="304.5" width="241.5" height="287"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0ga-0O-hoa">
-                                        <rect key="frame" x="0.0" y="0.0" width="211.5" height="34.5"/>
+                                        <rect key="frame" x="15" y="0.0" width="211.5" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="AnotherViewController &gt;"/>
                                         <connections>
                                             <segue destination="K5u-LY-aNB" kind="show" id="C85-Df-PBE"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WB9-jo-IaN">
-                                        <rect key="frame" x="22" y="50.5" width="167" height="34.5"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jUe-GT-sTK">
+                                        <rect key="frame" x="17.5" y="50.5" width="206" height="34.5"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="UIViewController &gt;"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="SwiftUI View (manual) &gt;"/>
+                                        <connections>
+                                            <action selector="showSwiftUIView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7Ab-Jo-wPm"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WB9-jo-IaN">
+                                        <rect key="frame" x="0.0" y="101" width="241.5" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="UIViewController (ignored) &gt;"/>
                                         <connections>
                                             <segue destination="l9J-Wk-fsy" kind="show" id="aaN-Q5-KdO"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0dA-WH-9hh">
-                                        <rect key="frame" x="1" y="101" width="209" height="34.5"/>
+                                        <rect key="frame" x="16" y="151.5" width="209" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="IgnoredViewController &gt;"/>
                                         <connections>
@@ -45,7 +53,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WLB-9O-ylx">
-                                        <rect key="frame" x="28" y="151.5" width="155" height="34.5"/>
+                                        <rect key="frame" x="43" y="202" width="155" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Network Request"/>
                                         <connections>
@@ -53,7 +61,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esF-0Z-lnd" userLabel="Manual Span">
-                                        <rect key="frame" x="44.5" y="202" width="122.5" height="34.5"/>
+                                        <rect key="frame" x="59.5" y="252.5" width="122.5" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Manual Span"/>
                                         <connections>
