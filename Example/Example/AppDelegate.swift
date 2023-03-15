@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Spans can be started and ended before starting the SDK. They will be sent once the SDK has started.
         BugsnagPerformance.startSpan(name: "Before start").end()
 
-        let config = try! BugsnagPerformanceConfiguration.loadConfig()
+        let config = BugsnagPerformanceConfiguration.loadConfig()
 
         // Disable automatic app startup instrumentation:
         //config.autoInstrumentAppStarts = false
@@ -33,7 +33,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             !($0 is IgnoredViewController)
         }
 
-        try! BugsnagPerformance.start(configuration: config)
+        BugsnagPerformance.start(configuration: config)
 
         return true
     }
