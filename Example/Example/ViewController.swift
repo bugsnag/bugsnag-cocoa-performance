@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import BugsnagPerformance
 
 class ViewController: UIViewController {
 
@@ -35,5 +36,13 @@ class ViewController: UIViewController {
 
     @IBAction func DoNetworkRequest(_ sender: Any) {
         query(string: "x")
+    }
+
+    @IBAction func DoManualSpan(_ sender: Any) {
+        let span = BugsnagPerformance.startSpan(name: "my span")
+        // Wait between 100ms and 1s
+        let waitTime = arc4random() % 900000
+        usleep(100000 + waitTime)
+        span.end()
     }
 }

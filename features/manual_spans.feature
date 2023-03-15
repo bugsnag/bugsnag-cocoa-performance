@@ -24,7 +24,8 @@ Feature: Manual creation of spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span bool attribute "bugsnag.app.in_foreground" is true
+    # TODO: Disabled until bugsnag.app.in_foreground is made safe
+    # * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
     * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "1"
     * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "production"

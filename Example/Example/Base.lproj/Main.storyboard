@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yGw-kV-UMF">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="yGw-kV-UMF">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -28,16 +28,8 @@
                                             <segue destination="K5u-LY-aNB" kind="show" id="C85-Df-PBE"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jUe-GT-sTK">
-                                        <rect key="frame" x="38.5" y="50.5" width="134.5" height="34.5"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="SwiftUI View &gt;"/>
-                                        <connections>
-                                            <action selector="showSwiftUIView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7Ab-Jo-wPm"/>
-                                        </connections>
-                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WB9-jo-IaN">
-                                        <rect key="frame" x="22" y="101" width="167" height="34.5"/>
+                                        <rect key="frame" x="22" y="50.5" width="167" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="UIViewController &gt;"/>
                                         <connections>
@@ -45,7 +37,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0dA-WH-9hh">
-                                        <rect key="frame" x="1" y="151.5" width="209" height="34.5"/>
+                                        <rect key="frame" x="1" y="101" width="209" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="IgnoredViewController &gt;"/>
                                         <connections>
@@ -53,11 +45,19 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WLB-9O-ylx">
-                                        <rect key="frame" x="28" y="202" width="155" height="34.5"/>
+                                        <rect key="frame" x="28" y="151.5" width="155" height="34.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Network Request"/>
                                         <connections>
                                             <action selector="DoNetworkRequest:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Llg-LD-ytB"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="esF-0Z-lnd" userLabel="Manual Span">
+                                        <rect key="frame" x="44.5" y="202" width="122.5" height="34.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Manual Span"/>
+                                        <connections>
+                                            <action selector="DoManualSpan:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jsk-1z-c2u"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -95,7 +95,7 @@
         <!--AnotherViewController-->
         <scene sceneID="ZSZ-S0-tph">
             <objects>
-                <viewController id="K5u-LY-aNB" customClass="AnotherViewController" customModule="ExampleLibrary" sceneMemberID="viewController">
+                <viewController id="K5u-LY-aNB" customClass="AnotherViewController" customModule="Example" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="BKu-Iz-PQD">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
