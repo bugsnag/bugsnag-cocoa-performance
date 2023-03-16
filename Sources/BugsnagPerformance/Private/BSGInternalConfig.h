@@ -10,7 +10,7 @@
 #define BSGInternalConfig_h
 
 #include <stdint.h>
-#include <dispatch/time.h>
+#include <dispatch/dispatch.h>
 #include <CoreFoundation/CFDate.h>
 
 #ifdef __OBJC__
