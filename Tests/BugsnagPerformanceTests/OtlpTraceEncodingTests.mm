@@ -71,11 +71,11 @@ using namespace bugsnag;
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(traceId.length, 32, @"traceId should be a hex encoded 16-byte array");
+    XCTAssertEqual(traceId.length, 32U, @"traceId should be a hex encoded 16-byte array");
     
     NSString *spanId = json[@"spanId"];
     XCTAssert([spanId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(spanId.length, 16, @"spanId should be a hex encoded 8-byte array");
+    XCTAssertEqual(spanId.length, 16U, @"spanId should be a hex encoded 8-byte array");
     
     XCTAssertEqualObjects(json[@"name"], @"My span");
     
@@ -87,7 +87,7 @@ using namespace bugsnag;
 
 - (void)testBuildPValueRequestPackage {
     auto package = OtlpTraceEncoding::buildPValueRequestPackage();
-    XCTAssertEqual(0, package->timestamp);
+    XCTAssertEqual(0U, package->timestamp);
     NSError *error = nil;
     NSDictionary *deserialized = [NSJSONSerialization JSONObjectWithData:(NSData * _Nonnull)package->getPayloadForUnitTest()
                                                                  options:0
@@ -106,7 +106,7 @@ using namespace bugsnag;
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
 
-    XCTAssertGreaterThan(package->timestamp, 0);
+    XCTAssertGreaterThan(package->timestamp, 0U);
     XCTAssertNotNil(package->getPayloadForUnitTest());
     XCTAssertNotNil(package->getHeadersForUnitTest());
 

@@ -40,6 +40,10 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 }
 
 - (BOOL) validate:(NSError * __autoreleasing _Nullable *)error {
+    NSError *__autoreleasing _Nullable dummyError;
+    if (error == nil) {
+        error = &dummyError;
+    }
     if (self.apiKey.length == 0) {
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:
                         @"No Bugsnag API key has been provided" userInfo:nil];

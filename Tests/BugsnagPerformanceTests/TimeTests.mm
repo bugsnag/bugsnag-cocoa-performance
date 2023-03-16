@@ -21,12 +21,12 @@ using namespace bugsnag;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:0];
     dispatch_time_t time = absoluteTimeToNanoseconds(dateToAbsoluteTime(date));
     
-    XCTAssertEqual(0, time);
+    XCTAssertEqual(0U, time);
     
     date = [NSDate dateWithTimeIntervalSince1970:1000];
     time = absoluteTimeToNanoseconds(dateToAbsoluteTime(date));
     
-    XCTAssertEqual(1000000000000, time);
+    XCTAssertEqual(1000000000000ULL, time);
 }
 
 - (void)testCurrentTime {
