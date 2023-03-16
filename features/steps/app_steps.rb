@@ -22,3 +22,7 @@ Then('every span field {string} equals {int}') do |key, expected|
   Maze.check.not_includes selected_keys, false
 end
 
+Then('every span bool attribute {string} is false') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.map { |span| Maze::check.false span['attributes'].find { |a| a['key'] == attribute }['value']['boolValue'] }
+end
