@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 071e771eec1590a3c31b67fb1a33d0408f95e693
-  tag: v7.22.0
+  revision: 2d2ae80b79c7d7e5d7be4fec819c24dfb3067f60
+  tag: v7.21.0
   specs:
-    bugsnag-maze-runner (7.22.0)
+    bugsnag-maze-runner (7.21.0)
       appium_lib (~> 12.0.0)
       appium_lib_core (~> 5.4.0)
       bugsnag (~> 6.24)
@@ -93,7 +93,7 @@ GEM
     os (1.0.1)
     power_assert (2.0.3)
     racc (1.6.2)
-    rack (2.2.6.3)
+    rack (2.2.6.4)
     rake (12.3.3)
     regexp_parser (2.7.0)
     rexml (3.2.5)
