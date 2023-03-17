@@ -47,7 +47,7 @@ public:
 
 private:
     std::unique_ptr<SpanData> data_;
-    OnSpanEnd onEnd_;
+    OnSpanEnd onEnd_{nil};
 };
 
 }

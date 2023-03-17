@@ -20,7 +20,7 @@ public:
     NSError *clear(void) noexcept;
     NSString *topLevelDirectory(void) noexcept;
 private:
-    NSString *topLevelDir_;
+    NSString *topLevelDir_{nil};
 };
 
 }

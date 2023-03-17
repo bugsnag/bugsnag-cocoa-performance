@@ -56,24 +56,24 @@ public:
     void onSpanStarted() noexcept;
 
 private:
-    bool started_;
+    bool started_{false};
     std::mutex instanceMutex_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
-    Worker *worker_;
+    Worker *worker_{nil};
     std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
-    NSDictionary *resourceAttributes_;
-    std::atomic<bool> shouldPersistState_;
+    NSDictionary *resourceAttributes_{nil};
+    std::atomic<bool> shouldPersistState_{false};
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
-    CFAbsoluteTime probabilityExpiry_;
-    CFAbsoluteTime pausePValueRequestsUntil_;
-    NSTimer *workerTimer_;
-    AppStateTracker *appStateTracker_;
+    CFAbsoluteTime probabilityExpiry_{0};
+    CFAbsoluteTime pausePValueRequestsUntil_{0};
+    NSTimer *workerTimer_{nil};
+    AppStateTracker *appStateTracker_{nil};
 
     // Tasks
     NSArray<Task> *buildInitialTasks();
