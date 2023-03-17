@@ -39,7 +39,9 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     auto releaseStage = BSGDynamicCast<NSString>(dict[@"releaseStage"]);
     auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(dict[@"enabledReleaseStages"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
-    configuration.releaseStage = releaseStage;
+    if (releaseStage) {
+        configuration.releaseStage = releaseStage;
+    }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
     return configuration;
 }
