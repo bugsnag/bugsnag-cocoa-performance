@@ -28,7 +28,7 @@ using namespace bugsnag;
     XCTAssertNil(persistence.start());
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
+    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
     XCTAssertNil(error);
 
     auto internalFile = [self.filePath stringByAppendingPathComponent:@"a"];
@@ -41,7 +41,7 @@ using namespace bugsnag;
     persistence.clear();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
+    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
     XCTAssertNil(error);
     XCTAssertFalse([fm fileExistsAtPath:internalFile isDirectory:&isDir]);
 }

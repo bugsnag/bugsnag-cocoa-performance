@@ -17,15 +17,15 @@ namespace bugsnag {
 class IdGenerator {
 public:
     static SpanId generateSpanId() noexcept {
-        return random<SpanId>();
+        return generate_random<SpanId>();
     }
     
     static TraceId generateTraceId() noexcept {
-        return random<TraceId>();
+        return generate_random<TraceId>();
     }
     
 private:
-    template<typename T> static T random() noexcept {
+    template<typename T> static T generate_random() noexcept {
         T result;
         arc4random_buf(&result, sizeof result);
         return result;

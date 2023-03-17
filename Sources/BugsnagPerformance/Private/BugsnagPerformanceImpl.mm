@@ -37,7 +37,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
-, appStateTracker_([AppStateTracker new])
+, appStateTracker_([AppStateTracker sharedInstance])
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}

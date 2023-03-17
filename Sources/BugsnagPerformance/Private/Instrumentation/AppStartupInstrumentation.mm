@@ -58,7 +58,7 @@ AppStartupInstrumentation::start() noexcept {
     auto launchId = [NSString stringWithFormat:@"%@/%llu",
                      NSBundle.mainBundle.infoDictionary[@"CFBundleShortVersionString"],
                      GetBootTime()];
-    
+
     auto launchIdKey = @"BugsnagPerformanceLaunchId";
     auto userDefaults = [NSUserDefaults standardUserDefaults];
     isCold_ = ![[userDefaults stringForKey:launchIdKey] isEqualToString:launchId];
@@ -125,14 +125,10 @@ AppStartupInstrumentation::getProcessStartTime() noexcept {
 }
 
 // TODO: Remove after integration with Bugsnag
-static uint64_t GetBootTime() {
-    std::array<int, 3> cmd { CTL_KERN, KERN_BOOTTIME };
-    struct timeval timeval = {0};
-    auto size = sizeof timeval;
-    
-    if (sysctl(cmd.data(), cmd.size(), &timeval, &size, NULL, 0)) {
-        return 0;
-    }
-    
-    return (uint64_t)timeval.tv_sec * USEC_PER_SEC + (uint64_t)timeval.tv_usec;
+static uint64_t GetBootTime(void) {
+    struct timeval tv;
+    size_t len = sizeof(tv);
+    int ret = sysctl((int[]){CTL_KERN, KERN_BOOTTIME}, 2, &tv, &len, NULL, 0);
+    if (ret == -1) return 0;
+    return (uint64_t)tv.tv_sec * USEC_PER_SEC + (uint64_t)tv.tv_usec;
 }

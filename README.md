@@ -19,7 +19,7 @@ For integration instructions, see our online docs: [docs.bugsnag.com/performance
 We are currently publishing pre-1.0 releases. These releases may contain breaking changes, which are documented in the [CHANGELOG.md](./CHANGELOG.md).
 ## Support
 
-* [Read the integration guide](https://docs.bugsnag.com/performance/cocoa/)
+* [Read the integration guide](https://docs.bugsnag.com/performance/ios/)
 * [Search open and closed issues](https://github.com/bugsnag/bugsnag-cocoa-performance/issues?utf8=✓&q=is%3Aissue) for similar problems
 * [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-cocoa-performance/issues/new)
 

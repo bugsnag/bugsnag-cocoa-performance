@@ -32,10 +32,10 @@ public:
      */
     NSError *load() noexcept;
 private:
-    NSString *jsonFilePath_;
-    NSString *persistentStateDir_;
-    double probability_;
-    void (^onPersistenceNeeded_)();
+    NSString *jsonFilePath_{nil};
+    NSString *persistentStateDir_{nil};
+    double probability_{0};
+    void (^onPersistenceNeeded_)(){nil};
 };
 
 }

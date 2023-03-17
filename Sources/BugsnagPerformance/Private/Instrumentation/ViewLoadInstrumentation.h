@@ -31,7 +31,7 @@ private:
     void onViewDidAppear(UIViewController *viewController) noexcept;
     
     class Tracer &tracer_;
-    BOOL (^ callback_)(UIViewController *viewController) = nullptr;
-    NSSet *observedClasses_ = nil;
+    BOOL (^ callback_)(UIViewController *viewController){nullptr};
+    NSSet *observedClasses_{nil};
 };
 }

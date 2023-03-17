@@ -33,9 +33,9 @@ public:
     void upload(OtlpPackage &package, UploadResultCallback callback) noexcept override;
 
 private:
-    const NSURL *endpoint_;
-    NSString *apiKey_;
-    NewProbabilityCallback newProbabilityCallback_;
+    const NSURL *endpoint_{nil};
+    NSString *apiKey_{nil};
+    NewProbabilityCallback newProbabilityCallback_{nullptr};
 
     UploadResult getUploadResult(NSURLResponse *response) const;
     double getNewProbability(NSURLResponse *response) const;

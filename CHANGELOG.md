@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 0.1.3 (2023-03-17)
+
+### Bug fixes
+
+* Turn up all warnings and sanitizers to 11, and fix detected UB behavior.
+  [76](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/76)
+  [74](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/74)
+  [73](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/73)
+
+* Safer background/foreground detection.
+  [72](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/72)
+
+* Corrected boot time fetch code.
+  [70](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/70)
+
 ## 0.1.2 (2023-03-15)
 
 ### Bug fixes

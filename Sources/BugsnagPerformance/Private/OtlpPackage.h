@@ -33,15 +33,15 @@ public:
 
     NSData *serialize() noexcept;
 
-    const dispatch_time_t timestamp;
+    const dispatch_time_t timestamp{0};
 
 
 private:
     friend bool operator==(const OtlpPackage &lhs, const OtlpPackage &rhs);
     OtlpPackage() = delete;
 
-    const NSData *payload_;
-    const NSDictionary *headers_;
+    const NSData *payload_{nil};
+    const NSDictionary *headers_{nil};
 
 public: // For testing only
     const NSData *getPayloadForUnitTest() {return payload_;}

@@ -26,13 +26,13 @@ public:
     
     void updateSamplingProbability(double value) noexcept;
     
-    TraceId traceId;
-    SpanId spanId;
-    NSString *name;
-    SpanKind kind = SPAN_KIND_INTERNAL;
-    NSMutableDictionary *attributes;
-    double samplingProbability;
-    CFAbsoluteTime startTime;
-    CFAbsoluteTime endTime = 0;
+    TraceId traceId{0};
+    SpanId spanId{0};
+    NSString *name{nil};
+    SpanKind kind{SPAN_KIND_INTERNAL};
+    NSMutableDictionary *attributes{nil};
+    double samplingProbability{0};
+    CFAbsoluteTime startTime{0};
+    CFAbsoluteTime endTime{0};
 };
 }

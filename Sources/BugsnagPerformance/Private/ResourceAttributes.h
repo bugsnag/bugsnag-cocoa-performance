@@ -20,6 +20,6 @@ public:
     NSDictionary *get() noexcept;
     
 private:
-    NSString *releaseStage_;
+    NSString *releaseStage_{nil};
 };
 }

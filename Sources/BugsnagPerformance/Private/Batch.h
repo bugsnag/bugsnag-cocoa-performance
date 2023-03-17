@@ -74,8 +74,8 @@ public:
     }
 
 private:
-    void (^onBatchFull)();
-    bool drainIsAllowed_;
+    void (^onBatchFull)(){nullptr};
+    bool drainIsAllowed_{false};
     std::mutex mutex_;
     std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans_;
 };
