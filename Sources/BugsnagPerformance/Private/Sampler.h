@@ -48,6 +48,6 @@ public:
     sampled(std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans) noexcept;
 
 private:
-    double probability_;
+    double probability_{0};
 };
 }

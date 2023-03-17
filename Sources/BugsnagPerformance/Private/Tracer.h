@@ -46,7 +46,7 @@ private:
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     
     std::shared_ptr<Batch> batch_;
-    void (^onSpanStarted_)();
+    void (^onSpanStarted_)(){nil};
     
     void tryAddSpanToBatch(std::unique_ptr<SpanData> spanData);
 };

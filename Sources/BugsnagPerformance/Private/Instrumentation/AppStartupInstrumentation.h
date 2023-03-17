@@ -30,6 +30,6 @@ private:
     void reportSpan(CFAbsoluteTime endTime) noexcept;
     
     class Tracer &tracer_;
-    bool isCold_;
+    bool isCold_{false};
 };
 }

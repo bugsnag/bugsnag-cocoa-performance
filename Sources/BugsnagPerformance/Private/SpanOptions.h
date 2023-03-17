@@ -37,10 +37,10 @@ public:
     , isFirstClass(options.isFirstClass)
     {}
     
-    id<BugsnagPerformanceSpanContext> parentContext;
-    CFAbsoluteTime startTime;
-    bool makeContextCurrent;
-    BSGFirstClass isFirstClass;
+    id<BugsnagPerformanceSpanContext> parentContext{nil};
+    CFAbsoluteTime startTime{0};
+    bool makeContextCurrent{false};
+    BSGFirstClass isFirstClass{BSGFirstClassUnset};
 };
 
 static inline SpanOptions defaultSpanOptionsForCustom() {

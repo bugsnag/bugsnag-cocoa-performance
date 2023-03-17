@@ -55,8 +55,8 @@ public:
     }
 
 private:
-    NSString *baseDir_;
-    void (^onFilesystemError)();
+    NSString *baseDir_{nil};
+    void (^onFilesystemError)(){nullptr};
 
     void remove(NSString *filename) noexcept;
     NSString *fullPath(NSString *filename) noexcept;
