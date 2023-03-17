@@ -37,11 +37,11 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     // Adding the same timestamp package just overwrites the old one.
     queue.add(package2);
     auto list = queue.list();
-    XCTAssertEqual(3, list.size());
+    XCTAssertEqual(3U, list.size());
     // List always lists newest to oldest
-    XCTAssertEqual(1110, list[0]);
-    XCTAssertEqual(1100, list[1]);
-    XCTAssertEqual(1000, list[2]);
+    XCTAssertEqual(1110U, list[0]);
+    XCTAssertEqual(1100U, list[1]);
+    XCTAssertEqual(1000U, list[2]);
 
     auto get1 = queue.get(1000);
     auto get2 = queue.get(1100);
@@ -52,26 +52,26 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
     queue.remove(1100);
     list = queue.list();
-    XCTAssertEqual(2, list.size());
-    XCTAssertEqual(1110, list[0]);
-    XCTAssertEqual(1000, list[1]);
+    XCTAssertEqual(2U, list.size());
+    XCTAssertEqual(1110U, list[0]);
+    XCTAssertEqual(1000U, list[1]);
 
     // Removing a nonexistent entry is a no-op and does not trigger an error
     queue.remove(1100);
     list = queue.list();
-    XCTAssertEqual(2, list.size());
-    XCTAssertEqual(1110, list[0]);
-    XCTAssertEqual(1000, list[1]);
+    XCTAssertEqual(2U, list.size());
+    XCTAssertEqual(1110U, list[0]);
+    XCTAssertEqual(1000U, list[1]);
     XCTAssertEqual(0, errorCallCount);
 
     queue.remove(1000);
     list = queue.list();
-    XCTAssertEqual(1, list.size());
-    XCTAssertEqual(1110, list[0]);
+    XCTAssertEqual(1U, list.size());
+    XCTAssertEqual(1110U, list[0]);
 
     queue.remove(1110);
     list = queue.list();
-    XCTAssertEqual(0, list.size());
+    XCTAssertEqual(0U, list.size());
 
     XCTAssertEqual(0, errorCallCount);
 }
@@ -100,23 +100,23 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     });
 
     XCTAssertTrue([[NSData new] writeToFile:[self.filePath stringByAppendingPathComponent:@"xyz.json"] atomically:YES]);
-    XCTAssertEqual(1, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(1U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
     OtlpPackage package(1, [NSData new], @{});
     queue.add(package);
-    XCTAssertEqual(2, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(2U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
     OtlpPackage package2(currentTimeMinusNanoseconds(1000), [NSData new], @{});
     queue.add(package2);
-    XCTAssertEqual(3, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(3U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
     OtlpPackage package3(currentTimeMinusNanoseconds(24*60*60*NSEC_PER_SEC)+10000000, [NSData new], @{});
     queue.add(package3);
-    XCTAssertEqual(4, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(4U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
     OtlpPackage package4(currentTimeMinusNanoseconds(24*60*60*NSEC_PER_SEC)-1, [NSData new], @{});
     queue.add(package4);
-    XCTAssertEqual(5, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(5U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
 
     queue.sweep();
     XCTAssertEqual(0, callCount);
-    XCTAssertEqual(2, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
+    XCTAssertEqual(2U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
 }
 
 - (void)testCreationTopLevelDirAlreadyExists {

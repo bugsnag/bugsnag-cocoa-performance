@@ -22,9 +22,9 @@ using namespace bugsnag;
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
         perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
-        XCTAssertEqual(1, perf.testing_getViewControllersToSpansCount());
+        XCTAssertEqual(1U, perf.testing_getViewControllersToSpansCount());
         perf.endViewLoadSpan(controller, [NSDate date]);
-        XCTAssertEqual(0, perf.testing_getViewControllersToSpansCount());
+        XCTAssertEqual(0U, perf.testing_getViewControllersToSpansCount());
     }
 }
 
@@ -34,14 +34,14 @@ using namespace bugsnag;
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
         perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
-        XCTAssertEqual(1, perf.testing_getViewControllersToSpansCount());
+        XCTAssertEqual(1U, perf.testing_getViewControllersToSpansCount());
     }
 
     /* NSMapTable doesn't actually remove values the moment a weak key is deallocated;
      * it does a sweep during certain operations, such as when the map has to resize.
      * http://cocoamine.net/blog/2013/12/13/nsmaptable-and-zeroing-weak-references/
      */
-    XCTAssertEqual(1, perf.testing_getViewControllersToSpansCount());
+    XCTAssertEqual(1U, perf.testing_getViewControllersToSpansCount());
 
     // To test removal, we make a bunch more entries to force the map to resize.
     @autoreleasepool {
@@ -50,7 +50,7 @@ using namespace bugsnag;
             perf.startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
         }
 
-        XCTAssertLessThan(perf.testing_getViewControllersToSpansCount(), 100);
+        XCTAssertLessThan(perf.testing_getViewControllersToSpansCount(), 100U);
     }
 }
 

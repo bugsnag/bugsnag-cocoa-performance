@@ -45,7 +45,7 @@ using namespace bugsnag;
 - (void)testDeviceModelIdentifier {
     auto attributes = ResourceAttributes(self.config).get();
     auto modelId = (NSString *)attributes[@"device.model.identifier"];
-    XCTAssertGreaterThan(modelId.length, 0);
+    XCTAssertGreaterThan(modelId.length, 0U);
     XCTAssertTrue([modelId containsString:@","]);
     XCTAssertFalse([modelId containsString:@"\0"]);
 }
