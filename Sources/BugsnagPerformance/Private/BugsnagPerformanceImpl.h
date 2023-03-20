@@ -62,6 +62,7 @@ private:
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
     Worker *worker_{nil};
+    BugsnagPerformanceConfiguration *configuration_;
     std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;

@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 0.1.4 (2023-03-20)
+
+### Enhancements
+
+* Added enabledReleaseStages to BugsnagPerformanceConfiguration.
+  [78](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/78)
+  
+### Bug fixes
+
+* Fixed compile issue with mac catalyst targets.
+  [79](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/79)
+
 ## 0.1.3 (2023-03-17)
 
 ### Bug fixes

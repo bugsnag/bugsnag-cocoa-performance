@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagPerformanceImpl.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 #import "BSGInternalConfig.h"
 #import "OtlpTraceEncoding.h"
@@ -56,6 +57,8 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     if (![configuration validate:&error]) {
         BSGLogError(@"Configuration validation failed with error: %@", error);
     }
+    
+    configuration_ = configuration;
 
     /* Note: Be careful about initialization order!
      *
@@ -241,6 +244,10 @@ void BugsnagPerformanceImpl::wakeWorker() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
+    if (!configuration_.shouldSendReports) {
+        BSGLogInfo("Discarding pValue request because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
+        return;
+    }
     auto currentTime = CFAbsoluteTimeGetCurrent();
     if (currentTime > pausePValueRequestsUntil_) {
         // Pause P-value requests so that we don't flood the server on every span start
@@ -250,6 +257,10 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
+    if (!configuration_.shouldSendReports) {
+        BSGLogInfo("Discarding package because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
+        return;
+    }
     if (package == nullptr) {
         return;
     }
