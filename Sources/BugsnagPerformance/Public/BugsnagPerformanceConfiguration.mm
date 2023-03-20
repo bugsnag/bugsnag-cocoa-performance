@@ -36,7 +36,14 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 + (instancetype)loadConfig {
     auto dict = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
     auto apiKey = BSGDynamicCast<NSString>(dict[@"apiKey"]);
-    return [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
+    auto releaseStage = BSGDynamicCast<NSString>(dict[@"releaseStage"]);
+    auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(dict[@"enabledReleaseStages"]);
+    auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
+    if (releaseStage) {
+        configuration.releaseStage = releaseStage;
+    }
+    configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    return configuration;
 }
 
 - (BOOL) validate:(NSError * __autoreleasing _Nullable *)error {
@@ -78,6 +85,11 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     BOOL isHex = (NSNotFound == [[apiKey uppercaseString] rangeOfCharacterFromSet:chars].location);
 
     return isHex && [apiKey length] == BSGApiKeyLength;
+}
+
+- (BOOL)shouldSendReports {
+    return self.enabledReleaseStages.count == 0 ||
+           [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
 @end

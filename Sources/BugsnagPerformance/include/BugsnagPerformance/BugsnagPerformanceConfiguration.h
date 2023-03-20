@@ -42,7 +42,16 @@ OBJC_EXPORT
 
 @interface BugsnagPerformanceConfiguration (/* App metadata */)
 
+/**
+ *  The release stage of the application, such as production, development, beta
+ *  et cetera
+ */
 @property (copy, nonatomic) NSString *releaseStage;
+
+/**
+ *  Release stages which are allowed to notify Bugsnag
+ */
+@property (copy, nullable, nonatomic) NSSet<NSString *> *enabledReleaseStages;
 
 @end
 
