@@ -7,14 +7,15 @@
 //
 
 #import "AppStateTracker.h"
+#import "Targets.h"
 
-#if __has_include(<UIKit/UIKit.h>)
+#if BSG_TARGET_UIKIT
 #import <UIKit/UIKit.h>
 #endif
-#if __has_include(<AppKit/AppKit.h>)
+#if BSG_TARGET_APPKIT
 #import <AppKit/AppKit.h>
 #endif
-#if __has_include(<WatchKit/WatchKit.h>)
+#if BSG_TARGET_WATCHKIT
 #import <WatchKit/WatchKit.h>
 #endif
 
@@ -34,9 +35,9 @@
 }
 
 static BOOL isInForeground(void) {
-#if __has_include(<WatchKit/WatchKit.h>)
+#if BSG_TARGET_WATCHKIT
     return WKApplication.sharedApplication.applicationState != WKApplicationStateBackground;
-#elif __has_include(<UIKit/UIKit.h>)
+#elif BSG_TARGET_UIKIT
     return UIApplication.sharedApplication.applicationState != UIApplicationStateBackground;
 #else
     return YES;
@@ -56,7 +57,7 @@ static BOOL isInForeground(void) {
 
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
 
-#if __has_include(<AppKit/AppKit.h>)
+#if BSG_TARGET_APPKIT
         [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:NSApplicationDidBecomeActiveNotification
@@ -67,7 +68,7 @@ static BOOL isInForeground(void) {
                                  object:nil];
 #endif
 
-#if __has_include(<UIKit/UIKit.h>)
+#if BSG_TARGET_UIKIT
         [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:UIApplicationDidBecomeActiveNotification
@@ -78,7 +79,7 @@ static BOOL isInForeground(void) {
                                  object:nil];
 #endif
 
-#if __has_include(<WatchKit/WatchKit.h>)
+#if BSG_TARGET_WATCHKIT
         [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:WKApplicationDidBecomeActiveNotification
