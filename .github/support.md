@@ -9,7 +9,7 @@ When contacting support, please include as much information as necessary, includ
 - steps to reproduce
 - expected/actual behaviour 
 
-* Bugsnag Cocoa Performance version:
+* BugSnag Cocoa Performance version:
 * CocoaPods version:
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s):

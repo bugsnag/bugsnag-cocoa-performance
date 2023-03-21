@@ -19,7 +19,7 @@ A clear and concise description of what the bug is.
 4. See error
 
 ### Environment
-* Bugsnag Cocoa Performance version:
+* BugSnag Cocoa Performance version:
 * CocoaPods version:
 * Carthage version (if any):
 * iOS/tvOS/macOS version(s):
