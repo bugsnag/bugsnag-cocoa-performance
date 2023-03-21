@@ -1,6 +1,6 @@
 ---
 name: Having trouble getting started?
-about: Please contact us at support@bugsnag.com for assistance with integrating Bugsnag
+about: Please contact us at support@bugsnag.com for assistance with integrating BugSnag
   into your application.
 title: ''
 labels: ''

@@ -1,7 +1,7 @@
 ## Are you having trouble getting started?
 If you haven't already, please checkout our [documentation](https://docs.bugsnag.com/performance/ios/) for guides, references and tutorials.
 
-Or, if you wish you can [contact us directly](mailto:support@bugsnag.com) for assistance on integrating Bugsnag into your application, troubleshooting an issue or a question about our supported features.
+Or, if you wish you can [contact us directly](mailto:support@bugsnag.com) for assistance on integrating BugSnag into your application, troubleshooting an issue or a question about our supported features.
 
 When contacting support, please include as much information as necessary, including:
 
