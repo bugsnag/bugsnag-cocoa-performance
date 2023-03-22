@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 0.1.5 (2023-03-22)
+
+### Bug fixes
+
+* Use app-extension safe version of UIApplication.sharedApplication
+  [82](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/82)
+
 ## 0.1.4 (2023-03-20)
 
 ### Enhancements
