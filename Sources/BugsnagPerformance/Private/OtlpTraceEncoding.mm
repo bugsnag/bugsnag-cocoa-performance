@@ -278,7 +278,7 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
     };
 
     if (payload.length > MIN_SIZE_FOR_GZIP) {
-        payload = [Gzip gzipped:payload error:&error];
+        payload = [Gzip gzipped:(NSData * _Nonnull)payload error:&error];
         if (payload == nil || error != nil) {
             BSGLogError(@"error compressing payload: %@", error);
             return nullptr;
