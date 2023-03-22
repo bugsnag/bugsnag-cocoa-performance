@@ -14,7 +14,10 @@ using namespace bugsnag;
 
 static int getPayloadOffset(const NSData *data) {
     auto endOfHeaders = [@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding];
-    auto range = [data rangeOfData:endOfHeaders options:0 range:NSMakeRange(0, data.length)];
+    if (endOfHeaders == nil) {
+        return -1;
+    }
+    auto range = [data rangeOfData:(NSData * _Nonnull)endOfHeaders options:0 range:NSMakeRange(0, data.length)];
     if (range.location == NSNotFound) {
         return -1;
     }
@@ -35,8 +38,12 @@ static NSDictionary *deserializeHeaders(const NSData *data) {
     if (payloadOffset < 0) {
         return nullptr;
     }
-    auto headerStr = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, (NSUInteger)payloadOffset)]
-                                           encoding:NSUTF8StringEncoding];
+    auto headerStrNullable = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(0, (NSUInteger)payloadOffset)]
+                                                   encoding:NSUTF8StringEncoding];
+    if (headerStrNullable == nil) {
+        return nullptr;
+    }
+    NSString * _Nonnull headerStr = (NSString * _Nonnull)headerStrNullable;
     auto headers = [NSMutableDictionary new];
 
     NSError *error;

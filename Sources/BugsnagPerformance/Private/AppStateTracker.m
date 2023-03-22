@@ -11,12 +11,43 @@
 
 #if BSG_TARGET_UIKIT
 #import <UIKit/UIKit.h>
+#define UIAPPLICATION NSClassFromString(@"UIApplication")
 #endif
+
 #if BSG_TARGET_APPKIT
 #import <AppKit/AppKit.h>
 #endif
+
 #if BSG_TARGET_WATCHKIT
 #import <WatchKit/WatchKit.h>
+#endif
+
+static BOOL isRunningInAppExtension(void) {
+    // From "Information Property List Key Reference" > "App Extension Keys"
+    // https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/AppExtensionKeys.html
+    //
+    // NSExtensionPointIdentifier
+    // String - iOS, macOS. Specifies the extension point that supports an app extension, in reverse-DNS notation.
+    // This key is required for every app extension, and must be placed as an immediate child of the NSExtension key.
+    // Each Xcode app extension template is preconfigured with the appropriate extension point identifier key.
+    return NSBundle.mainBundle.infoDictionary[@"NSExtension"][@"NSExtensionPointIdentifier"] != nil;
+}
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+
+static UIApplication * GetUIApplication(void) {
+    // +sharedApplication is unavailable to app extensions
+    if (isRunningInAppExtension()) {
+        return nil;
+    }
+    if (![UIAPPLICATION respondsToSelector:@selector(sharedApplication)]) {
+        return nil;
+    }
+    // Using performSelector: to avoid a compile-time check that
+    // +sharedApplication is not called from app extensions
+    return [UIAPPLICATION performSelector:@selector(sharedApplication)];
+}
+
 #endif
 
 @implementation AppStateTracker
@@ -38,10 +69,11 @@ static BOOL isInForeground(void) {
 #if BSG_TARGET_WATCHKIT
     return WKApplication.sharedApplication.applicationState != WKApplicationStateBackground;
 #elif BSG_TARGET_UIKIT
-    return UIApplication.sharedApplication.applicationState != UIApplicationStateBackground;
-#else
-    return YES;
+    if (!isRunningInAppExtension()) {
+        return [GetUIApplication() applicationState] != UIApplicationStateBackground;
+    }
 #endif
+    return YES;
 }
 
 - (instancetype) init {
