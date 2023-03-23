@@ -9,6 +9,7 @@
 
 #import "ResourceAttributes.h"
 #import "SpanAttributes.h"
+#import "SpanContextStack.h"
 #import "Utils.h"
 
 using namespace bugsnag;
@@ -40,7 +41,17 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
 std::unique_ptr<Span>
 Tracer::startSpan(NSString *name, SpanOptions options) noexcept {
     __block auto blockThis = this;
-    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name, options.startTime),
+    auto currentContext = SpanContextStack.current.context;
+    auto traceId = currentContext.traceId;
+    if (traceId.value == 0) {
+        traceId = IdGenerator::generateTraceId();
+    }
+    auto spanId = IdGenerator::generateSpanId();
+    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name,
+                                                                  traceId,
+                                                                  spanId,
+                                                                  currentContext.spanId,
+                                                                  options.startTime),
                                        ^void(std::unique_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(std::move(spanData));
     });

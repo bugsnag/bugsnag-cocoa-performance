@@ -28,6 +28,7 @@ using namespace bugsnag;
     if (_span) {
         _span->end(CFAbsoluteTimeGetCurrent());
         _span.reset();
+        _isEnded = true;
     }
 }
 
@@ -35,6 +36,7 @@ using namespace bugsnag;
     if (_span) {
         _span->end(dateToAbsoluteTime(endTime));
         _span.reset();
+        _isEnded = true;
     }
 }
 
@@ -44,6 +46,10 @@ using namespace bugsnag;
 
 - (SpanId)spanId {
     return _span->spanId();
+}
+
+- (BOOL)isValid {
+    return !_isEnded;
 }
 
 @end

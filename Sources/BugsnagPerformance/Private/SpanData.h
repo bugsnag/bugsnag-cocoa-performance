@@ -18,7 +18,7 @@ namespace bugsnag {
  */
 class SpanData {
 public:
-    SpanData(NSString *name, CFAbsoluteTime startTime) noexcept;
+    SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parentId, CFAbsoluteTime startTime) noexcept;
     
     SpanData(const SpanData&) = delete;
     
@@ -28,6 +28,7 @@ public:
     
     TraceId traceId{0};
     SpanId spanId{0};
+    SpanId parentId{0};
     NSString *name{nil};
     SpanKind kind{SPAN_KIND_INTERNAL};
     NSMutableDictionary *attributes{nil};
