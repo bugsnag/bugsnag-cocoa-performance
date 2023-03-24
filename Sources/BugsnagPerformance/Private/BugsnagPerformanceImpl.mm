@@ -121,6 +121,10 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
+
+    if (!configuration.shouldSendReports) {
+        BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
+    }
 }
 
 #pragma mark Tasks
@@ -246,7 +250,6 @@ void BugsnagPerformanceImpl::wakeWorker() noexcept {
 
 void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
     if (!configuration_.shouldSendReports) {
-        BSGLogInfo("Discarding pValue request because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
         return;
     }
     auto currentTime = CFAbsoluteTimeGetCurrent();
@@ -259,7 +262,6 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
     if (!configuration_.shouldSendReports) {
-        BSGLogInfo("Discarding package because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
         return;
     }
     if (package == nullptr) {
