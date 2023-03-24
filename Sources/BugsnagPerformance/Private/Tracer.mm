@@ -39,19 +39,28 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
 }
 
 std::unique_ptr<Span>
-Tracer::startSpan(NSString *name, SpanOptions options) noexcept {
+Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
     __block auto blockThis = this;
     auto currentContext = SpanContextStack.current.context;
     auto traceId = currentContext.traceId;
     if (traceId.value == 0) {
         traceId = IdGenerator::generateTraceId();
     }
+    auto parentSpanId = options.parentContext.spanId;
+    if (parentSpanId == 0) {
+        parentSpanId = currentContext.spanId;
+    }
+    BSGFirstClass firstClass = options.firstClass;
+    if (firstClass == BSGFirstClassUnset) {
+        firstClass = defaultFirstClass;
+    }
     auto spanId = IdGenerator::generateSpanId();
     auto span = std::make_unique<Span>(std::make_unique<SpanData>(name,
                                                                   traceId,
                                                                   spanId,
-                                                                  currentContext.spanId,
-                                                                  options.startTime),
+                                                                  parentSpanId,
+                                                                  options.startTime,
+                                                                  firstClass),
                                        ^void(std::unique_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(std::move(spanData));
     });
@@ -79,7 +88,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         default:                                type = @"?"; break;
     }
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
-    auto span = startSpan(name, options);
+    auto span = startSpan(name, options, BSGFirstClassYes);
     span->addAttributes(@{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
@@ -131,7 +140,8 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
-    auto span = startSpan(name, defaultSpanOptionsForNetwork(dateToAbsoluteTime(interval.startDate)));
+    auto options = defaultSpanOptionsForNetwork(dateToAbsoluteTime(interval.startDate));
+    auto span = startSpan(name, options, BSGFirstClassUnset);
 
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span.category"] = @"network";

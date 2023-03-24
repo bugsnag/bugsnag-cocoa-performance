@@ -23,18 +23,18 @@ public:
     SpanOptions(id<BugsnagPerformanceSpanContext> parentContext,
                 CFAbsoluteTime startTime,
                 bool makeContextCurrent,
-                BSGFirstClass isFirstClass)
+                BSGFirstClass firstClass)
     : parentContext(parentContext)
     , startTime(startTime)
     , makeContextCurrent(makeContextCurrent)
-    , isFirstClass(isFirstClass)
+    , firstClass(firstClass)
     {}
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
     : SpanOptions(options.parentContext,
                   defaultTimeIfNil(options.startTime),
                   options.makeContextCurrent,
-                  options.isFirstClass)
+                  options.firstClass)
     {}
     
     SpanOptions()
@@ -48,7 +48,7 @@ public:
     id<BugsnagPerformanceSpanContext> parentContext{nil};
     CFAbsoluteTime startTime{0};
     bool makeContextCurrent{false};
-    BSGFirstClass isFirstClass{BSGFirstClassUnset};
+    BSGFirstClass firstClass{BSGFirstClassUnset};
 };
 
 static inline SpanOptions defaultSpanOptionsForCustom() {

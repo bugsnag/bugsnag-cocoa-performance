@@ -312,14 +312,14 @@ static inline void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOpt
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) {
     auto options = defaultSpanOptionsForCustom();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options)];
+    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options, BSGFirstClassYes)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) {
     auto options = SpanOptions(optionsIn);
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options)];
+    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options, BSGFirstClassYes)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }

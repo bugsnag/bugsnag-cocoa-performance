@@ -31,7 +31,7 @@ public:
     
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
     
-    std::unique_ptr<class Span> startSpan(NSString *name, SpanOptions options) noexcept;
+    std::unique_ptr<class Span> startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     
     std::unique_ptr<class Span> startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                                   NSString *className,

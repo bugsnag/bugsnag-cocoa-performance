@@ -13,11 +13,11 @@
 + (instancetype)optionsWithStartTime:(NSDate *)startTime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                   makeContextCurrent:(BOOL)makeContextCurrent
-                        isFirstClass:(BSGFirstClass)isFirstClass {
+                          firstClass:(BSGFirstClass)firstClass {
     return [[self alloc] initWithStartTime:startTime
                              parentContext:parentContext
                         makeContextCurrent:makeContextCurrent
-                              isFirstClass:isFirstClass];
+                                firstClass:firstClass];
 }
 
 - (instancetype)init {
@@ -25,18 +25,18 @@
     return [self initWithStartTime:nil
                      parentContext:nil
                 makeContextCurrent:true
-                      isFirstClass:BSGFirstClassUnset];
+                        firstClass:BSGFirstClassUnset];
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                makeContextCurrent:(BOOL)makeContextCurrent
-                     isFirstClass:(BSGFirstClass)isFirstClass {
+                       firstClass:(BSGFirstClass)firstClass {
     if ((self = [super init])) {
         _startTime = startTime;
         _parentContext = parentContext;
         _makeContextCurrent = makeContextCurrent;
-        _isFirstClass = isFirstClass;
+        _firstClass = firstClass;
     }
     return self;
 }
@@ -46,7 +46,7 @@
     return [BugsnagPerformanceSpanOptions optionsWithStartTime:_startTime
                                                  parentContext:_parentContext
                                             makeContextCurrent:_makeContextCurrent
-                                                  isFirstClass:_isFirstClass];
+                                                    firstClass:_firstClass];
 }
 
 @end
