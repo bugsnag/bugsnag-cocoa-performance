@@ -8,6 +8,7 @@
 #pragma once
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 
 #import "IdGenerator.h"
 #import "SpanKind.h"
@@ -18,7 +19,12 @@ namespace bugsnag {
  */
 class SpanData {
 public:
-    SpanData(NSString *name, TraceId traceId, SpanId spanId, SpanId parentId, CFAbsoluteTime startTime) noexcept;
+    SpanData(NSString *name,
+             TraceId traceId,
+             SpanId spanId,
+             SpanId parentId,
+             CFAbsoluteTime startTime,
+             BSGFirstClass firstClass) noexcept;
     
     SpanData(const SpanData&) = delete;
     
@@ -35,5 +41,6 @@ public:
     double samplingProbability{0};
     CFAbsoluteTime startTime{0};
     CFAbsoluteTime endTime{0};
+    BSGFirstClass firstClass{BSGFirstClassUnset};
 };
 }
