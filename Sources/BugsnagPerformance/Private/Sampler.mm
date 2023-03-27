@@ -63,7 +63,7 @@ bool Sampler::sampled(SpanData &span) noexcept {
     } else {
         idUpperBound = uint64_t(p * double(UINT64_MAX));
     }
-    bool isSampled = span.traceId.hi < idUpperBound;
+    bool isSampled = span.traceId.hi <= idUpperBound;
     if (isSampled) {
         span.updateSamplingProbability(p);
     }
