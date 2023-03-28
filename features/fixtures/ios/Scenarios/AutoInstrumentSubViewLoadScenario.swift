@@ -16,7 +16,7 @@ class AutoInstrumentSubViewLoadScenario: Scenario {
     
     override func run() {
         UIApplication.shared.windows[0].rootViewController!.present(
-            AutoInstrumentViewLoadScenario_ViewController(), animated: true)
+            AutoInstrumentSubViewLoadScenario_ViewController(), animated: true)
     }
 }
 

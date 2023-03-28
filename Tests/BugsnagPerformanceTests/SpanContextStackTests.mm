@@ -52,12 +52,12 @@ static BugsnagPerformanceSpan *newSpan() {
     
     sleep(1);
     const auto beginCount = SpanContextStack.current.stacks.count;
-    
+
     for (int i = 0; i < queue_count; i++) {
         NSString *name = [NSString stringWithFormat:@"test-%d", i];
         queues[i] = dispatch_queue_create(name.UTF8String, DISPATCH_QUEUE_CONCURRENT);
     }
-    
+
     for (int i = 0; i < queue_count; i++) {
         dispatch_async(queues[i], ^{
             for (int j = 0; j < iteration_count; j++) {
@@ -68,7 +68,7 @@ static BugsnagPerformanceSpan *newSpan() {
             }
         });
     }
-    
+
     sleep(5);
     XCTAssertEqual(SpanContextStack.current.stacks.count, beginCount);
 }
@@ -143,7 +143,7 @@ static BugsnagPerformanceSpan *newSpan() {
     [SpanContextStack.current push:span1];
     [SpanContextStack.current push:span2];
     [SpanContextStack.current push:span3];
-    
+
     usleep(400000);
     XCTAssertEqual(span3, SpanContextStack.current.context);
 }
@@ -153,12 +153,12 @@ static BugsnagPerformanceSpan *newSpan() {
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     [SpanContextStack.current push:span1];
-    
+
     __block auto span2 = newSpan();
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [SpanContextStack.current push:span2];
     });
-    
+
     usleep(200000);
     XCTAssertEqual(span2, SpanContextStack.current.context);
 }
