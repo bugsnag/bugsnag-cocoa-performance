@@ -57,14 +57,14 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(std::make_unique<SpanData>(name,
+    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(std::make_shared<SpanData>(name,
                                                               traceId,
                                                               spanId,
                                                               parentSpanId,
                                                               options.startTime,
                                                               firstClass),
-                                       ^void(std::unique_ptr<SpanData> spanData) {
-        blockThis->tryAddSpanToBatch(std::move(spanData));
+                                       ^void(std::shared_ptr<SpanData> spanData) {
+        blockThis->tryAddSpanToBatch(spanData);
     })];
     if (options.makeContextCurrent) {
         [SpanContextStack.current push:span];
@@ -76,9 +76,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     return span;
 }
 
-void Tracer::tryAddSpanToBatch(std::unique_ptr<SpanData> spanData) {
+void Tracer::tryAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
     if (sampler_->sampled(*spanData)) {
-        batch_->add(std::move(spanData));
+        batch_->add(spanData);
     }
 }
 

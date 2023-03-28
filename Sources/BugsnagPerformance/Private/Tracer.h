@@ -51,6 +51,6 @@ private:
     void (^onSpanStarted_)(){nil};
     
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void tryAddSpanToBatch(std::unique_ptr<SpanData> spanData);
+    void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);
 };
 }

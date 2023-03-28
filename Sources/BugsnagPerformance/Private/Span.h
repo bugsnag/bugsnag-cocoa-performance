@@ -13,7 +13,7 @@
 
 namespace bugsnag {
 
-typedef void (^OnSpanEnd)(std::unique_ptr<SpanData>);
+typedef void (^OnSpanEnd)(std::shared_ptr<SpanData>);
 
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
 
@@ -23,38 +23,59 @@ typedef void (^OnSpanEnd)(std::unique_ptr<SpanData>);
  */
 class Span {
 public:
-    Span(std::unique_ptr<SpanData> data, OnSpanEnd onEnd) noexcept
-    : data_(std::move(data))
+    Span(std::shared_ptr<SpanData> data, OnSpanEnd onEnd) noexcept
+    : data_(data)
     , onEnd_(onEnd)
     {};
     
     Span(const Span&) = delete;
     
     void addAttributes(NSDictionary *attributes) noexcept {
-        data_ ? data_->addAttributes(attributes) : (void)0;
+        // This doesn't have to be thread safe because this method is never called
+        // after the span is started.
+        auto data = data_;
+        if (!isEnded_ && data != nullptr) {
+            data->addAttributes(attributes);
+        }
     }
 
     bool hasAttribute(NSString *attributeName, id value) noexcept {
-        return data_ ? data_->hasAttribute(attributeName, value): false;
+        auto data = data_;
+        if (!isEnded_ && data != nullptr) {
+            return data->hasAttribute(attributeName, value);
+        }
+        return false;
+    }
+
+    bool isEnded(void) {
+        return isEnded_;
     }
 
     void end(CFAbsoluteTime time) noexcept {
-        // TODO: Thread safety
-        auto data = std::move(data_);
+        bool expected = false;
+        if (!isEnded_.compare_exchange_strong(expected, true)) {
+            // compare_exchange_strong() returns true only if isEnded_ was exchanged (from false to true).
+            // Therefore, a return of false means that no exchange occurred because
+            // isEnded_ was already true (i.e. we've already ended).
+            return;
+        }
+
+        auto data = data_;
         data_ = nullptr;
         if (!data) {
             return;
         }
         data->endTime = time;
-        onEnd_(std::move(data));
+        onEnd_(data);
     }
 
     TraceId traceId() {return data_->traceId;}
     SpanId spanId() {return data_->spanId;}
 
 private:
-    std::unique_ptr<SpanData> data_;
+    std::shared_ptr<SpanData> data_;
     OnSpanEnd onEnd_{nil};
+    std::atomic<bool> isEnded_{false};
 };
 
 }

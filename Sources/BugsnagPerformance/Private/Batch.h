@@ -23,18 +23,18 @@ namespace bugsnag {
 class Batch {
 public:
     Batch() noexcept
-    : spans_(std::make_unique<std::vector<std::unique_ptr<SpanData>>>())
+    : spans_(std::make_unique<std::vector<std::shared_ptr<SpanData>>>())
     , onBatchFull(^(){})
     {}
 
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
-    void add(std::unique_ptr<SpanData> span) noexcept {
+    void add(std::shared_ptr<SpanData> span) noexcept {
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
-            spans_->push_back(std::move(span));
+            spans_->push_back(span);
             isFull = spans_->size() >= bsgp_autoTriggerExportOnBatchSize;
             if (isFull) {
                 drainIsAllowed_ = true;
@@ -49,15 +49,15 @@ public:
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
-    std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> drain() noexcept {
+    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain() noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
         if (!drainIsAllowed_) {
-            return std::make_unique<std::vector<std::unique_ptr<SpanData>>>();
+            return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
         }
         drainIsAllowed_ = false;
 
         auto batch = std::move(spans_);
-        spans_ = std::make_unique<std::vector<std::unique_ptr<SpanData>>>();
+        spans_ = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
         return batch;
     }
 
@@ -77,6 +77,6 @@ private:
     void (^onBatchFull)(){nullptr};
     bool drainIsAllowed_{false};
     std::mutex mutex_;
-    std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans_;
+    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans_;
 };
 }

@@ -12,6 +12,7 @@
 
 #import <objc/runtime.h>
 #import <os/activity.h>
+#import <mutex>
 
 using namespace bugsnag;
 
@@ -21,10 +22,16 @@ using namespace bugsnag;
 
 @implementation SpanContextStackTests
 
+// To make sure these tests will never run in parallel.
+[[clang::no_destroy]] static std::mutex mutex;
+
+// To make sure all threads exit before continuing.
+static std::atomic<int> counter;
+
 static BugsnagPerformanceSpan *newSpan() {
     TraceId tid = {.value = 1};
     auto data = std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset);
-    auto span = std::make_unique<Span>(std::move(data), ^(std::unique_ptr<SpanData>) {});
+    auto span = std::make_unique<Span>(std::move(data), ^(std::shared_ptr<SpanData>) {});
     return [[BugsnagPerformanceSpan alloc] initWithSpan:std::move(span)];
 }
 
@@ -40,17 +47,51 @@ static BugsnagPerformanceSpan *newSpan() {
  */
 
 - (void)test0001EmptyStack {
+    std::lock_guard<std::mutex> guard(mutex);
     XCTAssertNotNil(SpanContextStack.current);
     XCTAssertNil(SpanContextStack.current.context);
 }
 
-- (void)test0002Stress {
-    // Make sure that multiple dispatch queues using the same stack from different threads doesn't break.
-    static const int iteration_count = 100000;
+- (void)test0002QueueStress {
+    std::lock_guard<std::mutex> guard(mutex);
+    // Test that multiple dispatch queues using the same stack from different threads doesn't break.
+    static const int iteration_count = 10000;
     static const int queue_count = 10;
     dispatch_queue_t queues[queue_count];
-    
-    sleep(1);
+
+    for (int i = 0; i < queue_count; i++) {
+        NSString *name = [NSString stringWithFormat:@"test-%d", i];
+        queues[i] = dispatch_queue_create(name.UTF8String, DISPATCH_QUEUE_CONCURRENT);
+    }
+
+    counter = 0;
+    for (int i = 0; i < queue_count; i++) {
+        dispatch_async(queues[i], ^{
+            counter++;
+            for (int j = 0; j < iteration_count; j++) {
+                auto span1 = newSpan();
+                [SpanContextStack.current push:span1];
+                [span1 end];
+                [SpanContextStack.current context];
+            }
+            counter--;
+        });
+    }
+
+    usleep(200000);
+    while(counter > 0) {
+        usleep(100000);
+    }
+    XCTAssertLessThan(SpanContextStack.current.stacks.count, 100000UL);
+}
+
+- (void)test0003ThreadStress {
+    std::lock_guard<std::mutex> guard(mutex);
+    // Test that multiple dispatch queues using the same stack from different threads doesn't break.
+    static const int iteration_count = 10000;
+    static const int queue_count = 10;
+    dispatch_queue_t queues[queue_count];
+
     const auto beginCount = SpanContextStack.current.stacks.count;
 
     for (int i = 0; i < queue_count; i++) {
@@ -58,22 +99,29 @@ static BugsnagPerformanceSpan *newSpan() {
         queues[i] = dispatch_queue_create(name.UTF8String, DISPATCH_QUEUE_CONCURRENT);
     }
 
+    counter = 0;
     for (int i = 0; i < queue_count; i++) {
-        dispatch_async(queues[i], ^{
+        [NSThread detachNewThreadWithBlock:^{
+            counter++;
             for (int j = 0; j < iteration_count; j++) {
                 auto span1 = newSpan();
                 [SpanContextStack.current push:span1];
                 [span1 end];
                 [SpanContextStack.current context];
             }
-        });
+            counter--;
+        }];
     }
 
-    sleep(5);
+    usleep(200000);
+    while(counter > 0) {
+        usleep(100000);
+    }
     XCTAssertEqual(SpanContextStack.current.stacks.count, beginCount);
 }
 
 - (void)testCurrent {
+    std::lock_guard<std::mutex> guard(mutex);
     XCTAssertNotNil(SpanContextStack.current);
     auto span = newSpan();
     [SpanContextStack.current push:span];
@@ -81,6 +129,7 @@ static BugsnagPerformanceSpan *newSpan() {
 }
 
 - (void)testOneEntryEnded {
+    std::lock_guard<std::mutex> guard(mutex);
     XCTAssertNotNil(SpanContextStack.current);
     auto span = newSpan();
     [SpanContextStack.current push:span];
@@ -89,6 +138,7 @@ static BugsnagPerformanceSpan *newSpan() {
 }
 
 - (void)testCurrentEnded {
+    std::lock_guard<std::mutex> guard(mutex);
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     auto span2 = newSpan();
@@ -104,6 +154,7 @@ static BugsnagPerformanceSpan *newSpan() {
 }
 
 - (void)testMiddleEnded {
+    std::lock_guard<std::mutex> guard(mutex);
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     auto span2 = newSpan();
@@ -121,6 +172,8 @@ static BugsnagPerformanceSpan *newSpan() {
 }
 
 - (void)testMultithreaded {
+    std::lock_guard<std::mutex> guard(mutex);
+    counter = 1;
     // A different thread's span context stack should be separate.
     [NSThread detachNewThreadWithBlock:^{
         usleep(100000);
@@ -134,6 +187,7 @@ static BugsnagPerformanceSpan *newSpan() {
         usleep(100000);
         [SpanContextStack.current push:span3];
         XCTAssertEqual(span3, SpanContextStack.current.context);
+        counter--;
     }];
     
     XCTAssertNotNil(SpanContextStack.current);
@@ -144,26 +198,34 @@ static BugsnagPerformanceSpan *newSpan() {
     [SpanContextStack.current push:span2];
     [SpanContextStack.current push:span3];
 
-    usleep(400000);
+    while(counter > 0) {
+        usleep(100000);
+    }
     XCTAssertEqual(span3, SpanContextStack.current.context);
 }
 
 - (void)testDispatchQueue {
+    std::lock_guard<std::mutex> guard(mutex);
     // Span context stacks must traverse dispatch queue boundaries
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     [SpanContextStack.current push:span1];
 
+    counter = 1;
     __block auto span2 = newSpan();
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [SpanContextStack.current push:span2];
+        counter--;
     });
 
-    usleep(200000);
+    while(counter > 0) {
+        usleep(100000);
+    }
     XCTAssertEqual(span2, SpanContextStack.current.context);
 }
 
 - (void)testFindAttribute {
+    std::lock_guard<std::mutex> guard(mutex);
     auto span_a = newSpan();
     [span_a addAttributes:@{
         @"a": @"1"

@@ -72,12 +72,12 @@ bool Sampler::sampled(SpanData &span) noexcept {
 
 }
 
-std::unique_ptr<std::vector<std::unique_ptr<SpanData>>>
-Sampler::sampled(std::unique_ptr<std::vector<std::unique_ptr<SpanData>>> spans) noexcept {
-    auto sampledSpans = std::make_unique<std::vector<std::unique_ptr<SpanData>>>();
+std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
+Sampler::sampled(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept {
+    auto sampledSpans = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
     for (size_t i = 0; i < spans->size(); i++) {
         if (sampled(*(*spans)[i])) {
-            sampledSpans->push_back(std::move((*spans)[i]));
+            sampledSpans->push_back((*spans)[i]);
         }
     }
     return sampledSpans;

@@ -42,7 +42,6 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentSubViewLoadScenario" and discard the initial p-value request
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * a span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
     * a span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

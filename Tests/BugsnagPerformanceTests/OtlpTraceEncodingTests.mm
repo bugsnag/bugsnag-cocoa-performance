@@ -67,7 +67,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassYes {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassYes));
     auto json = OtlpTraceEncoding::encode(spans, @{});
@@ -87,7 +87,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassNo {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassNo));
     auto json = OtlpTraceEncoding::encode(spans, @{});
@@ -107,7 +107,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassUnset {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassUnset));
     auto json = OtlpTraceEncoding::encode(spans, @{});
@@ -204,7 +204,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testBuildUploadPackage {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset));
     auto resourceAttributes = @{};
@@ -221,7 +221,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram1 {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.3);
@@ -234,7 +234,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram2 {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
     spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
@@ -249,7 +249,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram2Same {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
     spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
@@ -264,7 +264,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram5 {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
     spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
@@ -285,7 +285,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram11 {
-    std::vector<std::unique_ptr<SpanData>> spans;
+    std::vector<std::shared_ptr<SpanData>> spans;
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test0", tid, 1, 0, 0, BSGFirstClassUnset));
     spans.push_back(std::make_unique<SpanData>(@"test1", tid, 2, 0, 0, BSGFirstClassUnset));

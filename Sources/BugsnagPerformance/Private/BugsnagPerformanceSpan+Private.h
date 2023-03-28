@@ -25,8 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime;
 
-@property(nonatomic,readwrite) BOOL isEnded;
-
 @end
 
 NS_ASSUME_NONNULL_END
