@@ -33,13 +33,20 @@ public:
     void addAttributes(NSDictionary *attributes) noexcept {
         data_ ? data_->addAttributes(attributes) : (void)0;
     }
-    
+
+    bool hasAttribute(NSString *attributeName, id value) noexcept {
+        return data_ ? data_->hasAttribute(attributeName, value): false;
+    }
+
     void end(CFAbsoluteTime time) noexcept {
-        if (!data_) {
+        // TODO: Thread safety
+        auto data = std::move(data_);
+        data_ = nullptr;
+        if (!data) {
             return;
         }
-        data_->endTime = time;
-        onEnd_(std::move(data_));
+        data->endTime = time;
+        onEnd_(std::move(data));
     }
 
     TraceId traceId() {return data_->traceId;}

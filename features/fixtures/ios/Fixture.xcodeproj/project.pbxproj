@@ -33,6 +33,7 @@
 		CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC90C4229C466BD00280884 /* ForceUBSan.m */; };
 		CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */; };
 		CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */; };
+		CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */; };
 		CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */; };
 		CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
@@ -69,6 +70,7 @@
 		CBC90C4229C466BD00280884 /* ForceUBSan.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ForceUBSan.m; sourceTree = "<group>"; };
 		CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstClassNoScenario.swift; sourceTree = "<group>"; };
 		CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstClassYesScenario.swift; sourceTree = "<group>"; };
+		CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSubViewLoadScenario.swift; sourceTree = "<group>"; };
 		CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbabilityExpiryScenario.swift; sourceTree = "<group>"; };
 		CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentSpanScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
@@ -145,10 +147,13 @@
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */,
+				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
+				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
+				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
 				CBC90C4129C466BD00280884 /* ForceUBSan.h */,
 				CBC90C4229C466BD00280884 /* ForceUBSan.m */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
@@ -163,8 +168,6 @@
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
-				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
-				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
+				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,
 			);
@@ -428,7 +432,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -460,7 +464,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

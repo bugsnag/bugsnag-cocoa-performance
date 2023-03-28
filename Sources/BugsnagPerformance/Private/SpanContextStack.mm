@@ -104,10 +104,10 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
             auto context = (__bridge id<BugsnagPerformanceSpanContext>)[stack pointerAtIndex:stack.count-1];
             if (!context.isValid) {
                 // Remove the invalid context in multiple steps:
-
+                
                 // Remove the context from our current stack.
                 [stack removePointerAtIndex:stack.count-1];
-
+                
                 // Clear the activity ref so that it gets deallocated at the end of the autoreleasepool.
                 // Deallocation will cause the ref to leave the current activity.
                 NSNumber *key = nil;
@@ -118,7 +118,7 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
                         key = ref.key;
                     }
                 }
-
+                
                 // Remove this activity's reference to the stack
                 if (key != nil) {
                     @synchronized (self.stacks) {
@@ -134,15 +134,15 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
 
 - (void)push:(id<BugsnagPerformanceSpanContext>)context {
     NSPointerArray *stack = [self currentStackOrNew];
-
+    
     @synchronized (stack) {
         // Start a new activity scope under the current scope (or as top level if none exists).
         ActivityRef *ref = [ActivityRef new];
-
+        
         // Store it in the context so that we can find it again.
         // This also ensures that ref will live at most until context dies since the stack uses weak references.
         objc_setAssociatedObject(context, ActivityRefKey, ref, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
+        
         // Save a reference to this activity's stack so that we can find it again.
         @synchronized (self.stacks) {
             self.stacks[ref.key] = stack;
@@ -173,6 +173,25 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
 - (id<BugsnagPerformanceSpanContext> _Nullable)context {
     NSPointerArray *stack = [self currentStackOrNew];
     return lastObject(stack);
+}
+
+- (BOOL)hasSpanWithAttribute:(NSString *)attribute value:(NSString *)value {
+    NSPointerArray *stack = [self currentStackOrNew];
+    @synchronized (stack) {
+        const auto count = stack.count;
+        for (NSUInteger i = 0; i < count; i++) {
+            id entry = (__bridge id)[stack pointerAtIndex:i];
+            if ([entry isKindOfClass:[BugsnagPerformanceSpan class]]) {
+                auto span = (BugsnagPerformanceSpan *)entry;
+                if (span.isValid) {
+                    if ([span hasAttribute:attribute withValue:value]) {
+                        return YES;
+                    }
+                }
+            }
+        }
+    }
+    return NO;
 }
 
 @end

@@ -28,15 +28,17 @@ namespace bugsnag {
 class Tracer {
 public:
     Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept;
-    
+
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
-    
-    std::unique_ptr<class Span> startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    
-    std::unique_ptr<class Span> startViewLoadSpan(BugsnagPerformanceViewType viewType,
-                                                  NSString *className,
-                                                  SpanOptions options) noexcept;
-    
+
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
+
+    BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
+
+    BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
+                                              NSString *className,
+                                              SpanOptions options) noexcept;
+
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
     
 private:
@@ -48,6 +50,7 @@ private:
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};
     
+    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void tryAddSpanToBatch(std::unique_ptr<SpanData> spanData);
 };
 }

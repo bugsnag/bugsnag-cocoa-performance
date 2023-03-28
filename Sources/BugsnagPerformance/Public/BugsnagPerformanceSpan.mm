@@ -40,6 +40,14 @@ using namespace bugsnag;
     }
 }
 
+- (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime {
+    if (_span) {
+        _span->end(endTime);
+        _span.reset();
+        _isEnded = true;
+    }
+}
+
 - (TraceId)traceId {
     return _span->traceId();
 }
@@ -50,6 +58,14 @@ using namespace bugsnag;
 
 - (BOOL)isValid {
     return !_isEnded;
+}
+
+- (void)addAttributes:(NSDictionary *)attributes {
+    _span->addAttributes(attributes);
+}
+
+- (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value {
+    return _span->hasAttribute(attributeName, value);
 }
 
 @end

@@ -11,6 +11,7 @@
 #import "SpanAttributes.h"
 #import "SpanContextStack.h"
 #import "Utils.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 
@@ -39,7 +40,7 @@ Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     }
 }
 
-std::unique_ptr<Span>
+BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
     __block auto blockThis = this;
     auto currentContext = SpanContextStack.current.context;
@@ -56,16 +57,19 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    auto span = std::make_unique<Span>(std::make_unique<SpanData>(name,
-                                                                  traceId,
-                                                                  spanId,
-                                                                  parentSpanId,
-                                                                  options.startTime,
-                                                                  firstClass),
+    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(std::make_unique<SpanData>(name,
+                                                              traceId,
+                                                              spanId,
+                                                              parentSpanId,
+                                                              options.startTime,
+                                                              firstClass),
                                        ^void(std::unique_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(std::move(spanData));
-    });
-    span->addAttributes(SpanAttributes::get());
+    })];
+    if (options.makeContextCurrent) {
+        [SpanContextStack.current push:span];
+    }
+    [span addAttributes:SpanAttributes::get()];
     if (onSpanStarted_) {
         onSpanStarted_();
     }
@@ -78,7 +82,19 @@ void Tracer::tryAddSpanToBatch(std::unique_ptr<SpanData> spanData) {
     }
 }
 
-std::unique_ptr<class Span>
+BugsnagPerformanceSpan *
+Tracer::startAppStartSpan(NSString *name,
+                        SpanOptions options) noexcept {
+    return startSpan(name, options, BSGFirstClassUnset);
+}
+
+BugsnagPerformanceSpan *
+Tracer::startCustomSpan(NSString *name,
+                        SpanOptions options) noexcept {
+    return startSpan(name, options, BSGFirstClassYes);
+}
+
+BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
@@ -90,12 +106,17 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     }
     appStartupInstrumentation_->didStartViewLoadSpan(className);
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
+    if (options.firstClass == BSGFirstClassUnset) {
+        if ([SpanContextStack.current hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
+            options.firstClass = BSGFirstClassNo;
+        }
+    }
     auto span = startSpan(name, options, BSGFirstClassYes);
-    span->addAttributes(@{
+    [span addAttributes:@{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
         @"bugsnag.view.type": type
-    });
+    }];
     return span;
 }
 
@@ -142,7 +163,8 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
-    auto options = defaultSpanOptionsForNetwork(dateToAbsoluteTime(interval.startDate));
+    SpanOptions options;
+    options.startTime = dateToAbsoluteTime(interval.startDate);
     auto span = startSpan(name, options, BSGFirstClassUnset);
 
     auto attributes = [NSMutableDictionary new];
@@ -154,7 +176,7 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
     addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
     addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
-    span->addAttributes(attributes);
+    [span addAttributes:attributes];
 
-    span->end(dateToAbsoluteTime(interval.endDate));
+    [span endWithEndTime:interval.endDate];
 }
