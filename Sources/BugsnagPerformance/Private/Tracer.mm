@@ -88,9 +88,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
         default:                                type = @"?"; break;
     }
-    if (appStartupInstrumentation_) {
-        appStartupInstrumentation_->didStartViewLoadSpan(className);
-    }
+    appStartupInstrumentation_->didStartViewLoadSpan(className);
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     auto span = startSpan(name, options, BSGFirstClassYes);
     span->addAttributes(@{
