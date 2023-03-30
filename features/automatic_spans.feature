@@ -12,6 +12,7 @@ Feature: Automatic instrumentation spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.app_start.type" equals "cold"
+    * every span string attribute "bugsnag.app_start.first_view_name" equals "AutoInstrumentAppStartsScenarioView"
     * every span string attribute "bugsnag.span.category" equals "app_start"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"

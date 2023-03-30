@@ -72,6 +72,14 @@ AppStartupInstrumentation::start() noexcept {
     } else {
         instance = this;
     }
+    firstViewName_ = nullptr;
+}
+
+void
+AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
+    if (firstViewName_ == nullptr) {
+        firstViewName_ = name;
+    }
 }
 
 void
@@ -102,10 +110,14 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
     auto options = defaultSpanOptionsForInternal();
     options.startTime = startTime;
     auto span = tracer_.startSpan(name, options, BSGFirstClassUnset);
-    span->addAttributes(@{
+    NSMutableDictionary *attributes = @{
         @"bugsnag.app_start.type": isCold_ ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
-    });
+    }.mutableCopy;
+    if (firstViewName_ != nullptr) {
+        attributes[@"bugsnag.app_start.first_view_name"] = firstViewName_;
+    }
+    span->addAttributes(attributes);
     span->end(endTime);
 }
 

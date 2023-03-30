@@ -15,6 +15,7 @@ public:
     {}
     
     void start() noexcept;
+    void didStartViewLoadSpan(NSString *name) noexcept;
     
 private:
     static void initialize() noexcept __attribute__((constructor));
@@ -31,5 +32,6 @@ private:
     
     class Tracer &tracer_;
     bool isCold_{false};
+    NSString *firstViewName_;
 };
 }
