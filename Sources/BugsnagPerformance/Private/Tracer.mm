@@ -12,6 +12,9 @@
 #import "SpanContextStack.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "Instrumentation/AppStartupInstrumentation.h"
+#import "Instrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation.h"
 
 using namespace bugsnag;
 
@@ -19,14 +22,13 @@ Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, v
 : sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-{
-    appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
-}
+, appStartupInstrumentation_(AppStartupInstrumentation::sharedInstance())
+{}
 
 void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    if (configuration.autoInstrumentAppStarts) {
-        appStartupInstrumentation_->start();
+    if (!configuration.autoInstrumentAppStarts) {
+        appStartupInstrumentation_->disable();
     }
     
     if (configuration.autoInstrumentViewControllers) {
@@ -179,4 +181,10 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     [span addAttributes:attributes];
 
     [span endWithEndTime:interval.endDate];
+}
+
+void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
+    if (span) {
+        batch_->removeSpan(span.traceId, span.spanId);
+    }
 }

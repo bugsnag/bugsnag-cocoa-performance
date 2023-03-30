@@ -193,6 +193,7 @@
 		CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceSpanOptions.m; sourceTree = "<group>"; };
 		CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
 		CB7FD935299D330500499E13 /* SpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanOptions.h; sourceTree = "<group>"; };
+		CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SpanContextStack+Private.h"; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBC90C4429C84DEB00280884 /* Targets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targets.h; sourceTree = "<group>"; };
@@ -317,6 +318,7 @@
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
 				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
+				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
@@ -353,6 +355,7 @@
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
 				CB747D22299F6E03003CA1B4 /* SpanContextStack.h */,
 				CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */,
+				CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */,
 				0122C22829019770002D243C /* SpanData.h */,
 				0122C22129019770002D243C /* SpanData.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
@@ -365,7 +368,6 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
-				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 			);
 			path = Private;
 			sourceTree = "<group>";

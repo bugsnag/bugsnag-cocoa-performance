@@ -28,9 +28,9 @@ namespace bugsnag {
 class BugsnagPerformanceImpl {
 public:
     BugsnagPerformanceImpl() noexcept;
-    
+
     void start(BugsnagPerformanceConfiguration *configuration) noexcept;
-    
+
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
     }
@@ -44,6 +44,7 @@ public:
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name,
                                               BugsnagPerformanceViewType viewType,
                                               BugsnagPerformanceSpanOptions *options);
+    void cancelQueuedSpan(BugsnagPerformanceSpan *span);
 
     void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options);
 
@@ -52,6 +53,8 @@ public:
     void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) {
         tracer_.reportNetworkSpan(task, metrics);
     }
+
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options);
 
     void onSpanStarted() noexcept;
 
@@ -101,4 +104,7 @@ private:
 public: // For testing
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
 };
+
+BugsnagPerformanceImpl& getBugsnagPerformanceImpl() noexcept;
+
 }

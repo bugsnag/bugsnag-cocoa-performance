@@ -7,7 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "SpanContextStack.h"
+#import "SpanContextStack+Private.h"
 #import "BugsnagPerformanceSpan+Private.h"
 
 #import <objc/runtime.h>
@@ -48,12 +48,16 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)test0001EmptyStack {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     XCTAssertNotNil(SpanContextStack.current);
     XCTAssertNil(SpanContextStack.current.context);
 }
 
 - (void)test0002QueueStress {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     // Test that multiple dispatch queues using the same stack from different threads doesn't break.
     static const int iteration_count = 10000;
     static const int queue_count = 10;
@@ -87,6 +91,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)test0003ThreadStress {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     // Test that multiple dispatch queues using the same stack from different threads doesn't break.
     static const int iteration_count = 10000;
     static const int queue_count = 10;
@@ -122,6 +128,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testCurrent {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     XCTAssertNotNil(SpanContextStack.current);
     auto span = newSpan();
     [SpanContextStack.current push:span];
@@ -130,6 +138,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testOneEntryEnded {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     XCTAssertNotNil(SpanContextStack.current);
     auto span = newSpan();
     [SpanContextStack.current push:span];
@@ -139,6 +149,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testCurrentEnded {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     auto span2 = newSpan();
@@ -155,6 +167,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testMiddleEnded {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
     auto span2 = newSpan();
@@ -173,6 +187,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testMultithreaded {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     counter = 1;
     // A different thread's span context stack should be separate.
     [NSThread detachNewThreadWithBlock:^{
@@ -206,6 +222,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testDispatchQueue {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     // Span context stacks must traverse dispatch queue boundaries
     XCTAssertNotNil(SpanContextStack.current);
     auto span1 = newSpan();
@@ -226,6 +244,8 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)testFindAttribute {
     std::lock_guard<std::mutex> guard(mutex);
+    [SpanContextStack.current clearForUnitTests];
+
     auto span_a = newSpan();
     [span_a addAttributes:@{
         @"a": @"1"

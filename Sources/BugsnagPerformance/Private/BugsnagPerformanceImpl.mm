@@ -369,3 +369,17 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
     }
     [span endWithEndTime:endTime];
 }
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) {
+    return tracer_.startAppStartSpan(name, options);
+}
+
+void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) {
+    tracer_.cancelQueuedSpan(span);
+}
+
+BugsnagPerformanceImpl& bugsnag::getBugsnagPerformanceImpl() noexcept {
+    [[clang::no_destroy]]
+    static BugsnagPerformanceImpl impl;
+    return impl;
+}

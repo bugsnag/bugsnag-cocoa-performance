@@ -45,6 +45,22 @@ public:
         }
     }
 
+    void removeSpan(TraceId traceId, SpanId spanId) noexcept {
+        std::lock_guard<std::mutex> guard(mutex_);
+
+        spans_->erase(std::remove_if(spans_->begin(),
+                                     spans_->end(),
+                                     [&spanId, &traceId](const std::shared_ptr<SpanData> &o) {
+            return o->spanId == spanId && o->traceId.value == traceId.value;
+        }));
+
+        for (auto span: *spans_) {
+            if (span->parentId == spanId && span->traceId.value == traceId.value) {
+                span->parentId = 0;
+            }
+        }
+    }
+
     /**
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.

@@ -40,10 +40,12 @@ public:
                                               SpanOptions options) noexcept;
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
-    
+
+    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
+
 private:
     std::shared_ptr<Sampler> sampler_;
-    std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
+    std::shared_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     
