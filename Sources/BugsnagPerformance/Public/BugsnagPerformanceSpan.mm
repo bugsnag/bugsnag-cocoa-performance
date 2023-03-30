@@ -25,19 +25,15 @@ using namespace bugsnag;
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
 - (void)end {
-    if (_span) {
-        _span->end(CFAbsoluteTimeGetCurrent());
-        _span.reset();
-        _isEnded = true;
-    }
+    _span->end(CFAbsoluteTimeGetCurrent());
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
-    if (_span) {
-        _span->end(dateToAbsoluteTime(endTime));
-        _span.reset();
-        _isEnded = true;
-    }
+    _span->end(dateToAbsoluteTime(endTime));
+}
+
+- (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime {
+    _span->end(endTime);
 }
 
 - (TraceId)traceId {
@@ -49,7 +45,15 @@ using namespace bugsnag;
 }
 
 - (BOOL)isValid {
-    return !_isEnded;
+    return !_span->isEnded();
+}
+
+- (void)addAttributes:(NSDictionary *)attributes {
+    _span->addAttributes(attributes);
+}
+
+- (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value {
+    return _span->hasAttribute(attributeName, value);
 }
 
 @end

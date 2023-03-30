@@ -175,4 +175,23 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
     return lastObject(stack);
 }
 
+- (BOOL)hasSpanWithAttribute:(NSString *)attribute value:(NSString *)value {
+    NSPointerArray *stack = [self currentStackOrNew];
+    @synchronized (stack) {
+        const auto count = stack.count;
+        for (NSUInteger i = 0; i < count; i++) {
+            id entry = (__bridge id)[stack pointerAtIndex:i];
+            if ([entry isKindOfClass:[BugsnagPerformanceSpan class]]) {
+                auto span = (BugsnagPerformanceSpan *)entry;
+                if (span.isValid) {
+                    if ([span hasAttribute:attribute withValue:value]) {
+                        return YES;
+                    }
+                }
+            }
+        }
+    }
+    return NO;
+}
+
 @end

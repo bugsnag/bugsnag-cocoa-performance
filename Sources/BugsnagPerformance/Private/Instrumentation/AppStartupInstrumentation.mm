@@ -10,6 +10,7 @@
 #import "../Span.h"
 #import "../Tracer.h"
 #import "../Utils.h"
+#import "../BugsnagPerformanceSpan+Private.h"
 
 #import <array>
 #import <os/trace_base.h>
@@ -107,9 +108,9 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
         return;
     }
     auto name = isCold_ ? @"AppStart/Cold" : @"AppStart/Warm";
-    auto options = defaultSpanOptionsForInternal();
+    SpanOptions options;
     options.startTime = startTime;
-    auto span = tracer_.startSpan(name, options, BSGFirstClassUnset);
+    auto span = tracer_.startAppStartSpan(name, options);
     NSMutableDictionary *attributes = @{
         @"bugsnag.app_start.type": isCold_ ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
@@ -117,8 +118,8 @@ AppStartupInstrumentation::reportSpan(CFAbsoluteTime endTime) noexcept {
     if (firstViewName_ != nullptr) {
         attributes[@"bugsnag.app_start.first_view_name"] = firstViewName_;
     }
-    span->addAttributes(attributes);
-    span->end(endTime);
+    [span addAttributes:attributes];
+    [span endWithAbsoluteTime:endTime];
 }
 
 CFAbsoluteTime

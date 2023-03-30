@@ -108,7 +108,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
     for (const auto &span: spans) {
         [encodedSpans addObject:encode(*span.get())];
@@ -205,7 +205,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     return result;
 }
 
-static dispatch_time_t getLatestTimestamp(const std::vector<std::unique_ptr<SpanData>> &spans) {
+static dispatch_time_t getLatestTimestamp(const std::vector<std::shared_ptr<SpanData>> &spans) {
     CFAbsoluteTime endTime = 0;
     for (auto &span: spans) {
         if (span->endTime > endTime) {
@@ -225,13 +225,13 @@ static NSString *integrityDigestForData(NSData *payload) {
                    md[15], md[16], md[17], md[18], md[19]];
 }
 
-static NSString *pValueHistogramForSpans(const std::vector<std::unique_ptr<SpanData>> &spans) {
+static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanData>> &spans) {
     // Calculate P value histogram the hard way because ObjC doesn't have such conveniences.
 
     NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.size()];
     NSMutableDictionary<NSNumber *, NSNumber *> *counts = [NSMutableDictionary new];
 
-    for (const std::unique_ptr<SpanData> &span: spans) {
+    for (const std::shared_ptr<SpanData> &span: spans) {
         auto probability = @(span->samplingProbability);
         auto count = counts[probability];
         if (count == nil) {
@@ -265,7 +265,7 @@ static NSString *pValueHistogramForSpans(const std::vector<std::unique_ptr<SpanD
     return str;
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
 

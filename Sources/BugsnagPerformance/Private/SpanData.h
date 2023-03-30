@@ -29,7 +29,9 @@ public:
     SpanData(const SpanData&) = delete;
     
     void addAttributes(NSDictionary *attributes) noexcept;
-    
+
+    bool hasAttribute(NSString *attributeName, id value) noexcept;
+
     void updateSamplingProbability(double value) noexcept;
     
     TraceId traceId{0};

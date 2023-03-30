@@ -31,3 +31,15 @@ Then('every span bool attribute {string} does not exist') do |attribute|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
 end
+
+Then('a span bool attribute {string} is true') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'] == attribute }['value']['boolValue'] }
+  Maze.check.includes selected_attributes, true
+end
+
+Then('a span bool attribute {string} is false') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'] == attribute }['value']['boolValue'] }
+  Maze.check.includes selected_attributes, false
+end

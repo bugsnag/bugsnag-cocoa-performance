@@ -60,10 +60,10 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
         return;
     }
     
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-                 tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                           NSStringFromClass([viewController class]),
-                                           defaultSpanOptionsForViewLoad())];
+    SpanOptions options;
+    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+                                          NSStringFromClass([viewController class]),
+                                          options);
     
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);

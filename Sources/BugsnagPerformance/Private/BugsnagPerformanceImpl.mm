@@ -313,41 +313,38 @@ static inline void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOpt
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) {
-    auto options = defaultSpanOptionsForCustom();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options, BSGFirstClassYes)];
+    SpanOptions options;
+    auto span = tracer_.startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) {
     auto options = SpanOptions(optionsIn);
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:tracer_.startSpan(name, options, BSGFirstClassYes)];
+    auto span = tracer_.startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
-    auto options = defaultSpanOptionsForViewLoad();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-                 tracer_.startViewLoadSpan(viewType, name, options)];
+    SpanOptions options;
+    auto span = tracer_.startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) {
     auto options = SpanOptions(optionsIn);
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-                 tracer_.startViewLoadSpan(viewType, name, options)];
+    auto span = tracer_.startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) {
     auto options = SpanOptions(optionsIn);
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                      [NSString stringWithUTF8String:object_getClassName(controller)],
-                                      options)];
+    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+                                          [NSString stringWithUTF8String:object_getClassName(controller)],
+                                          options);
     possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);

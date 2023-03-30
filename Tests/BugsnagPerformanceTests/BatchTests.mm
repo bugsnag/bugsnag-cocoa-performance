@@ -21,7 +21,7 @@ using namespace bugsnag;
 
 @implementation BatchTests
 
-static std::unique_ptr<SpanData> newSpanData() {
+static std::shared_ptr<SpanData> newSpanData() {
     TraceId tid = {.value = 1};
     return std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset);
 }

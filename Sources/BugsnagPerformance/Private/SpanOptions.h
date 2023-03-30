@@ -11,13 +11,6 @@
 
 namespace bugsnag {
 
-static inline CFAbsoluteTime defaultTimeIfNil(NSDate *date) {
-    if (date == nil) {
-        return CFAbsoluteTimeGetCurrent();
-    }
-    return dateToAbsoluteTime(date);
-}
-
 class SpanOptions {
 public:
     SpanOptions(id<BugsnagPerformanceSpanContext> parentContext,
@@ -32,7 +25,7 @@ public:
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
     : SpanOptions(options.parentContext,
-                  defaultTimeIfNil(options.startTime),
+                  options.startTime == nil ? CFAbsoluteTimeGetCurrent() : dateToAbsoluteTime(options.startTime),
                   options.makeContextCurrent,
                   options.firstClass)
     {}
@@ -51,21 +44,4 @@ public:
     BSGFirstClass firstClass{BSGFirstClassUnset};
 };
 
-static inline SpanOptions defaultSpanOptionsForCustom() {
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassYes);
 }
-
-static inline SpanOptions defaultSpanOptionsForInternal() {
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassUnset);
-}
-
-static inline SpanOptions defaultSpanOptionsForViewLoad() {
-    // TODO: This will check the stack for a view load in a later PR
-    return SpanOptions(nil, CFAbsoluteTimeGetCurrent(), true, BSGFirstClassYes);
-}
-
-static inline SpanOptions defaultSpanOptionsForNetwork(CFAbsoluteTime startTime) {
-    return SpanOptions(nil, startTime, true, BSGFirstClassUnset);
-}
-}
-

@@ -34,6 +34,16 @@ SpanData::addAttributes(NSDictionary *dictionary) noexcept {
     [this->attributes addEntriesFromDictionary:dictionary];
 }
 
+bool
+SpanData::hasAttribute(NSString *attributeName, id value) noexcept {
+    for (id key in attributes) {
+        if ([key isEqualToString:attributeName]) {
+            return [attributes[key] isEqual:value];
+        }
+    }
+    return false;
+}
+
 void
 SpanData::updateSamplingProbability(double value) noexcept {
     if (samplingProbability > value) {
