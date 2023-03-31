@@ -378,8 +378,12 @@ void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) {
     tracer_.cancelQueuedSpan(span);
 }
 
-BugsnagPerformanceImpl& bugsnag::getBugsnagPerformanceImpl() noexcept {
+std::shared_ptr<BugsnagPerformanceImpl> bugsnag::getBugsnagPerformanceImpl() noexcept {
     [[clang::no_destroy]]
-    static BugsnagPerformanceImpl impl;
-    return impl;
+    static std::shared_ptr<BugsnagPerformanceImpl> sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = std::make_shared<BugsnagPerformanceImpl>();
+    });
+    return sharedInstance;
 }

@@ -22,13 +22,13 @@ Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, v
 : sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-, appStartupInstrumentation_(AppStartupInstrumentation::sharedInstance())
+, appStartupInstrumentation_([AppStartupInstrumentation sharedInstance])
 {}
 
 void
 Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
     if (!configuration.autoInstrumentAppStarts) {
-        appStartupInstrumentation_->disable();
+        [appStartupInstrumentation_ disable];
     }
     
     if (configuration.autoInstrumentViewControllers) {
@@ -106,7 +106,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
         default:                                type = @"?"; break;
     }
-    appStartupInstrumentation_->didStartViewLoadSpan(className);
+    [appStartupInstrumentation_ didStartViewLoadSpanNamed:className];
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
         if ([SpanContextStack.current hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {

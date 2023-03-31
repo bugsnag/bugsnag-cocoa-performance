@@ -39,186 +39,219 @@ static inline bool isActivePrewarm(void) {
 
 #pragma mark -
 
-void
-AppStartupInstrumentation::initialize() noexcept {
-    instance = create();
+@interface AppStartupInstrumentation ()
+
+@property(nonatomic,readwrite) std::shared_ptr<bugsnag::BugsnagPerformanceImpl> bugsnagPerformance;
+@property(nonatomic,readwrite) CFAbsoluteTime didStartProcessAtTime;
+@property(nonatomic,readwrite) CFAbsoluteTime didCallMainFunctionAtTime;
+@property(nonatomic,readwrite) CFAbsoluteTime didBecomeActiveAtTime;
+@property(nonatomic,readwrite) CFAbsoluteTime didFinishLaunchingAtTime;
+@property(nonatomic,readwrite) bool isDisabled;
+@property(nonatomic,readwrite) bool isColdLaunch;
+@property(nonatomic,readwrite) bool shouldRespondToAppDidFinishLaunching;
+@property(nonatomic,readwrite) bool shouldRespondToAppDidBecomeActive;
+@property(nonatomic,readwrite) BugsnagPerformanceSpan *appStartSpan;
+@property(nonatomic,readwrite) BugsnagPerformanceSpan *preMainSpan;
+@property(nonatomic,readwrite) BugsnagPerformanceSpan *postMainSpan;
+@property(nonatomic,readwrite) BugsnagPerformanceSpan *uiInitSpan;
+@property(nonatomic,readwrite) NSString *firstViewName;
+
+@end
+
+@implementation AppStartupInstrumentation
+
++ (instancetype)sharedInstance {
+    static id sharedInstance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
+
+// Use the constructor attribute so that this runs right before main()
+// https://gcc.gnu.org/onlinedocs/gcc-4.7.0/gcc/Function-Attributes.html
+// Priority is 101-65535, with higher values running later.
+static void markPreMainPhase() noexcept {
+    AppStartupInstrumentation *instance = [AppStartupInstrumentation sharedInstance];
     if (canInstallInstrumentation()) {
-        instance->start();
+        [instance willCallMainFunction];
     } else {
-        instance->disable();
+        [instance disable];
     }
 }
 
-std::shared_ptr<AppStartupInstrumentation> AppStartupInstrumentation::sharedInstance() {
-    return instance;
-}
-
-void
-AppStartupInstrumentation::didFinishLaunchingCallback(CFNotificationCenterRef center,
-                                                      void *observer,
-                                                      CFNotificationName name,
-                                                      __unused const void *object,
-                                                      __unused CFDictionaryRef userInfo) noexcept {
-    instance->onAppDidFinishLaunching();
+static void didFinishLaunchingCallback(CFNotificationCenterRef center,
+                                       void *observer,
+                                       CFNotificationName name,
+                                       __unused const void *object,
+                                       __unused CFDictionaryRef userInfo) noexcept {
+    [[AppStartupInstrumentation sharedInstance] onAppDidFinishLaunching];
     CFNotificationCenterRemoveObserver(center, observer, name, nullptr);
 }
 
-void
-AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef center,
+static void didBecomeActiveCallback(CFNotificationCenterRef center,
                                                    void *observer,
                                                    CFNotificationName name,
                                                    __unused const void *object,
                                                    __unused CFDictionaryRef userInfo) noexcept {
-    instance->onAppDidBecomeActive();
+    [[AppStartupInstrumentation sharedInstance] onAppDidBecomeActive];
     CFNotificationCenterRemoveObserver(center, observer, name, nullptr);
 }
 
+- (instancetype)init {
+    if ((self = [super init])) {
+        _bugsnagPerformance = getBugsnagPerformanceImpl();
+        _didStartProcessAtTime = getProcessStartTime();
+        _isColdLaunch = isColdLaunch();
+    }
+    return self;
+}
 
-AppStartupInstrumentation::AppStartupInstrumentation()
-: bugsnagPerformance_(getBugsnagPerformanceImpl())
-, didStartProcessAtTime_(getProcessStartTime())
-, didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
-, isColdLaunch_(isColdLaunch())
-{}
+//AppStartupInstrumentation::AppStartupInstrumentation()
+//: bugsnagPerformance_(getBugsnagPerformanceImpl())
+//, didStartProcessAtTime_(getProcessStartTime())
+//, didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
+//, isColdLaunch_(isColdLaunch())
+//{}
 
-void AppStartupInstrumentation::start() noexcept {
-    beginAppStartSpan();
-    beginPreMainSpan();
-    [preMainSpan_ endWithAbsoluteTime:didCallMainFunctionAtTime_];
-    beginPostMainSpan();
+- (void)willCallMainFunction {
+    self.didCallMainFunctionAtTime = CFAbsoluteTimeGetCurrent();
 
-    shouldRespondToAppDidBecomeActive_ = true;
-    shouldRespondToAppDidFinishLaunching_ = true;
+    [self beginAppStartSpan];
+    [self beginPreMainSpan];
+    [self.preMainSpan endWithAbsoluteTime:self.didCallMainFunctionAtTime];
+    [self beginPostMainSpan];
+
+    self.shouldRespondToAppDidBecomeActive = YES;
+    self.shouldRespondToAppDidFinishLaunching = YES;
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    &didFinishLaunchingAtTime_, // arbitrary pointer to allow later removal
+                                    (__bridge const void *)(self),
                                     didFinishLaunchingCallback,
                                     CFSTR("UIApplicationDidFinishLaunchingNotification"),
                                     nullptr,
                                     CFNotificationSuspensionBehaviorDeliverImmediately);
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    &didBecomeActiveAtTime_, // arbitrary pointer to allow later removal
+                                    (__bridge const void *)(self),
                                     didBecomeActiveCallback,
                                     CFSTR("UIApplicationDidBecomeActiveNotification"),
                                     nullptr,
                                     CFNotificationSuspensionBehaviorDeliverImmediately);
 }
 
-void AppStartupInstrumentation::disable() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
-    isDisabled_ = true;
-    bugsnagPerformance_.cancelQueuedSpan(preMainSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(postMainSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(uiInitSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(appStartSpan_);
+- (void)disable {
+    @synchronized (self) {
+        self.isDisabled = true;
+        self.bugsnagPerformance->cancelQueuedSpan(self.preMainSpan);
+        self.bugsnagPerformance->cancelQueuedSpan(self.postMainSpan);
+        self.bugsnagPerformance->cancelQueuedSpan(self.uiInitSpan);
+        self.bugsnagPerformance->cancelQueuedSpan(self.appStartSpan);
+    }
 }
 
-void
-AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
-        return;
+- (void)onAppDidFinishLaunching {
+    @synchronized (self) {
+        if (self.isDisabled) {
+            return;
+        }
+
+        if (!self.shouldRespondToAppDidFinishLaunching) {
+            return;
+        }
+        self.shouldRespondToAppDidFinishLaunching = false;
+
+        self.didFinishLaunchingAtTime = CFAbsoluteTimeGetCurrent();
+        [self.postMainSpan endWithAbsoluteTime:self.didFinishLaunchingAtTime];
+        [self beginUIInitSpan];
     }
-
-    if (!shouldRespondToAppDidFinishLaunching_) {
-        return;
-    }
-    shouldRespondToAppDidFinishLaunching_ = false;
-
-    didFinishLaunchingAtTime_ = CFAbsoluteTimeGetCurrent();
-    [postMainSpan_ endWithAbsoluteTime:didFinishLaunchingAtTime_];
-    beginUIInitSpan();
-
 }
 
-void
-AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
-    firstViewName_ = name;
+- (void)didStartViewLoadSpanNamed:(NSString *)name {
+    self.firstViewName = name;
 }
 
-void
-AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
-        return;
-    }
+- (void)onAppDidBecomeActive {
+    @synchronized (self) {
+        if (self.isDisabled) {
+            return;
+        }
 
-    if (!shouldRespondToAppDidBecomeActive_) {
-        return;
-    }
-    shouldRespondToAppDidBecomeActive_ = false;
+        if (!self.shouldRespondToAppDidBecomeActive) {
+            return;
+        }
+        self.shouldRespondToAppDidBecomeActive = false;
 
-    didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
-    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
-    [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
+        self.didBecomeActiveAtTime = CFAbsoluteTimeGetCurrent();
+        [self.uiInitSpan endWithAbsoluteTime:self.didBecomeActiveAtTime];
+        [self.appStartSpan endWithAbsoluteTime:self.didBecomeActiveAtTime];
+    }
 }
 
-void
-AppStartupInstrumentation::beginAppStartSpan() noexcept {
-    if (isDisabled_) {
+- (void)beginAppStartSpan {
+    if (self.isDisabled) {
         return;
     }
-    if (appStartSpan_ != nullptr) {
+    if (self.appStartSpan != nullptr) {
         return;
     }
 
-    auto name = isColdLaunch_ ? @"AppStart/Cold" : @"AppStart/Warm";
+    auto name = self.isColdLaunch ? @"AppStart/Cold" : @"AppStart/Warm";
     SpanOptions options;
-    options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    options.startTime = self.didStartProcessAtTime;
+    self.appStartSpan = self.bugsnagPerformance->startAppStartSpan(name, options);
     NSMutableDictionary *attributes = @{
-        @"bugsnag.app_start.type": isColdLaunch_ ? @"cold" : @"warm",
+        @"bugsnag.app_start.type": self.isColdLaunch ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
     }.mutableCopy;
-    if (firstViewName_ != nullptr) {
-        attributes[@"bugsnag.app_start.first_view_name"] = firstViewName_;
+    if (self.firstViewName != nullptr) {
+        attributes[@"bugsnag.app_start.first_view_name"] = self.firstViewName;
     }
-    [appStartSpan_ addAttributes:attributes];
+    [self.appStartSpan addAttributes:attributes];
 }
 
-void
-AppStartupInstrumentation::beginPreMainSpan() noexcept {
-    if (isDisabled_) {
+- (void)beginPreMainSpan {
+    if (self.isDisabled) {
         return;
     }
-    if (preMainSpan_ != nullptr) {
+    if (self.preMainSpan != nullptr) {
         return;
     }
 
     auto name = @"AppStartPhase/App launching - pre main()";
     SpanOptions options;
-    options.startTime = didStartProcessAtTime_;
-    preMainSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    options.startTime = self.didStartProcessAtTime;
+    self.preMainSpan = self.bugsnagPerformance->startAppStartSpan(name, options);
 }
 
-void
-AppStartupInstrumentation::beginPostMainSpan() noexcept {
-    if (isDisabled_) {
+- (void)beginPostMainSpan {
+    if (self.isDisabled) {
         return;
     }
-    if (postMainSpan_ != nullptr) {
+    if (self.postMainSpan != nullptr) {
         return;
     }
 
     auto name = @"AppStartPhase/App launching - post main()";
     SpanOptions options;
-    options.startTime = didCallMainFunctionAtTime_;
-    postMainSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    options.startTime = self.didCallMainFunctionAtTime;
+    self.postMainSpan = self.bugsnagPerformance->startAppStartSpan(name, options);
 }
 
-void
-AppStartupInstrumentation::beginUIInitSpan() noexcept {
-    if (isDisabled_) {
+- (void)beginUIInitSpan {
+    if (self.isDisabled) {
         return;
     }
-    if (uiInitSpan_ != nullptr) {
+    if (self.uiInitSpan != nullptr) {
         return;
     }
 
     auto name = @"AppStartPhase/UI init";
     SpanOptions options;
-    options.startTime = didBecomeActiveAtTime_;
-    uiInitSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    options.startTime = self.didBecomeActiveAtTime;
+    self.uiInitSpan = self.bugsnagPerformance->startAppStartSpan(name, options);
 }
+
+@end
 
 #pragma mark -
 

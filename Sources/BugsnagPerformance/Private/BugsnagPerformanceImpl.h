@@ -105,6 +105,6 @@ public: // For testing
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
 };
 
-BugsnagPerformanceImpl& getBugsnagPerformanceImpl() noexcept;
+std::shared_ptr<BugsnagPerformanceImpl> getBugsnagPerformanceImpl() noexcept;
 
 }
