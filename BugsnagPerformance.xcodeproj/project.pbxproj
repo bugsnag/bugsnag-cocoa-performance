@@ -126,6 +126,20 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
+		96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -572,6 +586,7 @@
 			);
 			dependencies = (
 				0122C26B29019CE1002D243C /* PBXTargetDependency */,
+				96D4160529E6F6B500AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-iOSTests";
 			productName = "BugsnagPerformance-iOSTests";
@@ -590,6 +605,7 @@
 			);
 			dependencies = (
 				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
+				96D4160729E6F6B900AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-SwiftTests";
 			productName = BugsnagPerformanceTestsSwift;
@@ -645,13 +661,13 @@
 						CreatedOnToolsVersion = 14.0.1;
 						DevelopmentTeam = 372ZUL2ZB7;
 						LastSwiftMigration = 1420;
-						TestTargetID = 96D415D329E6AD1300AEE435;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
 					8A80DA862966CE940035BDA9 = {
 						CreatedOnToolsVersion = 13.4;
 						DevelopmentTeam = 372ZUL2ZB7;
 						ProvisioningStyle = Automatic;
-						TestTargetID = 96D415D329E6AD1300AEE435;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
 					96D415EF29E6ADC500AEE435 = {
 						CreatedOnToolsVersion = 14.2;
@@ -809,6 +825,16 @@
 			isa = PBXTargetDependency;
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
+		};
+		96D4160529E6F6B500AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */;
+		};
+		96D4160729E6F6B900AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
