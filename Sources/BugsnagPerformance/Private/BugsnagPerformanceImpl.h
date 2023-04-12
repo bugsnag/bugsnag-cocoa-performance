@@ -21,15 +21,16 @@
 #import "Reachability.h"
 #import "RetryQueue.h"
 #import "AppStateTracker.h"
+#import "Configurable.h"
 
 #import <mutex>
 
 namespace bugsnag {
-class BugsnagPerformanceImpl {
+class BugsnagPerformanceImpl: public Configurable {
+    friend class BugsnagPerformanceLibrary;
 public:
-    BugsnagPerformanceImpl() noexcept;
-
-    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void start() noexcept;
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
@@ -59,6 +60,8 @@ public:
     void onSpanStarted() noexcept;
 
 private:
+    BugsnagPerformanceImpl() noexcept;
+
     bool started_{false};
     std::mutex instanceMutex_;
     std::shared_ptr<Batch> batch_;
@@ -103,8 +106,9 @@ private:
 
 public: // For testing
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
+    static std::shared_ptr<BugsnagPerformanceImpl> testing_newInstance() {
+        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl);
+    }
 };
-
-BugsnagPerformanceImpl& getBugsnagPerformanceImpl() noexcept;
 
 }

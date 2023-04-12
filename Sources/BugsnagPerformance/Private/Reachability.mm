@@ -12,8 +12,8 @@ using namespace bugsnag;
 
 Reachability &
 Reachability::get() noexcept {
-    [[clang::no_destroy]] static Reachability instance;
-    return instance;
+    [[clang::no_destroy]] static Reachability *instance = new Reachability;
+    return *instance;
 }
 
 Reachability::Reachability() noexcept {

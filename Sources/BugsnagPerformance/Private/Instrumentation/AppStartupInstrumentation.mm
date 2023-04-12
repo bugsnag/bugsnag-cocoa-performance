@@ -22,10 +22,6 @@ using namespace bugsnag;
 
 static constexpr CFTimeInterval kMaxDuration = 120;
 
-// NOLINTBEGIN(cppcoreguidelines-avoid-non-const-global-variables)
-[[clang::no_destroy]] static std::shared_ptr<AppStartupInstrumentation> instance;
-// NOLINTEND(cppcoreguidelines-avoid-non-const-global-variables)
-
 static CFAbsoluteTime getProcessStartTime() noexcept;
 static bool isColdLaunch(void);
 static bool canInstallInstrumentation();
@@ -40,25 +36,12 @@ static inline bool isActivePrewarm(void) {
 #pragma mark -
 
 void
-AppStartupInstrumentation::initialize() noexcept {
-    instance = create();
-    if (canInstallInstrumentation()) {
-        instance->start();
-    } else {
-        instance->disable();
-    }
-}
-
-std::shared_ptr<AppStartupInstrumentation> AppStartupInstrumentation::sharedInstance() {
-    return instance;
-}
-
-void
 AppStartupInstrumentation::didFinishLaunchingCallback(CFNotificationCenterRef center,
                                                       void *observer,
                                                       CFNotificationName name,
                                                       __unused const void *object,
                                                       __unused CFDictionaryRef userInfo) noexcept {
+    auto instance = (AppStartupInstrumentation *)observer;
     instance->onAppDidFinishLaunching();
     CFNotificationCenterRemoveObserver(center, observer, name, nullptr);
 }
@@ -69,19 +52,35 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
                                                    CFNotificationName name,
                                                    __unused const void *object,
                                                    __unused CFDictionaryRef userInfo) noexcept {
+    auto instance = (AppStartupInstrumentation *)observer;
     instance->onAppDidBecomeActive();
     CFNotificationCenterRemoveObserver(center, observer, name, nullptr);
 }
 
 
-AppStartupInstrumentation::AppStartupInstrumentation()
-: bugsnagPerformance_(getBugsnagPerformanceImpl())
+AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance)
+: bugsnagPerformance_(bugsnagPerformance)
 , didStartProcessAtTime_(getProcessStartTime())
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
 , isColdLaunch_(isColdLaunch())
-{}
+{
+    if (!canInstallInstrumentation()) {
+        disable();
+    }
+}
 
-void AppStartupInstrumentation::start() noexcept {
+void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    if (!config.autoInstrumentAppStarts) {
+        disable();
+    }
+}
+
+void AppStartupInstrumentation::willCallMainFunction() noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    if (isDisabled_) {
+        return;
+    }
+
     beginAppStartSpan();
     beginPreMainSpan();
     [preMainSpan_ endWithAbsoluteTime:didCallMainFunctionAtTime_];
@@ -90,13 +89,13 @@ void AppStartupInstrumentation::start() noexcept {
     shouldRespondToAppDidBecomeActive_ = true;
     shouldRespondToAppDidFinishLaunching_ = true;
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    &didFinishLaunchingAtTime_, // arbitrary pointer to allow later removal
+                                    this,
                                     didFinishLaunchingCallback,
                                     CFSTR("UIApplicationDidFinishLaunchingNotification"),
                                     nullptr,
                                     CFNotificationSuspensionBehaviorDeliverImmediately);
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
-                                    &didBecomeActiveAtTime_, // arbitrary pointer to allow later removal
+                                    this,
                                     didBecomeActiveCallback,
                                     CFSTR("UIApplicationDidBecomeActiveNotification"),
                                     nullptr,
@@ -106,10 +105,10 @@ void AppStartupInstrumentation::start() noexcept {
 void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     isDisabled_ = true;
-    bugsnagPerformance_.cancelQueuedSpan(preMainSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(postMainSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(uiInitSpan_);
-    bugsnagPerformance_.cancelQueuedSpan(appStartSpan_);
+    bugsnagPerformance_->cancelQueuedSpan(preMainSpan_);
+    bugsnagPerformance_->cancelQueuedSpan(postMainSpan_);
+    bugsnagPerformance_->cancelQueuedSpan(uiInitSpan_);
+    bugsnagPerformance_->cancelQueuedSpan(appStartSpan_);
 }
 
 void
@@ -164,7 +163,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     auto name = isColdLaunch_ ? @"AppStart/Cold" : @"AppStart/Warm";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    appStartSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
     NSMutableDictionary *attributes = @{
         @"bugsnag.app_start.type": isColdLaunch_ ? @"cold" : @"warm",
         @"bugsnag.span.category": @"app_start",
@@ -187,7 +186,10 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     auto name = @"AppStartPhase/App launching - pre main()";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    preMainSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    preMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
+    [preMainSpan_ addAttributes:@{
+        @"bugsnag.span.category": @"app_start",
+    }];
 }
 
 void
@@ -202,7 +204,10 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     auto name = @"AppStartPhase/App launching - post main()";
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
-    postMainSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    postMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
+    [postMainSpan_ addAttributes:@{
+        @"bugsnag.span.category": @"app_start",
+    }];
 }
 
 void
@@ -217,7 +222,10 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     auto name = @"AppStartPhase/UI init";
     SpanOptions options;
     options.startTime = didBecomeActiveAtTime_;
-    uiInitSpan_ = bugsnagPerformance_.startAppStartSpan(name, options);
+    uiInitSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
+    [uiInitSpan_ addAttributes:@{
+        @"bugsnag.span.category": @"app_start",
+    }];
 }
 
 #pragma mark -

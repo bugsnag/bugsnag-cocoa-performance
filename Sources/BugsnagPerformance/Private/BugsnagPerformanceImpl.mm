@@ -44,7 +44,12 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
                                                 valueOptions:NSMapTableStrongMemory])
 {}
 
-void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration) noexcept {
+void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configuration) noexcept {
+    configuration_ = configuration;
+    tracer_.configure(configuration);
+}
+
+void BugsnagPerformanceImpl::start() noexcept {
     {
         std::lock_guard<std::mutex> guard(instanceMutex_);
         if (started_) {
@@ -55,11 +60,9 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
     
     NSError *__autoreleasing error = nil;
 
-    if (![configuration validate:&error]) {
+    if (![configuration_ validate:&error]) {
         BSGLogError(@"Configuration validation failed with error: %@", error);
     }
-    
-    configuration_ = configuration;
 
     /* Note: Be careful about initialization order!
      *
@@ -74,7 +77,7 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
 
     __block auto blockThis = this;
 
-    resourceAttributes_ = ResourceAttributes(configuration).get();
+    resourceAttributes_ = ResourceAttributes(configuration_).get();
 
     if ((error = persistence_->start()) != nil) {
         BSGLogError(@"error while starting persistence: %@", error);
@@ -85,10 +88,10 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
         blockThis->onFilesystemError();
     });
 
-    sampler_->setFallbackProbability(configuration.samplingProbability);
+    sampler_->setFallbackProbability(configuration_.samplingProbability);
 
-    uploader_ = std::make_shared<OtlpUploader>(configuration.endpoint,
-                                                   configuration.apiKey,
+    uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
+                                               configuration_.apiKey,
                                                    ^(double newProbability) {
         blockThis->onProbabilityChanged(newProbability);
     });
@@ -116,13 +119,13 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
         blockThis->onAppEnteredForeground();
     };
 
-    tracer_.start(configuration);
+    tracer_.start();
 
     Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
 
-    if (!configuration.shouldSendReports) {
+    if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
     }
 }
@@ -376,10 +379,4 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name
 
 void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) {
     tracer_.cancelQueuedSpan(span);
-}
-
-BugsnagPerformanceImpl& bugsnag::getBugsnagPerformanceImpl() noexcept {
-    [[clang::no_destroy]]
-    static BugsnagPerformanceImpl impl;
-    return impl;
 }

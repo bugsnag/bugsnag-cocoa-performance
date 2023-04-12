@@ -16,6 +16,7 @@
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
+#import "Configurable.h"
 
 #import <memory>
 
@@ -25,11 +26,16 @@ namespace bugsnag {
 /**
  * Tracer starts all spans, then samples them and routes them to the batch when they end.
  */
-class Tracer {
+class Tracer: public Configurable {
 public:
     Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept;
+    ~Tracer() {};
 
-    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
+        onViewLoadSpanStarted_ = onViewLoadSpanStarted;
+    }
+    void start() noexcept;
 
     BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
 
@@ -45,12 +51,16 @@ public:
 
 private:
     std::shared_ptr<Sampler> sampler_;
-    std::shared_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};
+    void (^onViewLoadSpanStarted_)(NSString *className){
+        ^(NSString *) {}
+    };
+
+    BugsnagPerformanceConfiguration *configuration;
     
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);

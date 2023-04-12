@@ -12,9 +12,9 @@
 #import "SpanContextStack.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
-#import "Instrumentation/AppStartupInstrumentation.h"
 #import "Instrumentation/NetworkInstrumentation.h"
 #import "Instrumentation/ViewLoadInstrumentation.h"
+#import "BugsnagPerformanceLibrary.h"
 
 using namespace bugsnag;
 
@@ -22,15 +22,15 @@ Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, v
 : sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-, appStartupInstrumentation_(AppStartupInstrumentation::sharedInstance())
 {}
 
 void
-Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    if (!configuration.autoInstrumentAppStarts) {
-        appStartupInstrumentation_->disable();
-    }
-    
+Tracer::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    configuration = config;
+}
+
+void
+Tracer::start() noexcept {
     if (configuration.autoInstrumentViewControllers) {
         viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
         viewLoadInstrumentation_->start();
@@ -106,7 +106,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
         default:                                type = @"?"; break;
     }
-    appStartupInstrumentation_->didStartViewLoadSpan(className);
+    onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
         if ([SpanContextStack.current hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
