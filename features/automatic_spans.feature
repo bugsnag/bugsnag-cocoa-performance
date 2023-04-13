@@ -2,6 +2,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentAppStartsScenario
     Given I run "AutoInstrumentAppStartsScenario" and discard the initial p-value request
+    And I wait for 2 seconds
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
