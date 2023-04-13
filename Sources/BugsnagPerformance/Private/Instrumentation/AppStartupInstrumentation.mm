@@ -58,7 +58,7 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 }
 
 
-AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance)
+AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance) noexcept
 : bugsnagPerformance_(bugsnagPerformance)
 , didStartProcessAtTime_(getProcessStartTime())
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())

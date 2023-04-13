@@ -8,13 +8,13 @@
 
 #import "SpanAttributes.h"
 
-#import "Reachability.h"
+#import "BugsnagPerformanceLibrary.h"
 #import "AppStateTracker.h"
 
 using namespace bugsnag;
 
 static NSString *hostConnectionType() noexcept {
-    switch (Reachability::get().getConnectivity()) {
+    switch (BugsnagPerformanceLibrary::getReachability()->getConnectivity()) {
         case bugsnag::Reachability::Unknown:    return @"unknown";
         case bugsnag::Reachability::None:       return @"unavailable";
         case bugsnag::Reachability::Cellular:   return @"cell";

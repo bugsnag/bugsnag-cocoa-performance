@@ -11,12 +11,14 @@
 #import <Foundation/Foundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <vector>
+#import <memory>
 
 namespace bugsnag {
 class Reachability {
+    friend class BugsnagPerformanceLibrary;
 public:
-    static Reachability &get() noexcept; 
-    
+    ~Reachability();
+
     enum Connectivity {
         Unknown,
         None,
@@ -30,7 +32,7 @@ public:
     
 private:
     Reachability() noexcept;
-    
+
     static void callback(SCNetworkReachabilityRef target,
                          SCNetworkReachabilityFlags flags,
                          void *info) noexcept;
@@ -50,5 +52,11 @@ private:
     };
     SCNetworkReachabilityRef target_{nullptr};
     Connectivity connectivity_{Connectivity::Unknown};
+
+public:
+    static std::shared_ptr<Reachability> testing_newReachability() {
+        return std::shared_ptr<Reachability>(new Reachability);
+    }
 };
+
 }

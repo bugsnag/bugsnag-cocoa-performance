@@ -14,7 +14,7 @@ namespace bugsnag {
 
 class Configurable {
 public:
-    virtual void configure(BugsnagPerformanceConfiguration *config) = 0;
+    virtual void configure(BugsnagPerformanceConfiguration *config) noexcept = 0;
     virtual ~Configurable() {}
 };
 

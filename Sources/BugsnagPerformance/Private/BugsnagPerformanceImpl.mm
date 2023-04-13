@@ -34,8 +34,9 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
   };
 }
 
-BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
-: batch_(std::make_shared<Batch>())
+BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability) noexcept
+: reachability_(reachability)
+, batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
@@ -121,7 +122,7 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     tracer_.start();
 
-    Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
+    reachability_->addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
 
@@ -132,14 +133,14 @@ void BugsnagPerformanceImpl::start() noexcept {
 
 #pragma mark Tasks
 
-NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() {
+NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
     __block auto blockThis = this;
     return @[
         ^bool() { return blockThis->sendPValueRequestTask(); },
     ];
 }
 
-NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
+NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     __block auto blockThis = this;
     return @[
         ^bool() { return blockThis->maybePersistStateTask(); },
@@ -148,12 +149,12 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
     ];
 }
 
-bool BugsnagPerformanceImpl::sendPValueRequestTask() {
+bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
     uploadPValueRequest();
     return true;
 }
 
-bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
+bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     auto spans = sampler_->sampled(batch_->drain());
     if (spans->size() == 0) {
         return false;
@@ -163,7 +164,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
     return true;
 }
 
-bool BugsnagPerformanceImpl::sendRetriesTask() {
+bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
     retryQueue_->sweep();
 
     auto retries = retryQueue_->list();
@@ -182,7 +183,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() {
     return false;
 }
 
-bool BugsnagPerformanceImpl::maybePersistStateTask() {
+bool BugsnagPerformanceImpl::maybePersistStateTask() noexcept {
     if (shouldPersistState_.exchange(false)) {
         auto error = persistentState_->persist();
         if (error != nil) {
@@ -315,35 +316,35 @@ static inline void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOpt
     }
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
     SpanOptions options;
     auto span = tracer_.startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_.startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
     auto span = tracer_.startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_.startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) {
+void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
                                           [NSString stringWithUTF8String:object_getClassName(controller)],
@@ -354,7 +355,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     [viewControllersToSpans_ setObject:span forKey:controller];
 }
 
-void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) {
+void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {
     /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
      * until certain internal operations occur (such as the map resizing itself).
      * http://cocoamine.net/blog/2013/12/13/nsmaptable-and-zeroing-weak-references/
@@ -373,10 +374,10 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
     [span endWithEndTime:endTime];
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) noexcept {
     return tracer_.startAppStartSpan(name, options);
 }
 
-void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) {
+void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     tracer_.cancelQueuedSpan(span);
 }

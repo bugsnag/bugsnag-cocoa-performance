@@ -41,7 +41,7 @@ private:
 
 private:
     AppStartupInstrumentation() = delete;
-    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance);
+    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance) noexcept;
 
     // Disable app startup instrumentation and cancel any already-created spans.
     void disable() noexcept;

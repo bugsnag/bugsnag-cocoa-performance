@@ -36,31 +36,31 @@ public:
         tracer_.reportNetworkSpan(task, metrics);
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name);
+    BugsnagPerformanceSpan *startSpan(NSString *name) noexcept;
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options);
+    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options) noexcept;
 
-    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType);
+    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name,
                                               BugsnagPerformanceViewType viewType,
-                                              BugsnagPerformanceSpanOptions *options);
-    void cancelQueuedSpan(BugsnagPerformanceSpan *span);
+                                              BugsnagPerformanceSpanOptions *options) noexcept;
+    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
-    void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options);
+    void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) noexcept;
 
-    void endViewLoadSpan(UIViewController *controller, NSDate *endTime);
+    void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
 
-    void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) {
+    void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
     }
 
-    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options);
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
 
     void onSpanStarted() noexcept;
 
 private:
-    BugsnagPerformanceImpl() noexcept;
+    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability) noexcept;
 
     bool started_{false};
     std::mutex instanceMutex_;
@@ -81,14 +81,15 @@ private:
     CFAbsoluteTime pausePValueRequestsUntil_{0};
     NSTimer *workerTimer_{nil};
     AppStateTracker *appStateTracker_{nil};
+    std::shared_ptr<Reachability> reachability_;
 
     // Tasks
-    NSArray<Task> *buildInitialTasks();
-    NSArray<Task> *buildRecurringTasks();
-    bool sendCurrentBatchTask();
-    bool sendRetriesTask();
-    bool sendPValueRequestTask();
-    bool maybePersistStateTask();
+    NSArray<Task> *buildInitialTasks() noexcept;
+    NSArray<Task> *buildRecurringTasks() noexcept;
+    bool sendCurrentBatchTask() noexcept;
+    bool sendRetriesTask() noexcept;
+    bool sendPValueRequestTask() noexcept;
+    bool maybePersistStateTask() noexcept;
 
     // Event reactions
     void onBatchFull() noexcept;
@@ -107,7 +108,7 @@ private:
 public: // For testing
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
     static std::shared_ptr<BugsnagPerformanceImpl> testing_newInstance() {
-        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl);
+        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl(Reachability::testing_newReachability()));
     }
 };
 

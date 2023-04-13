@@ -6,6 +6,7 @@
 //
 
 #import "BugsnagPerformanceLibrary.h"
+#import "Reachability.h"
 
 using namespace bugsnag;
 
@@ -30,7 +31,8 @@ void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *confi
 }
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
-: bugsnagPerformanceImpl_(new BugsnagPerformanceImpl)
+: reachability_(new Reachability)
+, bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_))
 , appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_))
 {
     bugsnagPerformanceImpl_->tracer_.setOnViewLoadSpanStarted(^(NSString *className) {
@@ -49,4 +51,8 @@ std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPer
 
 std::shared_ptr<AppStartupInstrumentation> BugsnagPerformanceLibrary::getAppStartupInstrumentation() noexcept {
     return instance->appStartupInstrumentation_;
+}
+
+std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {
+    return instance->reachability_;
 }

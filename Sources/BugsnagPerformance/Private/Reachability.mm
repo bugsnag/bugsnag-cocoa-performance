@@ -10,12 +10,6 @@
 
 using namespace bugsnag;
 
-Reachability &
-Reachability::get() noexcept {
-    [[clang::no_destroy]] static Reachability *instance = new Reachability;
-    return *instance;
-}
-
 Reachability::Reachability() noexcept {
     queue_ = dispatch_queue_create("bugsnag.performance.reachability", nullptr);
     target_ = SCNetworkReachabilityCreateWithName(nullptr, "bugsnag.com");
@@ -27,6 +21,10 @@ Reachability::Reachability() noexcept {
             callback(target_, flags, this);
         }
     }
+}
+
+Reachability::~Reachability() {
+    SCNetworkReachabilitySetCallback(target_, NULL, NULL);
 }
 
 void
