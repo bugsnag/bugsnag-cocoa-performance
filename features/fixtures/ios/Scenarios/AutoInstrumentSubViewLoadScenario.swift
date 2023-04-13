@@ -17,6 +17,7 @@ class AutoInstrumentSubViewLoadScenario: Scenario {
     override func run() {
         UIApplication.shared.windows[0].rootViewController!.present(
             AutoInstrumentSubViewLoadScenario_ViewController(), animated: true)
+        waitForCurrentBatch()
     }
 }
 

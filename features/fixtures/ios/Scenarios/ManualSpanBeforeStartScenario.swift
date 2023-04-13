@@ -15,5 +15,6 @@ class ManualSpanBeforeStartScenario: Scenario {
     }
     
     override func run() {
+        waitForCurrentBatch()
     }
 }

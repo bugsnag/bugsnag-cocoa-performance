@@ -16,5 +16,6 @@ class AutoInstrumentAppStartsScenario: Scenario {
     }
     
     override func run() {
+        waitForCurrentBatch()
     }
 }

@@ -27,5 +27,6 @@ class AutoInstrumentNetworkScenario: Scenario {
 
     override func run() {
         query(string: "/reflect/?status=200")
+        waitForCurrentBatch()
     }
 }
