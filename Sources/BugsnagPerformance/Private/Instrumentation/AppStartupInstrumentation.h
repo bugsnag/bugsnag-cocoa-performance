@@ -6,32 +6,64 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <mutex>
+#import "../Configurable.h"
+
+@class BugsnagPerformanceSpan;
 
 namespace bugsnag {
-class AppStartupInstrumentation {
+
+class BugsnagPerformanceImpl;
+
+class AppStartupInstrumentation: public Configurable {
+    friend class BugsnagPerformanceLibrary;
 public:
-    AppStartupInstrumentation(class Tracer &tracer) noexcept
-    : tracer_(tracer)
-    {}
-    
-    void start() noexcept;
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
+
     void didStartViewLoadSpan(NSString *name) noexcept;
-    
+
 private:
-    static void initialize() noexcept __attribute__((constructor));
-    
-    static void notificationCallback(CFNotificationCenterRef center,
-                                     void *observer,
-                                     CFNotificationName name,
-                                     const void *object,
-                                     CFDictionaryRef userInfo) noexcept;
-    
-    static CFAbsoluteTime getProcessStartTime() noexcept;
-    
-    void reportSpan(CFAbsoluteTime endTime) noexcept;
-    
-    class Tracer &tracer_;
-    bool isCold_{false};
-    NSString *firstViewName_;
+    std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance_;
+    CFAbsoluteTime didStartProcessAtTime_{0};
+    CFAbsoluteTime didCallMainFunctionAtTime_{0};
+    CFAbsoluteTime didBecomeActiveAtTime_{0};
+    CFAbsoluteTime didFinishLaunchingAtTime_{0};
+    bool isDisabled_{false};
+    bool isColdLaunch_{false};
+    bool shouldRespondToAppDidFinishLaunching_{false};
+    bool shouldRespondToAppDidBecomeActive_{false};
+    BugsnagPerformanceSpan *appStartSpan_{nil};
+    BugsnagPerformanceSpan *preMainSpan_{nil};
+    BugsnagPerformanceSpan *postMainSpan_{nil};
+    BugsnagPerformanceSpan *uiInitSpan_{nil};
+    NSString *firstViewName_{nil};
+    std::mutex mutex_;
+
+private:
+    AppStartupInstrumentation() = delete;
+    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance) noexcept;
+
+    // Disable app startup instrumentation and cancel any already-created spans.
+    void disable() noexcept;
+
+    static void didFinishLaunchingCallback(CFNotificationCenterRef center,
+                                           void *observer,
+                                           CFNotificationName name,
+                                           const void *object,
+                                           CFDictionaryRef userInfo) noexcept;
+
+    static void didBecomeActiveCallback(CFNotificationCenterRef center,
+                                        void *observer,
+                                        CFNotificationName name,
+                                        const void *object,
+                                        CFDictionaryRef userInfo) noexcept;
+
+    void willCallMainFunction() noexcept;
+    void onAppDidFinishLaunching() noexcept;
+    void onAppDidBecomeActive() noexcept;
+    void beginAppStartSpan() noexcept;
+    void beginPreMainSpan() noexcept;
+    void beginPostMainSpan() noexcept;
+    void beginUIInitSpan() noexcept;
 };
 }

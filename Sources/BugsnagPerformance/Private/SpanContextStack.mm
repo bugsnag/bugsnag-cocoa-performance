@@ -6,7 +6,7 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-#import "SpanContextStack.h"
+#import "SpanContextStack+Private.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import <os/activity.h>
 #import <objc/runtime.h>
@@ -192,6 +192,11 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
         }
     }
     return NO;
+}
+
+- (void)clearForUnitTests {
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    _stacks = [NSMutableDictionary new];
 }
 
 @end

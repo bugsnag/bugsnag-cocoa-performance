@@ -12,6 +12,9 @@
 #import "SpanContextStack.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "Instrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation.h"
+#import "BugsnagPerformanceLibrary.h"
 
 using namespace bugsnag;
 
@@ -19,16 +22,15 @@ Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, v
 : sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-{
-    appStartupInstrumentation_ = std::make_unique<AppStartupInstrumentation>(*this);
+{}
+
+void
+Tracer::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    configuration = config;
 }
 
 void
-Tracer::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    if (configuration.autoInstrumentAppStarts) {
-        appStartupInstrumentation_->start();
-    }
-    
+Tracer::start() noexcept {
     if (configuration.autoInstrumentViewControllers) {
         viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
         viewLoadInstrumentation_->start();
@@ -104,7 +106,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
         default:                                type = @"?"; break;
     }
-    appStartupInstrumentation_->didStartViewLoadSpan(className);
+    onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
         if ([SpanContextStack.current hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
@@ -179,4 +181,10 @@ Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metri
     [span addAttributes:attributes];
 
     [span endWithEndTime:interval.endDate];
+}
+
+void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
+    if (span) {
+        batch_->removeSpan(span.traceId, span.spanId);
+    }
 }

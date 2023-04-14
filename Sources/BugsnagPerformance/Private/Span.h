@@ -60,13 +60,8 @@ public:
             return;
         }
 
-        auto data = data_;
-        data_ = nullptr;
-        if (!data) {
-            return;
-        }
-        data->endTime = time;
-        onEnd_(data);
+        data_->endTime = time;
+        onEnd_(data_);
     }
 
     TraceId traceId() {return data_->traceId;}

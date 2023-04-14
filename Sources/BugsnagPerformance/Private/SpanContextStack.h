@@ -23,9 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)hasSpanWithAttribute:(NSString *)attribute value:(NSString *)value;
 
-// Accessible for testing only.
-@property(nonatomic,readwrite,strong) NSMutableDictionary<NSNumber *, NSPointerArray *> *stacks;
-
 @end
 
 NS_ASSUME_NONNULL_END
