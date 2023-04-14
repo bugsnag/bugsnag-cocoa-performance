@@ -12,6 +12,8 @@
 @end
 
 namespace bugsnag {
+class Tracer;
+
 class NetworkInstrumentation {
 public:
     NetworkInstrumentation(Tracer &tracer, NSURL * _Nonnull baseEndpoint) noexcept;

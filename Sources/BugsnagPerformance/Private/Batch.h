@@ -45,6 +45,30 @@ public:
         }
     }
 
+    void removeSpan(TraceId traceId, SpanId spanId) noexcept {
+        std::lock_guard<std::mutex> guard(mutex_);
+
+        if (spans_->empty()) {
+            return;
+        }
+        auto found = std::find_if(spans_->begin(),
+                     spans_->end(),
+                     [&spanId, &traceId](const std::shared_ptr<SpanData> &o) {
+            return o->spanId == spanId && o->traceId.value == traceId.value;
+        });
+        if (found == spans_->end()) {
+            return;
+        }
+
+        spans_->erase(found);
+
+        for (auto span: *spans_) {
+            if (span->parentId == spanId && span->traceId.value == traceId.value) {
+                span->parentId = 0;
+            }
+        }
+    }
+
     /**
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.
@@ -71,6 +95,10 @@ public:
 
     void setBatchFullCallback(void (^batchFullCallback)()) {
         onBatchFull = batchFullCallback;
+    }
+
+    size_t count() noexcept {
+        return spans_->size();
     }
 
 private:

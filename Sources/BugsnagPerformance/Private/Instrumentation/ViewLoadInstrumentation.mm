@@ -71,13 +71,22 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
 
 void
 ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexcept {
+    endViewLoadSpan(viewController);
+}
+
+void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
+    endViewLoadSpan(viewController);
+}
+
+void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
     BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedSpan);
     [span end];
-    
+
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     objc_setAssociatedObject(viewController, &kAssociatedSpan, nil,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
 // NOLINTBEGIN(cppcoreguidelines-*)
@@ -141,13 +150,24 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
         onLoadView(self);
         reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
     });
-    
+
+    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
+    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
+
     selector = @selector(viewDidAppear:);
     IMP viewDidAppear __block = nullptr;
     viewDidAppear = overrideImplementation(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewDidAppear(self);
+    });
+
+    selector = @selector(viewWillDisappear:);
+    IMP viewWillDisappear __block = nullptr;
+    viewWillDisappear = overrideImplementation(cls, selector, ^(id self, BOOL animated){
+        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+        onViewWillDisappear(self);
     });
 }
 
