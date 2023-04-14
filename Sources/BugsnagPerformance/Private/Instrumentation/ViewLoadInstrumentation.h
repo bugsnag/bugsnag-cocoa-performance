@@ -29,7 +29,10 @@ private:
     
     void onLoadView(UIViewController *viewController) noexcept;
     void onViewDidAppear(UIViewController *viewController) noexcept;
-    
+    void onViewWillDisappear(UIViewController *viewController) noexcept;
+
+    void endViewLoadSpan(UIViewController *viewController) noexcept;
+
     class Tracer &tracer_;
     BOOL (^ callback_)(UIViewController *viewController){nullptr};
     NSSet *observedClasses_{nil};

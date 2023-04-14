@@ -23,6 +23,7 @@ public:
     static std::shared_ptr<AppStartupInstrumentation> getAppStartupInstrumentation() noexcept;
     static std::shared_ptr<Reachability> getReachability() noexcept;
 
+    static void testing_reset();
 private:
     // Use GNU constructor attribute to auto-call functions before main() is called.
     // https://gcc.gnu.org/onlinedocs/gcc-4.7.0/gcc/Function-Attributes.html
