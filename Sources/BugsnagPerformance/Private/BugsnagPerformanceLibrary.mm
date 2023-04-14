@@ -11,15 +11,15 @@
 using namespace bugsnag;
 
 [[clang::no_destroy]]
-static BugsnagPerformanceLibrary * instance;
+static std::shared_ptr<BugsnagPerformanceLibrary> instance;
 
 void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
     // This will be called before main by the static initializer code, so threading is not an issue.
-    if (instance != nullptr) {
+    if (instance) {
         return;
     }
 
-    instance = new BugsnagPerformanceLibrary;
+    instance = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
@@ -55,4 +55,10 @@ std::shared_ptr<AppStartupInstrumentation> BugsnagPerformanceLibrary::getAppStar
 
 std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {
     return instance->reachability_;
+}
+
+void BugsnagPerformanceLibrary::testing_reset() {
+    instance.reset();
+    calledAsEarlyAsPossible();
+    calledRightBeforeMain();
 }

@@ -97,6 +97,10 @@ public:
         onBatchFull = batchFullCallback;
     }
 
+    size_t count() noexcept {
+        return spans_->size();
+    }
+
 private:
     void (^onBatchFull)(){nullptr};
     bool drainIsAllowed_{false};

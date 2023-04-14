@@ -106,7 +106,9 @@ private:
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
 
 public: // For testing
+    void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
+    NSUInteger testing_getBatchCount() { return batch_->count(); };
     static std::shared_ptr<BugsnagPerformanceImpl> testing_newInstance() {
         return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl(Reachability::testing_newReachability()));
     }

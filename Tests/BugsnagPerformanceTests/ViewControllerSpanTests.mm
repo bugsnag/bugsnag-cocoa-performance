@@ -8,8 +8,15 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagPerformanceImpl.h"
+#import "BugsnagPerformanceLibrary.h"
 
 using namespace bugsnag;
+
+@interface MyTestViewController: UIViewController
+@end
+
+@implementation MyTestViewController
+@end
 
 @interface ViewControllerSpanTests : XCTestCase
 
@@ -52,6 +59,44 @@ using namespace bugsnag;
 
         XCTAssertLessThan(perf->testing_getViewControllersToSpansCount(), 100U);
     }
+}
+
+- (void)testAutoViewControllerDidAppear {
+    BugsnagPerformanceLibrary::testing_reset();
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.autoInstrumentViewControllers = YES;
+    config.autoInstrumentAppStarts = NO;
+    config.autoInstrumentNetwork = NO;
+    BugsnagPerformanceLibrary::configure(config);
+    auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
+    perf->start();
+    perf->testing_setProbability(1);
+    XCTAssertEqual(0U, perf->testing_getBatchCount());
+    UIViewController *controller = [MyTestViewController new];
+    [controller loadView];
+    [controller viewDidLoad];
+    XCTAssertEqual(0U, perf->testing_getBatchCount());
+    [controller viewDidAppear:controller];
+    XCTAssertEqual(1U, perf->testing_getBatchCount());
+}
+
+- (void)testAutoViewControllerWillDisappear {
+    BugsnagPerformanceLibrary::testing_reset();
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.autoInstrumentViewControllers = YES;
+    config.autoInstrumentAppStarts = NO;
+    config.autoInstrumentNetwork = NO;
+    BugsnagPerformanceLibrary::configure(config);
+    auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
+    perf->start();
+    perf->testing_setProbability(1);
+    XCTAssertEqual(0U, perf->testing_getBatchCount());
+    UIViewController *controller = [MyTestViewController new];
+    [controller loadView];
+    [controller viewDidLoad];
+    XCTAssertEqual(0U, perf->testing_getBatchCount());
+    [controller viewWillDisappear:controller];
+    XCTAssertEqual(1U, perf->testing_getBatchCount());
 }
 
 @end
