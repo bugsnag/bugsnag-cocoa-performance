@@ -12,10 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface AppStateTracker : NSObject
 
-- (instancetype)init __attribute__((unavailable("use sharedInstance"))) NS_UNAVAILABLE;
-
-+ (instancetype)sharedInstance;
-
 @property(nonatomic,readonly) BOOL isInForeground;
 
 @property(nonatomic,readwrite,strong) void (^onTransitionToForeground)(void);
