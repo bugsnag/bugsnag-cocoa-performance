@@ -11,7 +11,9 @@ class BatchingWithTimeoutScenario: Scenario {
     
     override func startBugsnag() {
         super.startBugsnag()
-        bsgp_autoTriggerExportOnBatchSize = 100;
+        NSLog("###### BatchingWithTimeoutScenario: bsgp_autoTriggerExportOnBatchSize was %d", bsgp_autoTriggerExportOnBatchSize)
+        bsgp_autoTriggerExportOnBatchSize = 130;
+        NSLog("###### BatchingWithTimeoutScenario: bsgp_autoTriggerExportOnBatchSize is %d", bsgp_autoTriggerExportOnBatchSize)
         bsgp_performWorkInterval = 10;
     }
     

@@ -9,7 +9,7 @@
 #include "BSGInternalConfig.h"
 
 
-uint64_t bsgp_autoTriggerExportOnBatchSize = 100;
+uint64_t bsgp_autoTriggerExportOnBatchSize = 110;
 
 NSTimeInterval bsgp_performWorkInterval = 30;
 

@@ -12,7 +12,9 @@ class BackgroundForegroundScenario: Scenario {
 
     override func configure() {
         super.configure()
-        bsgp_autoTriggerExportOnBatchSize = 100
+        NSLog("###### BackgroundForegroundScenario: bsgp_autoTriggerExportOnBatchSize was %d", bsgp_autoTriggerExportOnBatchSize)
+        bsgp_autoTriggerExportOnBatchSize = 120
+        NSLog("###### BackgroundForegroundScenario: bsgp_autoTriggerExportOnBatchSize is %d", bsgp_autoTriggerExportOnBatchSize)
         bsgp_performWorkInterval = 1000
     }
     

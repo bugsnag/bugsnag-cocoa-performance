@@ -31,21 +31,25 @@ public:
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
     void add(std::shared_ptr<SpanData> span) noexcept {
+        NSLog(@"### Batch::add");
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
             spans_->push_back(span);
+            NSLog(@"### Batch::add: %lu vs %llu", spans_->size(), bsgp_autoTriggerExportOnBatchSize);
             isFull = spans_->size() >= bsgp_autoTriggerExportOnBatchSize;
             if (isFull) {
                 drainIsAllowed_ = true;
             }
         }
         if (isFull) {
+            NSLog(@"### Batch::add: batch is full");
             onBatchFull();
         }
     }
 
     void removeSpan(TraceId traceId, SpanId spanId) noexcept {
+        NSLog(@"### Batch::removeSpan");
         std::lock_guard<std::mutex> guard(mutex_);
 
         if (spans_->empty()) {
@@ -74,6 +78,7 @@ public:
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
     std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain() noexcept {
+        NSLog(@"### Batch::drain");
         std::lock_guard<std::mutex> guard(mutex_);
         if (!drainIsAllowed_) {
             return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();

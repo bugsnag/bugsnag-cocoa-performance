@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 };
 
 void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) noexcept {
+    NSLog(@"### OtlpUploader::upload");
     auto urlRequest = [NSMutableURLRequest requestWithURL:(NSURL *)endpoint_];
     [urlRequest setValue:apiKey_ forHTTPHeaderField:@"Bugsnag-Api-Key"];
     package.fillURLRequest(urlRequest);

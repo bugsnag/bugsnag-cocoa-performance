@@ -16,7 +16,9 @@ class Scenario: NSObject {
     
     func configure() {
         NSLog("Scenario.configure()")
+        NSLog("###### Scenario: bsgp_autoTriggerExportOnBatchSize was %d", bsgp_autoTriggerExportOnBatchSize)
         bsgp_autoTriggerExportOnBatchSize = 1;
+        NSLog("###### Scenario: bsgp_autoTriggerExportOnBatchSize is %d", bsgp_autoTriggerExportOnBatchSize)
         config.apiKey = "12312312312312312312312312312312"
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetwork = false

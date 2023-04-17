@@ -25,14 +25,17 @@ using namespace bugsnag;
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
 - (void)end {
+    NSLog(@"### BugsnagPerformanceSpan::end");
     _span->end(CFAbsoluteTimeGetCurrent());
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
+    NSLog(@"### BugsnagPerformanceSpan::endWithEndTime");
     _span->end(dateToAbsoluteTime(endTime));
 }
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime {
+    NSLog(@"### BugsnagPerformanceSpan::endWithAbsoluteTime"); 
     _span->end(endTime);
 }
 

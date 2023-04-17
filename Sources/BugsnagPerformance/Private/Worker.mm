@@ -51,9 +51,11 @@
 }
 
 - (void) run {
+    NSLog(@"### worker::run");
     [self performInitialWork];
 
     for (;;) {
+        NSLog(@"### worker::run: loop");
         @autoreleasepool {
             if (self.shouldEnd) {
                 break;
@@ -69,6 +71,7 @@
             [self.condition unlock];
         }
     }
+    NSLog(@"### worker::run: end");
 }
 
 - (void) start {

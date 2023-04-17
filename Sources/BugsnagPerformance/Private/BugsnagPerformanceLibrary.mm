@@ -22,8 +22,9 @@ BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept 
 
     return *instance_do_not_access_directly;
 }
-
+ 
 void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
+    NSLog(@"### BugsnagPerformanceLibrary::calledAsEarlyAsPossible: bsgp_autoTriggerExportOnBatchSize = %llu", bsgp_autoTriggerExportOnBatchSize);
     sharedInstance();
 }
 

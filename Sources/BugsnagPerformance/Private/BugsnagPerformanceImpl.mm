@@ -52,6 +52,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
+    NSLog(@"### BugsnagPerformanceImpl::start");
     {
         std::lock_guard<std::mutex> guard(instanceMutex_);
         if (started_) {
@@ -157,6 +158,7 @@ bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     auto spans = sampler_->sampled(batch_->drain());
+    NSLog(@"### BugsnagPerformanceImpl::sendCurrentBatchTask: %lu", spans->size());
     if (spans->size() == 0) {
         return false;
     }
@@ -203,6 +205,7 @@ void BugsnagPerformanceImpl::onFilesystemError() noexcept {
 }
 
 void BugsnagPerformanceImpl::onBatchFull() noexcept {
+    NSLog(@"### BugsnagPerformanceImpl::onBatchFull");
     wakeWorker();
 }
 
@@ -267,9 +270,11 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
     if (!configuration_.shouldSendReports) {
+        NSLog(@"### BugsnagPerformanceImpl::uploadPackage: should not send reports");
         return;
     }
     if (package == nullptr) {
+        NSLog(@"### BugsnagPerformanceImpl::uploadPackage: package is null");
         return;
     }
 
@@ -284,16 +289,19 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
     uploader_->upload(*blockPackage, ^(UploadResult result) {
         switch (result) {
             case UploadResult::SUCCESSFUL:
+                NSLog(@"### BugsnagPerformanceImpl::uploadPackage: UploadResult::SUCCESSFUL");
                 if (isRetry) {
                     blockThis->retryQueue_->remove(blockPackage->timestamp);
                 }
                 break;
             case UploadResult::FAILED_CAN_RETRY:
+                NSLog(@"### BugsnagPerformanceImpl::uploadPackage: UploadResult::FAILED_CAN_RETRY");
                 if (!isRetry) {
                     blockThis->retryQueue_->add(*blockPackage);
                 }
                 break;
             case UploadResult::FAILED_CANNOT_RETRY:
+                NSLog(@"### BugsnagPerformanceImpl::uploadPackage: UploadResult::FAILED_CANNOT_RETRY");
                 // We can't do anything with it, so throw it out.
                 if (isRetry) {
                     blockThis->retryQueue_->remove(blockPackage->timestamp);

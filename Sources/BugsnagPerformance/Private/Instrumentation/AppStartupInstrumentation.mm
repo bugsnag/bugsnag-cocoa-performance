@@ -64,18 +64,21 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerf
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
 , isColdLaunch_(isColdLaunch())
 {
+    NSLog(@"### AppStartupInstrumentation::AppStartupInstrumentation");
     if (!canInstallInstrumentation()) {
         disable();
     }
 }
 
 void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    NSLog(@"### AppStartupInstrumentation::configure");
     if (!config.autoInstrumentAppStarts) {
         disable();
     }
 }
 
 void AppStartupInstrumentation::willCallMainFunction() noexcept {
+    NSLog(@"### AppStartupInstrumentation::willCallMainFunction");
     std::lock_guard<std::mutex> guard(mutex_);
     if (isDisabled_) {
         return;
@@ -103,6 +106,7 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 }
 
 void AppStartupInstrumentation::disable() noexcept {
+    NSLog(@"### AppStartupInstrumentation::disable");
     std::lock_guard<std::mutex> guard(mutex_);
     isDisabled_ = true;
     bugsnagPerformance_->cancelQueuedSpan(preMainSpan_);
@@ -113,6 +117,7 @@ void AppStartupInstrumentation::disable() noexcept {
 
 void
 AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
+    NSLog(@"### AppStartupInstrumentation::onAppDidFinishLaunching");
     std::lock_guard<std::mutex> guard(mutex_);
     if (isDisabled_) {
         return;
@@ -131,11 +136,13 @@ AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
 
 void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
+    NSLog(@"### AppStartupInstrumentation::didStartViewLoadSpan");
     firstViewName_ = name;
 }
 
 void
 AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
+    NSLog(@"### AppStartupInstrumentation::onAppDidBecomeActive");
     std::lock_guard<std::mutex> guard(mutex_);
     if (isDisabled_) {
         return;
@@ -153,6 +160,7 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
 void
 AppStartupInstrumentation::beginAppStartSpan() noexcept {
+    NSLog(@"### AppStartupInstrumentation::beginAppStartSpan");
     if (isDisabled_) {
         return;
     }
@@ -176,6 +184,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginPreMainSpan() noexcept {
+    NSLog(@"### AppStartupInstrumentation::beginPreMainSpan");
     if (isDisabled_) {
         return;
     }
@@ -194,6 +203,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginPostMainSpan() noexcept {
+    NSLog(@"### AppStartupInstrumentation::beginPostMainSpan");
     if (isDisabled_) {
         return;
     }
@@ -212,6 +222,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginUIInitSpan() noexcept {
+    NSLog(@"### AppStartupInstrumentation::beginUIInitSpan");
     if (isDisabled_) {
         return;
     }
