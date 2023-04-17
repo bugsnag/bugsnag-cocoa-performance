@@ -8,14 +8,20 @@
 import BugsnagPerformance
 
 class AutoInstrumentAppStartsScenario: Scenario {
-    
-    override func startBugsnag() {
+
+    override func configure() {
+        super.configure()
+        bsgp_autoTriggerExportOnBatchSize = 100
+        bsgp_performWorkInterval = 1000
         config.autoInstrumentAppStarts = true
-        BugsnagPerformance.startViewLoadSpan(name: "AutoInstrumentAppStartsScenarioView", viewType: .uiKit)
-        super.startBugsnag()
     }
+
+//    override func startBugsnag() {
+//        BugsnagPerformance.startViewLoadSpan(name: "AutoInstrumentAppStartsScenarioView", viewType: .uiKit)
+//        super.startBugsnag()
+//    }
     
-    override func run() {
-        waitForCurrentBatch()
-    }
+//    override func run() {
+//        waitForCurrentBatch()
+//    }
 }
