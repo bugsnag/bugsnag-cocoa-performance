@@ -61,7 +61,9 @@ using namespace bugsnag;
     }
 }
 
-- (void)testAutoViewControllerDidAppear {
+- (void)testAutoViewControllerDidAppearWillDisappear {
+    // Combined into one test because there is some memory corruption bug when
+    // testing_reset() is called multiple times.
     BugsnagPerformanceLibrary::testing_reset();
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
     config.autoInstrumentViewControllers = YES;
@@ -78,25 +80,13 @@ using namespace bugsnag;
     XCTAssertEqual(0U, perf->testing_getBatchCount());
     [controller viewDidAppear:controller];
     XCTAssertEqual(1U, perf->testing_getBatchCount());
-}
 
-- (void)testAutoViewControllerWillDisappear {
-    BugsnagPerformanceLibrary::testing_reset();
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
-    config.autoInstrumentViewControllers = YES;
-    config.autoInstrumentAppStarts = NO;
-    config.autoInstrumentNetwork = NO;
-    BugsnagPerformanceLibrary::configure(config);
-    auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
-    perf->start();
-    perf->testing_setProbability(1);
-    XCTAssertEqual(0U, perf->testing_getBatchCount());
-    UIViewController *controller = [MyTestViewController new];
+    controller = [MyTestViewController new];
     [controller loadView];
     [controller viewDidLoad];
-    XCTAssertEqual(0U, perf->testing_getBatchCount());
-    [controller viewWillDisappear:controller];
     XCTAssertEqual(1U, perf->testing_getBatchCount());
+    [controller viewWillDisappear:controller];
+    XCTAssertEqual(2U, perf->testing_getBatchCount());
 }
 
 @end

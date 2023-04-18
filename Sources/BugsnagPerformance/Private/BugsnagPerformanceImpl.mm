@@ -34,13 +34,14 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
   };
 }
 
-BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability) noexcept
+BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
+                                               AppStateTracker *appStateTracker) noexcept
 : reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>(initialProbability))
 , tracer_(sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
-, appStateTracker_([AppStateTracker sharedInstance])
+, appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}

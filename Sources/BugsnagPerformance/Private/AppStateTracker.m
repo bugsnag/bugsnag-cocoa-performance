@@ -52,19 +52,6 @@ static UIApplication * GetUIApplication(void) {
 
 @implementation AppStateTracker
 
-+ (void)initialize {
-    [self sharedInstance];
-}
-
-+ (instancetype)sharedInstance {
-    static id sharedInstance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    return sharedInstance;
-}
-
 static BOOL isInForeground(void) {
 #if BSG_TARGET_WATCHKIT
     return WKApplication.sharedApplication.applicationState != WKApplicationStateBackground;
@@ -123,6 +110,10 @@ static BOOL isInForeground(void) {
 #endif
     }
     return self;
+}
+
+- (void)dealloc {
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void) handleAppForegroundEvent {
