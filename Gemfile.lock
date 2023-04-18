@@ -111,6 +111,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-20
+  x86_64-darwin-21
 
 DEPENDENCIES
   bugsnag-maze-runner (~> 7.0)

@@ -30,14 +30,10 @@ steps:
     steps:
       - label: "iOS 15 Unit Tests"
         commands:
-          - xcodebuild -version
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' -quiet build-for-testing
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=15.0' test-without-building
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
       - label: "iOS 11 Unit Tests"
         commands:
-          - xcodebuild -version
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' -quiet build-for-testing SWIFT_VERSION=4.2
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' test-without-building
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
         agents:
           queue: macos-11
 

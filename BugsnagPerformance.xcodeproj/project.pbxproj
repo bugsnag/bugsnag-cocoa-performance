@@ -49,7 +49,13 @@
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
+		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
+		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
+		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
+		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
+		96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FB29E6ADC600AEE435 /* Assets.xcassets */; };
+		96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -123,6 +129,20 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
+		96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -170,7 +190,15 @@
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
+		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		96D415F929E6ADC500AEE435 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		96D415FB29E6ADC600AEE435 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		96D415FE29E6ADC600AEE435 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		96D4160029E6ADC600AEE435 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -258,6 +286,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96D415ED29E6ADC500AEE435 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +481,7 @@
 				72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */,
 				0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */,
 				8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */,
+				96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -454,8 +490,22 @@
 			isa = PBXGroup;
 			children = (
 				8A80DA80296588840035BDA9 /* ConfigurationTests.swift */,
+				962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */,
 			);
 			path = BugsnagPerformanceTestsSwift;
+			sourceTree = "<group>";
+		};
+		96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
+			isa = PBXGroup;
+			children = (
+				96D415F229E6ADC500AEE435 /* AppDelegate.swift */,
+				96D415F629E6ADC500AEE435 /* ViewController.swift */,
+				96D415F829E6ADC500AEE435 /* Main.storyboard */,
+				96D415FB29E6ADC600AEE435 /* Assets.xcassets */,
+				96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */,
+				96D4160029E6ADC600AEE435 /* Info.plist */,
+			);
+			path = BugsnagPerformanceTestsApp;
 			sourceTree = "<group>";
 		};
 		C6D4AAD24D6356218C22BEBE = {
@@ -464,6 +514,7 @@
 				01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */,
 				0122C21329019770002D243C /* Sources */,
 				0122C25B29019C05002D243C /* Tests */,
+				96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 				450CB5014AAED50046482044 /* Products */,
 				0122C25629019904002D243C /* Frameworks */,
 			);
@@ -548,6 +599,7 @@
 			);
 			dependencies = (
 				0122C26B29019CE1002D243C /* PBXTargetDependency */,
+				96D4160529E6F6B500AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-iOSTests";
 			productName = "BugsnagPerformance-iOSTests";
@@ -566,11 +618,29 @@
 			);
 			dependencies = (
 				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
+				96D4160729E6F6B900AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-SwiftTests";
 			productName = BugsnagPerformanceTestsSwift;
 			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */;
+			buildPhases = (
+				96D415EC29E6ADC500AEE435 /* Sources */,
+				96D415ED29E6ADC500AEE435 /* Frameworks */,
+				96D415EE29E6ADC500AEE435 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BugsnagPerformanceTestsApp;
+			productName = BugsnagPerformanceTestsApp;
+			productReference = 96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */;
+			productType = "com.apple.product-type.application";
 		};
 		B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */ = {
 			isa = PBXNativeTarget;
@@ -596,16 +666,24 @@
 		5DB9DB2E409A040615FFD4FE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
-						LastSwiftMigration = 1400;
+						DevelopmentTeam = 372ZUL2ZB7;
+						LastSwiftMigration = 1420;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
 					8A80DA862966CE940035BDA9 = {
 						CreatedOnToolsVersion = 13.4;
+						DevelopmentTeam = 372ZUL2ZB7;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
+					};
+					96D415EF29E6ADC500AEE435 = {
+						CreatedOnToolsVersion = 14.2;
 						DevelopmentTeam = 372ZUL2ZB7;
 						ProvisioningStyle = Automatic;
 					};
@@ -627,6 +705,7 @@
 				B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */,
 				0122C26429019CE1002D243C /* BugsnagPerformance-iOSTests */,
 				8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */,
+				96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 			);
 		};
 /* End PBXProject section */
@@ -653,6 +732,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		96D415EE29E6ADC500AEE435 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */,
+				96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */,
+				96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -676,6 +765,7 @@
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
+				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
 			);
@@ -728,6 +818,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		96D415EC29E6ADC500AEE435 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */,
+				96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -741,7 +840,36 @@
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
 		};
+		96D4160529E6F6B500AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */;
+		};
+		96D4160729E6F6B900AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		96D415F829E6ADC500AEE435 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				96D415F929E6ADC500AEE435 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				96D415FE29E6ADC600AEE435 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0122C26D29019CE1002D243C /* Debug */ = {
@@ -749,6 +877,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -760,6 +889,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 			};
 			name = Debug;
 		};
@@ -768,6 +898,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -778,6 +909,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -925,6 +1057,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1014,6 +1147,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1034,6 +1168,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 			};
 			name = Debug;
 		};
@@ -1050,6 +1185,64 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		96D4160229E6ADC600AEE435 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BugsnagPerformanceTestsApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		96D4160329E6ADC600AEE435 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BugsnagPerformanceTestsApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1091,6 +1284,15 @@
 			buildConfigurations = (
 				8A80DA8F2966CE940035BDA9 /* Debug */,
 				8A80DA902966CE940035BDA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96D4160229E6ADC600AEE435 /* Debug */,
+				96D4160329E6ADC600AEE435 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
