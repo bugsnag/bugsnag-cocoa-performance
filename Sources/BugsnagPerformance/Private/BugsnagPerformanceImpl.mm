@@ -35,16 +35,21 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
-: reachability_(reachability)
+: spanContextStack_([SpanContextStack new])
+, reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>(initialProbability))
-, tracer_(sampler_, batch_, generateOnSpanStarted(this))
+, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}
+
+BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
+    [workerTimer_ invalidate];
+}
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configuration) noexcept {
     performWorkInterval_ = configuration.internal.performWorkInterval;
@@ -312,9 +317,9 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-static inline void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
+void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
     if (options.makeContextCurrent) {
-        [SpanContextStack.current push:span];
+        [spanContextStack_ push:span];
     }
 }
 

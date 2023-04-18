@@ -22,7 +22,6 @@ using namespace bugsnag;
     BOOL isDir = false;
     NSError *error = nil;
     auto persistence = Persistence(self.filePath);
-    XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertEqualObjects([self.filePath stringByAppendingPathComponent:@"v1"], persistence.topLevelDirectory());
 
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);

@@ -16,8 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface SpanContextStack : NSObject
 
-+ (instancetype)current;
-
 - (void)push:(id<BugsnagPerformanceSpanContext>)context;
 - (id<BugsnagPerformanceSpanContext> _Nullable)context;
 

@@ -48,15 +48,15 @@ static BugsnagPerformanceSpan *newSpan() {
 
 - (void)test0001EmptyStack {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
-    XCTAssertNotNil(SpanContextStack.current);
-    XCTAssertNil(SpanContextStack.current.context);
+    XCTAssertNotNil(spanContextStack);
+    XCTAssertNil(spanContextStack.context);
 }
 
 - (void)test0002QueueStress {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
     // Test that multiple dispatch queues using the same stack from different threads doesn't break.
     static const int iteration_count = 10000;
@@ -74,9 +74,9 @@ static BugsnagPerformanceSpan *newSpan() {
             counter++;
             for (int j = 0; j < iteration_count; j++) {
                 auto span1 = newSpan();
-                [SpanContextStack.current push:span1];
+                [spanContextStack push:span1];
                 [span1 end];
-                [SpanContextStack.current context];
+                [spanContextStack context];
             }
             counter--;
         });
@@ -86,19 +86,19 @@ static BugsnagPerformanceSpan *newSpan() {
     while(counter > 0) {
         usleep(100000);
     }
-    XCTAssertLessThan(SpanContextStack.current.stacks.count, 100000UL);
+    XCTAssertLessThan(spanContextStack.stacks.count, 100000UL);
 }
 
 - (void)test0003ThreadStress {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
     // Test that multiple dispatch queues using the same stack from different threads doesn't break.
     static const int iteration_count = 10000;
     static const int queue_count = 10;
     dispatch_queue_t queues[queue_count];
 
-    const auto beginCount = SpanContextStack.current.stacks.count;
+    const auto beginCount = spanContextStack.stacks.count;
 
     for (int i = 0; i < queue_count; i++) {
         NSString *name = [NSString stringWithFormat:@"test-%d", i];
@@ -111,9 +111,9 @@ static BugsnagPerformanceSpan *newSpan() {
             counter++;
             for (int j = 0; j < iteration_count; j++) {
                 auto span1 = newSpan();
-                [SpanContextStack.current push:span1];
+                [spanContextStack push:span1];
                 [span1 end];
-                [SpanContextStack.current context];
+                [spanContextStack context];
             }
             counter--;
         }];
@@ -123,197 +123,197 @@ static BugsnagPerformanceSpan *newSpan() {
     while(counter > 0) {
         usleep(100000);
     }
-    XCTAssertEqual(SpanContextStack.current.stacks.count, beginCount);
+    XCTAssertEqual(spanContextStack.stacks.count, beginCount);
 }
 
 - (void)testCurrent {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span = newSpan();
-    [SpanContextStack.current push:span];
-    XCTAssertEqual(span, SpanContextStack.current.context);
+    [spanContextStack push:span];
+    XCTAssertEqual(span, spanContextStack.context);
 }
 
 - (void)testOneEntryEnded {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span = newSpan();
-    [SpanContextStack.current push:span];
+    [spanContextStack push:span];
     [span end];
-    XCTAssertNil(SpanContextStack.current.context);
+    XCTAssertNil(spanContextStack.context);
 }
 
 - (void)testCurrentEnded {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span1 = newSpan();
     auto span2 = newSpan();
-    [SpanContextStack.current push:span1];
-    XCTAssertEqual(span1, SpanContextStack.current.context);
-    [SpanContextStack.current push:span2];
-    XCTAssertEqual(span2, SpanContextStack.current.context);
+    [spanContextStack push:span1];
+    XCTAssertEqual(span1, spanContextStack.context);
+    [spanContextStack push:span2];
+    XCTAssertEqual(span2, spanContextStack.context);
     [span2 end];
-    XCTAssertNotNil(SpanContextStack.current.context);
-    XCTAssertEqual(span1, SpanContextStack.current.context);
+    XCTAssertNotNil(spanContextStack.context);
+    XCTAssertEqual(span1, spanContextStack.context);
     [span1 end];
-    XCTAssertNil(SpanContextStack.current.context);
+    XCTAssertNil(spanContextStack.context);
 }
 
 - (void)testMiddleEnded {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span1 = newSpan();
     auto span2 = newSpan();
     auto span3 = newSpan();
-    [SpanContextStack.current push:span1];
-    [SpanContextStack.current push:span2];
-    [SpanContextStack.current push:span3];
-    XCTAssertEqual(span3, SpanContextStack.current.context);
+    [spanContextStack push:span1];
+    [spanContextStack push:span2];
+    [spanContextStack push:span3];
+    XCTAssertEqual(span3, spanContextStack.context);
     [span2 end];
-    XCTAssertEqual(span3, SpanContextStack.current.context);
+    XCTAssertEqual(span3, spanContextStack.context);
     [span3 end];
-    XCTAssertEqual(span1, SpanContextStack.current.context);
+    XCTAssertEqual(span1, spanContextStack.context);
     [span1 end];
-    XCTAssertNil(SpanContextStack.current.context);
+    XCTAssertNil(spanContextStack.context);
 }
 
 - (void)testMultithreaded {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
     counter = 1;
     // A different thread's span context stack should be separate.
     [NSThread detachNewThreadWithBlock:^{
         usleep(100000);
-        XCTAssertNotNil(SpanContextStack.current);
+        XCTAssertNotNil(spanContextStack);
         auto span1 = newSpan();
         auto span2 = newSpan();
         auto span3 = newSpan();
-        [SpanContextStack.current push:span1];
+        [spanContextStack push:span1];
         usleep(100000);
-        [SpanContextStack.current push:span2];
+        [spanContextStack push:span2];
         usleep(100000);
-        [SpanContextStack.current push:span3];
-        XCTAssertEqual(span3, SpanContextStack.current.context);
+        [spanContextStack push:span3];
+        XCTAssertEqual(span3, spanContextStack.context);
         counter--;
     }];
     
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span1 = newSpan();
     auto span2 = newSpan();
     auto span3 = newSpan();
-    [SpanContextStack.current push:span1];
-    [SpanContextStack.current push:span2];
-    [SpanContextStack.current push:span3];
+    [spanContextStack push:span1];
+    [spanContextStack push:span2];
+    [spanContextStack push:span3];
 
     while(counter > 0) {
         usleep(100000);
     }
-    XCTAssertEqual(span3, SpanContextStack.current.context);
+    XCTAssertEqual(span3, spanContextStack.context);
 }
 
 - (void)testDispatchQueue {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
     // Span context stacks must traverse dispatch queue boundaries
-    XCTAssertNotNil(SpanContextStack.current);
+    XCTAssertNotNil(spanContextStack);
     auto span1 = newSpan();
-    [SpanContextStack.current push:span1];
+    [spanContextStack push:span1];
 
     counter = 1;
     __block auto span2 = newSpan();
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [SpanContextStack.current push:span2];
+        [spanContextStack push:span2];
         counter--;
     });
 
     while(counter > 0) {
         usleep(100000);
     }
-    XCTAssertEqual(span2, SpanContextStack.current.context);
+    XCTAssertEqual(span2, spanContextStack.context);
 }
 
 - (void)testFindAttribute {
     std::lock_guard<std::mutex> guard(mutex);
-    [SpanContextStack.current clearForUnitTests];
+    auto spanContextStack = [SpanContextStack new];
 
     auto span_a = newSpan();
     [span_a addAttributes:@{
         @"a": @"1"
     }];
-    [SpanContextStack.current push:span_a];
+    [spanContextStack push:span_a];
     
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
     
     auto span_b = newSpan();
     [span_b addAttributes:@{
         @"b": @"2"
     }];
-    [SpanContextStack.current push:span_b];
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"1"]);
+    [spanContextStack push:span_b];
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"b" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"1"]);
     
     auto span_c = newSpan();
     [span_c addAttributes:@{
         @"c": @"2",
         @"d": @"100",
     }];
-    [SpanContextStack.current push:span_c];
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"d" value:@"100"]);
+    [spanContextStack push:span_c];
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"b" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"c" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"d" value:@"100"]);
     
     [span_a end];
-    [SpanContextStack current]; // Force a sweep
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"d" value:@"100"]);
+    [spanContextStack context]; // Force a sweep
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"b" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"c" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"d" value:@"100"]);
     
     [span_c end];
-    [SpanContextStack current]; // Force a sweep
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
-    XCTAssertTrue([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"d" value:@"100"]);
+    [spanContextStack context]; // Force a sweep
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertTrue([spanContextStack hasSpanWithAttribute:@"b" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"d" value:@"100"]);
     
     [span_b end];
-    [SpanContextStack current]; // Force a sweep
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"a" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"z" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"b" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"2"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"c" value:@"1"]);
-    XCTAssertFalse([SpanContextStack.current hasSpanWithAttribute:@"d" value:@"100"]);
+    [spanContextStack context]; // Force a sweep
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"a" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"z" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"b" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"2"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"c" value:@"1"]);
+    XCTAssertFalse([spanContextStack hasSpanWithAttribute:@"d" value:@"100"]);
 }
 
 @end

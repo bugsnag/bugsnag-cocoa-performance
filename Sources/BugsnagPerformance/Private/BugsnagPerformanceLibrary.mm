@@ -14,8 +14,8 @@ using namespace bugsnag;
 static std::shared_ptr<BugsnagPerformanceLibrary> instance_do_not_access_directly;
 
 BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept {
-    // This will first be called before main by the static initializer code,
-    // which is a single-thread environment.
+    // This will first be called before main by the static initializer code
+    // (via calledAsEarlyAsPossible), which is a single-thread environment.
     if (!instance_do_not_access_directly) {
         instance_do_not_access_directly = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
     }

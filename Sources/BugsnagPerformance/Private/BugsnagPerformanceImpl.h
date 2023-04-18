@@ -29,6 +29,7 @@ namespace bugsnag {
 class BugsnagPerformanceImpl: public Configurable {
     friend class BugsnagPerformanceLibrary;
 public:
+    virtual ~BugsnagPerformanceImpl();
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
     void start() noexcept;
 
@@ -64,6 +65,7 @@ private:
                            AppStateTracker *appStateTracker) noexcept;
 
     std::atomic<bool> isStarted_{false};
+    SpanContextStack *spanContextStack_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
@@ -107,6 +109,7 @@ private:
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
+    void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };
