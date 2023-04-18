@@ -63,8 +63,7 @@ private:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                            AppStateTracker *appStateTracker) noexcept;
 
-    bool started_{false};
-    std::mutex instanceMutex_;
+    std::atomic<bool> isStarted_{false};
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;

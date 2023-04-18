@@ -58,12 +58,12 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
-    {
-        std::lock_guard<std::mutex> guard(instanceMutex_);
-        if (started_) {
-            return;
-        }
-        started_ = true;
+    bool expected = false;
+    if (!isStarted_.compare_exchange_strong(expected, true)) {
+        // compare_exchange_strong() returns true only if isStarted_ was exchanged (from false to true).
+        // Therefore, a return of false means that no exchange occurred because
+        // isStarted_ was already true (i.e. we've already started).
+        return;
     }
     
     NSError *__autoreleasing error = nil;
