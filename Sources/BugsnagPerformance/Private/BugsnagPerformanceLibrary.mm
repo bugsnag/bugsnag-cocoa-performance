@@ -11,28 +11,34 @@
 using namespace bugsnag;
 
 [[clang::no_destroy]]
-static std::shared_ptr<BugsnagPerformanceLibrary> instance;
+static std::shared_ptr<BugsnagPerformanceLibrary> instance_do_not_access_directly;
 
-void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
-    // This will be called before main by the static initializer code, so threading is not an issue.
-    if (instance) {
-        return;
+BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept {
+    // This will first be called before main by the static initializer code,
+    // which is a single-thread environment.
+    if (!instance_do_not_access_directly) {
+        instance_do_not_access_directly = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
     }
 
-    instance = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
+    return *instance_do_not_access_directly;
+}
+
+void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
+    sharedInstance();
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
-    instance->appStartupInstrumentation_->willCallMainFunction();
+    sharedInstance().appStartupInstrumentation_->willCallMainFunction();
 }
 
 void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    instance->configureInstance(config);
+    sharedInstance().configureInstance(config);
 }
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
-: reachability_(new Reachability)
-, bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_))
+: appStateTracker_([[AppStateTracker alloc] init])
+, reachability_(new Reachability)
+, bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_, appStateTracker_))
 , appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_))
 {
     bugsnagPerformanceImpl_->tracer_.setOnViewLoadSpanStarted(^(NSString *className) {
@@ -46,19 +52,24 @@ void BugsnagPerformanceLibrary::configureInstance(BugsnagPerformanceConfiguratio
 }
 
 std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPerformanceImpl() noexcept {
-    return instance->bugsnagPerformanceImpl_;
+    return sharedInstance().bugsnagPerformanceImpl_;
 }
 
 std::shared_ptr<AppStartupInstrumentation> BugsnagPerformanceLibrary::getAppStartupInstrumentation() noexcept {
-    return instance->appStartupInstrumentation_;
+    return sharedInstance().appStartupInstrumentation_;
 }
 
 std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {
-    return instance->reachability_;
+    return sharedInstance().reachability_;
+}
+
+AppStateTracker *BugsnagPerformanceLibrary::getAppStateTracker() noexcept {
+    return sharedInstance().appStateTracker_;
 }
 
 void BugsnagPerformanceLibrary::testing_reset() {
-    instance.reset();
+    // Special case: Reset the smart pointer
+    instance_do_not_access_directly.reset();
     calledAsEarlyAsPossible();
     calledRightBeforeMain();
 }

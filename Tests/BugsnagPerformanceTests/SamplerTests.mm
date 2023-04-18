@@ -28,14 +28,6 @@ using namespace bugsnag;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"BugsnagPerformanceSampler"];
 }
 
-- (void)testProbabilityAccuracy {
-    std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
-    for (auto p : values) {
-        Sampler sampler(p);
-        [self assertSampler:sampler samplesWithProbability:p];
-    }
-}
-
 - (void)testProbabilityPersistence {
     auto defaultProbability = 1.0;
     Sampler sampler(defaultProbability);
@@ -43,6 +35,17 @@ using namespace bugsnag;
     
     sampler.setProbability(0.5);
     XCTAssertEqual(Sampler(1.0).getProbability(), 0.5);
+}
+
+- (void)testProbabilityAccuracy {
+    // The RNG prior to ios 12 is too streaky
+    if (@available(ios 12.0, *)) {
+        std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
+        for (auto p : values) {
+            Sampler sampler(p);
+            [self assertSampler:sampler samplesWithProbability:p];
+        }
+    }
 }
 
 - (void)assertSampler:(Sampler &)sampler samplesWithProbability:(double)probability {

@@ -9,6 +9,7 @@
 
 #import "BugsnagPerformanceImpl.h"
 #import "Instrumentation/AppStartupInstrumentation.h"
+#import "AppStateTracker.h"
 
 namespace bugsnag {
 
@@ -22,6 +23,7 @@ public:
     static std::shared_ptr<BugsnagPerformanceImpl> getBugsnagPerformanceImpl() noexcept;
     static std::shared_ptr<AppStartupInstrumentation> getAppStartupInstrumentation() noexcept;
     static std::shared_ptr<Reachability> getReachability() noexcept;
+    static AppStateTracker *getAppStateTracker() noexcept;
 
     static void testing_reset();
 private:
@@ -35,11 +37,12 @@ private:
     // Automatically called right before main() is called.
     static void calledRightBeforeMain() noexcept __attribute__((constructor(65535)));
 
-    static void initializeLibrary() noexcept;
+    static BugsnagPerformanceLibrary &sharedInstance() noexcept;
 
     void configureInstance(BugsnagPerformanceConfiguration *config) noexcept;
 
     BugsnagPerformanceLibrary();
+    AppStateTracker *appStateTracker_;
     std::shared_ptr<Reachability> reachability_;
     std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformanceImpl_;
     std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation_;

@@ -60,7 +60,8 @@ public:
     void onSpanStarted() noexcept;
 
 private:
-    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability) noexcept;
+    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
+                           AppStateTracker *appStateTracker) noexcept;
 
     bool started_{false};
     std::mutex instanceMutex_;
@@ -110,7 +111,7 @@ public: // For testing
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
     NSUInteger testing_getBatchCount() { return batch_->count(); };
     static std::shared_ptr<BugsnagPerformanceImpl> testing_newInstance() {
-        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl(Reachability::testing_newReachability()));
+        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl(Reachability::testing_newReachability(), [AppStateTracker new]));
     }
 };
 
