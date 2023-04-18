@@ -4,4 +4,4 @@
 
 #import <stdint.h>
 #import <Foundation/Foundation.h>
-#import "BSGInternalConfig.h"
+#import "BugsnagPerformanceConfiguration+Private.h"

@@ -8,7 +8,8 @@
 
 #pragma once
 
-#import "BSGInternalConfig.h"
+#import "Configurable.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 #import "SpanData.h"
 
 #import <memory>
@@ -27,6 +28,10 @@ public:
     , onBatchFull(^(){})
     {}
 
+    void configure(BugsnagPerformanceConfiguration *config) noexcept {
+        autoTriggerExportOnBatchSize_ = config.internal.autoTriggerExportOnBatchSize;
+    }
+
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
@@ -35,7 +40,7 @@ public:
         {
             std::lock_guard<std::mutex> guard(mutex_);
             spans_->push_back(span);
-            isFull = spans_->size() >= bsgp_autoTriggerExportOnBatchSize;
+            isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
             if (isFull) {
                 drainIsAllowed_ = true;
             }
@@ -104,6 +109,7 @@ public:
 private:
     void (^onBatchFull)(){nullptr};
     bool drainIsAllowed_{false};
+    uint64_t autoTriggerExportOnBatchSize_{0};
     std::mutex mutex_;
     std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans_;
 };

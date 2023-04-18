@@ -83,6 +83,9 @@ private:
     NSTimer *workerTimer_{nil};
     AppStateTracker *appStateTracker_{nil};
     std::shared_ptr<Reachability> reachability_;
+    NSTimeInterval performWorkInterval_{0};
+    CFTimeInterval probabilityValueExpiresAfterSeconds_{0};
+    CFTimeInterval probabilityRequestsPauseForSeconds_{0};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
