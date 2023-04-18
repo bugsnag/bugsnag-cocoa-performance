@@ -33,9 +33,7 @@ steps:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
       - label: "iOS 11 Unit Tests"
         commands:
-          - xcodebuild -version
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' build-for-testing SWIFT_VERSION=4.2
-          - xcodebuild -scheme BugsnagPerformance-iOS -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.4' test-without-building
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
         agents:
           queue: macos-11
 
