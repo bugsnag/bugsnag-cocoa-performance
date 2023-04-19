@@ -6,6 +6,7 @@
 //
 
 #import "Sampler.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
@@ -33,13 +34,12 @@ static void storeProbability(double probability) {
      forKey:kUserDefaultsKey];
 }
 
-Sampler::Sampler(double fallbackProbability) noexcept
-: probability_(loadProbabilityOrDefault(fallbackProbability))
-{
-}
-
-void Sampler::setFallbackProbability(double value) noexcept {
-    probability_ = loadProbabilityOrDefault(value);
+void Sampler::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    if (config.internal.forceSamplingProbability) {
+        setProbability(config.samplingProbability);
+    } else {
+        probability_ = loadProbabilityOrDefault(config.samplingProbability);
+    }
 }
 
 double

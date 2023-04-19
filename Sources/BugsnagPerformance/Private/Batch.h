@@ -50,24 +50,6 @@ public:
         }
     }
 
-    /**
-     * Check if the batch is full, and call the "batch full" callback if it is.
-     * This code is duplicated to avoid an extra mutex lock requirement in add().
-     */
-    void checkFull() noexcept {
-        bool isFull = false;
-        {
-            std::lock_guard<std::mutex> guard(mutex_);
-            isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
-            if (isFull) {
-                drainIsAllowed_ = true;
-            }
-        }
-        if (isFull) {
-            onBatchFull();
-        }
-    }
-
     void removeSpan(TraceId traceId, SpanId spanId) noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
 

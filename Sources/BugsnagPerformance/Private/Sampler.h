@@ -9,6 +9,7 @@
 
 #import "IdGenerator.h"
 #import "SpanData.h"
+#import "Configurable.h"
 
 #import <Foundation/Foundation.h>
 #import <vector>
@@ -23,9 +24,12 @@ namespace bugsnag {
  */
 class Sampler {
 public:
-    Sampler(double fallbackProbability) noexcept;
-    
-    void setFallbackProbability(double value) noexcept;
+    // Sampler constructs with a probability of 1 so that it keeps everything until configured.
+    Sampler() noexcept
+    : probability_(1)
+    {}
+
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
 
     /**
      * Sets the probability value to use in all sampling for the next 24 hours.

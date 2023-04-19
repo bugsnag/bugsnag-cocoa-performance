@@ -16,8 +16,6 @@
 
 using namespace bugsnag;
 
-static double initialProbability = 1.0;
-
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
     // Namespace it to the bundle identifier because all MacOS non-sandboxed apps share the same cache dir.
@@ -38,7 +36,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 : spanContextStack_([SpanContextStack new])
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
-, sampler_(std::make_shared<Sampler>(initialProbability))
+, sampler_(std::make_shared<Sampler>())
 , tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
@@ -60,6 +58,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
     tracer_.configure(configuration);
     retryQueue_->configure(configuration);
     batch_->configure(configuration);
+    sampler_->configure(configuration);
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
@@ -96,8 +95,6 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onFilesystemError();
     });
 
-    sampler_->setFallbackProbability(configuration_.samplingProbability);
-
     uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
                                                configuration_.apiKey,
                                                    ^(double newProbability) {
@@ -132,8 +129,6 @@ void BugsnagPerformanceImpl::start() noexcept {
     reachability_->addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
-
-    batch_->checkFull();
 
     if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);

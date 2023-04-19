@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/Sampler.h"
+#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
 
 #import <vector>
 
@@ -29,20 +30,33 @@ using namespace bugsnag;
 }
 
 - (void)testProbabilityPersistence {
-    auto defaultProbability = 1.0;
-    Sampler sampler(defaultProbability);
-    XCTAssertEqual(sampler.getProbability(), defaultProbability);
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.samplingProbability = 1.0;
+    config.internal.forceSamplingProbability = true;
+    Sampler sampler;
+    sampler.configure(config);
+    XCTAssertEqual(sampler.getProbability(), 1.0);
     
     sampler.setProbability(0.5);
-    XCTAssertEqual(Sampler(1.0).getProbability(), 0.5);
+    XCTAssertEqual(sampler.getProbability(), 0.5);
+
+    config.internal.forceSamplingProbability = false;
+    Sampler sampler2;
+    sampler2.configure(config);
+    XCTAssertEqual(sampler2.getProbability(), 0.5);
 }
 
 - (void)testProbabilityAccuracy {
     // The RNG prior to ios 12 is too streaky
     if (@available(ios 12.0, *)) {
+        auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+        config.internal.forceSamplingProbability = true;
+
         std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
         for (auto p : values) {
-            Sampler sampler(p);
+            config.samplingProbability = p;
+            Sampler sampler;
+            sampler.configure(config);
             [self assertSampler:sampler samplesWithProbability:p];
         }
     }
