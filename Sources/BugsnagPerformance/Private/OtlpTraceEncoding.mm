@@ -50,7 +50,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
 
     // The span ID of this span's parent (if any).
     if (span.parentId != 0) {
-        result[@"parentId"] = EncodeSpanId(span.parentId);
+        result[@"parentSpanId"] = EncodeSpanId(span.parentId);
     }
 
     // trace_state conveys information about request position in multiple distributed tracing graphs.
