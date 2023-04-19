@@ -30,16 +30,22 @@ public:
 
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         autoTriggerExportOnBatchSize_ = config.internal.autoTriggerExportOnBatchSize;
+
+        // Kick off another check for batch full using the new trigger point
+        add(nullptr);
     }
 
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
+     * If span is null, this function only checks if the batch is full.
      **/
     void add(std::shared_ptr<SpanData> span) noexcept {
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
-            spans_->push_back(span);
+            if (span) {
+                spans_->push_back(span);
+            }
             isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
             if (isFull) {
                 drainIsAllowed_ = true;
