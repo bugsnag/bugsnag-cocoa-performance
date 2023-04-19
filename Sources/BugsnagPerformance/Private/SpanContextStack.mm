@@ -75,15 +75,6 @@ static const char * const ActivityRefKey = "BSGActivityRef";
 
 @implementation SpanContextStack
 
-+ (instancetype)current {
-    static SpanContextStack *shared = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        shared = [[self alloc] init];
-    });
-    return shared;
-}
-
 - (instancetype)init {
     if ((self = [super init])) {
         _stacks = [NSMutableDictionary new];
@@ -192,11 +183,6 @@ static id<BugsnagPerformanceSpanContext> lastObject(NSPointerArray *stack) {
         }
     }
     return NO;
-}
-
-- (void)clearForUnitTests {
-#pragma clang diagnostic ignored "-Wdirect-ivar-access"
-    _stacks = [NSMutableDictionary new];
 }
 
 @end

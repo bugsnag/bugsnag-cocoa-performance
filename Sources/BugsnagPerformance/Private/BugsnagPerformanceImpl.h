@@ -29,6 +29,7 @@ namespace bugsnag {
 class BugsnagPerformanceImpl: public Configurable {
     friend class BugsnagPerformanceLibrary;
 public:
+    virtual ~BugsnagPerformanceImpl();
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
     void start() noexcept;
 
@@ -63,8 +64,8 @@ private:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                            AppStateTracker *appStateTracker) noexcept;
 
-    bool started_{false};
-    std::mutex instanceMutex_;
+    std::atomic<bool> isStarted_{false};
+    SpanContextStack *spanContextStack_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
@@ -83,6 +84,9 @@ private:
     NSTimer *workerTimer_{nil};
     AppStateTracker *appStateTracker_{nil};
     std::shared_ptr<Reachability> reachability_;
+    NSTimeInterval performWorkInterval_{0};
+    CFTimeInterval probabilityValueExpiresAfterSeconds_{0};
+    CFTimeInterval probabilityRequestsPauseForSeconds_{0};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
@@ -105,14 +109,12 @@ private:
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
+    void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
     NSUInteger testing_getBatchCount() { return batch_->count(); };
-    static std::shared_ptr<BugsnagPerformanceImpl> testing_newInstance() {
-        return std::shared_ptr<BugsnagPerformanceImpl>(new BugsnagPerformanceImpl(Reachability::testing_newReachability(), [AppStateTracker new]));
-    }
 };
 
 }

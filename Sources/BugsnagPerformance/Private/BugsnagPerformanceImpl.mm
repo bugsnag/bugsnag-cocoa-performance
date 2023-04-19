@@ -9,7 +9,6 @@
 #import "BugsnagPerformanceImpl.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
 
-#import "BSGInternalConfig.h"
 #import "OtlpTraceEncoding.h"
 #import "ResourceAttributes.h"
 #import "SpanContextStack.h"
@@ -36,28 +35,40 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
-: reachability_(reachability)
+: spanContextStack_([SpanContextStack new])
+, reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>(initialProbability))
-, tracer_(sampler_, batch_, generateOnSpanStarted(this))
+, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this))
 , persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}
 
+BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
+    [workerTimer_ invalidate];
+}
+
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configuration) noexcept {
+    performWorkInterval_ = configuration.internal.performWorkInterval;
+    probabilityValueExpiresAfterSeconds_ = configuration.internal.probabilityValueExpiresAfterSeconds;
+    probabilityRequestsPauseForSeconds_ = configuration.internal.probabilityRequestsPauseForSeconds;
+
     configuration_ = configuration;
     tracer_.configure(configuration);
+    retryQueue_->configure(configuration);
+    batch_->configure(configuration);
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
-    {
-        std::lock_guard<std::mutex> guard(instanceMutex_);
-        if (started_) {
-            return;
-        }
-        started_ = true;
+    bool expected = false;
+    if (!isStarted_.compare_exchange_strong(expected, true)) {
+        // compare_exchange_strong() returns true only if isStarted_ was exchanged (from false to true).
+        // Therefore, a return of false means that no exchange occurred because
+        // isStarted_ was already true (i.e. we've already started).
+        return;
     }
     
     NSError *__autoreleasing error = nil;
@@ -81,11 +92,6 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     resourceAttributes_ = ResourceAttributes(configuration_).get();
 
-    if ((error = persistence_->start()) != nil) {
-        BSGLogError(@"error while starting persistence: %@", error);
-    }
-
-    retryQueue_ = std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]);
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
     });
@@ -107,7 +113,7 @@ void BugsnagPerformanceImpl::start() noexcept {
                                     recurringTasks:buildRecurringTasks()];
     [worker_ start];
 
-    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:bsgp_performWorkInterval
+    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
                                                    repeats:YES
                                                      block:^(__unused NSTimer * _Nonnull timer) {
         blockThis->onWorkInterval();
@@ -218,7 +224,7 @@ void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity co
 }
 
 void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcept {
-    probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + bsgp_probabilityValueExpiresAfterSeconds;
+    probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
 }
@@ -260,7 +266,7 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
     auto currentTime = CFAbsoluteTimeGetCurrent();
     if (currentTime > pausePValueRequestsUntil_) {
         // Pause P-value requests so that we don't flood the server on every span start
-        pausePValueRequestsUntil_ = currentTime + bsgp_probabilityRequestsPauseForSeconds;
+        pausePValueRequestsUntil_ = currentTime + probabilityRequestsPauseForSeconds_;
         uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
     }
 }
@@ -311,9 +317,9 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-static inline void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
+void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
     if (options.makeContextCurrent) {
-        [SpanContextStack.current push:span];
+        [spanContextStack_ push:span];
     }
 }
 

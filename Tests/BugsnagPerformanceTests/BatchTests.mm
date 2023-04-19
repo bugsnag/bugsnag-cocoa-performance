@@ -9,13 +9,10 @@
 #import <XCTest/XCTest.h>
 #import "Batch.h"
 #import "SpanData.h"
-#import "BSGInternalConfig.h"
 
 using namespace bugsnag;
 
 @interface BatchTests : XCTestCase
-
-@property(nonatomic,readwrite) uint64_t batchSize;
 
 @end
 
@@ -26,18 +23,11 @@ static std::shared_ptr<SpanData> newSpanData() {
     return std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset);
 }
 
-- (void)setUp {
-    self.batchSize = bsgp_autoTriggerExportOnBatchSize;
-}
-
-- (void)tearDown {
-    bsgp_autoTriggerExportOnBatchSize = self.batchSize;
-}
-
 - (void)testDrainAllow {
-    bsgp_autoTriggerExportOnBatchSize = 1000;
-    
     Batch batch;
+    BugsnagPerformanceConfiguration *config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.internal.autoTriggerExportOnBatchSize = 1000;
+    batch.configure(config);
     __block int callbackCalls = 0;
 
     batch.setBatchFullCallback(^{
@@ -71,55 +61,63 @@ static std::shared_ptr<SpanData> newSpanData() {
 }
 
 - (void)testBatchFull {
-    bsgp_autoTriggerExportOnBatchSize = 1;
-    
-    Batch batch;
+    __block std::shared_ptr<Batch> batch = std::make_shared<Batch>();
+    BugsnagPerformanceConfiguration *config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.internal.autoTriggerExportOnBatchSize = 1;
+    batch->configure(config);
     __block int callbackCalls = 0;
     
-    batch.setBatchFullCallback(^{
+    batch->setBatchFullCallback(^{
         callbackCalls++;
     });
     
     // Auto triggers at size 1
-    batch.add(newSpanData());
-    auto drained = batch.drain();
+    batch->add(newSpanData());
+    auto drained = batch->drain();
     XCTAssertEqual(drained->size(), 1U);
     XCTAssertEqual(callbackCalls, 1);
     
-    bsgp_autoTriggerExportOnBatchSize = 2;
+    batch = std::make_shared<Batch>();
+    batch->setBatchFullCallback(^{
+        callbackCalls++;
+    });
     callbackCalls = 0;
-    
+    config.internal.autoTriggerExportOnBatchSize = 2;
+    batch->configure(config);
+
     // Doesn't trigger after 1 entry, and drain not explicitly allowed
-    batch.add(newSpanData());
-    drained = batch.drain();
+    batch->add(newSpanData());
+    drained = batch->drain();
     XCTAssertEqual(drained->size(), 0U);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 2nd entry
-    batch.add(newSpanData());
-    drained = batch.drain();
+    batch->add(newSpanData());
+    drained = batch->drain();
     XCTAssertEqual(drained->size(), 2U);
     XCTAssertEqual(callbackCalls, 1);
     
     // Doesn't trigger after 3rd entry (1st entry after draining)
     callbackCalls = 0;
-    batch.add(newSpanData());
-    drained = batch.drain();
+    batch->add(newSpanData());
+    drained = batch->drain();
     XCTAssertEqual(drained->size(), 0U);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 4th entry (2nd entry after draining)
-    batch.add(newSpanData());
-    drained = batch.drain();
+    batch->add(newSpanData());
+    drained = batch->drain();
     XCTAssertEqual(drained->size(), 2U);
     XCTAssertEqual(callbackCalls, 1);
     
 }
 
 - (void)testChaosMonkey {
-    bsgp_autoTriggerExportOnBatchSize = 2;
     __block bool stopThread = false;
     __block std::shared_ptr<Batch> batch = std::make_shared<Batch>();
+    BugsnagPerformanceConfiguration *config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.internal.autoTriggerExportOnBatchSize = 2;
+    batch->configure(config);
 
     [NSThread detachNewThreadWithBlock:^{
         while (!stopThread) {

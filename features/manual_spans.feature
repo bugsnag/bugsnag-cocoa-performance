@@ -158,7 +158,7 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     # Note: The child span ends up first in the list of spans.
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
 
   Scenario: Manually start and end first-class = yes span
     Given I run "FirstClassYesScenario" and discard the initial p-value request

@@ -5,7 +5,7 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+#import "../Private/BugsnagPerformanceConfiguration+Private.h"
 
 #import "../Private/Utils.h"
 #import "../Private/ObjCUtils.h"
@@ -18,6 +18,7 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
+        _internal = [BSGInternalConfiguration new];
         _apiKey = [apiKey copy];
         _endpoint = nsurlWithString(defaultEndpoint, nil);
         _autoInstrumentAppStarts = YES;
@@ -90,6 +91,24 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 - (BOOL)shouldSendReports {
     return self.enabledReleaseStages.count == 0 ||
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
+}
+
+@end
+
+@implementation BSGInternalConfiguration
+
+- (instancetype)init {
+    if ((self = [super init])) {
+        _autoTriggerExportOnBatchSize = 100;
+
+        _performWorkInterval = 30;
+
+        _maxRetryAge = 24 * 60 * 60;
+
+        _probabilityValueExpiresAfterSeconds = 24 * 3600;
+        _probabilityRequestsPauseForSeconds = 30;
+    }
+    return self;
 }
 
 @end

@@ -17,6 +17,7 @@
 #import "Batch.h"
 #import "SpanOptions.h"
 #import "Configurable.h"
+#import "SpanContextStack.h"
 
 #import <memory>
 
@@ -28,7 +29,10 @@ namespace bugsnag {
  */
 class Tracer: public Configurable {
 public:
-    Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept;
+    Tracer(SpanContextStack *spanContextStack,
+           std::shared_ptr<Sampler> sampler,
+           std::shared_ptr<Batch> batch,
+           void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
@@ -53,6 +57,7 @@ private:
     std::shared_ptr<Sampler> sampler_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
+    SpanContextStack *spanContextStack_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};

@@ -14,8 +14,8 @@ using namespace bugsnag;
 static std::shared_ptr<BugsnagPerformanceLibrary> instance_do_not_access_directly;
 
 BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept {
-    // This will first be called before main by the static initializer code,
-    // which is a single-thread environment.
+    // This will first be called before main by the static initializer code
+    // (via calledAsEarlyAsPossible), which is a single-thread environment.
     if (!instance_do_not_access_directly) {
         instance_do_not_access_directly = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
     }
@@ -67,8 +67,13 @@ AppStateTracker *BugsnagPerformanceLibrary::getAppStateTracker() noexcept {
     return sharedInstance().appStateTracker_;
 }
 
+// Keep old instances around while testing so that lingering callbacks don't reference
+// a defunct instance.
+[[clang::no_destroy]]
+static std::vector<std::shared_ptr<BugsnagPerformanceLibrary>> testing_previous_instances;
+
 void BugsnagPerformanceLibrary::testing_reset() {
-    // Special case: Reset the smart pointer
+    testing_previous_instances.push_back(instance_do_not_access_directly);
     instance_do_not_access_directly.reset();
     calledAsEarlyAsPossible();
     calledRightBeforeMain();

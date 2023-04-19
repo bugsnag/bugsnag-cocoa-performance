@@ -146,7 +146,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     XCTAssert([spanId isKindOfClass:[NSString class]]);
     XCTAssertEqualObjects(spanId, @"000000000000face");
 
-    XCTAssertNil(json[@"parentId"]);
+    XCTAssertNil(json[@"parentSpanId"]);
 
     XCTAssertEqualObjects(json[@"name"], @"My span");
     
@@ -176,7 +176,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     XCTAssert([spanId isKindOfClass:[NSString class]]);
     XCTAssertEqualObjects(spanId, @"000000000000face");
 
-    NSString *parentId = json[@"parentId"];
+    NSString *parentId = json[@"parentSpanId"];
     XCTAssert([parentId isKindOfClass:[NSString class]]);
     XCTAssertEqualObjects(parentId, @"000000000000cafe");
 

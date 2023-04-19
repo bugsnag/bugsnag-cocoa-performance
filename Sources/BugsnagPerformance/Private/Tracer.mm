@@ -18,8 +18,12 @@
 
 using namespace bugsnag;
 
-Tracer::Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept
-: sampler_(sampler)
+Tracer::Tracer(SpanContextStack *spanContextStack,
+               std::shared_ptr<Sampler> sampler,
+               std::shared_ptr<Batch> batch,
+               void (^onSpanStarted)()) noexcept
+: spanContextStack_(spanContextStack)
+, sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
 {}
@@ -45,7 +49,7 @@ Tracer::start() noexcept {
 BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
     __block auto blockThis = this;
-    auto currentContext = SpanContextStack.current.context;
+    auto currentContext = spanContextStack_.context;
     auto traceId = currentContext.traceId;
     if (traceId.value == 0) {
         traceId = IdGenerator::generateTraceId();
@@ -69,7 +73,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         blockThis->tryAddSpanToBatch(spanData);
     })];
     if (options.makeContextCurrent) {
-        [SpanContextStack.current push:span];
+        [spanContextStack_ push:span];
     }
     [span addAttributes:SpanAttributes::get()];
     if (onSpanStarted_) {
@@ -109,7 +113,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
-        if ([SpanContextStack.current hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
+        if ([spanContextStack_ hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
             options.firstClass = BSGFirstClassNo;
         }
     }

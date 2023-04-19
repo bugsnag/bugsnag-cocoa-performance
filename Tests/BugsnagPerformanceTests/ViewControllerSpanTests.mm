@@ -25,7 +25,8 @@ using namespace bugsnag;
 @implementation ViewControllerSpanTests
 
 - (void)testNormalUsage {
-    auto perf = BugsnagPerformanceImpl::testing_newInstance();
+    BugsnagPerformanceLibrary::testing_reset();
+    auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
         perf->startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);
@@ -36,8 +37,8 @@ using namespace bugsnag;
 }
 
 - (void)testForgotToEnd {
-    auto perf = BugsnagPerformanceImpl::testing_newInstance();
-
+    BugsnagPerformanceLibrary::testing_reset();
+    auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
         perf->startViewLoadSpan(controller, [BugsnagPerformanceSpanOptions new]);

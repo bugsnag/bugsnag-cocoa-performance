@@ -13,6 +13,4 @@
 // Accessible for testing only.
 @property(nonatomic,readwrite,strong) NSMutableDictionary<NSNumber *, NSPointerArray *> *stacks;
 
-- (void)clearForUnitTests;
-
 @end

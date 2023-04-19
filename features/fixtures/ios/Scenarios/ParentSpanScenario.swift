@@ -11,7 +11,7 @@ class ParentSpanScenario: Scenario {
 
     override func configure() {
         super.configure()
-        bsgp_autoTriggerExportOnBatchSize = 2;
+        config.internal.autoTriggerExportOnBatchSize = 2;
     }
 
     override func run() {

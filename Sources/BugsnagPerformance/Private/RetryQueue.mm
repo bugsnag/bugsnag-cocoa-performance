@@ -8,7 +8,7 @@
 
 #import "RetryQueue.h"
 #import "Filesystem.h"
-#import "BSGInternalConfig.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 #import "Utils.h"
 #import <cstdlib>
 
@@ -46,6 +46,10 @@ RetryQueue::RetryQueue(NSString *path) noexcept
     [Filesystem ensurePathExists:path];
 }
 
+void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    maxRetryAge_ = intervalToNanoseconds(config.internal.maxRetryAge);
+}
+
 void RetryQueue::sweep() noexcept {
     ensureBaseDirExists();
     NSError *error = nil;
@@ -57,7 +61,7 @@ void RetryQueue::sweep() noexcept {
     }
 
     const dispatch_time_t currentTime = absoluteTimeToNanoseconds(CFAbsoluteTimeGetCurrent());
-    const dispatch_time_t maxAge = intervalToNanoseconds(bsgp_maxRetryAge);
+    const dispatch_time_t maxAge = maxRetryAge_;
 
     for (NSString *filename in contents) {
         auto ts = timestampFromFilename(filename);
