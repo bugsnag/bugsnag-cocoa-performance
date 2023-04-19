@@ -9,6 +9,7 @@ import BugsnagPerformance
 
 class ProbabilityExpiryScenario: Scenario {
     override func configure() {
+        super.configure()
         config.internal.probabilityRequestsPauseForSeconds = 0.1
         config.internal.probabilityValueExpiresAfterSeconds = 0.1
     }
