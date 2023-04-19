@@ -67,8 +67,13 @@ AppStateTracker *BugsnagPerformanceLibrary::getAppStateTracker() noexcept {
     return sharedInstance().appStateTracker_;
 }
 
+// Keep old instances around while testing so that lingering callbacks don't reference
+// a defunct instance.
+[[clang::no_destroy]]
+static std::vector<std::shared_ptr<BugsnagPerformanceLibrary>> testing_previous_instances;
+
 void BugsnagPerformanceLibrary::testing_reset() {
-    // Special case: Reset the smart pointer
+    testing_previous_instances.push_back(instance_do_not_access_directly);
     instance_do_not_access_directly.reset();
     calledAsEarlyAsPossible();
     calledRightBeforeMain();
