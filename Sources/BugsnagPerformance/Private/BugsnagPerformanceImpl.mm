@@ -133,6 +133,8 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onConnectivityChanged(connectivity);
     });
 
+    batch_->checkFull();
+
     if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
     }
