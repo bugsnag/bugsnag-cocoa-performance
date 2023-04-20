@@ -82,6 +82,8 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     __block auto blockThis = this;
 
+    persistence_->start();
+
     if (configuration_.internal.clearPersistenceOnStart) {
         persistence_->clear();
     }
@@ -91,6 +93,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
     });
+    retryQueue_->start();
 
     uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
                                                configuration_.apiKey,

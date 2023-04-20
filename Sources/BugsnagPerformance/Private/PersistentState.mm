@@ -17,14 +17,6 @@ static NSNumber *getNumber(NSDictionary* dict, NSString *key) {
     return [value isKindOfClass:[NSNumber class]] ? value : nil;
 }
 
-PersistentState::PersistentState(NSString *jsonFilePath, void (^onPersistenceNeeded)()) noexcept
-: jsonFilePath_(jsonFilePath)
-, persistentStateDir_([jsonFilePath_ stringByDeletingLastPathComponent])
-, probability_(0)
-, onPersistenceNeeded_(onPersistenceNeeded)
-{
-}
-
 void PersistentState::setProbability(double probability) noexcept {
     probability_ = probability;
     onPersistenceNeeded_();

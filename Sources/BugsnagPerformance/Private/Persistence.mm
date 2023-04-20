@@ -14,11 +14,9 @@
 
 using namespace bugsnag;
 
-Persistence::Persistence(NSString *topLevelDir) noexcept
-: topLevelDir_(topLevelDir)
-{
+void Persistence::start() noexcept {
     NSError *error = nil;
-    if ((error = clear()) != nil) {
+    if ((error = [Filesystem ensurePathExists:topLevelDir_]) != nil) {
         BSGLogError(@"error while initializing persistence: %@", error);
     }
 }
