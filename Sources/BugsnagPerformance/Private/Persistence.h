@@ -15,7 +15,11 @@ namespace bugsnag {
 class Persistence {
 public:
     Persistence() = delete;
-    Persistence(NSString *topLevelDir) noexcept;
+    Persistence(NSString *topLevelDir) noexcept
+    : topLevelDir_(topLevelDir)
+    {}
+
+    void start() noexcept;
     NSError *clear(void) noexcept;
     NSString *topLevelDirectory(void) noexcept;
 private:

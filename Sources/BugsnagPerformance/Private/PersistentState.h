@@ -14,11 +14,18 @@ namespace bugsnag {
 
 class PersistentState {
 public:
-    PersistentState(NSString *jsonFilePath, void (^onPersistenceNeeded)()) noexcept;
     PersistentState() = delete;
+    PersistentState(NSString *jsonFilePath, void (^onPersistenceNeeded)()) noexcept
+    : jsonFilePath_(jsonFilePath)
+    , persistentStateDir_([jsonFilePath_ stringByDeletingLastPathComponent])
+    , probability_(0)
+    , probabilityIsValid_(false)
+    , onPersistenceNeeded_(onPersistenceNeeded)
+    {}
 
     void setProbability(double probability) noexcept;
     double probability(void) noexcept {return probability_;};
+    bool probabilityIsValid() noexcept {return probabilityIsValid_;}
 
     /**
      * Save this object to persistent storage.
@@ -35,6 +42,7 @@ private:
     NSString *jsonFilePath_{nil};
     NSString *persistentStateDir_{nil};
     double probability_{0};
+    bool probabilityIsValid_{false};
     void (^onPersistenceNeeded_)(){nil};
 };
 

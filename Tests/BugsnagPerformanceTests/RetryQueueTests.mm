@@ -84,6 +84,9 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
 
     RetryQueue queue(self.filePath);
+    XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
 }
@@ -93,6 +96,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     BOOL isDir = false;
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
     __block int callCount = 0;
@@ -131,6 +135,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertTrue(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
 }
@@ -145,6 +150,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertFalse(isDir);
 
