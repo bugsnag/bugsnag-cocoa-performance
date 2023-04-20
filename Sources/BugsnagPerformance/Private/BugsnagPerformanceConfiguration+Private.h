@@ -14,8 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGInternalConfiguration: NSObject
 
-// Force the sampler to use the configuration's probability, overriding the stored value.
-@property(nonatomic,readwrite) bool forceSamplingProbability;
+@property(nonatomic,readwrite) bool clearPersistenceOnStart;
 
 @property(nonatomic,readwrite) uint64_t autoTriggerExportOnBatchSize;
 

@@ -29,34 +29,27 @@ using namespace bugsnag;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"BugsnagPerformanceSampler"];
 }
 
-- (void)testProbabilityPersistence {
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
-    config.samplingProbability = 1.0;
-    config.internal.forceSamplingProbability = true;
+- (void)testProbability {
     Sampler sampler;
-    sampler.configure(config);
+    sampler.setProbability(1.0);
     XCTAssertEqual(sampler.getProbability(), 1.0);
     
     sampler.setProbability(0.5);
     XCTAssertEqual(sampler.getProbability(), 0.5);
 
-    config.internal.forceSamplingProbability = false;
     Sampler sampler2;
-    sampler2.configure(config);
-    XCTAssertEqual(sampler2.getProbability(), 0.5);
+    sampler2.setProbability(0.8);
+    XCTAssertEqual(sampler2.getProbability(), 0.8);
+    XCTAssertEqual(sampler.getProbability(), 0.5);
 }
 
 - (void)testProbabilityAccuracy {
     // The RNG prior to ios 12 is too streaky
     if (@available(ios 12.0, *)) {
-        auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
-        config.internal.forceSamplingProbability = true;
-
         std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
         for (auto p : values) {
-            config.samplingProbability = p;
             Sampler sampler;
-            sampler.configure(config);
+            sampler.setProbability(p);
             [self assertSampler:sampler samplesWithProbability:p];
         }
     }

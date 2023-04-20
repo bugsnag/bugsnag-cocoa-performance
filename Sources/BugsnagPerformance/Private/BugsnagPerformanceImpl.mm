@@ -33,12 +33,12 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
-: spanContextStack_([SpanContextStack new])
+: persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, spanContextStack_([SpanContextStack new])
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
 , tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this))
-, persistence_(std::make_shared<Persistence>(getPersistenceDir()))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -58,7 +58,6 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
     tracer_.configure(configuration);
     retryQueue_->configure(configuration);
     batch_->configure(configuration);
-    sampler_->configure(configuration);
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
@@ -68,12 +67,6 @@ void BugsnagPerformanceImpl::start() noexcept {
         // Therefore, a return of false means that no exchange occurred because
         // isStarted_ was already true (i.e. we've already started).
         return;
-    }
-    
-    NSError *__autoreleasing error = nil;
-
-    if (![configuration_ validate:&error]) {
-        BSGLogError(@"Configuration validation failed with error: %@", error);
     }
 
     /* Note: Be careful about initialization order!
@@ -88,6 +81,10 @@ void BugsnagPerformanceImpl::start() noexcept {
      */
 
     __block auto blockThis = this;
+
+    if (configuration_.internal.clearPersistenceOnStart) {
+        persistence_->clear();
+    }
 
     resourceAttributes_ = ResourceAttributes(configuration_).get();
 
@@ -105,6 +102,12 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistentState_ = std::make_shared<PersistentState>(persistentStateFile, ^void() {
         blockThis->onPersistentStateChanged();
     });
+
+    if (persistentState_->probabilityIsValid()) {
+        sampler_->setProbability(persistentState_->probability());
+    } else {
+        sampler_->setProbability(configuration_.samplingProbability);
+    }
 
     worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
                                     recurringTasks:buildRecurringTasks()];

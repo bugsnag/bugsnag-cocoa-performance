@@ -64,6 +64,7 @@ private:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                            AppStateTracker *appStateTracker) noexcept;
 
+    std::shared_ptr<Persistence> persistence_;
     std::atomic<bool> isStarted_{false};
     SpanContextStack *spanContextStack_;
     std::shared_ptr<Batch> batch_;
@@ -71,7 +72,6 @@ private:
     Tracer tracer_;
     Worker *worker_{nil};
     BugsnagPerformanceConfiguration *configuration_;
-    std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;

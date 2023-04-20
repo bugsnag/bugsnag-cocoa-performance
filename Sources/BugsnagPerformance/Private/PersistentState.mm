@@ -51,6 +51,7 @@ NSError *PersistentState::load() noexcept {
     NSNumber *probability = getNumber(dict, @"probability");
     if (probability != nil) {
         probability_ = probability.doubleValue;
+        probabilityIsValid_= true;
     }
 
     return nil;

@@ -32,6 +32,11 @@ void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
 }
 
 void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    NSError *__autoreleasing error = nil;
+    if (![config validate:&error]) {
+        BSGLogError(@"Configuration validation failed with error: %@", error);
+    }
+
     sharedInstance().configureInstance(config);
 }
 

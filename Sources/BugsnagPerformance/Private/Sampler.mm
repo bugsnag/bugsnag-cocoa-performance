@@ -10,49 +10,6 @@
 
 using namespace bugsnag;
 
-static NSString *kUserDefaultsKey = @"BugsnagPerformanceSampler";
-static NSString *kProbabilityKey = @"p";
-
-static double loadProbabilityOrDefault(double defaultProbability) {
-    NSDictionary *dict = [[NSUserDefaults standardUserDefaults]
-                          dictionaryForKey:kUserDefaultsKey];
-
-    if (dict != nil) {
-        id p = dict[kProbabilityKey];
-        if ([p isKindOfClass:[NSNumber class]]) {
-            return [p doubleValue];
-        }
-    }
-    return defaultProbability;
-}
-
-static void storeProbability(double probability) {
-    [[NSUserDefaults standardUserDefaults]
-     setObject:@{
-            kProbabilityKey: @(probability),
-        }
-     forKey:kUserDefaultsKey];
-}
-
-void Sampler::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    if (config.internal.forceSamplingProbability) {
-        setProbability(config.samplingProbability);
-    } else {
-        probability_ = loadProbabilityOrDefault(config.samplingProbability);
-    }
-}
-
-double
-Sampler::getProbability() noexcept {
-        return probability_;
-}
-
-void
-Sampler::setProbability(double probability) noexcept {
-    probability_ = probability;
-    storeProbability(probability);
-}
-
 bool Sampler::sampled(SpanData &span) noexcept {
     auto p = getProbability();
     uint64_t idUpperBound;
