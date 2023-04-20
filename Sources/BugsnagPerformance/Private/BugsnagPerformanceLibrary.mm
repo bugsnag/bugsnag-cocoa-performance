@@ -7,6 +7,7 @@
 
 #import "BugsnagPerformanceLibrary.h"
 #import "Reachability.h"
+#import <objc/runtime.h>
 
 using namespace bugsnag;
 
@@ -27,7 +28,42 @@ void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
     sharedInstance();
 }
 
+void checkStuff(void) {
+    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+    NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@""]];
+    Class currentClass = [localDataTask class];
+
+    SEL setStateSelector = NSSelectorFromString(@"setState:");
+    while (class_getInstanceMethod(currentClass, setStateSelector)) {
+        Class superClass = [currentClass superclass];
+        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, setStateSelector));
+        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, setStateSelector));
+        if (classResumeIMP != superclassResumeIMP) {
+            NSLog(@"### setState: %@", currentClass);
+        }
+        currentClass = [currentClass superclass];
+    }
+
+    currentClass = [localDataTask class];
+    SEL resumeSelector = NSSelectorFromString(@"resume");
+    while (class_getInstanceMethod(currentClass, resumeSelector)) {
+        Class superClass = [currentClass superclass];
+        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, resumeSelector));
+        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, resumeSelector));
+        if (classResumeIMP != superclassResumeIMP) {
+            NSLog(@"### resume: %@", currentClass);
+        }
+        currentClass = [currentClass superclass];
+    }
+
+    [localDataTask cancel];
+    [session finishTasksAndInvalidate];
+}
+
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
+    checkStuff();
+
     sharedInstance().appStartupInstrumentation_->willCallMainFunction();
 }
 

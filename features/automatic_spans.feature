@@ -5,7 +5,7 @@ Feature: Automatic instrumentation spans
     And I wait for 2 seconds
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:4"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:4000000"
     * a span field "name" equals "AppStart/Cold"
     * a span field "name" equals "AppStartPhase/App launching - pre main()"
     * a span field "name" equals "AppStartPhase/App launching - post main()"
