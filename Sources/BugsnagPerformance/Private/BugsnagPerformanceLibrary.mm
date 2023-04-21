@@ -28,37 +28,93 @@ void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
     sharedInstance();
 }
 
-void checkStuff(void) {
+static void getURLSessionTaskClasses(NSMutableArray<Class> *setStateClasses, NSMutableArray<Class> *resumeClasses) {
+    // Modeled after:
+    // https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/AFURLSessionManager.m#L355
+
+    if (!NSClassFromString(@"NSURLSessionTask")) {
+        return;
+    }
+
+    /* iOS prior to 14 used various CF bridge classes such as __NSCFURLSessionTask to
+     * implement the resume and setState methods, after which the functionality was moved
+     * out of Core Framework.
+     *
+     * To account for this, we walk the inheritance chain to find all classes that implement
+     * setState and resume.
+     *
+     * Note: Although resume is implemented in both NSURLSessionTask and CF bridge classes,
+     *       the overriden method doesn't call its superclass.
+     */
+
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@""]];
     Class currentClass = [localDataTask class];
 
-    SEL setStateSelector = NSSelectorFromString(@"setState:");
-    while (class_getInstanceMethod(currentClass, setStateSelector)) {
+    for (SEL setStateSelector = NSSelectorFromString(@"setState:");
+         class_getInstanceMethod(currentClass, setStateSelector);
+         currentClass = [currentClass superclass]) {
         Class superClass = [currentClass superclass];
         IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, setStateSelector));
         IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, setStateSelector));
         if (classResumeIMP != superclassResumeIMP) {
-            NSLog(@"### setState: %@", currentClass);
+            [setStateClasses addObject:currentClass];
         }
-        currentClass = [currentClass superclass];
     }
 
-    currentClass = [localDataTask class];
-    SEL resumeSelector = NSSelectorFromString(@"resume");
-    while (class_getInstanceMethod(currentClass, resumeSelector)) {
+    for (SEL setStateSelector = NSSelectorFromString(@"resume");
+         class_getInstanceMethod(currentClass, setStateSelector);
+         currentClass = [currentClass superclass]) {
         Class superClass = [currentClass superclass];
-        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, resumeSelector));
-        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, resumeSelector));
+        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, setStateSelector));
+        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, setStateSelector));
         if (classResumeIMP != superclassResumeIMP) {
-            NSLog(@"### resume: %@", currentClass);
+            [resumeClasses addObject:currentClass];
         }
-        currentClass = [currentClass superclass];
     }
 
     [localDataTask cancel];
     [session finishTasksAndInvalidate];
+}
+
+void checkStuff(void) {
+    NSMutableArray<Class> *setStateClasses = [NSMutableArray new];
+    NSMutableArray<Class> *resumeClasses = [NSMutableArray new];
+    getURLSessionTaskClasses(setStateClasses, resumeClasses);
+    NSLog(@"### setState: %@, resume %@", setStateClasses, resumeClasses);
+
+
+//    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+//    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+//    NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@""]];
+//    Class currentClass = [localDataTask class];
+//
+//    SEL setStateSelector = NSSelectorFromString(@"setState:");
+//    while (class_getInstanceMethod(currentClass, setStateSelector)) {
+//        Class superClass = [currentClass superclass];
+//        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, setStateSelector));
+//        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, setStateSelector));
+//        if (classResumeIMP != superclassResumeIMP) {
+//            NSLog(@"### setState: %@", currentClass);
+//        }
+//        currentClass = [currentClass superclass];
+//    }
+//
+//    currentClass = [localDataTask class];
+//    SEL resumeSelector = NSSelectorFromString(@"resume");
+//    while (class_getInstanceMethod(currentClass, resumeSelector)) {
+//        Class superClass = [currentClass superclass];
+//        IMP classResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(currentClass, resumeSelector));
+//        IMP superclassResumeIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superClass, resumeSelector));
+//        if (classResumeIMP != superclassResumeIMP) {
+//            NSLog(@"### resume: %@", currentClass);
+//        }
+//        currentClass = [currentClass superclass];
+//    }
+//
+//    [localDataTask cancel];
+//    [session finishTasksAndInvalidate];
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
