@@ -7,27 +7,17 @@
 
 #import "NSURLSession+Instrumentation.h"
 #import "BSGURLSessionPerformanceProxy.h"
-#import "../../Utils.h"
-
+#import "../../Swizzle.h"
 #import <objc/runtime.h>
 
-
-static IMP set_class_imp(Class _Nonnull clazz, SEL selector, id _Nonnull implementationBlock) {
-    Method method = class_getClassMethod(clazz, selector);
-    if (method) {
-        return method_setImplementation(method, imp_implementationWithBlock(implementationBlock));
-    } else {
-        BSGLogWarning(@"Could not set IMP for selector %s on class %@", sel_getName(selector), clazz);
-        return nil;
-    }
-}
+using namespace bugsnag;
 
 static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(id<NSURLSessionTaskDelegate> taskDelegate) {
     Class clazz = NSURLSession.class;
     SEL selector = @selector(sessionWithConfiguration:delegate:delegateQueue:);
     typedef NSURLSession *(*IMPPrototype)(id, SEL, NSURLSessionConfiguration *,
                                           id<NSURLSessionDelegate>, NSOperationQueue *);
-    __block IMPPrototype originalIMP = (IMPPrototype)set_class_imp(clazz,
+    __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::setMethodImplementation(clazz,
                                                                    selector,
                                                                    ^(id self,
                                                                      NSURLSessionConfiguration *configuration,
@@ -43,7 +33,7 @@ static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(id<NSURLS
 }
 
 static void replace_NSURLSession_sharedSession() {
-    set_class_imp(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
+    ObjCSwizzle::setMethodImplementation(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
         static NSURLSession *session;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
