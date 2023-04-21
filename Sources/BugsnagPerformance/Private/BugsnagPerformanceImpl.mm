@@ -13,6 +13,7 @@
 #import "ResourceAttributes.h"
 #import "SpanContextStack.h"
 #import "Utils.h"
+#import "SpanAttributesProvider.h"
 
 using namespace bugsnag;
 
@@ -38,7 +39,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this))
+, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>())
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality

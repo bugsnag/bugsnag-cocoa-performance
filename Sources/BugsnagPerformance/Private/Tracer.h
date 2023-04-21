@@ -18,6 +18,7 @@
 #import "SpanOptions.h"
 #import "Configurable.h"
 #import "SpanContextStack.h"
+#import "SpanAttributesProvider.h"
 
 #import <memory>
 
@@ -32,7 +33,8 @@ public:
     Tracer(SpanContextStack *spanContextStack,
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
-           void (^onSpanStarted)()) noexcept;
+           void (^onSpanStarted)(),
+           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
     ~Tracer() {};
 
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
@@ -58,6 +60,7 @@ private:
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     SpanContextStack *spanContextStack_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};

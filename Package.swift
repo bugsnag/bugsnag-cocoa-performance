@@ -19,6 +19,7 @@ let package = Package(
             linkerSettings: [
                 .linkedFramework("SystemConfiguration"),
                 .linkedFramework("UIKit"),
+                .linkedFramework("CoreTelephony"),
             ]
         ),
         .testTarget(

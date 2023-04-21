@@ -74,6 +74,7 @@ Feature: Automatic instrumentation spans
     * every span integer attribute "http.status_code" is greater than 0
     * every span integer attribute "http.response_content_length" is greater than 0
     * every span string attribute "net.host.connection.type" equals "wifi"
+    * every span string attribute "net.host.connection.subtype" does not exist
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1

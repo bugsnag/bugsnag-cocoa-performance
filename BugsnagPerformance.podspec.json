@@ -23,7 +23,8 @@
   "prefix_header_file": false,
   "frameworks": [
     "SystemConfiguration",
-    "UIKit"
+    "UIKit",
+    "CoreTelephony"
   ],
   "libraries": "c++",
   "pod_target_xcconfig": {

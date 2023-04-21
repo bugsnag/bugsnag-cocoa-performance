@@ -21,11 +21,13 @@ using namespace bugsnag;
 Tracer::Tracer(SpanContextStack *spanContextStack,
                std::shared_ptr<Sampler> sampler,
                std::shared_ptr<Batch> batch,
-               void (^onSpanStarted)()) noexcept
+               void (^onSpanStarted)(),
+               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
 : spanContextStack_(spanContextStack)
 , sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
+, spanAttributesProvider_(spanAttributesProvider)
 {}
 
 void
@@ -134,63 +136,16 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     return span;
 }
 
-static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
-    if (metrics.transactionMetrics.count > 0) {
-        NSString *protocolName = metrics.transactionMetrics[0].networkProtocolName;
-        if ([protocolName isEqualToString:@"http/1.1"]) {
-            return @"1.1";
-        }
-        if ([protocolName isEqualToString:@"h2"]) {
-            return @"2.0";
-        }
-        if ([protocolName isEqualToString:@"h3"]) {
-            return @"3.0";
-        }
-        if ([protocolName hasPrefix:@"spdy/"]) {
-            return @"SPDY";
-        }
-    }
-    return nil;
-}
-
-static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) {
-    if (task.error.code == NSURLErrorNotConnectedToInternet) {
-        return @"unavailable";
-    }
-    if (@available(macos 10.15 , ios 13.0 , watchos 6.0 , tvos 13.0, *)) {
-        if (metrics.transactionMetrics.count > 0 && metrics.transactionMetrics[0].cellular) {
-            return @"cell";
-        }
-    }
-    return @"wifi";
-}
-
-static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value) {
-    if (value.floatValue != 0) {
-        dict[key] = value;
-    }
-}
-
 void
 Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     auto interval = metrics.taskInterval;
-    auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
     SpanOptions options;
     options.startTime = dateToAbsoluteTime(interval.startDate);
     auto span = startSpan(name, options, BSGFirstClassUnset);
 
-    auto attributes = [NSMutableDictionary new];
-    attributes[@"bugsnag.span.category"] = @"network";
-    attributes[@"http.flavor"] = getHTTPFlavour(metrics);
-    attributes[@"http.method"] = task.originalRequest.HTTPMethod;
-    attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;
-    attributes[@"http.url"] = task.originalRequest.URL.absoluteString;
-    attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
-    addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
-    addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
-    [span addAttributes:attributes];
+    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
 
     [span endWithEndTime:interval.endDate];
 }

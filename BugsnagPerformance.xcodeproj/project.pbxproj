@@ -56,6 +56,8 @@
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
 		96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FB29E6ADC600AEE435 /* Assets.xcassets */; };
 		96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */; };
+		96D4160A29F05FA900AEE435 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D4160929F05FA900AEE435 /* CoreTelephony.framework */; };
+		96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -199,6 +201,9 @@
 		96D415FB29E6ADC600AEE435 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		96D415FE29E6ADC600AEE435 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		96D4160029E6ADC600AEE435 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		96D4160929F05FA900AEE435 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/System/Library/Frameworks/CoreTelephony.framework; sourceTree = DEVELOPER_DIR; };
+		96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanAttributesProvider.mm; sourceTree = "<group>"; };
+		96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanAttributesProvider.h; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -275,6 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96D4160A29F05FA900AEE435 /* CoreTelephony.framework in Frameworks */,
 				01A414D42913CAE7003152A4 /* SystemConfiguration.framework in Frameworks */,
 				CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */,
 				0122C25829019904002D243C /* UIKit.framework in Frameworks */,
@@ -412,6 +418,8 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
+				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
+				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -433,6 +441,7 @@
 		0122C25629019904002D243C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				96D4160929F05FA900AEE435 /* CoreTelephony.framework */,
 				CBF7C5E3297A963A00D47719 /* libz.tbd */,
 				01A414D32913CAE7003152A4 /* SystemConfiguration.framework */,
 				0122C25729019904002D243C /* UIKit.framework */,
@@ -799,6 +808,7 @@
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
+				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,

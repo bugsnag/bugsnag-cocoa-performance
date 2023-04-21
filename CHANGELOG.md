@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Added connection.subtype attribute to network spans
+  [109](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/109)
+
 * Added first_view_name attribute to app start spans
   [91](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/91)
 
