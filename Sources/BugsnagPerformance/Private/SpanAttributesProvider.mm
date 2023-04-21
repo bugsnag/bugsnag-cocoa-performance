@@ -18,9 +18,9 @@ using namespace bugsnag;
 static NSDictionary *accessTechnologyMappingDictionary();
 
 // https://stackoverflow.com/questions/58426438/what-is-key-in-cttelephonynetworkinfo-servicesubscribercellularproviders-and-c
-NSString * const networkSubtypeKey = @"0000000100000001";
-NSString * const connectionTypeCell = @"cell";
-NSDictionary * const accessTechnologyMapping = accessTechnologyMappingDictionary();
+static NSString * const networkSubtypeKey = @"0000000100000001";
+static NSString * const connectionTypeCell = @"cell";
+static NSDictionary * const accessTechnologyMapping = accessTechnologyMappingDictionary();
 
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
