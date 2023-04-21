@@ -37,6 +37,14 @@ Tracer::configure(BugsnagPerformanceConfiguration *config) noexcept {
 
 void
 Tracer::start() noexcept {
+    // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
+    // Now that the sampler has been configured, re-sample everything.
+    batch_->allowDrain();
+    auto unsampledBatch = batch_->drain();
+    for (auto spanData: *unsampledBatch) {
+        tryAddSpanToBatch(spanData);
+    }
+
     if (configuration.autoInstrumentViewControllers) {
         viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
         viewLoadInstrumentation_->start();

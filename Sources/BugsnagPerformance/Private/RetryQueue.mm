@@ -39,15 +39,12 @@ static dispatch_time_t timestampFromFilename(NSString *filename) {
     return strtoull(str.UTF8String, 0, 10);
 }
 
-RetryQueue::RetryQueue(NSString *path) noexcept
-: baseDir_(path)
-{
-    onFilesystemError = ^void() {};
-    [Filesystem ensurePathExists:path];
-}
-
 void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
     maxRetryAge_ = intervalToNanoseconds(config.internal.maxRetryAge);
+}
+
+void RetryQueue::start() noexcept {
+    [Filesystem ensurePathExists:baseDir_];
 }
 
 void RetryQueue::sweep() noexcept {

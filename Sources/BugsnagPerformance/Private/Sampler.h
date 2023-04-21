@@ -17,22 +17,18 @@
 namespace bugsnag {
 
 /**
- * Samples spans based on either:
- * - A default fallback probability
- * - A value that was set using setProbability(), which expires after 24 hours
+ * Samples spans based on the currently configured probability
  */
 class Sampler {
 public:
-    Sampler(double fallbackProbability) noexcept;
-    
-    void setFallbackProbability(double value) noexcept;
+    // Sampler constructs with a probability of 1 so that it keeps everything until explicitly configured.
+    Sampler() noexcept
+    : probability_(1)
+    {}
 
-    /**
-     * Sets the probability value to use in all sampling for the next 24 hours.
-     */
-    void setProbability(double probability) noexcept;
+    void setProbability(double probability) noexcept {probability_ = probability;};
 
-    double getProbability() noexcept;
+    double getProbability() noexcept {return probability_;};
 
     /**
      * Samples the given span data, returning true if the span is to be kept.
@@ -48,6 +44,6 @@ public:
     sampled(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept;
 
 private:
-    double probability_{0};
+    double probability_{1};
 };
 }

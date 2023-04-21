@@ -17,8 +17,6 @@
 
 using namespace bugsnag;
 
-static double initialProbability = 1.0;
-
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
     // Namespace it to the bundle identifier because all MacOS non-sandboxed apps share the same cache dir.
@@ -36,12 +34,12 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
-: spanContextStack_([SpanContextStack new])
+: persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, spanContextStack_([SpanContextStack new])
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
-, sampler_(std::make_shared<Sampler>(initialProbability))
+, sampler_(std::make_shared<Sampler>())
 , tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>())
-, persistence_(std::make_shared<Persistence>(getPersistenceDir()))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -71,12 +69,6 @@ void BugsnagPerformanceImpl::start() noexcept {
         // isStarted_ was already true (i.e. we've already started).
         return;
     }
-    
-    NSError *__autoreleasing error = nil;
-
-    if (![configuration_ validate:&error]) {
-        BSGLogError(@"Configuration validation failed with error: %@", error);
-    }
 
     /* Note: Be careful about initialization order!
      *
@@ -91,13 +83,18 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     __block auto blockThis = this;
 
+    persistence_->start();
+
+    if (configuration_.internal.clearPersistenceOnStart) {
+        persistence_->clear();
+    }
+
     resourceAttributes_ = ResourceAttributes(configuration_).get();
 
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
     });
-
-    sampler_->setFallbackProbability(configuration_.samplingProbability);
+    retryQueue_->start();
 
     uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
                                                configuration_.apiKey,
@@ -109,6 +106,12 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistentState_ = std::make_shared<PersistentState>(persistentStateFile, ^void() {
         blockThis->onPersistentStateChanged();
     });
+
+    if (persistentState_->probabilityIsValid()) {
+        sampler_->setProbability(persistentState_->probability());
+    } else {
+        sampler_->setProbability(configuration_.samplingProbability);
+    }
 
     worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
                                     recurringTasks:buildRecurringTasks()];

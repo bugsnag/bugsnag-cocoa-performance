@@ -18,10 +18,15 @@ namespace bugsnag {
 
 class RetryQueue {
 public:
-    RetryQueue(NSString *path) noexcept;
     RetryQueue() = delete;
+    RetryQueue(NSString *path) noexcept
+    : baseDir_(path)
+    , onFilesystemError(^{})
+    {}
 
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
+
+    void start() noexcept;
 
     /**
      * Sweep the retry queue, deleting any non-retry files and retries that are older than 24 hours.

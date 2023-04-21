@@ -55,9 +55,9 @@ func run(command: Command) {
     scenario.clearPersistentData()
     NSLog("[Fixture] Starting bugsnag")
     scenario.startBugsnag()
-    NSLog("[Fixture] Running scenario")
+    NSLog("[Fixture] Running scenario \(scenarioClass)")
     scenario.run()
-    NSLog("[Fixture] Scenario complete")
+    NSLog("[Fixture] Scenario \(scenarioClass) complete")
 }
 
 struct Command: Decodable {
