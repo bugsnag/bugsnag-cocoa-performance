@@ -23,7 +23,6 @@ private:
     static std::vector<const char *> imagesToInstrument() noexcept;
     static std::vector<Class> viewControllerSubclasses(const char *image) noexcept;
     static bool isViewControllerSubclass(Class subclass) noexcept;
-    static IMP overrideImplementation(Class cls, SEL name, id block) noexcept;
     
     void instrument(Class cls) noexcept;
     
