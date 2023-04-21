@@ -37,8 +37,8 @@ static void getURLSessionTaskClasses(NSMutableArray<Class> *setStateClasses, NSM
     }
 
     /* iOS prior to 14 used various CF bridge classes such as __NSCFURLSessionTask to
-     * implement the resume and setState methods, after which the functionality was moved
-     * out of Core Framework.
+     * implement methods such as resume and setState, after which the functionality was
+     * moved out of Core Framework.
      *
      * To account for this, we walk the inheritance chain to find all classes that implement
      * setState and resume.
@@ -47,27 +47,28 @@ static void getURLSessionTaskClasses(NSMutableArray<Class> *setStateClasses, NSM
      *       the overriden method doesn't call its superclass.
      */
 
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
-    NSURLSessionDataTask *localDataTask = [session dataTaskWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@""]];
-    Class dataTaskClass = [localDataTask class];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    NSURLSessionDataTask *dataTask = [session dataTaskWithURL:(NSURL * _Nonnull)[NSURL URLWithString:@""]];
 
     static void (^getClassesWithSelector)(Class cls, SEL selector, NSMutableArray<Class> *result) =
     ^void(Class cls, SEL selector, NSMutableArray<Class> *result) {
-        for (Class current = cls; class_getInstanceMethod(current, selector); current = [current superclass]) {
-            Class superCls = [current superclass];
-            IMP classIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(current, selector));
-            IMP superIMP = method_getImplementation((Method _Nonnull)class_getInstanceMethod(superCls, selector));
+        for (; class_getInstanceMethod(cls, selector); cls = [cls superclass]) {
+            Class superCls = [cls superclass];
+            Method classMethod = class_getInstanceMethod(cls, selector);
+            Method superMethod = class_getInstanceMethod(superCls, selector);
+            IMP classIMP = classMethod ? method_getImplementation(classMethod) : nil;
+            IMP superIMP = superMethod ? method_getImplementation(superMethod) : nil;
             if (classIMP != superIMP) {
-                [result addObject:current];
+                [result addObject:cls];
             }
         }
     };
 
-    getClassesWithSelector(dataTaskClass, NSSelectorFromString(@"setState:"), setStateClasses);
-    getClassesWithSelector(dataTaskClass, NSSelectorFromString(@"resume"), resumeClasses);
+    getClassesWithSelector(dataTask.class, NSSelectorFromString(@"setState:"), setStateClasses);
+    getClassesWithSelector(dataTask.class, NSSelectorFromString(@"resume"), resumeClasses);
 
-    [localDataTask cancel];
+    [dataTask cancel];
     [session finishTasksAndInvalidate];
 }
 
