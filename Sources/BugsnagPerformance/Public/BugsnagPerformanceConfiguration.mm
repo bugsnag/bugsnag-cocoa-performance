@@ -23,7 +23,7 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         _endpoint = nsurlWithString(defaultEndpoint, nil);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
-        _autoInstrumentNetwork = YES;
+        _autoInstrumentNetworkRequests = YES;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else

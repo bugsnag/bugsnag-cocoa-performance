@@ -10,6 +10,11 @@ Changelog
 
 * Added first_view_name attribute to app start spans
   [91](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/91)
+  
+### Bug fixes
+
+* Renamed configuration property autoInstrumentNetwork to autoInstrumentNetworkRequests
+  [112](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/112)
 
 ## 0.1.5 (2023-03-22)
 

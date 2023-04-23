@@ -69,7 +69,7 @@ using namespace bugsnag;
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
     config.autoInstrumentViewControllers = YES;
     config.autoInstrumentAppStarts = NO;
-    config.autoInstrumentNetwork = NO;
+    config.autoInstrumentNetworkRequests = NO;
     BugsnagPerformanceLibrary::configure(config);
     auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
     perf->start();

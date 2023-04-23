@@ -50,7 +50,7 @@ Tracer::start() noexcept {
         viewLoadInstrumentation_->start();
     }
     
-    if (configuration.autoInstrumentNetwork) {
+    if (configuration.autoInstrumentNetworkRequests) {
         networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, configuration.endpoint);
         networkInstrumentation_->start();
     }
