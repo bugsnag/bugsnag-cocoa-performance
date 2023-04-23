@@ -61,10 +61,10 @@ Feature: Manual creation of spans
     Given I run "ManualViewLoadScenario" and discard the initial p-value request
     And I wait for 2 spans
     * the trace "Bugsnag-Span-Sampling" header is not null
-    * a span field "name" equals "ViewLoad/UIKit/ManualViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/ManualViewController"
     * a span string attribute "bugsnag.view.name" equals "ManualViewController"
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * a span field "name" equals "ViewLoad/SwiftUI/ManualView"
+    * a span field "name" equals "[ViewLoad/SwiftUI]/ManualView"
     * a span string attribute "bugsnag.view.name" equals "ManualView"
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -77,7 +77,7 @@ Feature: Manual creation of spans
     Given I run "ManualUIViewLoadScenario" and discard the initial p-value request
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * every span field "name" equals "ViewLoad/UIKit/UIViewController"
+    * every span field "name" equals "[ViewLoad/UIKit]/UIViewController"
     * every span string attribute "bugsnag.view.name" equals "UIViewController"
     * every span string attribute "bugsnag.view.type" equals "UIKit"
     * every span field "kind" equals 1
@@ -94,7 +94,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
-    * every span field "name" equals "HTTP/GET"
+    * every span field "name" equals "[HTTP/GET]"
     * every span string attribute "http.flavor" exists
     * every span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
     * every span string attribute "http.method" equals "GET"

@@ -14,5 +14,6 @@ public:
     ~SpanAttributesProvider() {};
     
     NSDictionary *networkSpanAttributes(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
+    NSDictionary *appStartSpanAttributes(NSString *phase) noexcept;
 };
 }

@@ -44,7 +44,7 @@ BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 : appStateTracker_([[AppStateTracker alloc] init])
 , reachability_(new Reachability)
 , bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_, appStateTracker_))
-, appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_))
+, appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_, std::make_shared<SpanAttributesProvider>()))
 {
     bugsnagPerformanceImpl_->tracer_.setOnViewLoadSpanStarted(^(NSString *className) {
         appStartupInstrumentation_->didStartViewLoadSpan(className);

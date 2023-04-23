@@ -6,16 +6,19 @@ Feature: Automatic instrumentation spans
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
-    * a span field "name" equals "AppStart/Cold"
-    * a span field "name" equals "AppStartPhase/App launching - pre main()"
-    * a span field "name" equals "AppStartPhase/App launching - post main()"
-    * a span field "name" equals "AppStartPhase/UI init"
+    * a span field "name" equals "[AppStart/Cold]"
+    * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
+    * a span field "name" equals "[AppStartPhase/App launching - post main()]"
+    * a span field "name" equals "[AppStartPhase/UI init]"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.app_start.type" equals "cold"
+    * a span string attribute "bugsnag.phase" equals "App launching - pre main()"
+    * a span string attribute "bugsnag.phase" equals "App launching - post main()"
+    * a span string attribute "bugsnag.phase" equals "UI init"
     * every span string attribute "bugsnag.span.category" equals "app_start"
     * every span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
@@ -27,7 +30,7 @@ Feature: Automatic instrumentation spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * every span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentViewLoadScenario_ViewController"
+    * every span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -45,8 +48,8 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentSubViewLoadScenario" and discard the initial p-value request
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * a span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
-    * a span field "name" equals "ViewLoad/UIKit/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -67,7 +70,7 @@ Feature: Automatic instrumentation spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * every span field "name" equals "HTTP/GET"
+    * every span field "name" equals "[HTTP/GET]"
     * every span string attribute "http.flavor" exists
     * every span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
     * every span string attribute "http.method" equals "GET"

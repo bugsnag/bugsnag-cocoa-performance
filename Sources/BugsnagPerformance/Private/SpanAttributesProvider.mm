@@ -116,4 +116,12 @@ SpanAttributesProvider::networkSpanAttributes(NSURLSessionTask *task,
     return attributes;
 }
 
+NSDictionary *
+SpanAttributesProvider::appStartSpanAttributes(NSString *phase) noexcept {
+    return @{
+        @"bugsnag.span.category": @"app_start",
+        @"bugsnag.phase": phase,
+    };
+}
+
 
