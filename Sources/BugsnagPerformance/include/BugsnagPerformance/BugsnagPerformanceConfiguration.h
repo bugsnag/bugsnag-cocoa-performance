@@ -32,7 +32,7 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentViewControllers;
 
-@property (nonatomic) BOOL autoInstrumentNetwork;
+@property (nonatomic) BOOL autoInstrumentNetworkRequests;
 
 @property (nonatomic) double samplingProbability;
 

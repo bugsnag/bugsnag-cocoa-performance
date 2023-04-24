@@ -20,7 +20,7 @@ class Scenario: NSObject {
         config.internal.autoTriggerExportOnBatchSize = 1
         config.apiKey = "12312312312312312312312312312312"
         config.autoInstrumentAppStarts = false
-        config.autoInstrumentNetwork = false
+        config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
         config.samplingProbability = 1
         config.endpoint = URL(string:"\(Scenario.mazeRunnerURL)/traces")!

@@ -18,7 +18,7 @@
 - (void)setUp {
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef"];
     config.endpoint = [NSURL URLWithString:@"http://localhost"];
-    config.autoInstrumentNetwork = NO;
+    config.autoInstrumentNetworkRequests = NO;
     config.autoInstrumentAppStarts = NO;
     config.autoInstrumentViewControllers = NO;
     [BugsnagPerformance startWithConfiguration:config];
