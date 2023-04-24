@@ -198,6 +198,7 @@ endif
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformance.podspec.json
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+.[0-9]+.[0-9]+/$(VERSION)/g" .jazzy.yaml
+	@sed -i '' -E "s/[0-9]+.[0-9]+.[0-9]+/$(VERSION)/g" Sources/BugsnagPerformance/Private/Version.h
 	@agvtool new-marketing-version $(VERSION)
 
 prerelease: bump ## Generates a PR for the $VERSION release
