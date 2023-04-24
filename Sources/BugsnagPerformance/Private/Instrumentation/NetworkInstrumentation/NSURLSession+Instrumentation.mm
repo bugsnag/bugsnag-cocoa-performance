@@ -50,6 +50,7 @@ static void replace_NSURLSession_sharedSession() {
     });
 }
 
+
 void bsg_installNSURLSessionPerformance(id<NSURLSessionTaskDelegate> taskDelegate) {
     replace_NSURLSession_sessionWithConfigurationDelegateQueue(taskDelegate);
     replace_NSURLSession_sharedSession();

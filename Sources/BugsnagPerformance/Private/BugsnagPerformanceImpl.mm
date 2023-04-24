@@ -39,7 +39,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>())
+, tracer_(std::make_shared<Tracer>(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>()))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -56,7 +56,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
     probabilityRequestsPauseForSeconds_ = configuration.internal.probabilityRequestsPauseForSeconds;
 
     configuration_ = configuration;
-    tracer_.configure(configuration);
+    tracer_->configure(configuration);
     retryQueue_->configure(configuration);
     batch_->configure(configuration);
 }
@@ -131,7 +131,7 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onAppEnteredForeground();
     };
 
-    tracer_.start();
+    tracer_->start();
 
     reachability_->addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
@@ -329,35 +329,35 @@ void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *spa
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
     SpanOptions options;
-    auto span = tracer_.startCustomSpan(name, options);
+    auto span = tracer_->startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startCustomSpan(name, options);
+    auto span = tracer_->startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
-    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+    auto span = tracer_->startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
                                           [NSString stringWithUTF8String:object_getClassName(controller)],
                                           options);
     possiblyMakeSpanCurrent(span, options);
@@ -386,9 +386,9 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) noexcept {
-    return tracer_.startAppStartSpan(name, options);
+    return tracer_->startAppStartSpan(name, options);
 }
 
 void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
-    tracer_.cancelQueuedSpan(span);
+    tracer_->cancelQueuedSpan(span);
 }

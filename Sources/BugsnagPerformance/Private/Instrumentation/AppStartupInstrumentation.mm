@@ -60,7 +60,8 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 
 AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance,
                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-: bugsnagPerformance_(bugsnagPerformance)
+: isEnabled_(true) // AppStartupInstrumentation starts out enabled
+, bugsnagPerformance_(bugsnagPerformance)
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
@@ -77,9 +78,14 @@ void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *confi
     }
 }
 
+void AppStartupInstrumentation::start() noexcept {
+    // Nothing to do, but makes it clear that this hasn't been forgotten in
+    // Instrumentation::start()
+}
+
 void AppStartupInstrumentation::willCallMainFunction() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -106,7 +112,7 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
 void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    isDisabled_ = true;
+    isEnabled_ = false;
     bugsnagPerformance_->cancelQueuedSpan(preMainSpan_);
     bugsnagPerformance_->cancelQueuedSpan(postMainSpan_);
     bugsnagPerformance_->cancelQueuedSpan(uiInitSpan_);
@@ -116,7 +122,7 @@ void AppStartupInstrumentation::disable() noexcept {
 void
 AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -139,7 +145,7 @@ AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
 void
 AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -155,7 +161,7 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
 void
 AppStartupInstrumentation::beginAppStartSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (appStartSpan_ != nullptr) {
@@ -178,7 +184,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginPreMainSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (preMainSpan_ != nullptr) {
@@ -194,7 +200,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginPostMainSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (postMainSpan_ != nullptr) {
@@ -210,7 +216,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
 
 void
 AppStartupInstrumentation::beginUIInitSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (uiInitSpan_ != nullptr) {

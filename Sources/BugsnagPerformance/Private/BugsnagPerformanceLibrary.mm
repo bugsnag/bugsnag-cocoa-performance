@@ -31,13 +31,17 @@ void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
     sharedInstance().appStartupInstrumentation_->willCallMainFunction();
 }
 
-void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
+void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration *config) noexcept {
     NSError *__autoreleasing error = nil;
     if (![config validate:&error]) {
         BSGLogError(@"Configuration validation failed with error: %@", error);
     }
 
-    sharedInstance().configureInstance(config);
+    sharedInstance().configure(config);
+}
+
+void BugsnagPerformanceLibrary::startLibrary() noexcept {
+    sharedInstance().start();
 }
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
@@ -45,15 +49,21 @@ BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 , reachability_(new Reachability)
 , bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_, appStateTracker_))
 , appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_, std::make_shared<SpanAttributesProvider>()))
+, instrumentation_(std::make_shared<Instrumentation>(appStartupInstrumentation_, bugsnagPerformanceImpl_->tracer_))
 {
-    bugsnagPerformanceImpl_->tracer_.setOnViewLoadSpanStarted(^(NSString *className) {
+    bugsnagPerformanceImpl_->tracer_->setOnViewLoadSpanStarted(^(NSString *className) {
         appStartupInstrumentation_->didStartViewLoadSpan(className);
     });
 }
 
-void BugsnagPerformanceLibrary::configureInstance(BugsnagPerformanceConfiguration *config) noexcept {
+void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
     bugsnagPerformanceImpl_->configure(config);
-    appStartupInstrumentation_->configure(config);
+    instrumentation_->configure(config);
+}
+
+void BugsnagPerformanceLibrary::start() noexcept {
+    bugsnagPerformanceImpl_->start();
+    instrumentation_->start();
 }
 
 std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPerformanceImpl() noexcept {

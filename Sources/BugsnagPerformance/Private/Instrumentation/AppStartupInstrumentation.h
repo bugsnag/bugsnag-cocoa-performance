@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import <mutex>
 #import "../Configurable.h"
+#import "../Startable.h"
 #import "../SpanAttributesProvider.h"
 
 @class BugsnagPerformanceSpan;
@@ -16,21 +17,22 @@ namespace bugsnag {
 
 class BugsnagPerformanceImpl;
 
-class AppStartupInstrumentation: public Configurable {
+class AppStartupInstrumentation: public Configurable, public Startable {
     friend class BugsnagPerformanceLibrary;
 public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void start() noexcept;
 
     void didStartViewLoadSpan(NSString *name) noexcept;
 
 private:
+    bool isEnabled_{true}; // AppStartupInstrumentation starts out enabled
     std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     CFAbsoluteTime didStartProcessAtTime_{0};
     CFAbsoluteTime didCallMainFunctionAtTime_{0};
     CFAbsoluteTime didBecomeActiveAtTime_{0};
     CFAbsoluteTime didFinishLaunchingAtTime_{0};
-    bool isDisabled_{false};
     bool isColdLaunch_{false};
     bool shouldRespondToAppDidFinishLaunching_{false};
     bool shouldRespondToAppDidBecomeActive_{false};

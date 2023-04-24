@@ -94,6 +94,8 @@
 		CBE8EA1E294B5E1500702950 /* Batch.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA1C294B5E1500702950 /* Batch.h */; };
 		CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEBE59029F2783C00BF0B4F /* Swizzle.mm */; };
 		CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEBE59129F2783C00BF0B4F /* Swizzle.h */; };
+		CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEBE59829F671A800BF0B4F /* Instrumentation.h */; };
+		CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEBE59929F671A800BF0B4F /* Instrumentation.mm */; };
 		CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51B6296D8386009C0CE3 /* Persistence.h */; };
 		CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51B7296D8386009C0CE3 /* Persistence.mm */; };
 		CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51BA296D9EED009C0CE3 /* PersistentState.h */; };
@@ -236,6 +238,7 @@
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBC90C4429C84DEB00280884 /* Targets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targets.h; sourceTree = "<group>"; };
+		CBE0872129F6C6A3007455F2 /* Startable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Startable.h; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
 		CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceImpl.mm; sourceTree = "<group>"; };
 		CBE8EA18294B5AB800702950 /* Worker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Worker.h; sourceTree = "<group>"; };
@@ -243,6 +246,8 @@
 		CBE8EA1C294B5E1500702950 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Batch.h; sourceTree = "<group>"; };
 		CBEBE59029F2783C00BF0B4F /* Swizzle.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Swizzle.mm; sourceTree = "<group>"; };
 		CBEBE59129F2783C00BF0B4F /* Swizzle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swizzle.h; sourceTree = "<group>"; };
+		CBEBE59829F671A800BF0B4F /* Instrumentation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Instrumentation.h; sourceTree = "<group>"; };
+		CBEBE59929F671A800BF0B4F /* Instrumentation.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Instrumentation.mm; sourceTree = "<group>"; };
 		CBEC51B6296D8386009C0CE3 /* Persistence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Persistence.h; sourceTree = "<group>"; };
 		CBEC51B7296D8386009C0CE3 /* Persistence.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Persistence.mm; sourceTree = "<group>"; };
 		CBEC51BA296D9EED009C0CE3 /* PersistentState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistentState.h; sourceTree = "<group>"; };
@@ -401,6 +406,8 @@
 				0122C23529019770002D243C /* Span.h */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
+				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
+				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
 				CB747D22299F6E03003CA1B4 /* SpanContextStack.h */,
 				CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */,
 				CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */,
@@ -408,6 +415,7 @@
 				0122C22129019770002D243C /* SpanData.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
+				CBE0872129F6C6A3007455F2 /* Startable.h */,
 				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
 				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
 				CBC90C4429C84DEB00280884 /* Targets.h */,
@@ -418,8 +426,6 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
-				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
-				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -429,6 +435,8 @@
 			children = (
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				CBEBE59829F671A800BF0B4F /* Instrumentation.h */,
+				CBEBE59929F671A800BF0B4F /* Instrumentation.mm */,
 				CB34771929068C350033759C /* NetworkInstrumentation */,
 				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
 				0122C22A29019770002D243C /* NetworkInstrumentation.mm */,
@@ -581,6 +589,7 @@
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
+				CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
 				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
@@ -807,6 +816,7 @@
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
+				CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,

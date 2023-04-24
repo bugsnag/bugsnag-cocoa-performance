@@ -9,14 +9,12 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import "Instrumentation/AppStartupInstrumentation.h"
-#import "Instrumentation/NetworkInstrumentation.h"
-#import "Instrumentation/ViewLoadInstrumentation.h"
 #import "Span.h"
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
 #import "Configurable.h"
+#import "Startable.h"
 #import "SpanContextStack.h"
 #import "SpanAttributesProvider.h"
 
@@ -28,7 +26,7 @@ namespace bugsnag {
 /**
  * Tracer starts all spans, then samples them and routes them to the batch when they end.
  */
-class Tracer: public Configurable {
+class Tracer: public Configurable, public Startable {
 public:
     Tracer(SpanContextStack *spanContextStack,
            std::shared_ptr<Sampler> sampler,
@@ -57,8 +55,6 @@ public:
 
 private:
     std::shared_ptr<Sampler> sampler_;
-    std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
-    std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
     SpanContextStack *spanContextStack_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     

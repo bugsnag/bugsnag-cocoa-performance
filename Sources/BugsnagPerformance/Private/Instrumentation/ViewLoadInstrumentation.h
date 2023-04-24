@@ -6,17 +6,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "../Configurable.h"
+#import "../Tracer.h"
 
 #import <vector>
 
 namespace bugsnag {
 class ViewLoadInstrumentation {
 public:
-    ViewLoadInstrumentation(class Tracer &tracer, BOOL (^ callback)(UIViewController *)) noexcept
-    : tracer_(tracer)
-    , callback_(callback)
+    ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer) noexcept
+    : isEnabled_(false)
+    , tracer_(tracer)
     {}
-    
+
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
     
 private:
@@ -32,7 +35,8 @@ private:
 
     void endViewLoadSpan(UIViewController *viewController) noexcept;
 
-    class Tracer &tracer_;
+    bool isEnabled_{false};
+    std::shared_ptr<Tracer> tracer_;
     BOOL (^ callback_)(UIViewController *viewController){nullptr};
     NSSet *observedClasses_{nil};
 };

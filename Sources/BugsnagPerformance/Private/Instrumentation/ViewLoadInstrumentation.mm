@@ -25,7 +25,17 @@ using namespace bugsnag;
 static constexpr int kAssociatedSpan = 0;
 
 void
+ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    callback_ = config.viewControllerInstrumentationCallback;
+    isEnabled_ = config.autoInstrumentViewControllers;
+}
+
+void
 ViewLoadInstrumentation::start() noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     auto observedClasses = [NSMutableSet<Class> set];
     
     for (auto image : imagesToInstrument()) {
@@ -46,6 +56,10 @@ ViewLoadInstrumentation::start() noexcept {
 
 void
 ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     if (![observedClasses_ containsObject:[viewController class]]) {
         return;
     }
@@ -62,9 +76,9 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     }
     
     SpanOptions options;
-    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                          NSStringFromClass([viewController class]),
-                                          options);
+    auto span = tracer_->startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+                                           NSStringFromClass([viewController class]),
+                                           options);
     
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -72,14 +86,26 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
 
 void
 ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     endViewLoadSpan(viewController);
 }
 
 void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     endViewLoadSpan(viewController);
 }
 
 void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedSpan);
     [span end];
 
