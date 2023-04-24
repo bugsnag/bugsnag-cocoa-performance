@@ -48,14 +48,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeDoubleValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.f}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1.23"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1"}}]));
 }
 
 - (void)testEncodeInt32Value {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @0}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @1}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @2147483647}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @"0"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @"1"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @"2147483647"}}]));
 }
 
 - (void)testEncodeInt64Value {

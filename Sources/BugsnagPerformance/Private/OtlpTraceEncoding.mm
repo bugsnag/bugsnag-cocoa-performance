@@ -176,7 +176,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberCharType:
                     case kCFNumberShortType:
                     case kCFNumberIntType:
-                        [result addObject:@{@"key": key, @"value": @{@"intValue": value}}];
+                        [result addObject:@{@"key": key, @"value": @{@"intValue": [value stringValue]}}];
                         break;
                         
                     case kCFNumberLongType:
@@ -194,7 +194,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberFloatType:
                     case kCFNumberDoubleType:
                     case kCFNumberCGFloatType:
-                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": value}}];
+                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": [value stringValue]}}];
                         break;
                         
                     default: break;
