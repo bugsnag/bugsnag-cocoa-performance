@@ -26,82 +26,89 @@ static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
 
 NSDictionary *
 OtlpTraceEncoding::encode(const SpanData &span) noexcept {
-    return @{
-        // A unique identifier for a trace. All spans from the same trace share
-        // the same `trace_id`. The ID is a 16-byte array. An ID with all zeroes
-        // is considered invalid.
-        //
-        // This field is semantically required. Receiver should generate new
-        // random trace_id if empty or invalid trace_id was received.
-        //
-        // This field is required.
-        @"traceId": EncodeTraceId(span.traceId),
-        
-        // A unique identifier for a span within a trace, assigned when the span
-        // is created. The ID is an 8-byte array. An ID with all zeroes is considered
-        // invalid.
-        //
-        // This field is semantically required. Receiver should generate new
-        // random span_id if empty or invalid span_id was received.
-        //
-        // This field is required.
-        @"spanId": EncodeSpanId(span.spanId),
-        
-        // trace_state conveys information about request position in multiple distributed tracing graphs.
-        // It is a trace_state in w3c-trace-context format: https://www.w3.org/TR/trace-context/#tracestate-header
-        // See also https://github.com/w3c/distributed-tracing for more details about this field.
-        // @"traceState":
-        
-        // The `span_id` of this span's parent span. If this is a root span, then this
-        // field must be empty. The ID is an 8-byte array.
-        // @"parentSpanId":
-        
-        // A description of the span's operation.
-        //
-        // For example, the name can be a qualified method name or a file name
-        // and a line number where the operation is called. A best practice is to use
-        // the same display name at the same call point in an application.
-        // This makes it easier to correlate spans in different traces.
-        //
-        // This field is semantically required to be set to non-empty string.
-        // Empty value is equivalent to an unknown span name.
-        //
-        // This field is required.
-        @"name": span.name,
-        
-        // Distinguishes between spans generated in a particular context. For example,
-        // two spans with the same name may be distinguished using `CLIENT` (caller)
-        // and `SERVER` (callee) to identify queueing latency associated with the span.
-        @"kind": @(span.kind),
-        
-        // start_time_unix_nano is the start time of the span. On the client side, this is the time
-        // kept by the local machine where the span execution starts. On the server side, this
-        // is the time when the server's application handler starts running.
-        // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
-        //
-        // This field is semantically required and it is expected that end_time >= start_time.
-        @"startTimeUnixNano": EncodeCFAbsoluteTime(span.startTime),
-        
-        // end_time_unix_nano is the end time of the span. On the client side, this is the time
-        // kept by the local machine where the span execution ends. On the server side, this
-        // is the time when the server application handler stops running.
-        // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
-        //
-        // This field is semantically required and it is expected that end_time >= start_time.
-        @"endTimeUnixNano": EncodeCFAbsoluteTime(span.endTime),
-        
-        // attributes is a collection of key/value pairs. Note, global attributes
-        // like server name can be set using the resource API.
-        // The OpenTelemetry API specification further restricts the allowed value types:
-        // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute
-        // Attribute keys MUST be unique (it is not allowed to have more than one
-        // attribute with the same key).
-        @"attributes": encode(span.attributes),
-    };
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    // A unique identifier for a trace. All spans from the same trace share
+    // the same `trace_id`. The ID is a 16-byte array. An ID with all zeroes
+    // is considered invalid.
+    //
+    // This field is semantically required. Receiver should generate new
+    // random trace_id if empty or invalid trace_id was received.
+    //
+    // This field is required.
+    result[@"traceId"] = EncodeTraceId(span.traceId);
+
+    // A unique identifier for a span within a trace, assigned when the span
+    // is created. The ID is an 8-byte array. An ID with all zeroes is considered
+    // invalid.
+    //
+    // This field is semantically required. Receiver should generate new
+    // random span_id if empty or invalid span_id was received.
+    //
+    // This field is required.
+    result[@"spanId"] = EncodeSpanId(span.spanId);
+
+    // The span ID of this span's parent (if any).
+    if (span.parentId != 0) {
+        result[@"parentSpanId"] = EncodeSpanId(span.parentId);
+    }
+
+    // trace_state conveys information about request position in multiple distributed tracing graphs.
+    // It is a trace_state in w3c-trace-context format: https://www.w3.org/TR/trace-context/#tracestate-header
+    // See also https://github.com/w3c/distributed-tracing for more details about this field.
+    // @"traceState":
+
+    // The `span_id` of this span's parent span. If this is a root span, then this
+    // field must be empty. The ID is an 8-byte array.
+    // @"parentSpanId":
+
+    // A description of the span's operation.
+    //
+    // For example, the name can be a qualified method name or a file name
+    // and a line number where the operation is called. A best practice is to use
+    // the same display name at the same call point in an application.
+    // This makes it easier to correlate spans in different traces.
+    //
+    // This field is semantically required to be set to non-empty string.
+    // Empty value is equivalent to an unknown span name.
+    //
+    // This field is required.
+    result[@"name"] = span.name;
+
+    // Distinguishes between spans generated in a particular context. For example,
+    // two spans with the same name may be distinguished using `CLIENT` (caller)
+    // and `SERVER` (callee) to identify queueing latency associated with the span.
+    result[@"kind"] = @(span.kind);
+
+    // start_time_unix_nano is the start time of the span. On the client side, this is the time
+    // kept by the local machine where the span execution starts. On the server side, this
+    // is the time when the server's application handler starts running.
+    // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
+    //
+    // This field is semantically required and it is expected that end_time >= start_time.
+    result[@"startTimeUnixNano"] = EncodeCFAbsoluteTime(span.startTime);
+
+    // end_time_unix_nano is the end time of the span. On the client side, this is the time
+    // kept by the local machine where the span execution ends. On the server side, this
+    // is the time when the server application handler stops running.
+    // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
+    //
+    // This field is semantically required and it is expected that end_time >= start_time.
+    result[@"endTimeUnixNano"] = EncodeCFAbsoluteTime(span.endTime);
+
+    // attributes is a collection of key/value pairs. Note, global attributes
+    // like server name can be set using the resource API.
+    // The OpenTelemetry API specification further restricts the allowed value types:
+    // https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/common/README.md#attribute
+    // Attribute keys MUST be unique (it is not allowed to have more than one
+    // attribute with the same key).
+    result[@"attributes"] = encode(span.attributes);
+
+    return result;
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
     for (const auto &span: spans) {
         [encodedSpans addObject:encode(*span.get())];
@@ -169,7 +176,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberCharType:
                     case kCFNumberShortType:
                     case kCFNumberIntType:
-                        [result addObject:@{@"key": key, @"value": @{@"intValue": value}}];
+                        [result addObject:@{@"key": key, @"value": @{@"intValue": [value stringValue]}}];
                         break;
                         
                     case kCFNumberLongType:
@@ -187,7 +194,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberFloatType:
                     case kCFNumberDoubleType:
                     case kCFNumberCGFloatType:
-                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": value}}];
+                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": [value stringValue]}}];
                         break;
                         
                     default: break;
@@ -198,7 +205,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     return result;
 }
 
-static dispatch_time_t getLatestTimestamp(const std::vector<std::unique_ptr<SpanData>> &spans) {
+static dispatch_time_t getLatestTimestamp(const std::vector<std::shared_ptr<SpanData>> &spans) {
     CFAbsoluteTime endTime = 0;
     for (auto &span: spans) {
         if (span->endTime > endTime) {
@@ -218,13 +225,13 @@ static NSString *integrityDigestForData(NSData *payload) {
                    md[15], md[16], md[17], md[18], md[19]];
 }
 
-static NSString *pValueHistogramForSpans(const std::vector<std::unique_ptr<SpanData>> &spans) {
+static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanData>> &spans) {
     // Calculate P value histogram the hard way because ObjC doesn't have such conveniences.
 
     NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.size()];
     NSMutableDictionary<NSNumber *, NSNumber *> *counts = [NSMutableDictionary new];
 
-    for (const std::unique_ptr<SpanData> &span: spans) {
+    for (const std::shared_ptr<SpanData> &span: spans) {
         auto probability = @(span->samplingProbability);
         auto count = counts[probability];
         if (count == nil) {
@@ -258,7 +265,7 @@ static NSString *pValueHistogramForSpans(const std::vector<std::unique_ptr<SpanD
     return str;
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::unique_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
 

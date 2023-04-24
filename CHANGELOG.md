@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## 0.2.0 (2023-04-24)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Corrected name of `autoInstrumentNetworkRequests` configuration option (was previously `autoInstrumentNetwork`)
+  [112](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/112)
+
+* Applied updated span and attribute naming (causes duplicate aggregations in your dashboard of App Start, Screen Load and Network spans from previous versions)
+  [111](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/111)
+
+### Enhancements
+
+* Added connection.subtype attribute to network spans
+  [109](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/109)
+
+* Added first_view_name attribute to app start spans
+  [91](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/91)
+
 ## 0.1.5 (2023-03-22)
 
 ### Bug fixes

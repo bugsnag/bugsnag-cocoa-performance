@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/Sampler.h"
+#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
 
 #import <vector>
 
@@ -28,28 +29,37 @@ using namespace bugsnag;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"BugsnagPerformanceSampler"];
 }
 
-- (void)testProbabilityAccuracy {
-    std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
-    for (auto p : values) {
-        Sampler sampler(p);
-        [self assertSampler:sampler samplesWithProbability:p];
-    }
-}
-
-- (void)testProbabilityPersistence {
-    auto defaultProbability = 1.0;
-    Sampler sampler(defaultProbability);
-    XCTAssertEqual(sampler.getProbability(), defaultProbability);
+- (void)testProbability {
+    Sampler sampler;
+    sampler.setProbability(1.0);
+    XCTAssertEqual(sampler.getProbability(), 1.0);
     
     sampler.setProbability(0.5);
-    XCTAssertEqual(Sampler(1.0).getProbability(), 0.5);
+    XCTAssertEqual(sampler.getProbability(), 0.5);
+
+    Sampler sampler2;
+    sampler2.setProbability(0.8);
+    XCTAssertEqual(sampler2.getProbability(), 0.8);
+    XCTAssertEqual(sampler.getProbability(), 0.5);
+}
+
+- (void)testProbabilityAccuracy {
+    // The RNG prior to ios 12 is too streaky
+    if (@available(ios 12.0, *)) {
+        std::vector<double> values { 0.0, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0 };
+        for (auto p : values) {
+            Sampler sampler;
+            sampler.setProbability(p);
+            [self assertSampler:sampler samplesWithProbability:p];
+        }
+    }
 }
 
 - (void)assertSampler:(Sampler &)sampler samplesWithProbability:(double)probability {
     auto numSamplesTries = 1'000;
     auto count = 0;
     for (auto i = 0; i < numSamplesTries; i++) {
-        SpanData spanData(@"a", 0);
+        SpanData spanData(@"a", IdGenerator::generateTraceId(), IdGenerator::generateSpanId(), 0, 0, BSGFirstClassUnset);
         if (sampler.sampled(spanData)) {
             count++;
         }

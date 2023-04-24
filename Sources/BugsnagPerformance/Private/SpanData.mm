@@ -9,19 +9,39 @@
 
 using namespace bugsnag;
 
-SpanData::SpanData(NSString *name, CFAbsoluteTime startTime) noexcept
-: traceId(IdGenerator::generateTraceId())
-, spanId(IdGenerator::generateSpanId())
+SpanData::SpanData(NSString *name,
+                   TraceId traceId,
+                   SpanId spanId,
+                   SpanId parentId,
+                   CFAbsoluteTime startTime,
+                   BSGFirstClass firstClass) noexcept
+: traceId(traceId)
+, spanId(spanId)
+, parentId(parentId)
 , name([name copy])
 , attributes([NSMutableDictionary dictionary])
 , samplingProbability(1.0)
 , startTime(startTime)
+, firstClass(firstClass)
 {
+    if (firstClass != BSGFirstClassUnset) {
+        attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
+    }
 }
 
 void
 SpanData::addAttributes(NSDictionary *dictionary) noexcept {
     [this->attributes addEntriesFromDictionary:dictionary];
+}
+
+bool
+SpanData::hasAttribute(NSString *attributeName, id value) noexcept {
+    for (id key in attributes) {
+        if ([key isEqualToString:attributeName]) {
+            return [attributes[key] isEqual:value];
+        }
+    }
+    return false;
 }
 
 void

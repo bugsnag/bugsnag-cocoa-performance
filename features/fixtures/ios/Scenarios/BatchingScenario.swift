@@ -8,10 +8,10 @@
 import BugsnagPerformance
 
 class BatchingScenario: Scenario {
-    
-    override func startBugsnag() {
-        super.startBugsnag()
-        bsgp_autoTriggerExportOnBatchSize = 2
+
+    override func configure() {
+        super.configure()
+        config.internal.autoTriggerExportOnBatchSize = 2
     }
     
     override func run() {

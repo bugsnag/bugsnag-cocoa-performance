@@ -28,17 +28,17 @@ OBJC_EXPORT
 @property(nonatomic,readwrite) BOOL makeContextCurrent;
 
 // If true, this span will be considered "first class" on the dashboard.
-@property(nonatomic,readwrite) BSGFirstClass isFirstClass;
+@property(nonatomic,readwrite) BSGFirstClass firstClass;
 
 + (instancetype)optionsWithStartTime:(NSDate *)starttime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                   makeContextCurrent:(BOOL)makeContextCurrent
-                        isFirstClass:(BSGFirstClass)isFirstClass;
+                          firstClass:(BSGFirstClass)firstClass;
 
 - (instancetype)initWithStartTime:(NSDate *)starttime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
                makeContextCurrent:(BOOL)makeContextCurrent
-                     isFirstClass:(BSGFirstClass)isFirstClass;
+                       firstClass:(BSGFirstClass)firstClass;
 
 - (instancetype)clone;
 

@@ -9,6 +9,13 @@
 #import "AppStateTracker.h"
 #import "Targets.h"
 
+#import <sys/sysctl.h>
+#import <mach/mach.h>
+
+#if __has_include(<os/proc.h>)
+#include <os/proc.h>
+#endif
+
 #if BSG_TARGET_UIKIT
 #import <UIKit/UIKit.h>
 #define UIAPPLICATION NSClassFromString(@"UIApplication")
@@ -50,40 +57,74 @@ static UIApplication * GetUIApplication(void) {
 
 #endif
 
-@implementation AppStateTracker
+static bool GetIsForeground(void) {
+#if TARGET_OS_OSX
+    return [[NSAPPLICATION sharedApplication] isActive];
+#endif
 
-+ (void)initialize {
-    [self sharedInstance];
-}
-
-+ (instancetype)sharedInstance {
-    static id sharedInstance;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    return sharedInstance;
-}
-
-static BOOL isInForeground(void) {
-#if BSG_TARGET_WATCHKIT
-    return WKApplication.sharedApplication.applicationState != WKApplicationStateBackground;
-#elif BSG_TARGET_UIKIT
-    if (!isRunningInAppExtension()) {
-        return [GetUIApplication() applicationState] != UIApplicationStateBackground;
+#if TARGET_OS_IOS
+    //
+    // Work around unreliability of -[UIApplication applicationState] which
+    // always returns UIApplicationStateBackground during the launch of UIScene
+    // based apps (until the first scene has been created.)
+    //
+    task_category_policy_data_t policy;
+    mach_msg_type_number_t count = TASK_CATEGORY_POLICY_COUNT;
+    boolean_t get_default = FALSE;
+    // task_policy_get() is prohibited on tvOS and watchOS
+    kern_return_t kr = task_policy_get(mach_task_self(), TASK_CATEGORY_POLICY,
+                                       (void *)&policy, &count, &get_default);
+    if (kr == KERN_SUCCESS) {
+        // TASK_FOREGROUND_APPLICATION  -> normal foreground launch
+        // TASK_NONUI_APPLICATION       -> background launch
+        // TASK_DARWINBG_APPLICATION    -> iOS 15 prewarming launch
+        // TASK_UNSPECIFIED             -> iOS 9 Simulator
+        if (!get_default && policy.role == TASK_FOREGROUND_APPLICATION) {
+            return true;
+        }
+    } else {
+        NSLog(@"task_policy_get failed: %s", mach_error_string(kr));
     }
 #endif
-    return YES;
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+    UIApplication *application = GetUIApplication();
+
+    // There will be no UIApplication if UIApplicationMain() has not yet been
+    // called - e.g. from a SwiftUI app's init() function or UIKit app's main()
+    if (!application) {
+        return false;
+    }
+
+    __block UIApplicationState applicationState;
+    if ([[NSThread currentThread] isMainThread]) {
+        applicationState = [application applicationState];
+    } else {
+        // -[UIApplication applicationState] is a main thread-only API
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            applicationState = [application applicationState];
+        });
+    }
+
+    return applicationState != UIApplicationStateBackground;
+#endif
+
+#if TARGET_OS_WATCH
+    WKExtension *ext = [WKExtension sharedExtension];
+    return ext && ext.applicationState != WKApplicationStateBackground;
+#endif
 }
+
+@implementation AppStateTracker
 
 - (instancetype) init {
     if ((self = [super init])) {
         if ([NSThread isMainThread]) {
-            _isInForeground = isInForeground();
+            _isInForeground = GetIsForeground();
         } else {
             __block AppStateTracker *blockSelf = self;
             dispatch_async(dispatch_get_main_queue(), ^{
-                blockSelf->_isInForeground = isInForeground();
+                blockSelf->_isInForeground = GetIsForeground();
             });
         }
 
@@ -123,6 +164,10 @@ static BOOL isInForeground(void) {
 #endif
     }
     return self;
+}
+
+- (void)dealloc {
+    [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
 - (void) handleAppForegroundEvent {

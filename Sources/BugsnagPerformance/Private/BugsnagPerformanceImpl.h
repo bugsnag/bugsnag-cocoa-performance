@@ -21,49 +21,57 @@
 #import "Reachability.h"
 #import "RetryQueue.h"
 #import "AppStateTracker.h"
+#import "Configurable.h"
 
 #import <mutex>
 
 namespace bugsnag {
-class BugsnagPerformanceImpl {
+class BugsnagPerformanceImpl: public Configurable {
+    friend class BugsnagPerformanceLibrary;
 public:
-    BugsnagPerformanceImpl() noexcept;
-    
-    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
-    
+    virtual ~BugsnagPerformanceImpl();
+    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void start() noexcept;
+
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name);
+    BugsnagPerformanceSpan *startSpan(NSString *name) noexcept;
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options);
+    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options) noexcept;
 
-    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType);
+    BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name,
                                               BugsnagPerformanceViewType viewType,
-                                              BugsnagPerformanceSpanOptions *options);
+                                              BugsnagPerformanceSpanOptions *options) noexcept;
+    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
-    void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options);
+    void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) noexcept;
 
-    void endViewLoadSpan(UIViewController *controller, NSDate *endTime);
+    void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
 
-    void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) {
+    void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) noexcept {
         tracer_.reportNetworkSpan(task, metrics);
     }
+
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
 
     void onSpanStarted() noexcept;
 
 private:
-    bool started_{false};
-    std::mutex instanceMutex_;
+    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
+                           AppStateTracker *appStateTracker) noexcept;
+
+    std::shared_ptr<Persistence> persistence_;
+    std::atomic<bool> isStarted_{false};
+    SpanContextStack *spanContextStack_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     Tracer tracer_;
     Worker *worker_{nil};
     BugsnagPerformanceConfiguration *configuration_;
-    std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
@@ -75,14 +83,18 @@ private:
     CFAbsoluteTime pausePValueRequestsUntil_{0};
     NSTimer *workerTimer_{nil};
     AppStateTracker *appStateTracker_{nil};
+    std::shared_ptr<Reachability> reachability_;
+    NSTimeInterval performWorkInterval_{0};
+    CFTimeInterval probabilityValueExpiresAfterSeconds_{0};
+    CFTimeInterval probabilityRequestsPauseForSeconds_{0};
 
     // Tasks
-    NSArray<Task> *buildInitialTasks();
-    NSArray<Task> *buildRecurringTasks();
-    bool sendCurrentBatchTask();
-    bool sendRetriesTask();
-    bool sendPValueRequestTask();
-    bool maybePersistStateTask();
+    NSArray<Task> *buildInitialTasks() noexcept;
+    NSArray<Task> *buildRecurringTasks() noexcept;
+    bool sendCurrentBatchTask() noexcept;
+    bool sendRetriesTask() noexcept;
+    bool sendPValueRequestTask() noexcept;
+    bool maybePersistStateTask() noexcept;
 
     // Event reactions
     void onBatchFull() noexcept;
@@ -97,8 +109,12 @@ private:
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
+    void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
 
 public: // For testing
+    void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
+    NSUInteger testing_getBatchCount() { return batch_->count(); };
 };
+
 }

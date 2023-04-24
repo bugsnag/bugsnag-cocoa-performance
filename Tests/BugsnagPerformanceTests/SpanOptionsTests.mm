@@ -26,6 +26,8 @@ using namespace bugsnag;
 
 @implementation MockContext
 
+@synthesize isValid;
+
 @end
 
 
@@ -35,8 +37,8 @@ using namespace bugsnag;
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     XCTAssertNil(objcOptions.parentContext);
     XCTAssertNil(objcOptions.startTime);
-    XCTAssertFalse(objcOptions.makeContextCurrent);
-    XCTAssertEqual(objcOptions.isFirstClass, BSGFirstClassUnset);
+    XCTAssertTrue(objcOptions.makeContextCurrent);
+    XCTAssertEqual(objcOptions.firstClass, BSGFirstClassUnset);
 }
 
 - (void)testConversionDefaults {
@@ -44,8 +46,8 @@ using namespace bugsnag;
     SpanOptions cOptions(objcOptions);
     XCTAssertNil(cOptions.parentContext);
     XCTAssertTrue(abs(cOptions.startTime - CFAbsoluteTimeGetCurrent()) < 1);
-    XCTAssertFalse(cOptions.makeContextCurrent);
-    XCTAssertEqual(cOptions.isFirstClass, BSGFirstClassUnset);
+    XCTAssertTrue(cOptions.makeContextCurrent);
+    XCTAssertEqual(cOptions.firstClass, BSGFirstClassUnset);
 }
 
 - (void)testConversion {
@@ -54,13 +56,13 @@ using namespace bugsnag;
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = context;
     objcOptions.makeContextCurrent = true;
-    objcOptions.isFirstClass = BSGFirstClassNo;
+    objcOptions.firstClass = BSGFirstClassNo;
 
     SpanOptions cOptions(objcOptions);
     XCTAssertEqual(1.0, cOptions.startTime);
     XCTAssertEqual(context, cOptions.parentContext);
     XCTAssertEqual(true, cOptions.makeContextCurrent);
-    XCTAssertEqual(BSGFirstClassNo, cOptions.isFirstClass);
+    XCTAssertEqual(BSGFirstClassNo, cOptions.firstClass);
 }
 
 @end

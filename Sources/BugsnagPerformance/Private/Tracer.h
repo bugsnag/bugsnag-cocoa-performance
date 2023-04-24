@@ -16,6 +16,9 @@
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
+#import "Configurable.h"
+#import "SpanContextStack.h"
+#import "SpanAttributesProvider.h"
 
 #import <memory>
 
@@ -25,29 +28,49 @@ namespace bugsnag {
 /**
  * Tracer starts all spans, then samples them and routes them to the batch when they end.
  */
-class Tracer {
+class Tracer: public Configurable {
 public:
-    Tracer(std::shared_ptr<Sampler> sampler, std::shared_ptr<Batch> batch, void (^onSpanStarted)()) noexcept;
-    
-    void start(BugsnagPerformanceConfiguration *configuration) noexcept;
-    
-    std::unique_ptr<class Span> startSpan(NSString *name, SpanOptions options) noexcept;
-    
-    std::unique_ptr<class Span> startViewLoadSpan(BugsnagPerformanceViewType viewType,
-                                                  NSString *className,
-                                                  SpanOptions options) noexcept;
-    
+    Tracer(SpanContextStack *spanContextStack,
+           std::shared_ptr<Sampler> sampler,
+           std::shared_ptr<Batch> batch,
+           void (^onSpanStarted)(),
+           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+    ~Tracer() {};
+
+    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
+        onViewLoadSpanStarted_ = onViewLoadSpanStarted;
+    }
+    void start() noexcept;
+
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
+
+    BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
+
+    BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
+                                              NSString *className,
+                                              SpanOptions options) noexcept;
+
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
-    
+
+    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
+
 private:
     std::shared_ptr<Sampler> sampler_;
-    std::unique_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::unique_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::unique_ptr<class NetworkInstrumentation> networkInstrumentation_;
+    SpanContextStack *spanContextStack_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};
+    void (^onViewLoadSpanStarted_)(NSString *className){
+        ^(NSString *) {}
+    };
+
+    BugsnagPerformanceConfiguration *configuration;
     
-    void tryAddSpanToBatch(std::unique_ptr<SpanData> spanData);
+    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
+    void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);
 };
 }

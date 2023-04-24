@@ -9,14 +9,13 @@
 #import "BugsnagPerformanceImpl.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
 
-#import "BSGInternalConfig.h"
 #import "OtlpTraceEncoding.h"
 #import "ResourceAttributes.h"
+#import "SpanContextStack.h"
 #import "Utils.h"
+#import "SpanAttributesProvider.h"
 
 using namespace bugsnag;
-
-static double initialProbability = 1.0;
 
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
@@ -33,32 +32,43 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
   };
 }
 
-BugsnagPerformanceImpl::BugsnagPerformanceImpl() noexcept
-: batch_(std::make_shared<Batch>())
-, sampler_(std::make_shared<Sampler>(initialProbability))
-, tracer_(sampler_, batch_, generateOnSpanStarted(this))
-, persistence_(std::make_shared<Persistence>(getPersistenceDir()))
-, appStateTracker_([AppStateTracker sharedInstance])
+BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
+                                               AppStateTracker *appStateTracker) noexcept
+: persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, spanContextStack_([SpanContextStack new])
+, reachability_(reachability)
+, batch_(std::make_shared<Batch>())
+, sampler_(std::make_shared<Sampler>())
+, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>())
+, retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
+, appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 {}
 
-void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuration) noexcept {
-    {
-        std::lock_guard<std::mutex> guard(instanceMutex_);
-        if (started_) {
-            return;
-        }
-        started_ = true;
-    }
-    
-    NSError *__autoreleasing error = nil;
+BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
+    [workerTimer_ invalidate];
+}
 
-    if (![configuration validate:&error]) {
-        BSGLogError(@"Configuration validation failed with error: %@", error);
-    }
-    
+void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configuration) noexcept {
+    performWorkInterval_ = configuration.internal.performWorkInterval;
+    probabilityValueExpiresAfterSeconds_ = configuration.internal.probabilityValueExpiresAfterSeconds;
+    probabilityRequestsPauseForSeconds_ = configuration.internal.probabilityRequestsPauseForSeconds;
+
     configuration_ = configuration;
+    tracer_.configure(configuration);
+    retryQueue_->configure(configuration);
+    batch_->configure(configuration);
+}
+
+void BugsnagPerformanceImpl::start() noexcept {
+    bool expected = false;
+    if (!isStarted_.compare_exchange_strong(expected, true)) {
+        // compare_exchange_strong() returns true only if isStarted_ was exchanged (from false to true).
+        // Therefore, a return of false means that no exchange occurred because
+        // isStarted_ was already true (i.e. we've already started).
+        return;
+    }
 
     /* Note: Be careful about initialization order!
      *
@@ -73,21 +83,21 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
 
     __block auto blockThis = this;
 
-    resourceAttributes_ = ResourceAttributes(configuration).get();
+    persistence_->start();
 
-    if ((error = persistence_->start()) != nil) {
-        BSGLogError(@"error while starting persistence: %@", error);
+    if (configuration_.internal.clearPersistenceOnStart) {
+        persistence_->clear();
     }
 
-    retryQueue_ = std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]);
+    resourceAttributes_ = ResourceAttributes(configuration_).get();
+
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
     });
+    retryQueue_->start();
 
-    sampler_->setFallbackProbability(configuration.samplingProbability);
-
-    uploader_ = std::make_shared<OtlpUploader>(configuration.endpoint,
-                                                   configuration.apiKey,
+    uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
+                                               configuration_.apiKey,
                                                    ^(double newProbability) {
         blockThis->onProbabilityChanged(newProbability);
     });
@@ -97,11 +107,17 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
         blockThis->onPersistentStateChanged();
     });
 
+    if (persistentState_->probabilityIsValid()) {
+        sampler_->setProbability(persistentState_->probability());
+    } else {
+        sampler_->setProbability(configuration_.samplingProbability);
+    }
+
     worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
                                     recurringTasks:buildRecurringTasks()];
     [worker_ start];
 
-    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:bsgp_performWorkInterval
+    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
                                                    repeats:YES
                                                      block:^(__unused NSTimer * _Nonnull timer) {
         blockThis->onWorkInterval();
@@ -115,23 +131,27 @@ void BugsnagPerformanceImpl::start(BugsnagPerformanceConfiguration *configuratio
         blockThis->onAppEnteredForeground();
     };
 
-    tracer_.start(configuration);
+    tracer_.start();
 
-    Reachability::get().addCallback(^(Reachability::Connectivity connectivity) {
+    reachability_->addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
+
+    if (!configuration_.shouldSendReports) {
+        BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
+    }
 }
 
 #pragma mark Tasks
 
-NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() {
+NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
     __block auto blockThis = this;
     return @[
         ^bool() { return blockThis->sendPValueRequestTask(); },
     ];
 }
 
-NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
+NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     __block auto blockThis = this;
     return @[
         ^bool() { return blockThis->maybePersistStateTask(); },
@@ -140,12 +160,12 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() {
     ];
 }
 
-bool BugsnagPerformanceImpl::sendPValueRequestTask() {
+bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
     uploadPValueRequest();
     return true;
 }
 
-bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
+bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     auto spans = sampler_->sampled(batch_->drain());
     if (spans->size() == 0) {
         return false;
@@ -155,7 +175,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() {
     return true;
 }
 
-bool BugsnagPerformanceImpl::sendRetriesTask() {
+bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
     retryQueue_->sweep();
 
     auto retries = retryQueue_->list();
@@ -174,7 +194,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() {
     return false;
 }
 
-bool BugsnagPerformanceImpl::maybePersistStateTask() {
+bool BugsnagPerformanceImpl::maybePersistStateTask() noexcept {
     if (shouldPersistState_.exchange(false)) {
         auto error = persistentState_->persist();
         if (error != nil) {
@@ -208,7 +228,7 @@ void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity co
 }
 
 void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcept {
-    probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + bsgp_probabilityValueExpiresAfterSeconds;
+    probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
 }
@@ -245,20 +265,18 @@ void BugsnagPerformanceImpl::wakeWorker() noexcept {
 
 void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
     if (!configuration_.shouldSendReports) {
-        BSGLogInfo("Discarding pValue request because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
         return;
     }
     auto currentTime = CFAbsoluteTimeGetCurrent();
     if (currentTime > pausePValueRequestsUntil_) {
         // Pause P-value requests so that we don't flood the server on every span start
-        pausePValueRequestsUntil_ = currentTime + bsgp_probabilityRequestsPauseForSeconds;
+        pausePValueRequestsUntil_ = currentTime + probabilityRequestsPauseForSeconds_;
         uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
     }
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
     if (!configuration_.shouldSendReports) {
-        BSGLogInfo("Discarding package because releaseStage '%@' not in enabledReleaseStages", configuration_.releaseStage);
         return;
     }
     if (package == nullptr) {
@@ -303,37 +321,52 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startSpan(name, defaultSpanOptionsForCustom())];
+void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
+    if (options.makeContextCurrent) {
+        [spanContextStack_ push:span];
+    }
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *options) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startSpan(name, SpanOptions(options))];
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
+    SpanOptions options;
+    auto span = tracer_.startCustomSpan(name, options);
+    possiblyMakeSpanCurrent(span, options);
+    return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startViewLoadSpan(viewType, name, defaultSpanOptionsForViewLoad())];
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer_.startCustomSpan(name, options);
+    possiblyMakeSpanCurrent(span, options);
+    return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *options) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startViewLoadSpan(viewType, name, SpanOptions(options))];
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept {
+    SpanOptions options;
+    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    possiblyMakeSpanCurrent(span, options);
+    return span;
 }
 
-void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) {
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-            tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                        [NSString stringWithUTF8String:object_getClassName(controller)],
-                                      SpanOptions(options))];
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    possiblyMakeSpanCurrent(span, options);
+    return span;
+}
+
+void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+                                          [NSString stringWithUTF8String:object_getClassName(controller)],
+                                          options);
+    possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
 }
 
-void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) {
+void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {
     /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
      * until certain internal operations occur (such as the map resizing itself).
      * http://cocoamine.net/blog/2013/12/13/nsmaptable-and-zeroing-weak-references/
@@ -350,4 +383,12 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
         [viewControllersToSpans_ removeObjectForKey:controller];
     }
     [span endWithEndTime:endTime];
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) noexcept {
+    return tracer_.startAppStartSpan(name, options);
+}
+
+void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
+    tracer_.cancelQueuedSpan(span);
 }

@@ -12,8 +12,8 @@ class BackgroundForegroundScenario: Scenario {
 
     override func configure() {
         super.configure()
-        bsgp_autoTriggerExportOnBatchSize = 100
-        bsgp_performWorkInterval = 1000
+        config.internal.autoTriggerExportOnBatchSize = 100
+        config.internal.performWorkInterval = 1000
     }
     
     func onBackgrounded() {

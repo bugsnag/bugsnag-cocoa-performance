@@ -8,13 +8,13 @@
 
 #import "SpanAttributes.h"
 
-#import "Reachability.h"
+#import "BugsnagPerformanceLibrary.h"
 #import "AppStateTracker.h"
 
 using namespace bugsnag;
 
 static NSString *hostConnectionType() noexcept {
-    switch (Reachability::get().getConnectivity()) {
+    switch (BugsnagPerformanceLibrary::getReachability()->getConnectivity()) {
         case bugsnag::Reachability::Unknown:    return @"unknown";
         case bugsnag::Reachability::None:       return @"unavailable";
         case bugsnag::Reachability::Cellular:   return @"cell";
@@ -25,7 +25,7 @@ static NSString *hostConnectionType() noexcept {
 NSDictionary *
 SpanAttributes::get() noexcept {
     return @{
-        @"bugsnag.app.in_foreground": @(AppStateTracker.sharedInstance.isInForeground),
+        @"bugsnag.app.in_foreground": @(BugsnagPerformanceLibrary::getAppStateTracker().isInForeground),
         
         // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/#network-transport-attributes
         @"net.host.connection.type": hostConnectionType(),

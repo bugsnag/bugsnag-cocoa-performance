@@ -16,7 +16,7 @@ class AutoInstrumentNetworkScenario: Scenario {
     }()
 
     override func startBugsnag() {
-        config.autoInstrumentNetwork = true
+        config.autoInstrumentNetworkRequests = true
         super.startBugsnag()
     }
 
@@ -27,5 +27,6 @@ class AutoInstrumentNetworkScenario: Scenario {
 
     override func run() {
         query(string: "/reflect/?status=200")
+        waitForCurrentBatch()
     }
 }

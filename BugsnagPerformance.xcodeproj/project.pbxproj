@@ -49,7 +49,15 @@
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
+		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
+		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
+		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
+		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
+		96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FB29E6ADC600AEE435 /* Assets.xcassets */; };
+		96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */; };
+		96D4160A29F05FA900AEE435 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D4160929F05FA900AEE435 /* CoreTelephony.framework */; };
+		96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -67,19 +75,25 @@
 		CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB572EA929BB783200FD7A2A /* AppStateTracker.m */; };
 		CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */; };
 		CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D20299E5458003CA1B4 /* TimeTests.mm */; };
+		CB747D24299F6E03003CA1B4 /* SpanContextStack.h in Headers */ = {isa = PBXBuildFile; fileRef = CB747D22299F6E03003CA1B4 /* SpanContextStack.h */; };
+		CB747D25299F6E03003CA1B4 /* SpanContextStack.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */; };
+		CB747D27299F934E003CA1B4 /* SpanContextStackTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */; };
+		CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */; };
+		CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */; };
+		CB7881A129E698BF00A58906 /* Configurable.h in Headers */ = {isa = PBXBuildFile; fileRef = CB78819F29E698BF00A58906 /* Configurable.h */; };
 		CB7FD929299BA5AD00499E13 /* ViewControllerSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */; };
 		CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */; };
 		CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */; };
 		CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */; };
-		CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */; };
-		CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */; };
 		CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */; };
 		CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */; };
 		CBE8EA1A294B5AB800702950 /* Worker.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA18294B5AB800702950 /* Worker.h */; };
 		CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA19294B5AB800702950 /* Worker.mm */; };
 		CBE8EA1E294B5E1500702950 /* Batch.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA1C294B5E1500702950 /* Batch.h */; };
+		CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEBE59029F2783C00BF0B4F /* Swizzle.mm */; };
+		CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEBE59129F2783C00BF0B4F /* Swizzle.h */; };
 		CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51B6296D8386009C0CE3 /* Persistence.h */; };
 		CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51B7296D8386009C0CE3 /* Persistence.mm */; };
 		CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51BA296D9EED009C0CE3 /* PersistentState.h */; };
@@ -116,6 +130,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
+		};
+		96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
+		96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -164,7 +192,18 @@
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
+		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		96D415F929E6ADC500AEE435 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		96D415FB29E6ADC600AEE435 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		96D415FE29E6ADC600AEE435 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		96D4160029E6ADC600AEE435 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		96D4160929F05FA900AEE435 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/System/Library/Frameworks/CoreTelephony.framework; sourceTree = DEVELOPER_DIR; };
+		96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanAttributesProvider.mm; sourceTree = "<group>"; };
+		96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanAttributesProvider.h; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -182,21 +221,28 @@
 		CB572EA929BB783200FD7A2A /* AppStateTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStateTracker.m; sourceTree = "<group>"; };
 		CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanOptionsTests.mm; sourceTree = "<group>"; };
 		CB747D20299E5458003CA1B4 /* TimeTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeTests.mm; sourceTree = "<group>"; };
+		CB747D22299F6E03003CA1B4 /* SpanContextStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContextStack.h; sourceTree = "<group>"; };
+		CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContextStack.mm; sourceTree = "<group>"; };
+		CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContextStackTests.mm; sourceTree = "<group>"; };
+		CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLibrary.mm; sourceTree = "<group>"; };
+		CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceLibrary.h; sourceTree = "<group>"; };
+		CB78819F29E698BF00A58906 /* Configurable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Configurable.h; sourceTree = "<group>"; };
 		CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewControllerSpanTests.mm; sourceTree = "<group>"; };
 		CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanOptions.h; sourceTree = "<group>"; };
 		CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceSpanOptions.m; sourceTree = "<group>"; };
 		CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
 		CB7FD935299D330500499E13 /* SpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanOptions.h; sourceTree = "<group>"; };
+		CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SpanContextStack+Private.h"; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBC90C4429C84DEB00280884 /* Targets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targets.h; sourceTree = "<group>"; };
-		CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGInternalConfig.h; sourceTree = "<group>"; };
-		CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = BSGInternalConfig.c; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
 		CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceImpl.mm; sourceTree = "<group>"; };
 		CBE8EA18294B5AB800702950 /* Worker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Worker.h; sourceTree = "<group>"; };
 		CBE8EA19294B5AB800702950 /* Worker.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Worker.mm; sourceTree = "<group>"; };
 		CBE8EA1C294B5E1500702950 /* Batch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Batch.h; sourceTree = "<group>"; };
+		CBEBE59029F2783C00BF0B4F /* Swizzle.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Swizzle.mm; sourceTree = "<group>"; };
+		CBEBE59129F2783C00BF0B4F /* Swizzle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swizzle.h; sourceTree = "<group>"; };
 		CBEC51B6296D8386009C0CE3 /* Persistence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Persistence.h; sourceTree = "<group>"; };
 		CBEC51B7296D8386009C0CE3 /* Persistence.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Persistence.mm; sourceTree = "<group>"; };
 		CBEC51BA296D9EED009C0CE3 /* PersistentState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistentState.h; sourceTree = "<group>"; };
@@ -234,6 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96D4160A29F05FA900AEE435 /* CoreTelephony.framework in Frameworks */,
 				01A414D42913CAE7003152A4 /* SystemConfiguration.framework in Frameworks */,
 				CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */,
 				0122C25829019904002D243C /* UIKit.framework in Frameworks */,
@@ -245,6 +292,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96D415ED29E6ADC500AEE435 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,11 +363,13 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
-				CBE8EA08294A20ED00702950 /* BSGInternalConfig.c */,
-				CBE8EA07294A20ED00702950 /* BSGInternalConfig.h */,
+				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
+				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
+				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				CB78819F29E698BF00A58906 /* Configurable.h */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
 				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
@@ -345,10 +401,15 @@
 				0122C23529019770002D243C /* Span.h */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
+				CB747D22299F6E03003CA1B4 /* SpanContextStack.h */,
+				CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */,
+				CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */,
 				0122C22829019770002D243C /* SpanData.h */,
 				0122C22129019770002D243C /* SpanData.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
+				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
+				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
 				CBC90C4429C84DEB00280884 /* Targets.h */,
 				0122C23329019770002D243C /* Tracer.h */,
 				0122C22529019770002D243C /* Tracer.mm */,
@@ -357,7 +418,8 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
-				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
+				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
+				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -379,6 +441,7 @@
 		0122C25629019904002D243C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				96D4160929F05FA900AEE435 /* CoreTelephony.framework */,
 				CBF7C5E3297A963A00D47719 /* libz.tbd */,
 				01A414D32913CAE7003152A4 /* SystemConfiguration.framework */,
 				0122C25729019904002D243C /* UIKit.framework */,
@@ -412,6 +475,7 @@
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
+				CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
 				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
@@ -426,6 +490,7 @@
 				72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */,
 				0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */,
 				8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */,
+				96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -434,8 +499,22 @@
 			isa = PBXGroup;
 			children = (
 				8A80DA80296588840035BDA9 /* ConfigurationTests.swift */,
+				962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */,
 			);
 			path = BugsnagPerformanceTestsSwift;
+			sourceTree = "<group>";
+		};
+		96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
+			isa = PBXGroup;
+			children = (
+				96D415F229E6ADC500AEE435 /* AppDelegate.swift */,
+				96D415F629E6ADC500AEE435 /* ViewController.swift */,
+				96D415F829E6ADC500AEE435 /* Main.storyboard */,
+				96D415FB29E6ADC600AEE435 /* Assets.xcassets */,
+				96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */,
+				96D4160029E6ADC600AEE435 /* Info.plist */,
+			);
+			path = BugsnagPerformanceTestsApp;
 			sourceTree = "<group>";
 		};
 		C6D4AAD24D6356218C22BEBE = {
@@ -444,6 +523,7 @@
 				01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */,
 				0122C21329019770002D243C /* Sources */,
 				0122C25B29019C05002D243C /* Tests */,
+				96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 				450CB5014AAED50046482044 /* Products */,
 				0122C25629019904002D243C /* Frameworks */,
 			);
@@ -472,6 +552,7 @@
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				0122C24729019770002D243C /* SpanData.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
+				CB7881A129E698BF00A58906 /* Configurable.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
 				015836C4291264E0002F54C8 /* Version.h in Headers */,
@@ -479,16 +560,17 @@
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
+				CB747D24299F6E03003CA1B4 /* SpanContextStack.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
 				CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
-				CBE8EA09294A20ED00702950 /* BSGInternalConfig.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
+				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
@@ -500,6 +582,7 @@
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
+				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
@@ -525,6 +608,7 @@
 			);
 			dependencies = (
 				0122C26B29019CE1002D243C /* PBXTargetDependency */,
+				96D4160529E6F6B500AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-iOSTests";
 			productName = "BugsnagPerformance-iOSTests";
@@ -543,11 +627,29 @@
 			);
 			dependencies = (
 				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
+				96D4160729E6F6B900AEE435 /* PBXTargetDependency */,
 			);
 			name = "BugsnagPerformance-SwiftTests";
 			productName = BugsnagPerformanceTestsSwift;
 			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */;
+			buildPhases = (
+				96D415EC29E6ADC500AEE435 /* Sources */,
+				96D415ED29E6ADC500AEE435 /* Frameworks */,
+				96D415EE29E6ADC500AEE435 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BugsnagPerformanceTestsApp;
+			productName = BugsnagPerformanceTestsApp;
+			productReference = 96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */;
+			productType = "com.apple.product-type.application";
 		};
 		B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */ = {
 			isa = PBXNativeTarget;
@@ -573,16 +675,24 @@
 		5DB9DB2E409A040615FFD4FE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1420;
 				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = Bugsnag;
 				TargetAttributes = {
 					0122C26429019CE1002D243C = {
 						CreatedOnToolsVersion = 14.0.1;
-						LastSwiftMigration = 1400;
+						DevelopmentTeam = 372ZUL2ZB7;
+						LastSwiftMigration = 1420;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
 					8A80DA862966CE940035BDA9 = {
 						CreatedOnToolsVersion = 13.4;
+						DevelopmentTeam = 372ZUL2ZB7;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 96D415EF29E6ADC500AEE435;
+					};
+					96D415EF29E6ADC500AEE435 = {
+						CreatedOnToolsVersion = 14.2;
 						DevelopmentTeam = 372ZUL2ZB7;
 						ProvisioningStyle = Automatic;
 					};
@@ -604,6 +714,7 @@
 				B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */,
 				0122C26429019CE1002D243C /* BugsnagPerformance-iOSTests */,
 				8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */,
+				96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 			);
 		};
 /* End PBXProject section */
@@ -630,6 +741,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		96D415EE29E6ADC500AEE435 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */,
+				96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */,
+				96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -637,6 +758,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB747D27299F934E003CA1B4 /* SpanContextStackTests.mm in Sources */,
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
@@ -652,6 +774,7 @@
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
+				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
 			);
@@ -672,16 +795,20 @@
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
+				CB747D25299F6E03003CA1B4 /* SpanContextStack.mm in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
+				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
+				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
 				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
+				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
@@ -690,7 +817,6 @@
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */,
-				CBE8EA0A294A20ED00702950 /* BSGInternalConfig.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,6 +825,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		96D415EC29E6ADC500AEE435 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */,
+				96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -715,7 +850,36 @@
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
 		};
+		96D4160529E6F6B500AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */;
+		};
+		96D4160729E6F6B900AEE435 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		96D415F829E6ADC500AEE435 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				96D415F929E6ADC500AEE435 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				96D415FE29E6ADC600AEE435 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0122C26D29019CE1002D243C /* Debug */ = {
@@ -723,6 +887,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -734,6 +899,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 			};
 			name = Debug;
 		};
@@ -742,6 +908,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -752,6 +919,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -899,6 +1067,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -988,6 +1157,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1008,6 +1178,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
 			};
 			name = Debug;
 		};
@@ -1024,6 +1195,64 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		96D4160229E6ADC600AEE435 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BugsnagPerformanceTestsApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		96D4160329E6ADC600AEE435 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BugsnagPerformanceTestsApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1065,6 +1294,15 @@
 			buildConfigurations = (
 				8A80DA8F2966CE940035BDA9 /* Debug */,
 				8A80DA902966CE940035BDA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96D4160229E6ADC600AEE435 /* Debug */,
+				96D4160329E6ADC600AEE435 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

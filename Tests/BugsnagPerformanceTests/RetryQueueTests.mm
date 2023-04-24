@@ -8,6 +8,7 @@
 
 #import "FileBasedTest.h"
 #import "RetryQueue.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
@@ -83,6 +84,9 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
 
     RetryQueue queue(self.filePath);
+    XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
 }
@@ -92,12 +96,15 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     BOOL isDir = false;
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
     __block int callCount = 0;
     queue.setOnFilesystemError(^{
         callCount++;
     });
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    queue.configure(config);
 
     XCTAssertTrue([[NSData new] writeToFile:[self.filePath stringByAppendingPathComponent:@"xyz.json"] atomically:YES]);
     XCTAssertEqual(1U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
@@ -128,6 +135,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertTrue(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
 }
@@ -142,6 +150,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertFalse(isDir);
 

@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //config.autoInstrumentViewControllers = false
 
         // Disable automatic URLSession request instrumentation:
-        //config.autoInstrumentNetwork = false
+        //config.autoInstrumentNetworkRequests = false
 
         // ... or control whether spans are created on a per-instance basis:
         config.viewControllerInstrumentationCallback = {

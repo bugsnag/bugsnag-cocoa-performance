@@ -10,20 +10,19 @@
 
 #import "Persistence.h"
 #import "Filesystem.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
-Persistence::Persistence(NSString *topLevelDir) noexcept
-: topLevelDir_(topLevelDir)
-{
+void Persistence::start() noexcept {
+    NSError *error = nil;
+    if ((error = [Filesystem ensurePathExists:topLevelDir_]) != nil) {
+        BSGLogError(@"error while initializing persistence: %@", error);
+    }
 }
 
 NSString *Persistence::topLevelDirectory(void) noexcept {
     return [topLevelDir_ stringByAppendingPathComponent:PERSISTENCE_VERSION];
-}
-
-NSError *Persistence::start(void) noexcept {
-    return clear();
 }
 
 NSError *Persistence::clear(void) noexcept {

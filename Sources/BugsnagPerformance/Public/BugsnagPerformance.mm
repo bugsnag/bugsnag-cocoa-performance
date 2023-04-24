@@ -7,55 +7,50 @@
 
 #import <BugsnagPerformance/BugsnagPerformance.h>
 
-#import "../Private/BugsnagPerformanceImpl.h"
+#import "../Private/BugsnagPerformanceLibrary.h"
 
 using namespace bugsnag;
 
 @implementation BugsnagPerformance
-
-static BugsnagPerformanceImpl& getImpl() {
-    [[clang::no_destroy]]
-    static BugsnagPerformanceImpl impl;
-    return impl;
-}
 
 + (void)start {
     [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
-    getImpl().start(configuration);
+    BugsnagPerformanceLibrary::configure(configuration);
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->start();
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
-    return getImpl().startSpan(name);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startSpan(name);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options {
-    return getImpl().startSpan(name, options);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startSpan(name, options);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
-    return getImpl().startViewLoadSpan(name, viewType);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startViewLoadSpan(name, viewType);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType options:(BugsnagPerformanceSpanOptions *)options {
-    return getImpl().startViewLoadSpan(name, viewType, options);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startViewLoadSpan(name, viewType, options);
 }
 
 + (void)startViewLoadSpanWithController:(UIViewController *)controller
                                 options:(BugsnagPerformanceSpanOptions *)options {
-    getImpl().startViewLoadSpan(controller, options);
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startViewLoadSpan(controller, options);
 }
 
 + (void)endViewLoadSpanWithController:(UIViewController *)controller
                               endTime:(NSDate *)endTime {
-    getImpl().endViewLoadSpan(controller, endTime);
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->endViewLoadSpan(controller, endTime);
 }
 
 + (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
                                  metrics:(NSURLSessionTaskMetrics *)metrics {
-    getImpl().reportNetworkSpan(task, metrics);
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->reportNetworkSpan(task, metrics);
 }
 
 @end

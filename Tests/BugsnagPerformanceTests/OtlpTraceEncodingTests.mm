@@ -20,6 +20,26 @@ using namespace bugsnag;
 
 @end
 
+static id findAttributeNamed(NSDictionary *span, NSString *name) {
+    for (NSDictionary *attribute in span[@"attributes"]) {
+        if ([attribute[@"key"] isEqual:name]) {
+            id value = attribute[@"value"][@"stringValue"];
+            if (value != nil) {
+                return value;
+            }
+            value = attribute[@"value"][@"intValue"];
+            if (value != nil) {
+                return [NSNumber numberWithLong:[value longValue]];
+            }
+            value = attribute[@"value"][@"boolValue"];
+            if (value != nil) {
+                return value;
+            }
+        }
+    }
+    return nil;
+}
+
 @implementation OtlpTraceEncodingTests
 
 - (void)testEncodeBoolValue {
@@ -28,14 +48,14 @@ using namespace bugsnag;
 }
 
 - (void)testEncodeDoubleValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.f}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1.23"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1"}}]));
 }
 
 - (void)testEncodeInt32Value {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @0}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @1}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @2147483647}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @"0"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @"1"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @"2147483647"}}]));
 }
 
 - (void)testEncodeInt64Value {
@@ -46,9 +66,10 @@ using namespace bugsnag;
     XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @"Hello"}), (@[@{@"key": @"key", @"value": @{@"stringValue": @"Hello"}}]));
 }
 
-- (void)testEncodeRequest {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"", CFAbsoluteTimeGetCurrent()));
+- (void)testEncodeRequestFirstClassYes {
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassYes));
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -59,24 +80,106 @@ using namespace bugsnag;
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0], [NSDictionary class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"], [NSArray class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0][@"spanId"], [NSString class]);
+
+    NSDictionary *span = json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0];
+    XCTAssertNotNil(span);
+    XCTAssertEqualObjects(findAttributeNamed(span, @"bugsnag.span.first_class"), @YES);
+}
+
+- (void)testEncodeRequestFirstClassNo {
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassNo));
+    auto json = OtlpTraceEncoding::encode(spans, @{});
+    
+    XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"][@"attributes"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0][@"spanId"], [NSString class]);
+
+    NSDictionary *span = json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0];
+    XCTAssertNotNil(span);
+    XCTAssertEqualObjects(findAttributeNamed(span, @"bugsnag.span.first_class"), @NO);
+}
+
+- (void)testEncodeRequestFirstClassUnset {
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassUnset));
+    auto json = OtlpTraceEncoding::encode(spans, @{});
+    
+    XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"][@"attributes"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0], [NSDictionary class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"], [NSArray class]);
+    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0][@"spanId"], [NSString class]);
+
+    NSDictionary *span = json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0];
+    XCTAssertNotNil(span);
+    XCTAssertNil(findAttributeNamed(span, @"bugsnag.span.first_class"));
 }
 
 - (void)testEncodeSpan {
     CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
-    SpanData span(@"My span", startTime);
+    TraceId tid = {
+        .hi=0xfedcba9876543210,
+        .lo=0x0123456789abcdef
+    };
+    SpanData span(@"My span", tid, 0xface, 0, startTime, BSGFirstClassUnset);
     span.endTime = startTime + 15;
     
     auto json = OtlpTraceEncoding::encode(span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(traceId.length, 32U, @"traceId should be a hex encoded 16-byte array");
+    XCTAssertEqualObjects(traceId, @"fedcba98765432100123456789abcdef");
     
     NSString *spanId = json[@"spanId"];
     XCTAssert([spanId isKindOfClass:[NSString class]]);
-    XCTAssertEqual(spanId.length, 16U, @"spanId should be a hex encoded 8-byte array");
+    XCTAssertEqualObjects(spanId, @"000000000000face");
+
+    XCTAssertNil(json[@"parentSpanId"]);
+
+    XCTAssertEqualObjects(json[@"name"], @"My span");
     
+    XCTAssertEqualObjects(json[@"kind"], @1);
+    
+    XCTAssertEqualObjects(json[@"startTimeUnixNano"], @"1664352000000000000");
+    XCTAssertEqualObjects(json[@"endTimeUnixNano"], @"1664352015000000000");
+}
+
+- (void)testEncodeSpanWithParent {
+    CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
+    
+    TraceId tid = {
+        .hi=0xfedcba9876543210,
+        .lo=0x0123456789abcdef
+    };
+    SpanData span(@"My span", tid, 0xface, 0xcafe, startTime, BSGFirstClassUnset);
+    span.endTime = startTime + 15;
+    
+    auto json = OtlpTraceEncoding::encode(span);
+    
+    NSString *traceId = json[@"traceId"];
+    XCTAssert([traceId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(traceId, @"fedcba98765432100123456789abcdef");
+    
+    NSString *spanId = json[@"spanId"];
+    XCTAssert([spanId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(spanId, @"000000000000face");
+
+    NSString *parentId = json[@"parentSpanId"];
+    XCTAssert([parentId isKindOfClass:[NSString class]]);
+    XCTAssertEqualObjects(parentId, @"000000000000cafe");
+
     XCTAssertEqualObjects(json[@"name"], @"My span");
     
     XCTAssertEqualObjects(json[@"kind"], @(SPAN_KIND_INTERNAL));
@@ -101,8 +204,9 @@ using namespace bugsnag;
 }
 
 - (void)testBuildUploadPackage {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset));
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
 
@@ -117,8 +221,9 @@ using namespace bugsnag;
 }
 
 - (void)testPValueHistogram1 {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.3);
 
     auto resourceAttributes = @{};
@@ -129,9 +234,10 @@ using namespace bugsnag;
 }
 
 - (void)testPValueHistogram2 {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.3);
     spans[1]->updateSamplingProbability(0.1);
 
@@ -143,9 +249,10 @@ using namespace bugsnag;
 }
 
 - (void)testPValueHistogram2Same {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.5);
     spans[1]->updateSamplingProbability(0.5);
 
@@ -157,12 +264,13 @@ using namespace bugsnag;
 }
 
 - (void)testPValueHistogram5 {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 3, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 4, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 5, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.3);
     spans[1]->updateSamplingProbability(0.1);
     spans[2]->updateSamplingProbability(0.3);
@@ -177,18 +285,19 @@ using namespace bugsnag;
 }
 
 - (void)testPValueHistogram11 {
-    std::vector<std::unique_ptr<SpanData>> spans;
-    spans.push_back(std::make_unique<SpanData>(@"test0", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test1", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test2", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test3", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test4", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test5", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test6", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test7", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test8", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test9", 0));
-    spans.push_back(std::make_unique<SpanData>(@"test10", 0));
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test0", tid, 1, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 2, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 3, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 4, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 5, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 6, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test6", tid, 7, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test7", tid, 8, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test8", tid, 9, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test9", tid, 10, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test10", tid, 11, 0, 0, BSGFirstClassUnset));
     spans[0]->updateSamplingProbability(0.0);
     spans[1]->updateSamplingProbability(0.1);
     spans[2]->updateSamplingProbability(0.2);

@@ -10,6 +10,7 @@
 #import "../BugsnagPerformanceSpan+Private.h"
 #import "../Span.h"
 #import "../Tracer.h"
+#import "../Swizzle.h"
 
 #import <objc/runtime.h>
 
@@ -60,10 +61,10 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
         return;
     }
     
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:
-                 tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                           NSStringFromClass([viewController class]),
-                                           defaultSpanOptionsForViewLoad())];
+    SpanOptions options;
+    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
+                                          NSStringFromClass([viewController class]),
+                                          options);
     
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -71,13 +72,22 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
 
 void
 ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexcept {
+    endViewLoadSpan(viewController);
+}
+
+void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
+    endViewLoadSpan(viewController);
+}
+
+void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
     BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedSpan);
     [span end];
-    
+
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     objc_setAssociatedObject(viewController, &kAssociatedSpan, nil,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
 // NOLINTBEGIN(cppcoreguidelines-*)
@@ -136,44 +146,31 @@ void
 ViewLoadInstrumentation::instrument(Class cls) noexcept {
     SEL selector = @selector(loadView);
     IMP loadView __block = nullptr;
-    loadView = overrideImplementation(cls, selector, ^(id self){
+    loadView = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         onLoadView(self);
         reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
     });
-    
+
+    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
+    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
+
     selector = @selector(viewDidAppear:);
     IMP viewDidAppear __block = nullptr;
-    viewDidAppear = overrideImplementation(cls, selector, ^(id self, BOOL animated){
+    viewDidAppear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewDidAppear(self);
     });
+
+    selector = @selector(viewWillDisappear:);
+    IMP viewWillDisappear __block = nullptr;
+    viewWillDisappear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
+        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+        onViewWillDisappear(self);
+    });
 }
 
-IMP
-ViewLoadInstrumentation::overrideImplementation(Class cls, SEL name, id block) noexcept {
-    Method method = nullptr;
-    
-    // Not using class_getInstanceMethod because we don't want to modify the
-    // superclass's implementation.
-    auto methodCount = 0U;
-    Method *methods = class_copyMethodList(cls, &methodCount);
-    if (methods) {
-        for (auto i = 0U; i < methodCount; i++) {
-            if (sel_isEqual(method_getName(methods[i]), name)) {
-                method = methods[i];
-                break;
-            }
-        }
-        free(methods);
-    }
-    
-    if (!method) {
-        return nullptr;
-    }
-    
-    return method_setImplementation(method, imp_implementationWithBlock(block));
-}
 
 // NOLINTEND(cppcoreguidelines-*)

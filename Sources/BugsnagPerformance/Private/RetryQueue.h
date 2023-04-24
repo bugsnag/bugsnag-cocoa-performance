@@ -9,6 +9,7 @@
 #pragma once
 
 #import "OtlpPackage.h"
+#import "Configurable.h"
 #import <vector>
 #import <memory>
 
@@ -17,8 +18,15 @@ namespace bugsnag {
 
 class RetryQueue {
 public:
-    RetryQueue(NSString *path) noexcept;
     RetryQueue() = delete;
+    RetryQueue(NSString *path) noexcept
+    : baseDir_(path)
+    , onFilesystemError(^{})
+    {}
+
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
+
+    void start() noexcept;
 
     /**
      * Sweep the retry queue, deleting any non-retry files and retries that are older than 24 hours.
@@ -56,6 +64,7 @@ public:
 
 private:
     NSString *baseDir_{nil};
+    dispatch_time_t maxRetryAge_{0};
     void (^onFilesystemError)(){nullptr};
 
     void remove(NSString *filename) noexcept;

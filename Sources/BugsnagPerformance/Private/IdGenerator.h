@@ -17,11 +17,21 @@ namespace bugsnag {
 class IdGenerator {
 public:
     static SpanId generateSpanId() noexcept {
-        return generate_random<SpanId>();
+        for (;;) {
+            auto newId = generate_random<SpanId>();
+            if (newId != 0) {
+                return newId;
+            }
+        }
     }
     
     static TraceId generateTraceId() noexcept {
-        return generate_random<TraceId>();
+        for (;;) {
+            auto newId = generate_random<TraceId>();
+            if (newId.value != 0) {
+                return newId;
+            }
+        }
     }
     
 private:
