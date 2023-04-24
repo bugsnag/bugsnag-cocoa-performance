@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import <mutex>
 #import "../Configurable.h"
+#import "../SpanAttributesProvider.h"
 
 @class BugsnagPerformanceSpan;
 
@@ -24,6 +25,7 @@ public:
 
 private:
     std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     CFAbsoluteTime didStartProcessAtTime_{0};
     CFAbsoluteTime didCallMainFunctionAtTime_{0};
     CFAbsoluteTime didBecomeActiveAtTime_{0};
@@ -41,7 +43,8 @@ private:
 
 private:
     AppStartupInstrumentation() = delete;
-    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance) noexcept;
+    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance,
+                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
 
     // Disable app startup instrumentation and cancel any already-created spans.
     void disable() noexcept;

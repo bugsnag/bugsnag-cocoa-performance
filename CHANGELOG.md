@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Updated span names and attributes
+  [111](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/111)
+
 * Added connection.subtype attribute to network spans
   [109](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/109)
 

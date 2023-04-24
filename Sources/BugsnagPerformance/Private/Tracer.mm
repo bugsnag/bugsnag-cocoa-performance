@@ -121,7 +121,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
         default:                                type = @"?"; break;
     }
     onViewLoadSpanStarted_(className);
-    NSString *name = [NSString stringWithFormat:@"ViewLoad/%@/%@", type, className];
+    NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
         if ([spanContextStack_ hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
             options.firstClass = BSGFirstClassNo;
@@ -140,7 +140,7 @@ void
 Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     auto interval = metrics.taskInterval;
 
-    auto name = [NSString stringWithFormat:@"HTTP/%@", task.originalRequest.HTTPMethod];
+    auto name = [NSString stringWithFormat:@"[HTTP/%@]", task.originalRequest.HTTPMethod];
     SpanOptions options;
     options.startTime = dateToAbsoluteTime(interval.startDate);
     auto span = startSpan(name, options, BSGFirstClassUnset);

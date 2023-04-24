@@ -58,8 +58,10 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 }
 
 
-AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance) noexcept
+AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance,
+                                                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
 : bugsnagPerformance_(bugsnagPerformance)
+, spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
 , isColdLaunch_(isColdLaunch())
@@ -160,7 +162,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
         return;
     }
 
-    auto name = isColdLaunch_ ? @"AppStart/Cold" : @"AppStart/Warm";
+    auto name = isColdLaunch_ ? @"[AppStart/Cold]" : @"[AppStart/Warm]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
@@ -183,13 +185,11 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
         return;
     }
 
-    auto name = @"AppStartPhase/App launching - pre main()";
+    auto name = @"[AppStartPhase/App launching - pre main()]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     preMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [preMainSpan_ addAttributes:@{
-        @"bugsnag.span.category": @"app_start",
-    }];
+    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - pre main()")];
 }
 
 void
@@ -201,13 +201,11 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
         return;
     }
 
-    auto name = @"AppStartPhase/App launching - post main()";
+    auto name = @"[AppStartPhase/App launching - post main()]";
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
     postMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [postMainSpan_ addAttributes:@{
-        @"bugsnag.span.category": @"app_start",
-    }];
+    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - post main()")];
 }
 
 void
@@ -219,13 +217,11 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
         return;
     }
 
-    auto name = @"AppStartPhase/UI init";
+    auto name = @"[AppStartPhase/UI init]";
     SpanOptions options;
     options.startTime = didBecomeActiveAtTime_;
     uiInitSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [uiInitSpan_ addAttributes:@{
-        @"bugsnag.span.category": @"app_start",
-    }];
+    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"UI init")];
 }
 
 #pragma mark -
