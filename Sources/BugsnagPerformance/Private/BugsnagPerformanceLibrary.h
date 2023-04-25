@@ -24,7 +24,6 @@ public:
     static void startLibrary() noexcept;
 
     static std::shared_ptr<BugsnagPerformanceImpl> getBugsnagPerformanceImpl() noexcept;
-    static std::shared_ptr<AppStartupInstrumentation> getAppStartupInstrumentation() noexcept;
     static std::shared_ptr<Reachability> getReachability() noexcept;
     static AppStateTracker *getAppStateTracker() noexcept;
 
@@ -49,8 +48,6 @@ private:
     AppStateTracker *appStateTracker_;
     std::shared_ptr<Reachability> reachability_;
     std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformanceImpl_;
-    std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation_;
-    std::shared_ptr<Instrumentation> instrumentation_;
 };
 
 }

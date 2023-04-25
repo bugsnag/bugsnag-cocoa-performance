@@ -23,20 +23,20 @@
 #import "AppStateTracker.h"
 #import "Configurable.h"
 #import "Startable.h"
+#import "Instrumentation/Instrumentation.h"
 
 #import <mutex>
 
 namespace bugsnag {
 class BugsnagPerformanceImpl: public Configurable, public Startable {
-    friend class BugsnagPerformanceLibrary;
 public:
+    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
+                           AppStateTracker *appStateTracker) noexcept;
     virtual ~BugsnagPerformanceImpl();
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
     void start() noexcept;
 
-    void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-        tracer_->reportNetworkSpan(task, metrics);
-    }
+    void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
 
     BugsnagPerformanceSpan *startSpan(NSString *name) noexcept;
 
@@ -47,24 +47,21 @@ public:
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name,
                                               BugsnagPerformanceViewType viewType,
                                               BugsnagPerformanceSpanOptions *options) noexcept;
-    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
     void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) noexcept;
 
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
 
-    void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) noexcept {
-        tracer_->reportNetworkSpan(task, metrics);
-    }
-
-    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
-
     void onSpanStarted() noexcept;
 
-private:
-    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
-                           AppStateTracker *appStateTracker) noexcept;
+    void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
+        tracer_->setOnViewLoadSpanStarted(onViewLoadSpanStarted);
+    }
 
+    void didStartViewLoadSpan(NSString *name) noexcept { instrumentation_->didStartViewLoadSpan(name); }
+    void willCallMainFunction() noexcept { instrumentation_->willCallMainFunction(); }
+
+private:
     std::shared_ptr<Persistence> persistence_;
     std::atomic<bool> isStarted_{false};
     SpanContextStack *spanContextStack_;
@@ -88,6 +85,8 @@ private:
     NSTimeInterval performWorkInterval_{0};
     CFTimeInterval probabilityValueExpiresAfterSeconds_{0};
     CFTimeInterval probabilityRequestsPauseForSeconds_{0};
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::shared_ptr<Instrumentation> instrumentation_;
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;

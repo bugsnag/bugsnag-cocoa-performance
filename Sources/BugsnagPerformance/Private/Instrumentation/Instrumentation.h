@@ -18,15 +18,21 @@ namespace bugsnag {
 
 class Instrumentation: public Configurable, public Startable {
 public:
-    Instrumentation(std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation, std::shared_ptr<Tracer> tracer) noexcept
-    : appStartupInstrumentation_(appStartupInstrumentation)
-    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer))
-    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer))
+    Instrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
+    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
+    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer, spanAttributesProvider))
     {}
 
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
+
+    void didStartViewLoadSpan(NSString *name) noexcept { appStartupInstrumentation_->didStartViewLoadSpan(name); }
+    void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
+
 private:
+    Instrumentation() = delete;
+
     std::shared_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::shared_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::shared_ptr<class NetworkInstrumentation> networkInstrumentation_;

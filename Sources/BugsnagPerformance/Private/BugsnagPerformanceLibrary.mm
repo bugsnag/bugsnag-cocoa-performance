@@ -28,7 +28,7 @@ void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
-    sharedInstance().appStartupInstrumentation_->willCallMainFunction();
+    sharedInstance().bugsnagPerformanceImpl_->willCallMainFunction();
 }
 
 void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration *config) noexcept {
@@ -46,32 +46,24 @@ void BugsnagPerformanceLibrary::startLibrary() noexcept {
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 : appStateTracker_([[AppStateTracker alloc] init])
-, reachability_(new Reachability)
-, bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_, appStateTracker_))
-, appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_, std::make_shared<SpanAttributesProvider>()))
-, instrumentation_(std::make_shared<Instrumentation>(appStartupInstrumentation_, bugsnagPerformanceImpl_->tracer_))
+, reachability_(std::make_shared<Reachability>())
+, bugsnagPerformanceImpl_(std::make_shared<BugsnagPerformanceImpl>(reachability_, appStateTracker_))
 {
-    bugsnagPerformanceImpl_->tracer_->setOnViewLoadSpanStarted(^(NSString *className) {
-        appStartupInstrumentation_->didStartViewLoadSpan(className);
+    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
+        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
     });
 }
 
 void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
     bugsnagPerformanceImpl_->configure(config);
-    instrumentation_->configure(config);
 }
 
 void BugsnagPerformanceLibrary::start() noexcept {
     bugsnagPerformanceImpl_->start();
-    instrumentation_->start();
 }
 
 std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPerformanceImpl() noexcept {
     return sharedInstance().bugsnagPerformanceImpl_;
-}
-
-std::shared_ptr<AppStartupInstrumentation> BugsnagPerformanceLibrary::getAppStartupInstrumentation() noexcept {
-    return sharedInstance().appStartupInstrumentation_;
 }
 
 std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {

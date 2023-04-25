@@ -14,9 +14,10 @@
 namespace bugsnag {
 class ViewLoadInstrumentation {
 public:
-    ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer) noexcept
+    ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
     : isEnabled_(false)
     , tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider)
     {}
 
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
@@ -39,5 +40,6 @@ private:
     std::shared_ptr<Tracer> tracer_;
     BOOL (^ callback_)(UIViewController *viewController){nullptr};
     NSSet *observedClasses_{nil};
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
 };
 }
