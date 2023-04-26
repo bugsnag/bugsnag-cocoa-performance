@@ -22,11 +22,12 @@
 #import "RetryQueue.h"
 #import "AppStateTracker.h"
 #import "Configurable.h"
+#import "Startable.h"
 
 #import <mutex>
 
 namespace bugsnag {
-class BugsnagPerformanceImpl: public Configurable {
+class BugsnagPerformanceImpl: public Configurable, public Startable {
     friend class BugsnagPerformanceLibrary;
 public:
     virtual ~BugsnagPerformanceImpl();
@@ -34,7 +35,7 @@ public:
     void start() noexcept;
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-        tracer_.reportNetworkSpan(task, metrics);
+        tracer_->reportNetworkSpan(task, metrics);
     }
 
     BugsnagPerformanceSpan *startSpan(NSString *name) noexcept;
@@ -53,7 +54,7 @@ public:
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
 
     void reportNetworkRequestSpan(NSURLSessionTask * task, NSURLSessionTaskMetrics *metrics) noexcept {
-        tracer_.reportNetworkSpan(task, metrics);
+        tracer_->reportNetworkSpan(task, metrics);
     }
 
     BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
@@ -69,7 +70,7 @@ private:
     SpanContextStack *spanContextStack_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
-    Tracer tracer_;
+    std::shared_ptr<Tracer> tracer_;
     Worker *worker_{nil};
     BugsnagPerformanceConfiguration *configuration_;
     std::shared_ptr<PersistentState> persistentState_;

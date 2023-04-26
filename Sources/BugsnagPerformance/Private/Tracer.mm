@@ -44,16 +44,6 @@ Tracer::start() noexcept {
     for (auto spanData: *unsampledBatch) {
         tryAddSpanToBatch(spanData);
     }
-
-    if (configuration.autoInstrumentViewControllers) {
-        viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
-        viewLoadInstrumentation_->start();
-    }
-    
-    if (configuration.autoInstrumentNetworkRequests) {
-        networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, configuration.endpoint);
-        networkInstrumentation_->start();
-    }
 }
 
 BugsnagPerformanceSpan *

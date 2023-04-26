@@ -18,8 +18,8 @@ using namespace bugsnag;
 }
 
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
-    BugsnagPerformanceLibrary::configure(configuration);
-    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->start();
+    BugsnagPerformanceLibrary::configureLibrary(configuration);
+    BugsnagPerformanceLibrary::startLibrary();
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
