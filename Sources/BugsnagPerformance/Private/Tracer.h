@@ -31,8 +31,7 @@ public:
     Tracer(SpanContextStack *spanContextStack,
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
-           void (^onSpanStarted)(),
-           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+           void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
@@ -49,14 +48,13 @@ public:
                                               NSString *className,
                                               SpanOptions options) noexcept;
 
-    void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
+    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept;
 
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
 private:
     std::shared_ptr<Sampler> sampler_;
     SpanContextStack *spanContextStack_;
-    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};

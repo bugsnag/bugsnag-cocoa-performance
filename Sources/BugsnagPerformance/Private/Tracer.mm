@@ -21,13 +21,11 @@ using namespace bugsnag;
 Tracer::Tracer(SpanContextStack *spanContextStack,
                std::shared_ptr<Sampler> sampler,
                std::shared_ptr<Batch> batch,
-               void (^onSpanStarted)(),
-               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+               void (^onSpanStarted)()) noexcept
 : spanContextStack_(spanContextStack)
 , sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-, spanAttributesProvider_(spanAttributesProvider)
 {}
 
 void
@@ -126,18 +124,10 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     return span;
 }
 
-void
-Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-    auto interval = metrics.taskInterval;
-
-    auto name = [NSString stringWithFormat:@"[HTTP/%@]", task.originalRequest.HTTPMethod];
-    SpanOptions options;
-    options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = startSpan(name, options, BSGFirstClassUnset);
-
-    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
-
-    [span endWithEndTime:interval.endDate];
+BugsnagPerformanceSpan *
+Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
+    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
+    return startSpan(name, options, BSGFirstClassUnset);
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {

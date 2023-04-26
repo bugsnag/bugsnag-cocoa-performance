@@ -10,6 +10,7 @@
 #import "../Configurable.h"
 #import "../Startable.h"
 #import "../SpanAttributesProvider.h"
+#import "../Tracer.h"
 
 @class BugsnagPerformanceSpan;
 
@@ -18,16 +19,18 @@ namespace bugsnag {
 class BugsnagPerformanceImpl;
 
 class AppStartupInstrumentation: public Configurable, public Startable {
-    friend class BugsnagPerformanceLibrary;
 public:
+    AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
+                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
 
     void didStartViewLoadSpan(NSString *name) noexcept;
+    void willCallMainFunction() noexcept;
 
 private:
     bool isEnabled_{true}; // AppStartupInstrumentation starts out enabled
-    std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance_;
+    std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     CFAbsoluteTime didStartProcessAtTime_{0};
     CFAbsoluteTime didCallMainFunctionAtTime_{0};
@@ -45,8 +48,6 @@ private:
 
 private:
     AppStartupInstrumentation() = delete;
-    AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance,
-                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
 
     // Disable app startup instrumentation and cancel any already-created spans.
     void disable() noexcept;
@@ -63,7 +64,6 @@ private:
                                         const void *object,
                                         CFDictionaryRef userInfo) noexcept;
 
-    void willCallMainFunction() noexcept;
     void onAppDidFinishLaunching() noexcept;
     void onAppDidBecomeActive() noexcept;
     void beginAppStartSpan() noexcept;
