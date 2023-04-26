@@ -48,8 +48,8 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeDoubleValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1.23"}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @"1"}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
+    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.0}}]));
 }
 
 - (void)testEncodeInt32Value {
