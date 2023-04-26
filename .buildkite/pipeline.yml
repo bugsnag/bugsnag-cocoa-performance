@@ -59,7 +59,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
 
@@ -83,7 +83,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
 
@@ -107,7 +107,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
 
@@ -131,7 +131,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
 
@@ -155,7 +155,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
 
@@ -179,6 +179,6 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-        concurrency: 24
+        concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager

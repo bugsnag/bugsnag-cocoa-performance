@@ -24,10 +24,12 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
 - (void)testAddListGetRemove {
     RetryQueue queue(self.filePath);
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     __block int errorCallCount = 0;
     queue.setOnFilesystemError(^{
         errorCallCount++;
     });
+    queue.start();
 
     OtlpPackage package1(1000, [NSData dataWithBytes:"aaa" length:3], @{@"x": @"y"});
     OtlpPackage package2(1100, [NSData dataWithBytes:"bbb" length:3], @{@"a": @"b"});
@@ -84,6 +86,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
 
     RetryQueue queue(self.filePath);
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
 
     queue.start();
@@ -96,6 +99,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     BOOL isDir = false;
 
     RetryQueue queue(self.filePath);
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
@@ -103,8 +107,6 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     queue.setOnFilesystemError(^{
         callCount++;
     });
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
-    queue.configure(config);
 
     XCTAssertTrue([[NSData new] writeToFile:[self.filePath stringByAppendingPathComponent:@"xyz.json"] atomically:YES]);
     XCTAssertEqual(1U, [fm contentsOfDirectoryAtPath:self.filePath error:nil].count);
@@ -135,6 +137,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertTrue(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
@@ -150,6 +153,7 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     XCTAssertFalse(isDir);
 
     RetryQueue queue(self.filePath);
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.start();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertFalse(isDir);

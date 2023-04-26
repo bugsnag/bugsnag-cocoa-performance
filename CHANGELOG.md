@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 0.2.1 (2023-04-26)
+
+### Bug fixes
+
+* Fix: Doubles were erroneously converted to strings
+  [120](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/120)
+
 ## 0.2.0 (2023-04-24)
 
 ### Breaking changes

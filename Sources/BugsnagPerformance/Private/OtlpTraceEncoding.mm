@@ -194,7 +194,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberFloatType:
                     case kCFNumberDoubleType:
                     case kCFNumberCGFloatType:
-                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": [value stringValue]}}];
+                        [result addObject:@{@"key": key, @"value": @{@"doubleValue": value}}];
                         break;
                         
                     default: break;
