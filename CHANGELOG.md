@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 0.2.2 (2023-04-27)
+
+### Bug fixes
+
+* Fix: Incorrectly named span attribute: `view_load` -> `view_load_phase`
+  [122](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/122)
+
+* Fix: Start network spans at the point that the network request starts rather than at the end (to ensure proper parentage)
+  [119](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/119)
+
 ## 0.2.1 (2023-04-26)
 
 ### Bug fixes
