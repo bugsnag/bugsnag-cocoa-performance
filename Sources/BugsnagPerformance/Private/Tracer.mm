@@ -102,12 +102,7 @@ BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
-    NSString *type;
-    switch (viewType) {
-        case BugsnagPerformanceViewTypeSwiftUI: type = @"SwiftUI"; break;
-        case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
-        default:                                type = @"?"; break;
-    }
+    NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
@@ -115,13 +110,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGFirstClassNo;
         }
     }
-    auto span = startSpan(name, options, BSGFirstClassYes);
-    [span addAttributes:@{
-        @"bugsnag.span.category": @"view_load",
-        @"bugsnag.view.name": className,
-        @"bugsnag.view.type": type
-    }];
-    return span;
+    return startSpan(name, options, BSGFirstClassYes);
 }
 
 BugsnagPerformanceSpan *

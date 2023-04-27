@@ -135,3 +135,13 @@ SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isC
     }
     return attributes;
 }
+
+
+NSDictionary *
+SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load",
+        @"bugsnag.view.name": className,
+        @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
+    };
+}
