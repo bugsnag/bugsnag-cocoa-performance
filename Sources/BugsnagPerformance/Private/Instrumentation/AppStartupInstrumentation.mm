@@ -172,14 +172,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = tracer_->startAppStartSpan(name, options);
-    NSMutableDictionary *attributes = @{
-        @"bugsnag.app_start.type": isColdLaunch_ ? @"cold" : @"warm",
-        @"bugsnag.span.category": @"app_start",
-    }.mutableCopy;
-    if (firstViewName_ != nullptr) {
-        attributes[@"bugsnag.app_start.first_view_name"] = firstViewName_;
-    }
-    [appStartSpan_ addAttributes:attributes];
+    [appStartSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
 void
@@ -195,7 +188,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     preMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - pre main()")];
+    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
 void
@@ -211,7 +204,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
     postMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - post main()")];
+    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
 void
@@ -227,7 +220,7 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     SpanOptions options;
     options.startTime = didBecomeActiveAtTime_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
-    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"UI init")];
+    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 
 #pragma mark -

@@ -89,6 +89,8 @@
 		CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */; };
 		CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */; };
 		CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */; };
+		CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */; };
+		CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */; };
 		CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */; };
 		CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */; };
 		CBE8EA1A294B5AB800702950 /* Worker.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA18294B5AB800702950 /* Worker.h */; };
@@ -243,6 +245,8 @@
 		CBE0872129F6C6A3007455F2 /* Startable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Startable.h; sourceTree = "<group>"; };
 		CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+Instrumentation.h"; sourceTree = "<group>"; };
 		CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSessionTask+Instrumentation.mm"; sourceTree = "<group>"; };
+		CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceViewType.mm; sourceTree = "<group>"; };
+		CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceViewType+Private.h"; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
 		CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceImpl.mm; sourceTree = "<group>"; };
 		CBE8EA18294B5AB800702950 /* Worker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Worker.h; sourceTree = "<group>"; };
@@ -378,6 +382,8 @@
 				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
+				CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */,
 				CB78819F29E698BF00A58906 /* Configurable.h */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
 				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
@@ -577,6 +583,7 @@
 				CB747D24299F6E03003CA1B4 /* SpanContextStack.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
 				CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */,
+				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
@@ -833,6 +840,7 @@
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
+				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,
 				CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */,
 				CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */,
 			);

@@ -347,25 +347,28 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, Bugsna
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_->startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_->startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                          [NSString stringWithUTF8String:object_getClassName(controller)],
-                                          options);
+    auto viewType = BugsnagPerformanceViewTypeUIKit;
+    auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);

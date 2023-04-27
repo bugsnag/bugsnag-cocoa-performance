@@ -74,12 +74,13 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     if (objc_getAssociatedObject(viewController, &kAssociatedSpan)) {
         return;
     }
-    
+
+    auto viewType = BugsnagPerformanceViewTypeUIKit;
+    auto className = NSStringFromClass([viewController class]);
     SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                           NSStringFromClass([viewController class]),
-                                           options);
-    
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
