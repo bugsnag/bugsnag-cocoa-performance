@@ -28,40 +28,42 @@ void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
-    sharedInstance().appStartupInstrumentation_->willCallMainFunction();
+    sharedInstance().bugsnagPerformanceImpl_->willCallMainFunction();
 }
 
-void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
+void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration *config) noexcept {
     NSError *__autoreleasing error = nil;
     if (![config validate:&error]) {
         BSGLogError(@"Configuration validation failed with error: %@", error);
     }
 
-    sharedInstance().configureInstance(config);
+    sharedInstance().configure(config);
+}
+
+void BugsnagPerformanceLibrary::startLibrary() noexcept {
+    sharedInstance().start();
 }
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 : appStateTracker_([[AppStateTracker alloc] init])
-, reachability_(new Reachability)
-, bugsnagPerformanceImpl_(new BugsnagPerformanceImpl(reachability_, appStateTracker_))
-, appStartupInstrumentation_(new AppStartupInstrumentation(bugsnagPerformanceImpl_, std::make_shared<SpanAttributesProvider>()))
+, reachability_(std::make_shared<Reachability>())
+, bugsnagPerformanceImpl_(std::make_shared<BugsnagPerformanceImpl>(reachability_, appStateTracker_))
 {
-    bugsnagPerformanceImpl_->tracer_.setOnViewLoadSpanStarted(^(NSString *className) {
-        appStartupInstrumentation_->didStartViewLoadSpan(className);
+    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
+        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
     });
 }
 
-void BugsnagPerformanceLibrary::configureInstance(BugsnagPerformanceConfiguration *config) noexcept {
+void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
     bugsnagPerformanceImpl_->configure(config);
-    appStartupInstrumentation_->configure(config);
+}
+
+void BugsnagPerformanceLibrary::start() noexcept {
+    bugsnagPerformanceImpl_->start();
 }
 
 std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPerformanceImpl() noexcept {
     return sharedInstance().bugsnagPerformanceImpl_;
-}
-
-std::shared_ptr<AppStartupInstrumentation> BugsnagPerformanceLibrary::getAppStartupInstrumentation() noexcept {
-    return sharedInstance().appStartupInstrumentation_;
 }
 
 std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {

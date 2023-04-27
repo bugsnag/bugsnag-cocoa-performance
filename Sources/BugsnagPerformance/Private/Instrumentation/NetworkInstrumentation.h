@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import "../Tracer.h"
+#import "../Configurable.h"
+#import "../Startable.h"
 
 @interface BSGURLSessionPerformanceDelegate : NSObject
 @end
@@ -14,13 +16,23 @@
 namespace bugsnag {
 class Tracer;
 
-class NetworkInstrumentation {
+class NetworkInstrumentation: public Configurable, public Startable {
 public:
-    NetworkInstrumentation(Tracer &tracer, NSURL * _Nonnull baseEndpoint) noexcept;
+    NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
+                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    : isEnabled(false)
+    , tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider)
+    {}
+    virtual ~NetworkInstrumentation() {}
+
+    void configure(BugsnagPerformanceConfiguration * _Nonnull config) noexcept;
     void start() noexcept;
-    
+
 private:
-    BSGURLSessionPerformanceDelegate * _Nonnull delegate_;
-    Tracer &tracer_;
+    bool isEnabled{false};
+    BSGURLSessionPerformanceDelegate * _Nullable delegate_;
+    std::shared_ptr<Tracer> tracer_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
 };
 }

@@ -21,13 +21,11 @@ using namespace bugsnag;
 Tracer::Tracer(SpanContextStack *spanContextStack,
                std::shared_ptr<Sampler> sampler,
                std::shared_ptr<Batch> batch,
-               void (^onSpanStarted)(),
-               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+               void (^onSpanStarted)()) noexcept
 : spanContextStack_(spanContextStack)
 , sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
-, spanAttributesProvider_(spanAttributesProvider)
 {}
 
 void
@@ -43,16 +41,6 @@ Tracer::start() noexcept {
     auto unsampledBatch = batch_->drain();
     for (auto spanData: *unsampledBatch) {
         tryAddSpanToBatch(spanData);
-    }
-
-    if (configuration.autoInstrumentViewControllers) {
-        viewLoadInstrumentation_ = std::make_unique<ViewLoadInstrumentation>(*this, configuration.viewControllerInstrumentationCallback);
-        viewLoadInstrumentation_->start();
-    }
-    
-    if (configuration.autoInstrumentNetworkRequests) {
-        networkInstrumentation_ = std::make_unique<NetworkInstrumentation>(*this, configuration.endpoint);
-        networkInstrumentation_->start();
     }
 }
 
@@ -114,12 +102,7 @@ BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
-    NSString *type;
-    switch (viewType) {
-        case BugsnagPerformanceViewTypeSwiftUI: type = @"SwiftUI"; break;
-        case BugsnagPerformanceViewTypeUIKit:   type = @"UIKit"; break;
-        default:                                type = @"?"; break;
-    }
+    NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
@@ -127,27 +110,13 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGFirstClassNo;
         }
     }
-    auto span = startSpan(name, options, BSGFirstClassYes);
-    [span addAttributes:@{
-        @"bugsnag.span.category": @"view_load",
-        @"bugsnag.view.name": className,
-        @"bugsnag.view.type": type
-    }];
-    return span;
+    return startSpan(name, options, BSGFirstClassYes);
 }
 
-void
-Tracer::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-    auto interval = metrics.taskInterval;
-
-    auto name = [NSString stringWithFormat:@"[HTTP/%@]", task.originalRequest.HTTPMethod];
-    SpanOptions options;
-    options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = startSpan(name, options, BSGFirstClassUnset);
-
-    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
-
-    [span endWithEndTime:interval.endDate];
+BugsnagPerformanceSpan *
+Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
+    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
+    return startSpan(name, options, BSGFirstClassUnset);
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {

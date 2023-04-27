@@ -39,11 +39,13 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this), std::make_shared<SpanAttributesProvider>())
+, tracer_(std::make_shared<Tracer>(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this)))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
+, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
+, instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
@@ -56,9 +58,10 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configur
     probabilityRequestsPauseForSeconds_ = configuration.internal.probabilityRequestsPauseForSeconds;
 
     configuration_ = configuration;
-    tracer_.configure(configuration);
+    tracer_->configure(configuration);
     retryQueue_->configure(configuration);
     batch_->configure(configuration);
+    instrumentation_->configure(configuration);
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
@@ -79,6 +82,7 @@ void BugsnagPerformanceImpl::start() noexcept {
      * - batch depends on worker
      * - tracer depends on sampler and batch
      * - Reachability depends on worker
+     * - Instrumentation depends on tracer
      */
 
     __block auto blockThis = this;
@@ -131,11 +135,13 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onAppEnteredForeground();
     };
 
-    tracer_.start();
+    tracer_->start();
 
     reachability_->addCallback(^(Reachability::Connectivity connectivity) {
         blockThis->onConnectivityChanged(connectivity);
     });
+
+    instrumentation_->start();
 
     if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
@@ -329,37 +335,40 @@ void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *spa
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
     SpanOptions options;
-    auto span = tracer_.startCustomSpan(name, options);
+    auto span = tracer_->startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startCustomSpan(name, options);
+    auto span = tracer_->startCustomSpan(name, options);
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
-    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startViewLoadSpan(viewType, name, options);
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
-    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                          [NSString stringWithUTF8String:object_getClassName(controller)],
-                                          options);
+    auto viewType = BugsnagPerformanceViewTypeUIKit;
+    auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
@@ -385,10 +394,12 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
     [span endWithEndTime:endTime];
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppStartSpan(NSString *name, SpanOptions options) noexcept {
-    return tracer_.startAppStartSpan(name, options);
-}
-
-void BugsnagPerformanceImpl::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
-    tracer_.cancelQueuedSpan(span);
+void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
+    auto interval = metrics.taskInterval;
+    auto name = task.originalRequest.HTTPMethod;
+    SpanOptions options;
+    options.startTime = dateToAbsoluteTime(interval.startDate);
+    auto span = tracer_->startNetworkSpan(name, options);
+    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
+    [span endWithEndTime:interval.endDate];
 }

@@ -15,8 +15,8 @@
 
 namespace bugsnag {
 class Reachability {
-    friend class BugsnagPerformanceLibrary;
 public:
+    Reachability() noexcept;
     ~Reachability();
 
     enum Connectivity {
@@ -31,8 +31,6 @@ public:
     void addCallback(void (^)(Connectivity));
     
 private:
-    Reachability() noexcept;
-
     static void callback(SCNetworkReachabilityRef target,
                          SCNetworkReachabilityFlags flags,
                          void *info) noexcept;
@@ -52,11 +50,6 @@ private:
     };
     SCNetworkReachabilityRef target_{nullptr};
     Connectivity connectivity_{Connectivity::Unknown};
-
-public:
-    static std::shared_ptr<Reachability> testing_newReachability() {
-        return std::shared_ptr<Reachability>(new Reachability);
-    }
 };
 
 }

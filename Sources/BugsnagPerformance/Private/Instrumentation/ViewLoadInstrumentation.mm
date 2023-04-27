@@ -25,7 +25,17 @@ using namespace bugsnag;
 static constexpr int kAssociatedSpan = 0;
 
 void
+ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    callback_ = config.viewControllerInstrumentationCallback;
+    isEnabled_ = config.autoInstrumentViewControllers;
+}
+
+void
 ViewLoadInstrumentation::start() noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     auto observedClasses = [NSMutableSet<Class> set];
     
     for (auto image : imagesToInstrument()) {
@@ -46,6 +56,10 @@ ViewLoadInstrumentation::start() noexcept {
 
 void
 ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     if (![observedClasses_ containsObject:[viewController class]]) {
         return;
     }
@@ -60,26 +74,39 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     if (objc_getAssociatedObject(viewController, &kAssociatedSpan)) {
         return;
     }
-    
+
+    auto viewType = BugsnagPerformanceViewTypeUIKit;
+    auto className = NSStringFromClass([viewController class]);
     SpanOptions options;
-    auto span = tracer_.startViewLoadSpan(BugsnagPerformanceViewTypeUIKit,
-                                          NSStringFromClass([viewController class]),
-                                          options);
-    
+    auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 void
 ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     endViewLoadSpan(viewController);
 }
 
 void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     endViewLoadSpan(viewController);
 }
 
 void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
     BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedSpan);
     [span end];
 
@@ -146,7 +173,7 @@ void
 ViewLoadInstrumentation::instrument(Class cls) noexcept {
     SEL selector = @selector(loadView);
     IMP loadView __block = nullptr;
-    loadView = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self){
+    loadView = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         onLoadView(self);
         reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
@@ -157,7 +184,7 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
 
     selector = @selector(viewDidAppear:);
     IMP viewDidAppear __block = nullptr;
-    viewDidAppear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewDidAppear(self);
@@ -165,7 +192,7 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
 
     selector = @selector(viewWillDisappear:);
     IMP viewWillDisappear __block = nullptr;
-    viewWillDisappear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewWillDisappear(self);

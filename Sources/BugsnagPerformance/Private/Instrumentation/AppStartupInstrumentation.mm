@@ -58,9 +58,10 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 }
 
 
-AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformance,
+AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-: bugsnagPerformance_(bugsnagPerformance)
+: isEnabled_(true) // AppStartupInstrumentation starts out enabled
+, tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
 , didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
@@ -77,9 +78,14 @@ void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *confi
     }
 }
 
+void AppStartupInstrumentation::start() noexcept {
+    // Nothing to do, but makes it clear that this hasn't been forgotten in
+    // Instrumentation::start()
+}
+
 void AppStartupInstrumentation::willCallMainFunction() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -106,17 +112,17 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
 void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    isDisabled_ = true;
-    bugsnagPerformance_->cancelQueuedSpan(preMainSpan_);
-    bugsnagPerformance_->cancelQueuedSpan(postMainSpan_);
-    bugsnagPerformance_->cancelQueuedSpan(uiInitSpan_);
-    bugsnagPerformance_->cancelQueuedSpan(appStartSpan_);
+    isEnabled_ = false;
+    tracer_->cancelQueuedSpan(preMainSpan_);
+    tracer_->cancelQueuedSpan(postMainSpan_);
+    tracer_->cancelQueuedSpan(uiInitSpan_);
+    tracer_->cancelQueuedSpan(appStartSpan_);
 }
 
 void
 AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -139,7 +145,7 @@ AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
 void
 AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
 
@@ -155,7 +161,7 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
 void
 AppStartupInstrumentation::beginAppStartSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (appStartSpan_ != nullptr) {
@@ -165,20 +171,13 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     auto name = isColdLaunch_ ? @"[AppStart/Cold]" : @"[AppStart/Warm]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    NSMutableDictionary *attributes = @{
-        @"bugsnag.app_start.type": isColdLaunch_ ? @"cold" : @"warm",
-        @"bugsnag.span.category": @"app_start",
-    }.mutableCopy;
-    if (firstViewName_ != nullptr) {
-        attributes[@"bugsnag.app_start.first_view_name"] = firstViewName_;
-    }
-    [appStartSpan_ addAttributes:attributes];
+    appStartSpan_ = tracer_->startAppStartSpan(name, options);
+    [appStartSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
 void
 AppStartupInstrumentation::beginPreMainSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (preMainSpan_ != nullptr) {
@@ -188,13 +187,13 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     auto name = @"[AppStartPhase/App launching - pre main()]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    preMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - pre main()")];
+    preMainSpan_ = tracer_->startAppStartSpan(name, options);
+    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
 void
 AppStartupInstrumentation::beginPostMainSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (postMainSpan_ != nullptr) {
@@ -204,13 +203,13 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     auto name = @"[AppStartPhase/App launching - post main()]";
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
-    postMainSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"App launching - post main()")];
+    postMainSpan_ = tracer_->startAppStartSpan(name, options);
+    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
 void
 AppStartupInstrumentation::beginUIInitSpan() noexcept {
-    if (isDisabled_) {
+    if (!isEnabled_) {
         return;
     }
     if (uiInitSpan_ != nullptr) {
@@ -220,8 +219,8 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     auto name = @"[AppStartPhase/UI init]";
     SpanOptions options;
     options.startTime = didBecomeActiveAtTime_;
-    uiInitSpan_ = bugsnagPerformance_->startAppStartSpan(name, options);
-    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(@"UI init")];
+    uiInitSpan_ = tracer_->startAppStartSpan(name, options);
+    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 
 #pragma mark -

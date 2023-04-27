@@ -26,6 +26,12 @@ using namespace bugsnag;
 
 - (void)testNormalUsage {
     BugsnagPerformanceLibrary::testing_reset();
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.autoInstrumentViewControllers = NO;
+    config.autoInstrumentAppStarts = NO;
+    config.autoInstrumentNetworkRequests = NO;
+    BugsnagPerformanceLibrary::configureLibrary(config);
+    BugsnagPerformanceLibrary::startLibrary();
     auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
@@ -38,6 +44,12 @@ using namespace bugsnag;
 
 - (void)testForgotToEnd {
     BugsnagPerformanceLibrary::testing_reset();
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
+    config.autoInstrumentViewControllers = NO;
+    config.autoInstrumentAppStarts = NO;
+    config.autoInstrumentNetworkRequests = NO;
+    BugsnagPerformanceLibrary::configureLibrary(config);
+    BugsnagPerformanceLibrary::startLibrary();
     auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
     @autoreleasepool {
         UIViewController *controller = [UIViewController new];
@@ -70,9 +82,9 @@ using namespace bugsnag;
     config.autoInstrumentViewControllers = YES;
     config.autoInstrumentAppStarts = NO;
     config.autoInstrumentNetworkRequests = NO;
-    BugsnagPerformanceLibrary::configure(config);
+    BugsnagPerformanceLibrary::configureLibrary(config);
+    BugsnagPerformanceLibrary::startLibrary();
     auto perf = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl();
-    perf->start();
     perf->testing_setProbability(1);
     XCTAssertEqual(0U, perf->testing_getBatchCount());
     UIViewController *controller = [MyTestViewController new];
