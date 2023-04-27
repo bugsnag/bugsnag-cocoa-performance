@@ -26,7 +26,7 @@
 		967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
-		CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */; };
+		CB3477182901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */; };
 		CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */; };
 		CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */; };
 		CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */; };
@@ -34,6 +34,7 @@
 		CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */; };
 		CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */; };
 		CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */; };
+		CBE0872B29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */; };
 		CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */; };
 		CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
@@ -62,7 +63,7 @@
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
 		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
-		CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkScenario.swift; sourceTree = "<group>"; };
+		CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkWithParentScenario.swift; sourceTree = "<group>"; };
 		CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundForegroundScenario.swift; sourceTree = "<group>"; };
 		CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualUIViewLoadScenario.swift; sourceTree = "<group>"; };
 		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -72,6 +73,7 @@
 		CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstClassNoScenario.swift; sourceTree = "<group>"; };
 		CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstClassYesScenario.swift; sourceTree = "<group>"; };
 		CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSubViewLoadScenario.swift; sourceTree = "<group>"; };
+		CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkNoParentScenario.swift; sourceTree = "<group>"; };
 		CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbabilityExpiryScenario.swift; sourceTree = "<group>"; };
 		CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentSpanScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
@@ -146,7 +148,8 @@
 			isa = PBXGroup;
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
-				CB3477172901481F0033759C /* AutoInstrumentNetworkScenario.swift */,
+				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
+				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
@@ -252,6 +255,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */,
+				CBE0872B29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
@@ -263,7 +267,7 @@
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
-				CB3477182901481F0033759C /* AutoInstrumentNetworkScenario.swift in Sources */,
+				CB3477182901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift in Sources */,
 				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */,

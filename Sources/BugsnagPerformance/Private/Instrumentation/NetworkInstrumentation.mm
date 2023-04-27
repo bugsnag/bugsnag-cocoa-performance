@@ -7,6 +7,7 @@
 
 #import "NetworkInstrumentation.h"
 #import "NetworkInstrumentation/NSURLSession+Instrumentation.h"
+#import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
 
 #import "../BugsnagPerformanceSpan+Private.h"
 #import "../Span.h"
@@ -54,13 +55,14 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         return;
     }
 
-    auto interval = metrics.taskInterval;
-    auto name = task.originalRequest.HTTPMethod;
-    SpanOptions options;
-    options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = self.tracer->startNetworkSpan(name, options);
+    auto span = (BugsnagPerformanceSpan *)objc_getAssociatedObject(task, bsg_associatedNetworkSpanKey);
+    if (!span) {
+        return;
+    }
+
+    objc_setAssociatedObject(self, bsg_associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(task, metrics)];
-    [span endWithEndTime:interval.endDate];
+    [span endWithEndTime:metrics.taskInterval.endDate];
 }
 
 @end
@@ -80,4 +82,5 @@ NetworkInstrumentation::start() noexcept {
 
     Trace(@"NetworkInstrumentation::start()");
     bsg_installNSURLSessionPerformance(delegate_);
+    bsg_installNSURLSessionTaskPerformance(tracer_);
 }

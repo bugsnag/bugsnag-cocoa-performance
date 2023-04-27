@@ -18,13 +18,13 @@ public:
      * Replace a class's current method implementation with a new implementation block, returning the replaced one.
      * Returns nil if the method was not found (in the class or any superclass).
      */
-    static IMP _Nullable setMethodImplementation(Class _Nonnull clazz, SEL _Nonnull selector, id _Nonnull implementationBlock) noexcept;
+    static IMP _Nullable setClassMethodImplementation(Class _Nonnull clazz, SEL _Nonnull selector, id _Nonnull implementationBlock) noexcept;
 
     /**
      * Replace a class's override of a method (i.e. only if this class overrides the method). No superclass implementation is replaced.
      * Returns nil if no method was replaced (either method not found, or this class doesn't overrde the method).
      */
-    static IMP _Nullable setMethodOverride(Class _Nonnull cls, SEL _Nonnull name, id _Nonnull block) noexcept;
+    static IMP _Nullable replaceInstanceMethodOverride(Class _Nonnull cls, SEL _Nonnull name, id _Nonnull block) noexcept;
 
     /**
      * Get any classes or superclasses that implement the specified selector.

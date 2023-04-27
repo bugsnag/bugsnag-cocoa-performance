@@ -17,7 +17,7 @@ static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(id<NSURLS
     SEL selector = @selector(sessionWithConfiguration:delegate:delegateQueue:);
     typedef NSURLSession *(*IMPPrototype)(id, SEL, NSURLSessionConfiguration *,
                                           id<NSURLSessionDelegate>, NSOperationQueue *);
-    __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::setMethodImplementation(clazz,
+    __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::setClassMethodImplementation(clazz,
                                                                    selector,
                                                                    ^(id self,
                                                                      NSURLSessionConfiguration *configuration,
@@ -33,7 +33,7 @@ static void replace_NSURLSession_sessionWithConfigurationDelegateQueue(id<NSURLS
 }
 
 static void replace_NSURLSession_sharedSession() {
-    ObjCSwizzle::setMethodImplementation(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
+    ObjCSwizzle::setClassMethodImplementation(NSURLSession.class, @selector(sharedSession), ^(__unused id self) {
         static NSURLSession *session;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{

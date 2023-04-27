@@ -12,7 +12,7 @@
 
 namespace bugsnag {
 
-IMP ObjCSwizzle::setMethodImplementation(Class _Nonnull clazz, SEL selector, id _Nonnull implementationBlock) noexcept {
+IMP ObjCSwizzle::setClassMethodImplementation(Class _Nonnull clazz, SEL selector, id _Nonnull implementationBlock) noexcept {
     Method method = class_getClassMethod(clazz, selector);
     if (method) {
         return method_setImplementation(method, imp_implementationWithBlock(implementationBlock));
@@ -22,7 +22,7 @@ IMP ObjCSwizzle::setMethodImplementation(Class _Nonnull clazz, SEL selector, id 
     }
 }
 
-IMP ObjCSwizzle::setMethodOverride(Class clazz, SEL selector, id block) noexcept {
+IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id block) noexcept {
     Method method = nullptr;
 
     // Not using class_getInstanceMethod because we don't want to modify the

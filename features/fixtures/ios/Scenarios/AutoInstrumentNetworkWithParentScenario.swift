@@ -1,5 +1,5 @@
 //
-//  AutoInstrumentNetworkScenario.swift
+//  AutoInstrumentNetworkWithParentScenario.swift
 //  Fixture
 //
 //  Created by Karl Stenerud on 20.10.22.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class AutoInstrumentNetworkScenario: Scenario {
+class AutoInstrumentNetworkWithParentScenario: Scenario {
 
     lazy var baseURL: URL = {
         var components = URLComponents(string: Scenario.mazeRunnerURL)!
@@ -26,7 +26,9 @@ class AutoInstrumentNetworkScenario: Scenario {
     }
 
     override func run() {
-        query(string: "/reflect/?status=200")
         waitForCurrentBatch()
+        let span = BugsnagPerformance.startSpan(name: "parentSpan")
+        query(string: "/reflect/?status=200")
+        span.end();
     }
 }

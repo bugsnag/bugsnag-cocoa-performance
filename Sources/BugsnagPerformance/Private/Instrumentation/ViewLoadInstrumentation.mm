@@ -172,7 +172,7 @@ void
 ViewLoadInstrumentation::instrument(Class cls) noexcept {
     SEL selector = @selector(loadView);
     IMP loadView __block = nullptr;
-    loadView = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self){
+    loadView = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         onLoadView(self);
         reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
@@ -183,7 +183,7 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
 
     selector = @selector(viewDidAppear:);
     IMP viewDidAppear __block = nullptr;
-    viewDidAppear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewDidAppear(self);
@@ -191,7 +191,7 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
 
     selector = @selector(viewWillDisappear:);
     IMP viewWillDisappear __block = nullptr;
-    viewWillDisappear = ObjCSwizzle::setMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
         onViewWillDisappear(self);
