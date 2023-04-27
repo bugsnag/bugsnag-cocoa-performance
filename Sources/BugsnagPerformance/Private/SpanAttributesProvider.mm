@@ -117,11 +117,21 @@ SpanAttributesProvider::networkSpanAttributes(NSURLSessionTask *task,
 }
 
 NSDictionary *
-SpanAttributesProvider::appStartSpanAttributes(NSString *phase) noexcept {
+SpanAttributesProvider::appStartPhaseSpanAttributes(NSString *phase) noexcept {
     return @{
-        @"bugsnag.span.category": @"app_start",
+        @"bugsnag.span.category": @"app_start_phase",
         @"bugsnag.phase": phase,
     };
 }
 
-
+NSDictionary *
+SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept {
+    NSMutableDictionary *attributes = @{
+        @"bugsnag.span.category": @"app_start",
+        @"bugsnag.app_start.type": isColdLaunch ? @"cold" : @"warm",
+    }.mutableCopy;
+    if (firstViewName != nullptr) {
+        attributes[@"bugsnag.app_start.first_view_name"] = firstViewName;
+    }
+    return attributes;
+}
