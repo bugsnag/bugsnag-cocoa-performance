@@ -8,15 +8,14 @@
 
 #pragma once
 
-#import "../Configurable.h"
-#import "../Startable.h"
+#import "../PhasedStartup.h"
 #import "../Instrumentation/AppStartupInstrumentation.h"
 #import "../Instrumentation/NetworkInstrumentation.h"
 #import "../Instrumentation/ViewLoadInstrumentation.h"
 
 namespace bugsnag {
 
-class Instrumentation: public Configurable, public Startable {
+class Instrumentation: public PhasedStartup {
 public:
     Instrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
@@ -24,6 +23,8 @@ public:
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer, spanAttributesProvider))
     {}
 
+    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
+    void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
 

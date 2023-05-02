@@ -10,7 +10,6 @@ import BugsnagPerformance
 class FirstClassYesScenario: Scenario {
 
     override func run() {
-        waitForCurrentBatch()
         let opts = BugsnagPerformanceSpanOptions()
         opts.firstClass = BSGFirstClass.yes;
         BugsnagPerformance.startSpan(name: "FirstClassYesScenario", options: opts).end()

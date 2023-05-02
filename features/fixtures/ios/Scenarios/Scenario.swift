@@ -16,6 +16,10 @@ class Scenario: NSObject {
     
     func configure() {
         NSLog("Scenario.configure()")
+
+        // Make sure the initial P value has time to be fully received before sending spans
+        config.internal.initialRecurringWorkDelay = 0.5
+
         config.internal.clearPersistenceOnStart = true
         config.internal.autoTriggerExportOnBatchSize = 1
         config.apiKey = "12312312312312312312312312312312"
@@ -42,15 +46,9 @@ class Scenario: NSObject {
         fatalError("To be implemented by subclass")
     }
 
-    func waitForInitialPResponse() {
-        NSLog("Scenario.waitForInitialPResponse()")
-        // Guess that it won't take longer than 2 seconds
-        Thread.sleep(forTimeInterval: 2.0)
-    }
-
     func waitForCurrentBatch() {
         NSLog("Scenario.waitForCurrentBatch()")
         // Wait long enough to allow the current batch to be packaged and sent
-        Thread.sleep(forTimeInterval: 0.5)
+        Thread.sleep(forTimeInterval: 1.0)
     }
 }

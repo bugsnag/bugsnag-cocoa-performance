@@ -10,7 +10,6 @@ import BugsnagPerformance
 class RetryScenario: Scenario {
     
     override func run() {
-        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "WillRetry").end()
         waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Success").end()

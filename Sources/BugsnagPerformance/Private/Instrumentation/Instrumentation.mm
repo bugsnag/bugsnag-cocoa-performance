@@ -10,6 +10,18 @@
 
 using namespace bugsnag;
 
+void Instrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    appStartupInstrumentation_->earlyConfigure(config);
+    viewLoadInstrumentation_->earlyConfigure(config);
+    networkInstrumentation_->earlyConfigure(config);
+}
+
+void Instrumentation::earlySetup() noexcept {
+    appStartupInstrumentation_->earlySetup();
+    viewLoadInstrumentation_->earlySetup();
+    networkInstrumentation_->earlySetup();
+}
+
 void Instrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
     appStartupInstrumentation_->configure(config);
     viewLoadInstrumentation_->configure(config);

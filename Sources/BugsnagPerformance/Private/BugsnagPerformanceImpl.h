@@ -21,19 +21,21 @@
 #import "Reachability.h"
 #import "RetryQueue.h"
 #import "AppStateTracker.h"
-#import "Configurable.h"
-#import "Startable.h"
+#import "PhasedStartup.h"
 #import "Instrumentation/Instrumentation.h"
 
 #import <mutex>
 
 namespace bugsnag {
-class BugsnagPerformanceImpl: public Configurable, public Startable {
+class BugsnagPerformanceImpl: public PhasedStartup {
 public:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                            AppStateTracker *appStateTracker) noexcept;
     virtual ~BugsnagPerformanceImpl();
-    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+
+    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
+    void earlySetup() noexcept;
+    void configure(BugsnagPerformanceConfiguration * config) noexcept;
     void start() noexcept;
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;

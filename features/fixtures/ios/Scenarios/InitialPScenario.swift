@@ -8,9 +8,14 @@
 import BugsnagPerformance
 
 class InitialPScenario: Scenario {
-    
+
+    override func configure() {
+        super.configure()
+        config.internal.initialRecurringWorkDelay = 0
+    }
     override func run() {
-        waitForInitialPResponse()
+        // Wait to receive an initial P value response.
+        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "First").end()
         waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Second").end()

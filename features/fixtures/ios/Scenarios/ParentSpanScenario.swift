@@ -15,7 +15,6 @@ class ParentSpanScenario: Scenario {
     }
 
     override func run() {
-        waitForCurrentBatch()
         let spanParent = BugsnagPerformance.startSpan(name: "SpanParent")
         let spanChild = BugsnagPerformance.startSpan(name: "SpanChild")
         spanChild.end()

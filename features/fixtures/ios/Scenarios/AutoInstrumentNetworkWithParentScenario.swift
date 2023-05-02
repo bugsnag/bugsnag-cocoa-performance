@@ -15,9 +15,9 @@ class AutoInstrumentNetworkWithParentScenario: Scenario {
         return components.url!
     }()
 
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoInstrumentNetworkRequests = true
-        super.startBugsnag()
     }
 
     func query(string: String) {
@@ -26,6 +26,7 @@ class AutoInstrumentNetworkWithParentScenario: Scenario {
     }
 
     override func run() {
+        // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "parentSpan")
         query(string: "/reflect/?status=200")
