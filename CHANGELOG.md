@@ -20,6 +20,8 @@ Changelog
 
 ## 0.2.0 (2023-04-24)
 
+This release adds nested span support.
+
 ### Breaking changes
 
 The following changes need attention when updating to this version of the library:
