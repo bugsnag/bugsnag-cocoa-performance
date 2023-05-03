@@ -190,13 +190,14 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
         onViewDidAppear(self);
     });
 
-    selector = @selector(viewWillDisappear:);
-    IMP viewWillDisappear __block = nullptr;
-    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
-        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
-        onViewWillDisappear(self);
-    });
+// Temporarily disabled to stop crashes while we build a more complete solution
+//    selector = @selector(viewWillDisappear:);
+//    IMP viewWillDisappear __block = nullptr;
+//    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
+//        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+//        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+//        onViewWillDisappear(self);
+//    });
 }
 
 

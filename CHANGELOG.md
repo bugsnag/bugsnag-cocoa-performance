@@ -1,6 +1,13 @@
 Changelog
 =========
 
+### 0.2.3 (2023-05-03)
+
+### Bug fixes
+
+* Temporary Fix: Disable swizzling of `viewWillDisappear` while we work on a better solution
+  [124](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/124)
+
 ## 0.2.2 (2023-04-27)
 
 ### Bug fixes
@@ -19,6 +26,8 @@ Changelog
   [120](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/120)
 
 ## 0.2.0 (2023-04-24)
+
+This release adds nested span support.
 
 ### Breaking changes
 
