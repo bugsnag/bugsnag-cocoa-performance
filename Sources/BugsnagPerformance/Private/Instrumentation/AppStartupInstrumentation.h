@@ -7,8 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import <mutex>
-#import "../Configurable.h"
-#import "../Startable.h"
+#import "../PhasedStartup.h"
 #import "../SpanAttributesProvider.h"
 #import "../Tracer.h"
 
@@ -18,18 +17,21 @@ namespace bugsnag {
 
 class BugsnagPerformanceImpl;
 
-class AppStartupInstrumentation: public Configurable, public Startable {
+class AppStartupInstrumentation: public PhasedStartup {
 public:
     AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void start() noexcept;
+    void start() noexcept {}
 
     void didStartViewLoadSpan(NSString *name) noexcept;
     void willCallMainFunction() noexcept;
 
 private:
-    bool isEnabled_{true}; // AppStartupInstrumentation starts out enabled
+    bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     CFAbsoluteTime didStartProcessAtTime_{0};

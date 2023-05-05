@@ -9,14 +9,13 @@ import BugsnagPerformance
 
 class ReleaseStageNotEnabledScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.releaseStage = "dev"
         config.enabledReleaseStages = Set(arrayLiteral: "staging", "release")
-        super.startBugsnag()
     }
     
     override func run() {
-        waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Span1").end()
         BugsnagPerformance.startSpan(name: "Span2").end()
     }

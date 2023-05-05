@@ -15,6 +15,5 @@ class ManualUIViewLoadScenario: Scenario {
         options.startTime = Date()
         BugsnagPerformance.startViewLoadSpan(controller: controller, options: options)
         BugsnagPerformance.endViewLoadSpan(controller: controller, endTime: Date())
-        waitForCurrentBatch()
     }
 }

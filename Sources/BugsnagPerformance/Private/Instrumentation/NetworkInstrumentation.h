@@ -7,8 +7,11 @@
 
 #import <Foundation/Foundation.h>
 #import "../Tracer.h"
-#import "../Configurable.h"
-#import "../Startable.h"
+#import "../PhasedStartup.h"
+#import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
+#import "NetworkInstrumentation/NetworkCommon.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGURLSessionPerformanceDelegate : NSObject
 @end
@@ -16,23 +19,31 @@
 namespace bugsnag {
 class Tracer;
 
-class NetworkInstrumentation: public Configurable, public Startable {
+class NetworkInstrumentation: public PhasedStartup {
 public:
     NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-    : isEnabled(false)
-    , tracer_(tracer)
-    , spanAttributesProvider_(spanAttributesProvider)
-    {}
+                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
     virtual ~NetworkInstrumentation() {}
 
-    void configure(BugsnagPerformanceConfiguration * _Nonnull config) noexcept;
+    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
+    void earlySetup() noexcept;
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
 
 private:
-    bool isEnabled{false};
-    BSGURLSessionPerformanceDelegate * _Nullable delegate_;
+    void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
+    void endEarlySpansPhase() noexcept;
+
+    bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    BSGURLSessionPerformanceDelegate * _Nullable delegate_;
+    BSGSessionTaskResumeCallback onSessionTaskResume_;
+    BSGIsEnabledCallback checkIsEnabled_;
+    std::atomic<bool> isEarlySpansPhase_{true};
+    std::mutex earlySpansMutex_;
+    NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
 };
 }
+
+NS_ASSUME_NONNULL_END

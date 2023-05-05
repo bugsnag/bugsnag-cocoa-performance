@@ -13,8 +13,7 @@
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
-#import "Configurable.h"
-#import "Startable.h"
+#import "PhasedStartup.h"
 #import "SpanContextStack.h"
 #import "SpanAttributesProvider.h"
 
@@ -26,7 +25,7 @@ namespace bugsnag {
 /**
  * Tracer starts all spans, then samples them and routes them to the batch when they end.
  */
-class Tracer: public Configurable, public Startable {
+class Tracer: public PhasedStartup {
 public:
     Tracer(SpanContextStack *spanContextStack,
            std::shared_ptr<Sampler> sampler,
@@ -34,11 +33,14 @@ public:
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void start() noexcept;
+
     void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
     }
-    void start() noexcept;
 
     BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
 

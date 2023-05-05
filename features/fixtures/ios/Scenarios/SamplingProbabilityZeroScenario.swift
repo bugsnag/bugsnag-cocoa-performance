@@ -23,6 +23,7 @@ class SamplingProbabilityZeroScenario: Scenario {
     }
     
     override func run() {
+        // Wait for the initial P value response.
         waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "Post-start").end()
     }

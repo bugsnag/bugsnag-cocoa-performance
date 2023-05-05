@@ -13,6 +13,6 @@
 
 #import <memory>
 
-void bsg_installNSURLSessionTaskPerformance(std::shared_ptr<bugsnag::Tracer> tracer) noexcept;
+typedef void (^BSGSessionTaskResumeCallback)(NSURLSessionTask *);
 
-extern const void *bsg_associatedNetworkSpanKey;
+void bsg_installNSURLSessionTaskPerformance(BSGSessionTaskResumeCallback onResume) noexcept;

@@ -25,6 +25,11 @@
 	<dict>
 		<key>apiKey</key>
 		<string>YOUR-API-KEY</string>
+		<key>performance</key>
+		<dict>
+			<key>disableSwizzling</key>
+			<false/>
+		</dict>
 	</dict>
 </dict>
 </plist>

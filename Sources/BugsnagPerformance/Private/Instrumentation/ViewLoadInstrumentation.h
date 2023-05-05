@@ -6,22 +6,28 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../Configurable.h"
+#import "../PhasedStartup.h"
 #import "../Tracer.h"
 
 #import <vector>
 
+NS_ASSUME_NONNULL_BEGIN
+
 namespace bugsnag {
-class ViewLoadInstrumentation {
+class ViewLoadInstrumentation: public PhasedStartup {
 public:
     ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-    : isEnabled_(false)
+    : isEnabled_(true)
+    , isEarlySpanPhase_(true)
     , tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
+    , earlySpans_([NSMutableArray new])
     {}
 
+    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
+    void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void start() noexcept;
+    void start() noexcept {}
     
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;
@@ -36,10 +42,18 @@ private:
 
     void endViewLoadSpan(UIViewController *viewController) noexcept;
 
-    bool isEnabled_{false};
+    void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
+    void endEarlySpanPhase() noexcept;
+
+    bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
-    BOOL (^ callback_)(UIViewController *viewController){nullptr};
+    BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
     NSSet *observedClasses_{nil};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::atomic<bool> isEarlySpanPhase_{true};
+    std::mutex earlySpansMutex_;
+    NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
 };
 }
+
+NS_ASSUME_NONNULL_END

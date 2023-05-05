@@ -17,6 +17,5 @@ class BatchingWithTimeoutScenario: Scenario {
     
     override func run() {
         BugsnagPerformance.startSpan(name: "Span1").end()
-        sleep(1)
     }
 }

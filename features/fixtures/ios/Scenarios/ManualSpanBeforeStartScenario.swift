@@ -13,8 +13,7 @@ class ManualSpanBeforeStartScenario: Scenario {
         BugsnagPerformance.startSpan(name: "BeforeStart").end()
         super.startBugsnag()
     }
-    
+
     override func run() {
-        waitForCurrentBatch()
     }
 }

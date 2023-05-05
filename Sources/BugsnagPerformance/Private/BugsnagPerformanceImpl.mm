@@ -46,22 +46,40 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
                                                 valueOptions:NSMapTableStrongMemory])
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
+, worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
     [workerTimer_ invalidate];
 }
 
-void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *configuration) noexcept {
-    performWorkInterval_ = configuration.internal.performWorkInterval;
-    probabilityValueExpiresAfterSeconds_ = configuration.internal.probabilityValueExpiresAfterSeconds;
-    probabilityRequestsPauseForSeconds_ = configuration.internal.probabilityRequestsPauseForSeconds;
+void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    tracer_->earlyConfigure(config);
+    retryQueue_->earlyConfigure(config);
+    batch_->earlyConfigure(config);
+    instrumentation_->earlyConfigure(config);
+    [worker_ earlyConfigure:config];
+}
 
-    configuration_ = configuration;
-    tracer_->configure(configuration);
-    retryQueue_->configure(configuration);
-    batch_->configure(configuration);
-    instrumentation_->configure(configuration);
+void BugsnagPerformanceImpl::earlySetup() noexcept {
+    tracer_->earlySetup();
+    retryQueue_->earlySetup();
+    batch_->earlySetup();
+    instrumentation_->earlySetup();
+    [worker_ earlySetup];
+}
+
+void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    performWorkInterval_ = config.internal.performWorkInterval;
+    probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
+    probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
+
+    configuration_ = config;
+    tracer_->configure(config);
+    retryQueue_->configure(config);
+    batch_->configure(config);
+    instrumentation_->configure(config);
+    [worker_ configure:config];
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
@@ -117,8 +135,6 @@ void BugsnagPerformanceImpl::start() noexcept {
         sampler_->setProbability(configuration_.samplingProbability);
     }
 
-    worker_ = [[Worker alloc] initWithInitialTasks:buildInitialTasks()
-                                    recurringTasks:buildRecurringTasks()];
     [worker_ start];
 
     workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
@@ -172,7 +188,8 @@ bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
-    auto spans = sampler_->sampled(batch_->drain());
+    auto origSpans = batch_->drain(false);
+    auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
         return false;
     }

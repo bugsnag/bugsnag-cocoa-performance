@@ -8,9 +8,10 @@
 
 #pragma once
 
-#import "Configurable.h"
+#import "PhasedStartup.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
 #import "SpanData.h"
+#import "PhasedStartup.h"
 
 #import <memory>
 #import <mutex>
@@ -21,16 +22,19 @@ namespace bugsnag {
 /**
  * Holds the next batch of spans that will be sent together to the backend.
  */
-class Batch {
+class Batch: public PhasedStartup {
 public:
     Batch() noexcept
     : spans_(std::make_unique<std::vector<std::shared_ptr<SpanData>>>())
     , onBatchFull(^(){})
     {}
 
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         autoTriggerExportOnBatchSize_ = config.internal.autoTriggerExportOnBatchSize;
     }
+    void start() noexcept {}
 
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
@@ -78,9 +82,9 @@ public:
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain() noexcept {
+    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain(bool force) noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
-        if (!drainIsAllowed_) {
+        if (!drainIsAllowed_ && !force) {
             return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
         }
         drainIsAllowed_ = false;
