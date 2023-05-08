@@ -37,7 +37,7 @@ using namespace bugsnag;
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     XCTAssertNil(objcOptions.parentContext);
     XCTAssertNil(objcOptions.startTime);
-    XCTAssertTrue(objcOptions.makeContextCurrent);
+    XCTAssertTrue(objcOptions.makeCurrentContext);
     XCTAssertEqual(objcOptions.firstClass, BSGFirstClassUnset);
 }
 
@@ -55,7 +55,7 @@ using namespace bugsnag;
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = context;
-    objcOptions.makeContextCurrent = true;
+    objcOptions.makeCurrentContext = true;
     objcOptions.firstClass = BSGFirstClassNo;
 
     SpanOptions cOptions(objcOptions);
