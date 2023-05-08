@@ -25,7 +25,7 @@ public:
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
     : SpanOptions(options.parentContext,
-                  options.startTime == nil ? CFAbsoluteTimeGetCurrent() : dateToAbsoluteTime(options.startTime),
+                  dateToAbsoluteTime(options.startTime),
                   options.makeCurrentContext,
                   options.firstClass)
     {}
@@ -33,13 +33,13 @@ public:
     SpanOptions()
     // These defaults must match the defaults in BugsnagPerformanceSpanOptions.m
     : SpanOptions(nil,
-                  CFAbsoluteTimeGetCurrent(),
+                  CFABSOLUTETIME_INVALID,
                   true,
                   BSGFirstClassUnset)
     {}
     
     id<BugsnagPerformanceSpanContext> parentContext{nil};
-    CFAbsoluteTime startTime{0};
+    CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeContextCurrent{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};
 };

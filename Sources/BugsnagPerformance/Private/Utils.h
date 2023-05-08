@@ -47,6 +47,16 @@
 #endif
 
 namespace bugsnag {
+
+// Use NaN to signal an invalid/unset CFAbsoluteTime.
+// WARNING: Do not compare to this value! (NAN == NAN) is always FALSE for ieee754 float.
+// Use isCFAbsoluteTimeValid() instead.
+static const CFAbsoluteTime CFABSOLUTETIME_INVALID = NAN;
+
+static inline bool isCFAbsoluteTimeValid(CFAbsoluteTime time) {
+    return !isnan(time);
+}
+
 template<typename T>
 static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
     if ([obj isKindOfClass:[T class]]) {
@@ -60,7 +70,7 @@ static inline T *BSGDynamicCast(__unsafe_unretained id obj) {
  * CFAbsoluteTime is a double containing the number of seconds since (00:00:00 1 January 2001).
  */
 static inline CFAbsoluteTime dateToAbsoluteTime(NSDate *date) {
-    return date.timeIntervalSinceReferenceDate;
+    return date ? date.timeIntervalSinceReferenceDate : CFABSOLUTETIME_INVALID;
 }
 
 /**
