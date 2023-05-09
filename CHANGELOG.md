@@ -1,7 +1,20 @@
 Changelog
 =========
 
-### 0.2.3 (2023-05-03)
+## 0.3.0 (2023-05-09)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in `BugsnagPerformanceSpanOptions`
+  [128](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/128)
+
+* Swizzle methods earlier at process start rather than at library start to avoid race conditions. Swizzling can now be disabled using `bugsnag/performance/disableSwizzling` in your `Info.plist`
+  [126](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/126)
+
+
+## 0.2.3 (2023-05-03)
 
 ### Bug fixes
 
