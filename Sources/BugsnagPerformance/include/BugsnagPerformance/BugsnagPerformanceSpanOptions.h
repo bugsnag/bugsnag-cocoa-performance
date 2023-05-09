@@ -25,7 +25,7 @@ OBJC_EXPORT
 @property(nonatomic,readwrite,strong) id<BugsnagPerformanceSpanContext> parentContext;
 
 // If true, the span will be added to the current context stack.
-@property(nonatomic,readwrite) BOOL makeContextCurrent;
+@property(nonatomic,readwrite) BOOL makeCurrentContext;
 
 // If true, this span will be considered "first class" on the dashboard.
 @property(nonatomic,readwrite) BSGFirstClass firstClass;
