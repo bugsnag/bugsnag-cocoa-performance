@@ -25,8 +25,9 @@ static NSDictionary * const accessTechnologyMapping = accessTechnologyMappingDic
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
-    if (metrics.transactionMetrics.count > 0) {
-        NSString *protocolName = metrics.transactionMetrics[0].networkProtocolName;
+    auto transactionMetrics = metrics.transactionMetrics;
+    if (transactionMetrics.count > 0) {
+        NSString *protocolName = transactionMetrics[0].networkProtocolName;
         if ([protocolName isEqualToString:@"http/1.1"]) {
             return @"1.1";
         }
@@ -48,7 +49,8 @@ static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetri
         return @"unavailable";
     }
     if (@available(macos 10.15 , ios 13.0 , watchos 6.0 , tvos 13.0, *)) {
-        if (metrics.transactionMetrics.count > 0 && metrics.transactionMetrics[0].cellular) {
+        auto transactionMetrics = metrics.transactionMetrics;
+        if (transactionMetrics.count > 0 && transactionMetrics[0].cellular) {
             return connectionTypeCell;
         }
     }
