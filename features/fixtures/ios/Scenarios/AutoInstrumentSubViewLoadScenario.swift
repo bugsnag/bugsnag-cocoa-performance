@@ -9,15 +9,14 @@ import UIKit
 
 class AutoInstrumentSubViewLoadScenario: Scenario {
     
-    override func startBugsnag() {
+    override func configure() {
+        super.configure()
         config.autoInstrumentViewControllers = true
-        super.startBugsnag()
     }
     
     override func run() {
         UIApplication.shared.windows[0].rootViewController!.present(
             AutoInstrumentSubViewLoadScenario_ViewController(), animated: true)
-        waitForCurrentBatch()
     }
 }
 

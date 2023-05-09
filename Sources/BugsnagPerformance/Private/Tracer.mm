@@ -37,8 +37,7 @@ void
 Tracer::start() noexcept {
     // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
     // Now that the sampler has been configured, re-sample everything.
-    batch_->allowDrain();
-    auto unsampledBatch = batch_->drain();
+    auto unsampledBatch = batch_->drain(true);
     for (auto spanData: *unsampledBatch) {
         tryAddSpanToBatch(spanData);
     }

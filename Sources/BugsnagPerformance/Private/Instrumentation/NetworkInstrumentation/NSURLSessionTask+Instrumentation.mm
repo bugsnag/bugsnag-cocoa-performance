@@ -12,9 +12,6 @@
 
 using namespace bugsnag;
 
-static const int associatedSpan = 0;
-const void *bsg_associatedNetworkSpanKey = &associatedSpan;
-
 static NSArray<Class> *getURLSessionTaskClassesWithResumeMethod() {
     // Modeled after:
     // https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/AFURLSessionManager.m#L355
@@ -42,23 +39,23 @@ static NSArray<Class> *getURLSessionTaskClassesWithResumeMethod() {
     return classes;
 }
 
-static void replace_NSURLSessionTask_resume(Class cls, std::shared_ptr<Tracer> tracer) {
+static void replace_NSURLSessionTask_resume(Class cls, BSGSessionTaskResumeCallback onResume) {
+    __weak BSGSessionTaskResumeCallback weakOnResume = onResume;
     SEL selector = @selector(resume);
     typedef void (*IMPPrototype)(id, SEL);
     __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::replaceInstanceMethodOverride(cls,
                                                                                             selector,
                                                                                             ^(id self) {
-        SpanOptions options;
-        auto span = tracer->startNetworkSpan([self originalRequest].HTTPMethod, options);
-        objc_setAssociatedObject(self, bsg_associatedNetworkSpanKey, span,
-                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
+        BSGSessionTaskResumeCallback localOnResume = weakOnResume;
+        if (localOnResume != nil) {
+            localOnResume(self);
+        }
         originalIMP(self, selector);
     });
 }
 
-void bsg_installNSURLSessionTaskPerformance(std::shared_ptr<Tracer> tracer) noexcept {
+void bsg_installNSURLSessionTaskPerformance(void (^onResume)(NSURLSessionTask *)) noexcept {
     for (Class cls in getURLSessionTaskClassesWithResumeMethod()) {
-        replace_NSURLSessionTask_resume(cls, tracer);
+        replace_NSURLSessionTask_resume(cls, onResume);
     }
 }

@@ -24,7 +24,10 @@ BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept 
 }
 
 void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
-    sharedInstance();
+    auto instance = sharedInstance();
+    auto config = [BSGEarlyConfiguration new];
+    instance.earlyConfigure(config);
+    instance.earlySetup();
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
@@ -52,6 +55,14 @@ BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
     bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
         bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
     });
+}
+
+void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    bugsnagPerformanceImpl_->earlyConfigure(config);
+}
+
+void BugsnagPerformanceLibrary::earlySetup() noexcept {
+    bugsnagPerformanceImpl_->earlySetup();
 }
 
 void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {

@@ -9,14 +9,14 @@
 #pragma once
 
 #import "OtlpPackage.h"
-#import "Configurable.h"
+#import "PhasedStartup.h"
 #import <vector>
 #import <memory>
 
 namespace bugsnag {
 
 
-class RetryQueue {
+class RetryQueue: public PhasedStartup {
 public:
     RetryQueue() = delete;
     RetryQueue(NSString *path) noexcept
@@ -24,8 +24,9 @@ public:
     , onFilesystemError(^{})
     {}
 
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-
     void start() noexcept;
 
     /**

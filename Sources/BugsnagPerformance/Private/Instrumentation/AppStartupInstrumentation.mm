@@ -60,7 +60,7 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 
 AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-: isEnabled_(true) // AppStartupInstrumentation starts out enabled
+: isEnabled_(true)
 , tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
@@ -76,11 +76,6 @@ void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *confi
     if (!config.autoInstrumentAppStarts) {
         disable();
     }
-}
-
-void AppStartupInstrumentation::start() noexcept {
-    // Nothing to do, but makes it clear that this hasn't been forgotten in
-    // Instrumentation::start()
 }
 
 void AppStartupInstrumentation::willCallMainFunction() noexcept {
@@ -112,11 +107,17 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
 void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    isEnabled_ = false;
-    tracer_->cancelQueuedSpan(preMainSpan_);
-    tracer_->cancelQueuedSpan(postMainSpan_);
-    tracer_->cancelQueuedSpan(uiInitSpan_);
-    tracer_->cancelQueuedSpan(appStartSpan_);
+    if (isEnabled_) {
+        isEnabled_ = false;
+        tracer_->cancelQueuedSpan(preMainSpan_);
+        tracer_->cancelQueuedSpan(postMainSpan_);
+        tracer_->cancelQueuedSpan(uiInitSpan_);
+        tracer_->cancelQueuedSpan(appStartSpan_);
+        preMainSpan_ = nil;
+        postMainSpan_ = nil;
+        uiInitSpan_ = nil;
+        appStartSpan_ = nil;
+    }
 }
 
 void

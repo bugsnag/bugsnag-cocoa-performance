@@ -35,7 +35,7 @@
     if ((self = [super init])) {
         _startTime = startTime;
         _parentContext = parentContext;
-        _makeContextCurrent = makeContextCurrent;
+        _makeCurrentContext = makeContextCurrent;
         _firstClass = firstClass;
     }
     return self;
@@ -45,7 +45,7 @@
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     return [BugsnagPerformanceSpanOptions optionsWithStartTime:_startTime
                                                  parentContext:_parentContext
-                                            makeContextCurrent:_makeContextCurrent
+                                            makeContextCurrent:_makeCurrentContext
                                                     firstClass:_firstClass];
 }
 

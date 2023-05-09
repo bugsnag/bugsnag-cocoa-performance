@@ -7,9 +7,11 @@
 //
 
 #import "Worker.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 @interface Worker ()
 
+@property(readwrite,atomic) NSTimeInterval initialRecurringWorkDelay;
 @property(readwrite,atomic) BOOL shouldEnd;
 @property(readonly,nonatomic) NSCondition *condition;
 @property(readonly,nonatomic) NSThread *thread;
@@ -53,6 +55,10 @@
 - (void) run {
     [self performInitialWork];
 
+    if (self.initialRecurringWorkDelay > 0) {
+        [NSThread sleepForTimeInterval:self.initialRecurringWorkDelay];
+    }
+
     for (;;) {
         @autoreleasepool {
             if (self.shouldEnd) {
@@ -69,6 +75,18 @@
             [self.condition unlock];
         }
     }
+}
+
+- (void)earlyConfigure:(BSGEarlyConfiguration *)config {
+
+}
+
+- (void)earlySetup {
+
+}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.initialRecurringWorkDelay = config.internal.initialRecurringWorkDelay;
 }
 
 - (void) start {

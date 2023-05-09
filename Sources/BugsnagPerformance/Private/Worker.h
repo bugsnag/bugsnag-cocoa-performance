@@ -9,6 +9,7 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import "PhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,14 +18,9 @@ typedef bool (^Task)();
 /**
  * The worker performs a set series of tasks on a background thread.
  */
-@interface Worker : NSObject
+@interface Worker : NSObject<BSGPhasedStartup>
 
 - (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks recurringTasks:(NSArray<Task> *)recurringTasks;
-
-/**
- * Start the worker thread, running the initial tasks and one run of the recurring tasks right away.
- */
-- (void) start;
 
 /**
  * Wake the worker to run through the recurring tasks until none of them do any work.

@@ -11,6 +11,7 @@
 #import "../Span.h"
 #import "../Tracer.h"
 #import "../Swizzle.h"
+#import "../Utils.h"
 
 #import <objc/runtime.h>
 
@@ -24,20 +25,17 @@ using namespace bugsnag;
 
 static constexpr int kAssociatedSpan = 0;
 
-void
-ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    callback_ = config.viewControllerInstrumentationCallback;
-    isEnabled_ = config.autoInstrumentViewControllers;
+void ViewLoadInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    isEnabled_ = config.enableSwizzling;
 }
 
-void
-ViewLoadInstrumentation::start() noexcept {
+void ViewLoadInstrumentation::earlySetup() noexcept {
     if (!isEnabled_) {
         return;
     }
 
     auto observedClasses = [NSMutableSet<Class> set];
-    
+
     for (auto image : imagesToInstrument()) {
         Trace(@"Instrumenting %s", image);
         for (auto cls : viewControllerSubclasses(image)) {
@@ -46,12 +44,25 @@ ViewLoadInstrumentation::start() noexcept {
             instrument(cls);
         }
     }
-    
+
     observedClasses_ = observedClasses;
-    
+
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
     instrument([UIViewController class]);
+}
+
+void
+ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    if (!isEnabled_ && config.autoInstrumentViewControllers) {
+        BSGLogInfo(@"Automatic view load instrumentation has been disabled because "
+                   "bugsnag/performance/disableSwizzling in Info.plist is set to YES");
+    }
+
+    isEnabled_ &= config.autoInstrumentViewControllers;
+    callback_ = config.viewControllerInstrumentationCallback;
+
+    endEarlySpanPhase();
 }
 
 void
@@ -80,6 +91,10 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+
+    if (isEarlySpanPhase_) {
+        markEarlySpan(span);
+    }
 
     objc_setAssociatedObject(viewController, &kAssociatedSpan, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -113,6 +128,22 @@ void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) 
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     objc_setAssociatedObject(viewController, &kAssociatedSpan, nil,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+void ViewLoadInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcept {
+    std::lock_guard<std::mutex> guard(earlySpansMutex_);
+    [earlySpans_ addObject:span];
+}
+
+void ViewLoadInstrumentation::endEarlySpanPhase() noexcept {
+    std::lock_guard<std::mutex> guard(earlySpansMutex_);
+    if (!isEnabled_) {
+        for (BugsnagPerformanceSpan *span: earlySpans_) {
+            tracer_->cancelQueuedSpan(span);
+        }
+    }
+    earlySpans_ = nil;
+    isEarlySpanPhase_ = false;
 }
 
 
@@ -171,11 +202,15 @@ ViewLoadInstrumentation::isViewControllerSubclass(Class cls) noexcept {
 
 void
 ViewLoadInstrumentation::instrument(Class cls) noexcept {
+    __block bool *isEnabled = &isEnabled_;
+
     SEL selector = @selector(loadView);
     IMP loadView __block = nullptr;
     loadView = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
-        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        onLoadView(self);
+        if (*isEnabled) {
+            Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+            onLoadView(self);
+        }
         reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
     });
 
@@ -185,20 +220,22 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     selector = @selector(viewDidAppear:);
     IMP viewDidAppear __block = nullptr;
     viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
-        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+        if (*isEnabled) {
+            Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+            onViewDidAppear(self);
+        }
         reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
-        onViewDidAppear(self);
     });
 
-// Temporarily disabled to stop crashes while we build a more complete solution
-//    selector = @selector(viewWillDisappear:);
-//    IMP viewWillDisappear __block = nullptr;
-//    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
-//        Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-//        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
-//        onViewWillDisappear(self);
-//    });
+    selector = @selector(viewWillDisappear:);
+    IMP viewWillDisappear __block = nullptr;
+    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
+        if (*isEnabled) {
+            Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+            onViewWillDisappear(self);
+        }
+        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+    });
 }
-
 
 // NOLINTEND(cppcoreguidelines-*)

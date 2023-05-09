@@ -26,7 +26,7 @@ public:
     SpanOptions(BugsnagPerformanceSpanOptions *options)
     : SpanOptions(options.parentContext,
                   options.startTime == nil ? CFAbsoluteTimeGetCurrent() : dateToAbsoluteTime(options.startTime),
-                  options.makeContextCurrent,
+                  options.makeCurrentContext,
                   options.firstClass)
     {}
     

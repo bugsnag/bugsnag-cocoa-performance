@@ -10,15 +10,14 @@
 #import "BugsnagPerformanceImpl.h"
 #import "AppStateTracker.h"
 #import "Instrumentation/Instrumentation.h"
-#import "Configurable.h"
-#import "Startable.h"
+#import "PhasedStartup.h"
 
 namespace bugsnag {
 
 /**
  * This singleton instance class ensures the correct initialization order and configuration of all library components.
  */
-class BugsnagPerformanceLibrary: private Configurable, private Startable {
+class BugsnagPerformanceLibrary: private PhasedStartup {
 public:
     static void configureLibrary(BugsnagPerformanceConfiguration *config) noexcept;
     static void startLibrary() noexcept;
@@ -41,6 +40,8 @@ private:
 
     static BugsnagPerformanceLibrary &sharedInstance() noexcept;
 
+    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
+    void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
 
