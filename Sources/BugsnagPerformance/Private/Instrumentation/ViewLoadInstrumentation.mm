@@ -234,7 +234,7 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
             onViewWillDisappear(self);
         }
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
     });
 }
 
