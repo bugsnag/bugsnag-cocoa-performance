@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBC
+
+### Bug fixes
+
+* Fix incorrect swizzle of `viewWillDisappear`
+  [134](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/134) ([AniHovhannisyanAni](https://github.com/AniHovhannisyanAni))
+
 ## 0.3.0 (2023-05-09)
 
 ### Breaking changes
