@@ -124,3 +124,18 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+
+  Scenario: Automatically start a network span that is a file:// scheme
+    Given I run "AutoInstrumentFileURLRequestScenario" and discard the initial p-value request
+    And I wait for 2 seconds
+    And I wait for 1 span
+    # We should only see the request to http://bs-local.com:9339/command, not the file:// request
+    Then the trace "Content-Type" header equals "application/json"
+    * a span field "parentSpanId" exists
+    * a span field "parentSpanId" is greater than 0
+    * a span field "parentSpanId" does not exist
+    * a span field "name" equals "[HTTP/GET]"
+    * a span string attribute "http.url" matches the regex "http://.*:9339/command"
+    * a span string attribute "http.method" equals "GET"
+    * a span integer attribute "http.status_code" is greater than 0
+    * a span integer attribute "http.response_content_length" is greater than 0

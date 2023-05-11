@@ -104,6 +104,9 @@ NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
     if (!isEnabled_) {
         return;
     }
+    if ([task.currentRequest.URL.scheme isEqualToString:@"file"]) {
+        return;
+    }
     SpanOptions options;
     auto span = tracer_->startNetworkSpan(task.originalRequest.HTTPMethod, options);
     objc_setAssociatedObject(task, associatedNetworkSpanKey, span,

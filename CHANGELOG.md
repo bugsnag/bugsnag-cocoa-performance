@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Don't capture file:// URLRequests
+  [138](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/138)
+
 ## 0.3.1 (2023-05-10)
 
 ### Bug fixes
