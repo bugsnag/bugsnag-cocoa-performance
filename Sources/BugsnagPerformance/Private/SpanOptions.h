@@ -15,11 +15,11 @@ class SpanOptions {
 public:
     SpanOptions(id<BugsnagPerformanceSpanContext> parentContext,
                 CFAbsoluteTime startTime,
-                bool makeContextCurrent,
+                bool makeCurrentContext,
                 BSGFirstClass firstClass)
     : parentContext(parentContext)
     , startTime(startTime)
-    , makeContextCurrent(makeContextCurrent)
+    , makeCurrentContext(makeCurrentContext)
     , firstClass(firstClass)
     {}
     
@@ -40,7 +40,7 @@ public:
     
     id<BugsnagPerformanceSpanContext> parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
-    bool makeContextCurrent{false};
+    bool makeCurrentContext{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};
 };
 

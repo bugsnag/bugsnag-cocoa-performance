@@ -3,6 +3,13 @@ Changelog
 
 ## TBD
 
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in rest of the codebase
+  [139](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/139)
+
 ### Bug fixes
 
 * Don't capture file:// URLRequests

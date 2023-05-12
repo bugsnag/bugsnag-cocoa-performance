@@ -46,7 +46,7 @@ using namespace bugsnag;
     SpanOptions cOptions(objcOptions);
     XCTAssertNil(cOptions.parentContext);
     XCTAssertTrue(isnan(cOptions.startTime));
-    XCTAssertTrue(cOptions.makeContextCurrent);
+    XCTAssertTrue(cOptions.makeCurrentContext);
     XCTAssertEqual(cOptions.firstClass, BSGFirstClassUnset);
 }
 
@@ -61,7 +61,7 @@ using namespace bugsnag;
     SpanOptions cOptions(objcOptions);
     XCTAssertEqual(1.0, cOptions.startTime);
     XCTAssertEqual(context, cOptions.parentContext);
-    XCTAssertEqual(true, cOptions.makeContextCurrent);
+    XCTAssertEqual(true, cOptions.makeCurrentContext);
     XCTAssertEqual(BSGFirstClassNo, cOptions.firstClass);
 }
 

@@ -32,12 +32,12 @@ OBJC_EXPORT
 
 + (instancetype)optionsWithStartTime:(NSDate *)starttime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
-                  makeContextCurrent:(BOOL)makeContextCurrent
+                  makeCurrentContext:(BOOL)makeCurrentContext
                           firstClass:(BSGFirstClass)firstClass;
 
 - (instancetype)initWithStartTime:(NSDate *)starttime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
-               makeContextCurrent:(BOOL)makeContextCurrent
+               makeCurrentContext:(BOOL)makeCurrentContext
                        firstClass:(BSGFirstClass)firstClass;
 
 - (instancetype)clone;

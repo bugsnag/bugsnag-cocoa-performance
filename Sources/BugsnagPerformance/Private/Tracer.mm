@@ -69,7 +69,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                        ^void(std::shared_ptr<SpanData> spanData) {
         blockThis->tryAddSpanToBatch(spanData);
     })];
-    if (options.makeContextCurrent) {
+    if (options.makeCurrentContext) {
         [spanContextStack_ push:span];
     }
     [span addAttributes:SpanAttributes::get()];
