@@ -139,3 +139,8 @@ Feature: Automatic instrumentation spans
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
+
+  Scenario: Don't send an auto network span that failed to send
+    Given I run "AutoInstrumentNetworkBadAddressScenario" and discard the initial p-value request
+    # Only the initial command request should be captured.
+    Then I wait for 1 span

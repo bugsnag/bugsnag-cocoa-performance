@@ -12,6 +12,9 @@ The following changes need attention when updating to this version of the librar
 
 ### Bug fixes
 
+* Don't send network spans for failed requests
+  [140](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/140)
+
 * Don't capture file:// URLRequests
   [138](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/138)
 
