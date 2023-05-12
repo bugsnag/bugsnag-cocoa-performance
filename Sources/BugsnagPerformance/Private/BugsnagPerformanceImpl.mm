@@ -345,7 +345,7 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 #pragma mark Spans
 
 void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
-    if (options.makeContextCurrent) {
+    if (options.makeCurrentContext) {
         [spanContextStack_ push:span];
     }
 }

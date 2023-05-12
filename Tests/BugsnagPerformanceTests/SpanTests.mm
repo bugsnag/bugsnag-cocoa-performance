@@ -74,7 +74,7 @@ static std::shared_ptr<Span> spanWithStartTime(CFAbsoluteTime startTime, OnSpanE
     __block std::shared_ptr<SpanData> spanData = nullptr;
     auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
     span->end(endTime);
-    XCTAssertEqual(spanData->endTime, CFAbsoluteTimeGetCurrent());
+    XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
 }
 
 - (void)testStartFarPastEndNearPast {
