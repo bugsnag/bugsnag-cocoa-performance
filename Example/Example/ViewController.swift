@@ -22,20 +22,11 @@ class ViewController: UIViewController {
         }
     }
 
-    func query(string: String) {
+    @IBAction func DoNetworkRequest(_ sender: Any) {
         let url = URL(string: "https://bugsnag.com")!
-        let semaphore = DispatchSemaphore(value: 0)
-
         let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
-            semaphore.signal()
         }
         task.resume()
-        semaphore.wait()
-        Thread.sleep(forTimeInterval: 1)
-    }
-
-    @IBAction func DoNetworkRequest(_ sender: Any) {
-        query(string: "x")
     }
 
     @IBAction func DoManualSpan(_ sender: Any) {
