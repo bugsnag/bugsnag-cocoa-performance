@@ -30,6 +30,12 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) noexcept {
     auto urlRequest = [NSMutableURLRequest requestWithURL:(NSURL *)endpoint_];
     [urlRequest setValue:apiKey_ forHTTPHeaderField:@"Bugsnag-Api-Key"];
+
+    NSString *timestamp = [NSISO8601DateFormatter stringFromDate:[NSDate new]
+                                                        timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]
+                                                   formatOptions:NSISO8601DateFormatWithInternetDateTime |
+                                                                 NSISO8601DateFormatWithFractionalSeconds];
+    [urlRequest setValue:timestamp forHTTPHeaderField:@"Bugsnag-Sent-At"];
     package.fillURLRequest(urlRequest);
 
     [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest completionHandler:

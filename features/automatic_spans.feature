@@ -6,6 +6,7 @@ Feature: Automatic instrumentation spans
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/Cold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
     * a span field "name" equals "[AppStartPhase/App launching - post main()]"
@@ -31,6 +32,7 @@ Feature: Automatic instrumentation spans
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -52,6 +54,7 @@ Feature: Automatic instrumentation spans
     And I wait for 2 seconds
     And I wait for 3 spans
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
@@ -78,6 +81,7 @@ Feature: Automatic instrumentation spans
     # Discard the request to http://bs-local.com:9339/command
     And I discard the oldest trace
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
     * a span field "parentSpanId" is greater than 0
     * a span field "parentSpanId" does not exist
@@ -106,6 +110,7 @@ Feature: Automatic instrumentation spans
     # Discard the request to http://bs-local.com:9339/command
     And I discard the oldest trace
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -131,6 +136,7 @@ Feature: Automatic instrumentation spans
     And I wait for 1 span
     # We should only see the request to http://bs-local.com:9339/command, not the file:// request
     Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
     * a span field "parentSpanId" is greater than 0
     * a span field "parentSpanId" does not exist

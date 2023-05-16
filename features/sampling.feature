@@ -10,4 +10,5 @@ Feature: Sampling
     And I run "SamplingProbabilityZeroScenario" and discard the initial p-value request
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "Post-start"

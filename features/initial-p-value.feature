@@ -5,6 +5,7 @@ Feature: Initial P values
     And I run "InitialPScenario"
     And I wait to receive 1 traces
     * the trace "Bugsnag-Span-Sampling" header equals "1:0"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans" is an array with 0 elements
 
   Scenario: Initial P value of 1
@@ -19,11 +20,14 @@ Feature: Initial P values
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:0"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     And I discard the oldest trace
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
 
   Scenario: ProbabilityExpiryScenario
     Given I run "ProbabilityExpiryScenario"
     And I wait to receive 2 traces
     * the trace "Bugsnag-Span-Sampling" header equals "1:0"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans" is an array with 0 elements
