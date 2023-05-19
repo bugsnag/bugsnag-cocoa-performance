@@ -10,6 +10,11 @@ The following changes need attention when updating to this version of the librar
 * Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in rest of the codebase
   [139](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/139)
 
+### Enhancements
+
+* Added view_load_phase spans
+  [143](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/143)
+
 ### Bug fixes
 
 * Don't send network spans for failed requests

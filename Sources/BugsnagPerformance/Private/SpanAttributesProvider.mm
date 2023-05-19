@@ -147,3 +147,12 @@ SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerfo
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
     };
 }
+
+NSDictionary *
+SpanAttributesProvider::viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load_phase",
+        @"bugsnag.view.name": className,
+        @"bugsnag.phase": phase,
+    };
+}

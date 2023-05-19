@@ -118,6 +118,12 @@ Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     return startSpan(name, options, BSGFirstClassUnset);
 }
 
+BugsnagPerformanceSpan *
+Tracer::startViewLoadPhaseSpan(NSString *name,
+                        SpanOptions options) noexcept {
+    return startSpan(name, options, BSGFirstClassUnset);
+}
+
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     if (span) {
         batch_->removeSpan(span.traceId, span.spanId);
