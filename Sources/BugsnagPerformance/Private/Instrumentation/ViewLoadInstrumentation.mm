@@ -283,12 +283,12 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     
     selector = @selector(viewWillAppear:);
     IMP viewWillAppear __block = nullptr;
-    viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
+    viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
         if (*isEnabled) {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         }
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillAppear");
-        reinterpret_cast<void (*)(id, SEL)>(viewWillAppear)(self, selector);
+        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         [span end];
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
@@ -323,12 +323,12 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     
     selector = @selector(viewWillLayoutSubviews);
     IMP viewWillLayoutSubviews __block = nullptr;
-    viewWillLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewWillLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
         if (*isEnabled) {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         }
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillLayoutSubviews");
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillLayoutSubviews)(self, selector, animated);
+        reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
         [span end];
         BugsnagPerformanceSpan *subviewLayoutSpan = startViewLoadPhaseSpan(self, @"Subview layout");
         objc_setAssociatedObject(self, &kAssociatedSubviewLayoutSpan, subviewLayoutSpan,
@@ -337,13 +337,13 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     
     selector = @selector(viewDidLayoutSubviews);
     IMP viewDidLayoutSubviews __block = nullptr;
-    viewDidLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated){
+    viewDidLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
         endSubviewsLayoutSpan(self);
         if (*isEnabled) {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         }
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLayoutSubviews");
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidLayoutSubviews)(self, selector, animated);
+        reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
         [span end];
     });
 }
