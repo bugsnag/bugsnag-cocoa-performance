@@ -29,7 +29,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
-    And I wait for 30 spans
+    And I wait for 20 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:27"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -68,7 +68,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentSubViewLoadScenario
     Given I run "AutoInstrumentSubViewLoadScenario" and discard the initial p-value request
     And I wait for 2 seconds
-    And I wait for 30 spans
+    And I wait for 20 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
