@@ -26,7 +26,7 @@ services:
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-legacy:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:integration-v8-cli-legacy
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:integration-v8-cli-legacy
     environment:
       DEBUG:
       BUILDKITE:
