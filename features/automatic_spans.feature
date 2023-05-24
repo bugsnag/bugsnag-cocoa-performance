@@ -29,7 +29,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
-    And I wait for 20 spans
+    And I wait for 30 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:27"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
