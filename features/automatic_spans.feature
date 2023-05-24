@@ -1,8 +1,7 @@
 Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentAppStartsScenario
-    Given I run "AutoInstrumentAppStartsScenario" and discard the initial p-value request
-    And I wait for 2 seconds
+    Given I run "AutoInstrumentAppStartsScenario"
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
@@ -28,7 +27,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: AutoInstrumentViewLoadScenario
-    Given I run "AutoInstrumentViewLoadScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentViewLoadScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -50,7 +49,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: AutoInstrumentSubViewLoadScenario
-    Given I run "AutoInstrumentSubViewLoadScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentSubViewLoadScenario"
     And I wait for 2 seconds
     And I wait for 3 spans
     Then the trace "Content-Type" header equals "application/json"
@@ -75,7 +74,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: Automatically start a network span that has a parent
-    Given I run "AutoInstrumentNetworkWithParentScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentNetworkWithParentScenario"
     And I wait for 2 seconds
     And I wait for 3 spans
     # Discard the request to http://bs-local.com:9339/command
@@ -104,7 +103,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: Automatically start a network span that has no parent
-    Given I run "AutoInstrumentNetworkNoParentScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentNetworkNoParentScenario"
     And I wait for 2 seconds
     And I wait for 3 spans
     # Discard the request to http://bs-local.com:9339/command
@@ -131,7 +130,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: Automatically start a network span that is a file:// scheme
-    Given I run "AutoInstrumentFileURLRequestScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentFileURLRequestScenario"
     And I wait for 2 seconds
     And I wait for 1 span
     # We should only see the request to http://bs-local.com:9339/command, not the file:// request
@@ -147,6 +146,6 @@ Feature: Automatic instrumentation spans
     * a span integer attribute "http.response_content_length" is greater than 0
 
   Scenario: Don't send an auto network span that failed to send
-    Given I run "AutoInstrumentNetworkBadAddressScenario" and discard the initial p-value request
+    Given I run "AutoInstrumentNetworkBadAddressScenario"
     # Only the initial command request should be captured.
     Then I wait for 1 span
