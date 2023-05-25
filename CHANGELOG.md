@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 0.4.0 (2023-05-25)
 
 ### Breaking changes
 
