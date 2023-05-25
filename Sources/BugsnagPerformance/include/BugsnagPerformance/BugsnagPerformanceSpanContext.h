@@ -17,10 +17,8 @@ typedef union {
         uint64_t hi;
     };
 } TraceId;
-static_assert(sizeof(TraceId) == 16, "Compiler issue: TraceId was not 16 bytes long");
 
 typedef uint64_t SpanId;
-static_assert(sizeof(SpanId) == 8, "Compiler issue: SpanId was not 8 bytes long");
 
 
 // https://opentelemetry.io/docs/reference/specification/trace/api/#spancontext

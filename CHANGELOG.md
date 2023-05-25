@@ -12,6 +12,9 @@ The following changes need attention when updating to this version of the librar
 
 ### Bug fixes
 
+* Removed C++ code from public headers
+  [147](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/147)
+
 * Protect against multithreaded span attributes access
   [146](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/146)
 
