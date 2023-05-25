@@ -140,4 +140,18 @@ static std::shared_ptr<Span> spanWithStartTime(CFAbsoluteTime startTime, OnSpanE
     XCTAssertEqual(spanData->endTime, endTime);
 }
 
+- (void)testMultithreadedAttributesAccess {
+    auto span = spanWithStartTime(0, ^(std::shared_ptr<SpanData>) {});
+
+    [NSThread detachNewThreadWithBlock:^{
+        for (int i = 0; i < 10000000; i++) {
+            span->addAttributes(@{@"a": @(i)});
+        }
+    }];
+
+    for(int i = 0; i < 1000000; i++) {
+        span->hasAttribute(@"a", @1);
+    }
+}
+
 @end

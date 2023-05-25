@@ -12,6 +12,7 @@
 
 #import "IdGenerator.h"
 #import "SpanKind.h"
+#import <mutex>
 
 namespace bugsnag {
 /**
@@ -44,5 +45,8 @@ public:
     CFAbsoluteTime startTime{0};
     CFAbsoluteTime endTime{0};
     BSGFirstClass firstClass{BSGFirstClassUnset};
+
+private:
+    std::mutex mutex_;
 };
 }
