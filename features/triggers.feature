@@ -1,7 +1,7 @@
 Feature: Automatic send triggers
 
   Scenario: BackgroundForegroundScenario
-    Given I run "BackgroundForegroundScenario" and discard the initial p-value request
+    Given I run "BackgroundForegroundScenario"
     And I send the app to the background for 2 seconds
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"

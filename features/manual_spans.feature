@@ -4,7 +4,7 @@ Feature: Manual creation of spans
 
   Scenario: Retry a manual span
     Given I set the HTTP status code for the next requests to "200,500,200,200"
-    And I run "RetryScenario" and discard the initial p-value request
+    And I run "RetryScenario"
     And I wait for 3 spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -13,7 +13,7 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end a span
-    Given I run "ManualSpanScenario" and discard the initial p-value request
+    Given I run "ManualSpanScenario"
     And I wait to receive an error
     And the error payload field "events.0.device.id" is stored as the value "bugsnag_device_id"
     And I wait for 1 span
@@ -45,7 +45,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: Starting and ending a span before starting the SDK
-    Given I run "ManualSpanBeforeStartScenario" and discard the initial p-value request
+    Given I run "ManualSpanBeforeStartScenario"
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -61,9 +61,9 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: Manually report a view load span
-    Given I run "ManualViewLoadScenario" and discard the initial p-value request
+    Given I run "ManualViewLoadScenario"
     And I wait for 2 spans
-    * the trace "Bugsnag-Span-Sampling" header is not null
+    * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/ManualViewController"
     * a span string attribute "bugsnag.view.name" equals "ManualViewController"
@@ -78,7 +78,7 @@ Feature: Manual creation of spans
     * every span string attribute "bugsnag.span.category" equals "view_load"
 
   Scenario: Manually report a UIViewController load span
-    Given I run "ManualUIViewLoadScenario" and discard the initial p-value request
+    Given I run "ManualUIViewLoadScenario"
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -92,7 +92,7 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start a network span
-    Given I run "ManualNetworkSpanScenario" and discard the initial p-value request
+    Given I run "ManualNetworkSpanScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -115,10 +115,10 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
   Scenario: Manually start and end a span field "with" batching
-    Given I run "BatchingScenario" and discard the initial p-value request
+    Given I run "BatchingScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header is not null
+    * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -133,10 +133,10 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end a span field "with" batching
-    Given I run "BatchingScenario" and discard the initial p-value request
+    Given I run "BatchingScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header is not null
+    * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "Span1"
     * a span field "name" equals "Span2"
@@ -151,7 +151,7 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end parent and child spans
-    Given I run "ParentSpanScenario" and discard the initial p-value request
+    Given I run "ParentSpanScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -170,7 +170,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
 
   Scenario: Manually start and end first-class = yes span
-    Given I run "FirstClassYesScenario" and discard the initial p-value request
+    Given I run "FirstClassYesScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -186,7 +186,7 @@ Feature: Manual creation of spans
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end first-class = no span
-    Given I run "FirstClassNoScenario" and discard the initial p-value request
+    Given I run "FirstClassNoScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

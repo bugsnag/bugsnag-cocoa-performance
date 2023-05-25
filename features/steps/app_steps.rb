@@ -9,13 +9,6 @@ When('I run {string}') do |scenario_name|
   raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
-When("I run {string} and discard the initial p-value request") do |scenario|
-  steps %Q{
-    When I run "#{scenario}"
-    And I receive and discard the initial p-value request
-  }
-end
-
 # Note:
 # every = every single span must have this field, and each must match the expected value
 # all   = every span that has this field must match the expected value
