@@ -12,11 +12,11 @@
 
 + (instancetype)optionsWithStartTime:(NSDate *)startTime
                        parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
-                  makeContextCurrent:(BOOL)makeContextCurrent
+                  makeCurrentContext:(BOOL)makeCurrentContext
                           firstClass:(BSGFirstClass)firstClass {
     return [[self alloc] initWithStartTime:startTime
                              parentContext:parentContext
-                        makeContextCurrent:makeContextCurrent
+                        makeCurrentContext:makeCurrentContext
                                 firstClass:firstClass];
 }
 
@@ -24,18 +24,18 @@
     // These defaults must match the defaults in SpanOptions.h
     return [self initWithStartTime:nil
                      parentContext:nil
-                makeContextCurrent:true
+                makeCurrentContext:true
                         firstClass:BSGFirstClassUnset];
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
                     parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
-               makeContextCurrent:(BOOL)makeContextCurrent
+               makeCurrentContext:(BOOL)makeCurrentContext
                        firstClass:(BSGFirstClass)firstClass {
     if ((self = [super init])) {
         _startTime = startTime;
         _parentContext = parentContext;
-        _makeCurrentContext = makeContextCurrent;
+        _makeCurrentContext = makeCurrentContext;
         _firstClass = firstClass;
     }
     return self;
@@ -45,7 +45,7 @@
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     return [BugsnagPerformanceSpanOptions optionsWithStartTime:_startTime
                                                  parentContext:_parentContext
-                                            makeContextCurrent:_makeCurrentContext
+                                            makeCurrentContext:_makeCurrentContext
                                                     firstClass:_firstClass];
 }
 

@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## 0.4.0 (2023-05-25)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in rest of the codebase
+  [139](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/139)
+
+### Bug fixes
+
+* Removed C++ code from public headers
+  [147](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/147)
+
+* Protect against multithreaded span attributes access
+  [146](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/146)
+
+* Don't send network spans for failed requests
+  [140](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/140)
+
+* Don't capture file:// URLRequests
+  [138](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/138)
+
 ## 0.3.1 (2023-05-10)
 
 ### Bug fixes

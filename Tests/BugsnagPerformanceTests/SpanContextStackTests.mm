@@ -30,8 +30,7 @@ static std::atomic<int> counter;
 
 static BugsnagPerformanceSpan *newSpan() {
     TraceId tid = {.value = 1};
-    auto data = std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset);
-    auto span = std::make_unique<Span>(std::move(data), ^(std::shared_ptr<SpanData>) {});
+    auto span = std::make_unique<Span>(@"test", tid, 1, 0, 0, BSGFirstClassUnset, ^(std::shared_ptr<SpanData>) {});
     return [[BugsnagPerformanceSpan alloc] initWithSpan:std::move(span)];
 }
 

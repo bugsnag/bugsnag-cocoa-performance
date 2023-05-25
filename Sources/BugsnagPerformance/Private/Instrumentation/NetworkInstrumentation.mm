@@ -72,6 +72,12 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         return;
     }
 
+    auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
+
+    if (task.error != nil || task.response == nil || httpResponse.statusCode == 0) {
+        return;
+    }
+
     if (self.baseEndpointStr.length > 0 && [task.originalRequest.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
         return;
     }
@@ -102,6 +108,9 @@ NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
 })
 , onSessionTaskResume_(^(NSURLSessionTask *task) {
     if (!isEnabled_) {
+        return;
+    }
+    if ([task.currentRequest.URL.scheme isEqualToString:@"file"]) {
         return;
     }
     SpanOptions options;

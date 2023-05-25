@@ -25,7 +25,7 @@ using namespace bugsnag;
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
 - (void)end {
-    _span->end(CFAbsoluteTimeGetCurrent());
+    _span->end(CFABSOLUTETIME_INVALID);
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {

@@ -1,10 +1,9 @@
 version: '3.6'
 services:
   cocoa-maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:integration-v8-cli
     environment:
       DEBUG:
-      VERBOSE:
       BUILDKITE:
       BUILDKITE_BRANCH:
       BUILDKITE_BUILD_CREATOR:
@@ -17,6 +16,7 @@ services:
       BUILDKITE_RETRY_COUNT:
       BUILDKITE_STEP_KEY:
       MAZE_BUGSNAG_API_KEY:
+      MAZE_ASPECTO_REPEATER_API_KEY:
       MAZE_REPEATER_API_KEY:
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
@@ -26,10 +26,9 @@ services:
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-legacy:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli-legacy
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:integration-v8-cli-legacy
     environment:
       DEBUG:
-      VERBOSE:
       BUILDKITE:
       BUILDKITE_BRANCH:
       BUILDKITE_BUILD_CREATOR:
