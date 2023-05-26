@@ -9,24 +9,15 @@
 #import <XCTest/XCTest.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
+#import "Span.h"
+#import "SpanData.h"
 #import "SpanOptions.h"
+#import "BugsnagPerformanceSpan+Private.h"
+#import <memory>
 
 using namespace bugsnag;
 
 @interface SpanOptionsTests : XCTestCase
-
-@end
-
-@interface MockContext: NSObject<BugsnagPerformanceSpanContext>
-
-@property(nonatomic,readonly) TraceId traceId;
-@property(nonatomic,readonly) SpanId spanId;
-
-@end
-
-@implementation MockContext
-
-@synthesize isValid;
 
 @end
 
@@ -51,16 +42,24 @@ using namespace bugsnag;
 }
 
 - (void)testConversion {
-    id<BugsnagPerformanceSpanContext> context = [MockContext new];
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(@"test",
+                                                                                                          IdGenerator::generateTraceId(),
+                                                                                                          IdGenerator::generateSpanId(),
+                                                                                                          IdGenerator::generateSpanId(),
+                                                                                                          SpanOptions().startTime,
+                                                                                                          BSGFirstClassNo,
+                                                                                                          ^void(std::shared_ptr<SpanData> spanData) {
+        NSLog(@"%llu", spanData->spanId);
+    })];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
-    objcOptions.parentContext = context;
+    objcOptions.parentContext = span;
     objcOptions.makeCurrentContext = true;
     objcOptions.firstClass = BSGFirstClassNo;
-
+    
     SpanOptions cOptions(objcOptions);
     XCTAssertEqual(1.0, cOptions.startTime);
-    XCTAssertEqual(context, cOptions.parentContext);
+    XCTAssertEqual(span, cOptions.parentContext);
     XCTAssertEqual(true, cOptions.makeCurrentContext);
     XCTAssertEqual(BSGFirstClassNo, cOptions.firstClass);
 }

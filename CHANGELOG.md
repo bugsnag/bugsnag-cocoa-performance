@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Improved span starting and ending performance
+  [151](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/151)
+
 ## 0.4.0 (2023-05-25)
 
 ### Breaking changes

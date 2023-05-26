@@ -58,6 +58,10 @@
 		96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */; };
 		96D4160A29F05FA900AEE435 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D4160929F05FA900AEE435 /* CoreTelephony.framework */; };
 		96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */; };
+		96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */; };
+		96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */; };
+		96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C822A1EBA35006D1F29 /* SpanActivityState.h */; };
+		96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -76,16 +80,12 @@
 		CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB572EA929BB783200FD7A2A /* AppStateTracker.m */; };
 		CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */; };
 		CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D20299E5458003CA1B4 /* TimeTests.mm */; };
-		CB747D24299F6E03003CA1B4 /* SpanContextStack.h in Headers */ = {isa = PBXBuildFile; fileRef = CB747D22299F6E03003CA1B4 /* SpanContextStack.h */; };
-		CB747D25299F6E03003CA1B4 /* SpanContextStack.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */; };
-		CB747D27299F934E003CA1B4 /* SpanContextStackTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */; };
 		CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */; };
 		CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */; };
 		CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */ = {isa = PBXBuildFile; fileRef = CB78819F29E698BF00A58906 /* PhasedStartup.h */; };
 		CB7FD929299BA5AD00499E13 /* ViewControllerSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */; };
 		CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */; };
-		CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBA22C962A0137230066A2C1 /* EarlyConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */; };
 		CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */; };
 		CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */; };
@@ -213,6 +213,10 @@
 		96D4160929F05FA900AEE435 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/System/Library/Frameworks/CoreTelephony.framework; sourceTree = DEVELOPER_DIR; };
 		96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanAttributesProvider.mm; sourceTree = "<group>"; };
 		96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanAttributesProvider.h; sourceTree = "<group>"; };
+		96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanStackingHandler.h; sourceTree = "<group>"; };
+		96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandler.mm; sourceTree = "<group>"; };
+		96D55C822A1EBA35006D1F29 /* SpanActivityState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanActivityState.h; sourceTree = "<group>"; };
+		96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandlerTests.mm; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -231,18 +235,13 @@
 		CB572EA929BB783200FD7A2A /* AppStateTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStateTracker.m; sourceTree = "<group>"; };
 		CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanOptionsTests.mm; sourceTree = "<group>"; };
 		CB747D20299E5458003CA1B4 /* TimeTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeTests.mm; sourceTree = "<group>"; };
-		CB747D22299F6E03003CA1B4 /* SpanContextStack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContextStack.h; sourceTree = "<group>"; };
-		CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContextStack.mm; sourceTree = "<group>"; };
-		CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContextStackTests.mm; sourceTree = "<group>"; };
 		CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLibrary.mm; sourceTree = "<group>"; };
 		CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceLibrary.h; sourceTree = "<group>"; };
 		CB78819F29E698BF00A58906 /* PhasedStartup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhasedStartup.h; sourceTree = "<group>"; };
 		CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewControllerSpanTests.mm; sourceTree = "<group>"; };
 		CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanOptions.h; sourceTree = "<group>"; };
 		CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceSpanOptions.m; sourceTree = "<group>"; };
-		CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
 		CB7FD935299D330500499E13 /* SpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanOptions.h; sourceTree = "<group>"; };
-		CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SpanContextStack+Private.h"; sourceTree = "<group>"; };
 		CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EarlyConfiguration.h; sourceTree = "<group>"; };
 		CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfiguration.mm; sourceTree = "<group>"; };
 		CBA22C982A03EA300066A2C1 /* NetworkCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkCommon.h; sourceTree = "<group>"; };
@@ -357,7 +356,6 @@
 				0122C21929019770002D243C /* BugsnagPerformanceConfiguration.h */,
 				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
-				CB7FD933299D309B00499E13 /* BugsnagPerformanceSpanContext.h */,
 				CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */,
 				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
 			);
@@ -426,9 +424,6 @@
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
 				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
 				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
-				CB747D22299F6E03003CA1B4 /* SpanContextStack.h */,
-				CB747D23299F6E03003CA1B4 /* SpanContextStack.mm */,
-				CB85404529D5D395008B58D6 /* SpanContextStack+Private.h */,
 				0122C22829019770002D243C /* SpanData.h */,
 				0122C22129019770002D243C /* SpanData.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
@@ -443,6 +438,9 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
+				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
+				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
+				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -500,12 +498,12 @@
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
-				CB747D26299F934E003CA1B4 /* SpanContextStackTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
 				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
+				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -590,9 +588,8 @@
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
 				CBA22C962A0137230066A2C1 /* EarlyConfiguration.h in Headers */,
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
-				CB747D24299F6E03003CA1B4 /* SpanContextStack.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
-				CB7FD934299D31D300499E13 /* BugsnagPerformanceSpanContext.h in Headers */,
+				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
 				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
@@ -607,6 +604,7 @@
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
+				96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */,
 				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
 				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
@@ -791,7 +789,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB747D27299F934E003CA1B4 /* SpanContextStackTests.mm in Sources */,
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
@@ -804,6 +801,7 @@
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */,
 				CBEC51CE296EEF52009C0CE3 /* PersistenceTests.mm in Sources */,
+				96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */,
 				CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */,
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
@@ -829,7 +827,6 @@
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
-				CB747D25299F6E03003CA1B4 /* SpanContextStack.mm in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
@@ -850,6 +847,7 @@
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
+				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,

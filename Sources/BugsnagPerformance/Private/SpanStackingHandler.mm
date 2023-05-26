@@ -1,0 +1,148 @@
+//
+//  SpanStackingHandler.mm
+//  BugsnagPerformance-iOS
+//
+//  Created by Robert B on 24/05/2023.
+//  Copyright © 2023 Bugsnag. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "SpanStackingHandler.h"
+#import "BugsnagPerformanceSpan+Private.h"
+#import "SpanActivityState.h"
+#import <os/activity.h>
+#import <memory>
+
+using namespace bugsnag;
+
+SpanStackingHandler::SpanStackingHandler() noexcept {};
+
+static inline os_activity_id_t currentActivityId() {
+    return os_activity_get_identifier(OS_ACTIVITY_CURRENT, nil);
+}
+
+void
+SpanStackingHandler::push(BugsnagPerformanceSpan *span) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    os_activity_id_t parentActivityId = currentActivityId();
+    os_activity_scope_state_s activityState;
+    os_activity_t activity = os_activity_create("BSGSpanContext", OS_ACTIVITY_CURRENT, OS_ACTIVITY_FLAG_DEFAULT);
+    os_activity_id_t activityId = os_activity_get_identifier(activity, nil);
+    os_activity_scope_enter(activity, &activityState);
+    
+    this->activityIdToSpanState_[activityId] = std::make_shared<SpanActivityState>(span, activityState, parentActivityId);
+    this->spanIdToActivityId_[span.spanId] = activityId;
+    std::shared_ptr<SpanActivityState> parentState = spanStateForActivity(parentActivityId);
+    if (parentState != nullptr) {
+        parentState->childSpansCount++;
+    }
+    __block auto blockThis = this;
+    span.onDumped = ^void(BugsnagPerformanceSpan *dumpedSpan) {
+        std::lock_guard<std::mutex> blockGuard(blockThis->mutex_);
+        auto state = blockThis->spanStateForSpan(dumpedSpan.spanId);
+        if (state != nullptr) {
+            state->isDumped = true;
+            blockThis->removeSpan(dumpedSpan.spanId);
+        }
+    };
+}
+
+BugsnagPerformanceSpan *
+SpanStackingHandler::currentSpan() {
+    std::lock_guard<std::mutex> guard(mutex_);
+    std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
+    if (state == nullptr) {
+        return nullptr;
+    }
+    if (!(state->span.isValid)) {
+        return nullptr;
+    }
+    return state->span;
+}
+
+void
+SpanStackingHandler::didEnd(SpanId spanId) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    removeSpan(spanId);
+}
+
+bool
+SpanStackingHandler::hasSpanWithAttribute(NSString *attribute, NSString *value) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
+    while (state != nullptr) {
+        if (state->span.isValid) {
+            if ([state->span hasAttribute:attribute withValue:value]) {
+                return true;
+            }
+        }
+        state = spanStateForActivity(state->parentActivityId);
+    }
+    return false;
+}
+
+void
+SpanStackingHandler::sweep(SpanId spanId) {
+    os_activity_id_t activityId = activityIdForSpan(spanId);
+    std::shared_ptr<SpanActivityState> state = spanStateForActivity(activityId);
+    while (state != nullptr) {
+        if ((state->span != nullptr && state->span.isValid && !(state->isDumped))) {
+            return;
+        }
+        if (currentActivityId() == activityId) {
+            os_activity_scope_leave(&(state->activityState));
+        }
+        if (state->childSpansCount <= 0) {
+            spanIdToActivityId_.erase(state->spanId);
+            activityIdToSpanState_.erase(activityId);
+        }
+        activityId = state->parentActivityId;
+        state = spanStateForActivity(state->parentActivityId);
+    }
+}
+
+void
+SpanStackingHandler::removeSpan(SpanId spanId) {
+    std::shared_ptr<SpanActivityState> state = spanStateForSpan(spanId);
+    if (state != nullptr && state->parentActivityId != 0) {
+        std::shared_ptr<SpanActivityState> parentState = spanStateForActivity(state->parentActivityId);
+        if (parentState != nullptr) {
+            parentState->childSpansCount--;
+        }
+    }
+    sweep(spanId);
+}
+
+os_activity_id_t
+SpanStackingHandler::activityIdForSpan(SpanId spanId) {
+    auto result = spanIdToActivityId_.find(spanId);
+    if (result == spanIdToActivityId_.end()) {
+        return 0;
+    }
+    return (*result).second;
+}
+
+std::shared_ptr<SpanActivityState>
+SpanStackingHandler::spanStateForSpan(SpanId spanId) {
+    return spanStateForActivity(activityIdForSpan(spanId));
+}
+
+std::shared_ptr<SpanActivityState>
+SpanStackingHandler::spanStateForActivity(os_activity_id_t activityId) {
+    auto result = activityIdToSpanState_.find(activityId);
+    if (result == activityIdToSpanState_.end()) {
+        return nullptr;
+    }
+    return (*result).second;
+}
+
+bool
+SpanStackingHandler::unitTest_isEmpty() {
+    if (activityIdToSpanState_.size() > 0) {
+        return false;
+    }
+    if (spanIdToActivityId_.size() > 0) {
+        return false;
+    }
+    return true;
+}
