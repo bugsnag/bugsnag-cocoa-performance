@@ -50,6 +50,8 @@
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
+		966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
@@ -140,6 +142,13 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		966DD5032A211D7F002030B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
 		96D4160429E6F6B500AEE435 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
@@ -155,6 +164,20 @@
 			remoteInfo = BugsnagPerformanceTestsApp;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		966DD5052A211D7F002030B2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0122C21729019770002D243C /* BugsnagPerformanceSpan.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpan.h; sourceTree = "<group>"; };
@@ -317,6 +340,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -672,10 +696,12 @@
 				96D415EC29E6ADC500AEE435 /* Sources */,
 				96D415ED29E6ADC500AEE435 /* Frameworks */,
 				96D415EE29E6ADC500AEE435 /* Resources */,
+				966DD5052A211D7F002030B2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				966DD5042A211D7F002030B2 /* PBXTargetDependency */,
 			);
 			name = BugsnagPerformanceTestsApp;
 			productName = BugsnagPerformanceTestsApp;
@@ -885,6 +911,11 @@
 			isa = PBXTargetDependency;
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
+		};
+		966DD5042A211D7F002030B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = 966DD5032A211D7F002030B2 /* PBXContainerItemProxy */;
 		};
 		96D4160529E6F6B500AEE435 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
