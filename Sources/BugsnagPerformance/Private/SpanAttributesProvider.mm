@@ -20,7 +20,6 @@ static NSDictionary *accessTechnologyMappingDictionary();
 // https://stackoverflow.com/questions/58426438/what-is-key-in-cttelephonynetworkinfo-servicesubscribercellularproviders-and-c
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
-static NSDictionary * const accessTechnologyMapping = accessTechnologyMappingDictionary();
 
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
@@ -58,24 +57,28 @@ static NSString *getConnectionType(NSURLSessionTask *task, NSURLSessionTaskMetri
 }
 
 static NSDictionary *accessTechnologyMappingDictionary() {
-    NSMutableDictionary *result = [@{
-        CTRadioAccessTechnologyGPRS: @"gprs",
-        CTRadioAccessTechnologyEdge: @"edge",
-        CTRadioAccessTechnologyWCDMA: @"wcdma",
-        CTRadioAccessTechnologyHSDPA: @"hsdpa",
-        CTRadioAccessTechnologyHSUPA: @"hsupa",
-        CTRadioAccessTechnologyCDMA1x: @"cdma",
-        CTRadioAccessTechnologyCDMAEVDORev0: @"evdo_0",
-        CTRadioAccessTechnologyCDMAEVDORevA: @"evdo_a",
-        CTRadioAccessTechnologyCDMAEVDORevB: @"evdo_b",
-        CTRadioAccessTechnologyeHRPD: @"ehrpd",
-        CTRadioAccessTechnologyLTE: @"lte",
-    } mutableCopy];
-    if (@available(iOS 14.1, *)) {
-        result[CTRadioAccessTechnologyNRNSA] = @"nrnsa";
-        result[CTRadioAccessTechnologyNR] = @"nr";
-    }
-    return result;
+    static NSMutableDictionary *accessTechnologyMapping;
+    static dispatch_once_t onceT;
+    dispatch_once(&onceT, ^(){
+        accessTechnologyMapping = [@{
+            CTRadioAccessTechnologyGPRS: @"gprs",
+            CTRadioAccessTechnologyEdge: @"edge",
+            CTRadioAccessTechnologyWCDMA: @"wcdma",
+            CTRadioAccessTechnologyHSDPA: @"hsdpa",
+            CTRadioAccessTechnologyHSUPA: @"hsupa",
+            CTRadioAccessTechnologyCDMA1x: @"cdma",
+            CTRadioAccessTechnologyCDMAEVDORev0: @"evdo_0",
+            CTRadioAccessTechnologyCDMAEVDORevA: @"evdo_a",
+            CTRadioAccessTechnologyCDMAEVDORevB: @"evdo_b",
+            CTRadioAccessTechnologyeHRPD: @"ehrpd",
+            CTRadioAccessTechnologyLTE: @"lte",
+        } mutableCopy];
+        if (@available(iOS 14.1, *)) {
+            accessTechnologyMapping[CTRadioAccessTechnologyNRNSA] = @"nrnsa";
+            accessTechnologyMapping[CTRadioAccessTechnologyNR] = @"nr";
+        }
+    });
+    return accessTechnologyMapping;
 }
 
 static NSString *getConnectionSubtype(NSString *networkType) {
@@ -88,7 +91,7 @@ static NSString *getConnectionSubtype(NSString *networkType) {
             accessTechnology = [CTTelephonyNetworkInfo new].currentRadioAccessTechnology;
         }
         if (accessTechnology) {
-            return accessTechnologyMapping[accessTechnology];
+            return accessTechnologyMappingDictionary()[accessTechnology];
         }
 #endif
     }

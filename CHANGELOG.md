@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed a crash in the `SpanAttributesProvider.mm`
+  [153](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/153)
+
 ## 0.4.0 (2023-05-25)
 
 ### Breaking changes
