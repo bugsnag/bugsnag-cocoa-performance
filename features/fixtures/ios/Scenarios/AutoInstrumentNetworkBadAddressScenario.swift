@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objcMembers
 class AutoInstrumentNetworkBadAddressScenario: Scenario {
 
     lazy var baseURL: URL = {

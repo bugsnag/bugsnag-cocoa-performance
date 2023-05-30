@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class BatchingScenario: Scenario {
 
     override func configure() {

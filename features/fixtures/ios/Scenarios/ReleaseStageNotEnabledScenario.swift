@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ReleaseStageNotEnabledScenario: Scenario {
     
     override func configure() {
