@@ -30,7 +30,7 @@ Feature: Initial P values
 
   Scenario: ProbabilityExpiryScenario
     Given I run "ProbabilityExpiryScenario"
-    And I wait to receive a sampling request
+    And I wait to receive at least 1 sampling request
     * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
     * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the sampling request payload field "resourceSpans" is an array with 0 elements
