@@ -6,8 +6,6 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
-
 typedef NS_ENUM(uint8_t, BSGFirstClass) {
     BSGFirstClassNo = 0,
     BSGFirstClassYes = 1,
@@ -22,7 +20,7 @@ OBJC_EXPORT
 @property(nonatomic,readwrite,strong) NSDate *startTime;
 
 // The context that this span is to be a child of, or nil if this will be a top-level span.
-@property(nonatomic,readwrite,strong) id<BugsnagPerformanceSpanContext> parentContext;
+@property(nonatomic,readwrite,strong) BugsnagPerformanceSpan *parentContext;
 
 // If true, the span will be added to the current context stack.
 @property(nonatomic,readwrite) BOOL makeCurrentContext;
@@ -31,12 +29,12 @@ OBJC_EXPORT
 @property(nonatomic,readwrite) BSGFirstClass firstClass;
 
 + (instancetype)optionsWithStartTime:(NSDate *)starttime
-                       parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
+                       parentContext:(BugsnagPerformanceSpan *)parentContext
                   makeCurrentContext:(BOOL)makeCurrentContext
                           firstClass:(BSGFirstClass)firstClass;
 
 - (instancetype)initWithStartTime:(NSDate *)starttime
-                    parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
+                    parentContext:(BugsnagPerformanceSpan *)parentContext
                makeCurrentContext:(BOOL)makeCurrentContext
                        firstClass:(BSGFirstClass)firstClass;
 

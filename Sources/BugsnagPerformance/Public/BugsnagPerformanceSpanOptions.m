@@ -6,12 +6,14 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 
 @implementation BugsnagPerformanceSpanOptions
 
 + (instancetype)optionsWithStartTime:(NSDate *)startTime
-                       parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
+                       parentContext:(BugsnagPerformanceSpan *)parentContext
                   makeCurrentContext:(BOOL)makeCurrentContext
                           firstClass:(BSGFirstClass)firstClass {
     return [[self alloc] initWithStartTime:startTime
@@ -29,7 +31,7 @@
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
-                    parentContext:(id<BugsnagPerformanceSpanContext>)parentContext
+                    parentContext:(BugsnagPerformanceSpan *)parentContext
                makeCurrentContext:(BOOL)makeCurrentContext
                        firstClass:(BSGFirstClass)firstClass {
     if ((self = [super init])) {

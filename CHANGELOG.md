@@ -3,6 +3,13 @@ Changelog
 
 ## TBD
 
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Improved span starting and ending performance
+  [151](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/151)
+
 ### Bug fixes
 
 * Fixed a crash in the `SpanAttributesProvider.mm`

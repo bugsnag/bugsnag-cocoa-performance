@@ -6,6 +6,7 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import "Utils.h"
 
@@ -13,7 +14,7 @@ namespace bugsnag {
 
 class SpanOptions {
 public:
-    SpanOptions(id<BugsnagPerformanceSpanContext> parentContext,
+    SpanOptions(BugsnagPerformanceSpan *parentContext,
                 CFAbsoluteTime startTime,
                 bool makeCurrentContext,
                 BSGFirstClass firstClass)
@@ -38,7 +39,7 @@ public:
                   BSGFirstClassUnset)
     {}
     
-    id<BugsnagPerformanceSpanContext> parentContext{nil};
+    BugsnagPerformanceSpan *parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeCurrentContext{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};
