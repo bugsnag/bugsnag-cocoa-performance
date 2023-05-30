@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class InitialPScenario: Scenario {
 
     override func configure() {

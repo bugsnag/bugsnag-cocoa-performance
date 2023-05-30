@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objcMembers
 class AutoInstrumentFileURLRequestScenario: Scenario {
 
     override func configure() {
