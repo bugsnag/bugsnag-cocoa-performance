@@ -88,6 +88,7 @@ public:
 
     TraceId traceId() {return data_->traceId;}
     SpanId spanId() {return data_->spanId;}
+    SpanId parentId() {return data_->parentId;}
 
 private:
     std::shared_ptr<SpanData> data_;

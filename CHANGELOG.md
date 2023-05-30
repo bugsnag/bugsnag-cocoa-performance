@@ -7,6 +7,20 @@ Changelog
 
 The following changes need attention when updating to this version of the library:
 
+* Improved span starting and ending performance
+  [151](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/151)
+
+### Bug fixes
+
+* Fixed a crash in the `SpanAttributesProvider.mm`
+  [153](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/153)
+
+## 0.4.0 (2023-05-25)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
 * Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in rest of the codebase
   [139](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/139)
 
@@ -16,6 +30,12 @@ The following changes need attention when updating to this version of the librar
   [143](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/143)
 
 ### Bug fixes
+
+* Removed C++ code from public headers
+  [147](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/147)
+
+* Protect against multithreaded span attributes access
+  [146](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/146)
 
 * Don't send network spans for failed requests
   [140](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/140)

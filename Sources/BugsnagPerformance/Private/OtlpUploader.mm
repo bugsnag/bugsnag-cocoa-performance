@@ -31,10 +31,13 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
     auto urlRequest = [NSMutableURLRequest requestWithURL:(NSURL *)endpoint_];
     [urlRequest setValue:apiKey_ forHTTPHeaderField:@"Bugsnag-Api-Key"];
 
+    NSISO8601DateFormatOptions options = NSISO8601DateFormatWithInternetDateTime;
+    if (@available(iOS 11.2, *)) {
+        options |= NSISO8601DateFormatWithFractionalSeconds;
+    }
     NSString *timestamp = [NSISO8601DateFormatter stringFromDate:[NSDate new]
                                                         timeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]
-                                                   formatOptions:NSISO8601DateFormatWithInternetDateTime |
-                                                                 NSISO8601DateFormatWithFractionalSeconds];
+                                                   formatOptions:options];
     [urlRequest setValue:timestamp forHTTPHeaderField:@"Bugsnag-Sent-At"];
     package.fillURLRequest(urlRequest);
 

@@ -14,8 +14,8 @@
 #import "Batch.h"
 #import "SpanOptions.h"
 #import "PhasedStartup.h"
-#import "SpanContextStack.h"
 #import "SpanAttributesProvider.h"
+#import "SpanStackingHandler.h"
 
 #import <memory>
 
@@ -27,7 +27,7 @@ namespace bugsnag {
  */
 class Tracer: public PhasedStartup {
 public:
-    Tracer(SpanContextStack *spanContextStack,
+    Tracer(std::shared_ptr<SpanStackingHandler> spanContextStack,
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
            void (^onSpanStarted)()) noexcept;
@@ -58,7 +58,7 @@ public:
 
 private:
     std::shared_ptr<Sampler> sampler_;
-    SpanContextStack *spanContextStack_;
+    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};

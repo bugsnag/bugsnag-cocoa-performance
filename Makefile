@@ -123,9 +123,8 @@ test: ## Run unit tests
 	@$(XCODEBUILD) -version
 	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
-test-fixtures: ## Build the end-to-end test fixture
-	@./features/scripts/export_ios_app.sh
-	@./features/scripts/export_mac_app.sh
+test-fixture: ## Build the end-to-end test fixture
+	@./features/fixtures/ios/build.sh
 
 e2e_ios_local:
 	@./features/scripts/export_ios_app.sh
