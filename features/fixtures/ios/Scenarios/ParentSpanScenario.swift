@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ParentSpanScenario: Scenario {
 
     override func configure() {

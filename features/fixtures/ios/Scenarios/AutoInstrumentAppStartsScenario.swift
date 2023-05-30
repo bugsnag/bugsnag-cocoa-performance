@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class AutoInstrumentAppStartsScenario: Scenario {
     
     override func configure() {

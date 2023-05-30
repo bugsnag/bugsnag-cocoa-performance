@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ManualViewLoadScenario: Scenario {
     
     override func run() {
