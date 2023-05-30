@@ -39,11 +39,14 @@ private:
     void onLoadView(UIViewController *viewController) noexcept;
     void onViewDidAppear(UIViewController *viewController) noexcept;
     void onViewWillDisappear(UIViewController *viewController) noexcept;
-
     void endViewLoadSpan(UIViewController *viewController) noexcept;
+    void endViewAppearingSpan(UIViewController *viewController) noexcept;
+    void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
 
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpanPhase() noexcept;
+    bool canCreateSpans(UIViewController *viewController) noexcept;
 
     bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
