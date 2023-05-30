@@ -27,7 +27,7 @@ public:
     bool unitTest_isEmpty();
 private:
     std::map<os_activity_id_t, std::shared_ptr<SpanActivityState>> activityIdToSpanState_{};
-    std::map<SpanId, os_activity_id_t> spanIdToActivityId_{};
+    std::map<SpanId, std::shared_ptr<SpanActivityState>> spanIdToSpanState_{};
     std::mutex mutex_;
     void removeSpan(SpanId spanId);
     os_activity_id_t activityIdForSpan(SpanId spanId);

@@ -48,9 +48,7 @@ using namespace bugsnag;
                                                                                                           IdGenerator::generateSpanId(),
                                                                                                           SpanOptions().startTime,
                                                                                                           BSGFirstClassNo,
-                                                                                                          ^void(std::shared_ptr<SpanData> spanData) {
-        NSLog(@"%llu", spanData->spanId);
-    })];
+                                                                                                          ^void(std::shared_ptr<SpanData> __unused spanData) {})];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = span;
