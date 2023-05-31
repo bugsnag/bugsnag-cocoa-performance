@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 0.5.0 (2023-05-31)
 
 ### Breaking changes
 
@@ -9,6 +9,14 @@ The following changes need attention when updating to this version of the librar
 
 * Improved span starting and ending performance
   [151](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/151)
+  
+* Fixed a date formatter crash on iOS 11.0 and 11.1
+  [155](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/155)
+  
+### Enhancements
+
+* Added view_load_phase spans
+  [143](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/143)
 
 ### Bug fixes
 
@@ -23,11 +31,6 @@ The following changes need attention when updating to this version of the librar
 
 * Renamed incorrectly named `makeContextCurrent` to `makeCurrentContext` in rest of the codebase
   [139](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/139)
-
-### Enhancements
-
-* Added view_load_phase spans
-  [143](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/143)
 
 ### Bug fixes
 
