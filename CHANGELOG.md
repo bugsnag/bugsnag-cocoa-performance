@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## 0.5.0 (2023-05-31)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Improved span starting and ending performance
+  [151](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/151)
+  
+* Fixed a date formatter crash on iOS 11.0 and 11.1
+  [155](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/155)
+  
+### Enhancements
+
+* Added view_load_phase spans
+  [143](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/143)
+
+### Bug fixes
+
+* Fixed a crash in the `SpanAttributesProvider.mm`
+  [153](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/153)
+
 ## 0.4.0 (2023-05-25)
 
 ### Breaking changes

@@ -7,6 +7,7 @@
 
 import UIKit
 
+@objcMembers
 class AutoInstrumentSubViewLoadScenario: Scenario {
     
     override func configure() {

@@ -8,8 +8,9 @@
 import UIKit
 
 class ViewController: UIViewController {
+    var fixture: Fixture = Fixture()
     
     @IBAction func fetchCommand(_ sender: UIButton) {
-        fetchAndExecuteCommand()
+        fixture.fetchAndExecuteCommand()
     }
 }

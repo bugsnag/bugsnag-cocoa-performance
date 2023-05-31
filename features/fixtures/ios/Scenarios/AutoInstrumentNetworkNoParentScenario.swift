@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objcMembers
 class AutoInstrumentNetworkNoParentScenario: Scenario {
 
     lazy var baseURL: URL = {

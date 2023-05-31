@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class FirstClassNoScenario: Scenario {
 
     override func run() {

@@ -11,9 +11,9 @@
 
 #import "OtlpTraceEncoding.h"
 #import "ResourceAttributes.h"
-#import "SpanContextStack.h"
 #import "Utils.h"
 #import "SpanAttributesProvider.h"
+#import "SpanStackingHandler.h"
 
 using namespace bugsnag;
 
@@ -35,11 +35,11 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
 : persistence_(std::make_shared<Persistence>(getPersistenceDir()))
-, spanContextStack_([SpanContextStack new])
+, spanStackingHandler_(std::make_shared<SpanStackingHandler>())
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(std::make_shared<Tracer>(spanContextStack_, sampler_, batch_, generateOnSpanStarted(this)))
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, generateOnSpanStarted(this)))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -346,7 +346,7 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
     if (options.makeCurrentContext) {
-        [spanContextStack_ push:span];
+        spanStackingHandler_->push(span);
     }
 }
 

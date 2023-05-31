@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ProbabilityExpiryScenario: Scenario {
     override func configure() {
         super.configure()

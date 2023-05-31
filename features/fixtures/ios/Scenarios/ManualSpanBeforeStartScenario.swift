@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ManualSpanBeforeStartScenario: Scenario {
     
     override func startBugsnag() {
