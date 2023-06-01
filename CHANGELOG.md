@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## TBD
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Replaced the constructor of BugsnagPerformanceSpanOptions with chained setters
+  [161](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/161)
+
 ## 0.5.0 (2023-05-31)
 
 ### Breaking changes

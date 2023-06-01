@@ -11,8 +11,7 @@ import BugsnagPerformance
 class FirstClassYesScenario: Scenario {
 
     override func run() {
-        let opts = BugsnagPerformanceSpanOptions()
-        opts.firstClass = BSGFirstClass.yes;
+        let opts = BugsnagPerformanceSpanOptions().setFirstClass(.yes)
         BugsnagPerformance.startSpan(name: "FirstClassYesScenario", options: opts).end()
     }
 }

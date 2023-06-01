@@ -17,27 +17,23 @@ OBJC_EXPORT
 @interface BugsnagPerformanceSpanOptions: NSObject
 
 // The time that this span is deemed to have started.
-@property(nonatomic,readwrite,strong) NSDate *startTime;
+@property(nonatomic, readonly) NSDate * _Nullable startTime;
 
 // The context that this span is to be a child of, or nil if this will be a top-level span.
-@property(nonatomic,readwrite,strong) BugsnagPerformanceSpan *parentContext;
+@property(nonatomic, readonly) BugsnagPerformanceSpan * _Nullable parentContext;
 
 // If true, the span will be added to the current context stack.
-@property(nonatomic,readwrite) BOOL makeCurrentContext;
+@property(nonatomic, readonly) BOOL makeCurrentContext;
 
 // If true, this span will be considered "first class" on the dashboard.
-@property(nonatomic,readwrite) BSGFirstClass firstClass;
+@property(nonatomic, readonly) BSGFirstClass firstClass;
 
-+ (instancetype)optionsWithStartTime:(NSDate *)starttime
-                       parentContext:(BugsnagPerformanceSpan *)parentContext
-                  makeCurrentContext:(BOOL)makeCurrentContext
-                          firstClass:(BSGFirstClass)firstClass;
 
-- (instancetype)initWithStartTime:(NSDate *)starttime
-                    parentContext:(BugsnagPerformanceSpan *)parentContext
-               makeCurrentContext:(BOOL)makeCurrentContext
-                       firstClass:(BSGFirstClass)firstClass;
+- (instancetype _Nonnull)setStartTime:(NSDate * _Nullable)startTime;
+- (instancetype _Nonnull)setParentContext:(BugsnagPerformanceSpan * _Nullable)parentContext;
+- (instancetype _Nonnull)setMakeCurrentContext:(BOOL)makeCurrentContext;
+- (instancetype _Nonnull)setFirstClass:(BSGFirstClass)firstClass;
 
-- (instancetype)clone;
+- (instancetype _Nonnull)clone;
 
 @end
