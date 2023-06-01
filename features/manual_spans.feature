@@ -63,6 +63,8 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "42.42"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "42"
 
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario"

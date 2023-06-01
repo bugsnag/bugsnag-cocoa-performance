@@ -9,6 +9,11 @@ The following changes need attention when updating to this version of the librar
 
 * Replaced the constructor of BugsnagPerformanceSpanOptions with chained setters
   [161](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/161)
+  
+### Enhancements
+
+* Added `appVersion` and `bundleVersion` to `BugsnagPerformanceConfiguration`.
+  [162](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/162)
 
 ## 0.5.0 (2023-05-31)
 
