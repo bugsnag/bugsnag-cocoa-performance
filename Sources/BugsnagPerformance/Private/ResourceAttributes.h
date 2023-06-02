@@ -9,17 +9,20 @@
 #pragma once
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
-
+NS_ASSUME_NONNULL_BEGIN
 namespace bugsnag {
 class ResourceAttributes {
 public:
     ResourceAttributes(BugsnagPerformanceConfiguration *configuration) noexcept
     : releaseStage_(configuration.releaseStage)
+    , configuration_(configuration)
     {}
     
     NSDictionary *get() noexcept;
     
 private:
+    BugsnagPerformanceConfiguration * configuration_;
     NSString *releaseStage_{nil};
 };
 }
+NS_ASSUME_NONNULL_END

@@ -36,6 +36,16 @@ OBJC_EXPORT
 
 @property (nonatomic) double samplingProbability;
 
+/**
+ *  The version of the application
+ */
+@property (copy, nullable, nonatomic) NSString *appVersion;
+
+/**
+ *  The app's bundleVersion
+ */
+@property (copy, nullable, nonatomic) NSString *bundleVersion;
+
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 
 @end
