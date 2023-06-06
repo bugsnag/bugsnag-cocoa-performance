@@ -9,16 +9,25 @@ steps:
   - group: ":hammer: Builds"
     steps:
       - label: "Carthage"
+        # TODO: Remove before merging
+        agents:
+          queue: ms-arm-12-8
         command: ./features/fixtures/carthage/build.sh
 
       - label: "CocoaPods"
         command: pod lib lint BugsnagPerformance.podspec.json
 
       - label: "Example"
+        # TODO: Remove before merging
+        agents:
+          queue: ms-arm-12-8
         command: ./Example/build.sh
 
       - label: "Fixture"
         key: ios_fixture
+        # TODO: Remove before merging
+        agents:
+          queue: ms-arm-12-8
         commands:
           - ./features/fixtures/ios/build.sh
           - bundle install
