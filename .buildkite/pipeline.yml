@@ -11,7 +11,7 @@ steps:
       - label: "Carthage"
         # TODO: Remove before merging
         agents:
-          queue: ms-arm-12-8
+          queue: ms-arm-12-1
         command: ./features/fixtures/carthage/build.sh
 
       - label: "CocoaPods"
@@ -20,14 +20,14 @@ steps:
       - label: "Example"
         # TODO: Remove before merging
         agents:
-          queue: ms-arm-12-8
+          queue: ms-arm-12-1
         command: ./Example/build.sh
 
       - label: "Fixture"
         key: ios_fixture
         # TODO: Remove before merging
         agents:
-          queue: ms-arm-12-8
+          queue: ms-arm-12-1
         commands:
           - ./features/fixtures/ios/build.sh
           - bundle install
