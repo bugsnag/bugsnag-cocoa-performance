@@ -16,4 +16,4 @@ rm -rf ~/Library/Caches/org.carthage.CarthageKit/dependencies/bugsnag-cocoa-perf
 
 carthage update --platform iOS --use-xcframeworks
 
-xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture archive -quiet
+xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture archive -allowProvisioningUpdates -quiet
