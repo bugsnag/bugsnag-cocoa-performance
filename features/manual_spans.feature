@@ -39,7 +39,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "os.name" equals "iOS"
     * the trace payload field "resourceSpans.0.resource" string attribute "os.type" equals "darwin"
     * the trace payload field "resourceSpans.0.resource" string attribute "os.version" exists
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "1.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
@@ -56,7 +56,7 @@ Feature: Manual creation of spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
@@ -97,7 +97,7 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * every span field "name" equals "[HTTP/GET]"
@@ -120,7 +120,7 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * a span field "name" equals "Span1"
@@ -145,7 +145,7 @@ Feature: Manual creation of spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -155,7 +155,7 @@ Feature: Manual creation of spans
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * a span field "name" equals "SpanParent"
@@ -174,7 +174,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * every span field "name" equals "FirstClassYesScenario"
@@ -190,7 +190,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * every span field "name" equals "FirstClassNoScenario"

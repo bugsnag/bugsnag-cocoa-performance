@@ -22,7 +22,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.span.category" equals "app_start"
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
     * every span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
@@ -44,7 +44,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * every span bool attribute "bugsnag.span.first_class" is true
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
@@ -69,7 +69,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0" string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
@@ -98,7 +98,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
@@ -125,7 +125,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.Fixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
