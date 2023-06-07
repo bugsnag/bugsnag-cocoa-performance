@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class BackgroundForegroundScenario: Scenario {
     var backgroundTask: UIBackgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
 

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 #import <stdlib.h>
 

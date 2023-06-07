@@ -9,7 +9,6 @@
 
 #import "ResourceAttributes.h"
 #import "SpanAttributes.h"
-#import "SpanContextStack.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import "Instrumentation/NetworkInstrumentation.h"
@@ -18,11 +17,11 @@
 
 using namespace bugsnag;
 
-Tracer::Tracer(SpanContextStack *spanContextStack,
+Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Sampler> sampler,
                std::shared_ptr<Batch> batch,
                void (^onSpanStarted)()) noexcept
-: spanContextStack_(spanContextStack)
+: spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
@@ -46,14 +45,14 @@ Tracer::start() noexcept {
 BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
     __block auto blockThis = this;
-    auto currentContext = spanContextStack_.context;
-    auto traceId = currentContext.traceId;
+    auto currentSpan = spanStackingHandler_->currentSpan();
+    auto traceId = currentSpan.traceId;
     if (traceId.value == 0) {
         traceId = IdGenerator::generateTraceId();
     }
     auto parentSpanId = options.parentContext.spanId;
     if (parentSpanId == 0) {
-        parentSpanId = currentContext.spanId;
+        parentSpanId = currentSpan.spanId;
     }
     BSGFirstClass firstClass = options.firstClass;
     if (firstClass == BSGFirstClassUnset) {
@@ -67,10 +66,11 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
+        blockThis->spanStackingHandler_->didEnd(spanData->spanId);
         blockThis->tryAddSpanToBatch(spanData);
     })];
     if (options.makeCurrentContext) {
-        [spanContextStack_ push:span];
+        spanStackingHandler_->push(span);
     }
     [span addAttributes:SpanAttributes::get()];
     if (onSpanStarted_) {
@@ -105,7 +105,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
-        if ([spanContextStack_ hasSpanWithAttribute:@"bugsnag.span.category" value:@"view_load"]) {
+        if (spanStackingHandler_->hasSpanWithAttribute(@"bugsnag.span.category", @"view_load")) {
             options.firstClass = BSGFirstClassNo;
         }
     }
@@ -115,6 +115,12 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
+    return startSpan(name, options, BSGFirstClassUnset);
+}
+
+BugsnagPerformanceSpan *
+Tracer::startViewLoadPhaseSpan(NSString *name,
+                        SpanOptions options) noexcept {
     return startSpan(name, options, BSGFirstClassUnset);
 }
 

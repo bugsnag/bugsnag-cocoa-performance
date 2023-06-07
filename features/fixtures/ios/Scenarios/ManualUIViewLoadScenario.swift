@@ -7,12 +7,12 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class ManualUIViewLoadScenario: Scenario {
 
     override func run() {
         let controller = UIViewController()
-        let options = BugsnagPerformanceSpanOptions()
-        options.startTime = Date()
+        let options = BugsnagPerformanceSpanOptions().setStartTime(Date())
         BugsnagPerformance.startViewLoadSpan(controller: controller, options: options)
         BugsnagPerformance.endViewLoadSpan(controller: controller, endTime: Date())
     }

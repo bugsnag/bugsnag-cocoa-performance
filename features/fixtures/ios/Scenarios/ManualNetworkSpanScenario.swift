@@ -25,6 +25,7 @@ extension MyNetworkDelegate : URLSessionDataDelegate {
     }
 }
 
+@objcMembers
 class ManualNetworkSpanScenario: Scenario {
 
     lazy var baseURL: URL = {

@@ -66,7 +66,7 @@ public:
 private:
     std::shared_ptr<Persistence> persistence_;
     std::atomic<bool> isStarted_{false};
-    SpanContextStack *spanContextStack_;
+    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<Tracer> tracer_;

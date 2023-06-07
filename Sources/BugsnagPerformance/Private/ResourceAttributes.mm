@@ -162,7 +162,7 @@ NSDictionary *
 ResourceAttributes::get() noexcept {
     auto infoDictionary = NSBundle.mainBundle.infoDictionary;
     return @{
-        @"bugsnag.app.bundle_version": infoDictionary[@"CFBundleVersion"] ?: [NSNull null],
+        @"bugsnag.app.bundle_version": (id)configuration_.bundleVersion ?: infoDictionary[@"CFBundleVersion"] ?: [NSNull null],
         
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/deployment_environment/
         @"deployment.environment": releaseStage_ ?: [NSNull null],
@@ -182,7 +182,7 @@ ResourceAttributes::get() noexcept {
         
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#service
         @"service.name": NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName,
-        @"service.version": infoDictionary[@"CFBundleShortVersionString"] ?: [NSNull null],
+        @"service.version": (id)configuration_.appVersion ?: infoDictionary[@"CFBundleShortVersionString"] ?: [NSNull null],
         
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#telemetry-sdk
         @"telemetry.sdk.name": @ TELEMETRY_SDK_NAME,

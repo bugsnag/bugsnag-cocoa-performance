@@ -5,9 +5,13 @@ Feature: Manual creation of spans
   Scenario: Retry a manual span
     Given I set the HTTP status code for the next requests to "200,500,200,200"
     And I run "RetryScenario"
-    And I wait for 3 spans
+    And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "WillRetry"
+    Then I discard the oldest trace
+    And I invoke "step2"
+    And I wait for 2 spans
     * a span field "name" equals "WillRetry"
     * a span field "name" equals "Success"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -59,6 +63,8 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "42.42"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "42"
 
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario"

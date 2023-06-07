@@ -31,11 +31,13 @@ SpanData::SpanData(NSString *name,
 
 void
 SpanData::addAttributes(NSDictionary *dictionary) noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
     [this->attributes addEntriesFromDictionary:dictionary];
 }
 
 bool
 SpanData::hasAttribute(NSString *attributeName, id value) noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
     for (id key in attributes) {
         if ([key isEqualToString:attributeName]) {
             return [attributes[key] isEqual:value];

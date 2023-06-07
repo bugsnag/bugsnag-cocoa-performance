@@ -21,6 +21,12 @@ using namespace bugsnag;
     return self;
 }
 
+- (void)dealloc {
+    if (self.isValid && self.onDumped) {
+        self.onDumped(self);
+    }
+}
+
 // We want direct ivar access to avoid accessors copying unique_ptrs
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
@@ -42,6 +48,10 @@ using namespace bugsnag;
 
 - (SpanId)spanId {
     return _span->spanId();
+}
+
+- (SpanId)parentId {
+    return _span->parentId();
 }
 
 - (BOOL)isValid {

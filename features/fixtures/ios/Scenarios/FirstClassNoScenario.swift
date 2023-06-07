@@ -7,11 +7,11 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class FirstClassNoScenario: Scenario {
 
     override func run() {
-        let opts = BugsnagPerformanceSpanOptions()
-        opts.firstClass = BSGFirstClass.no;
+        let opts = BugsnagPerformanceSpanOptions().setFirstClass(.no)
         BugsnagPerformance.startSpan(name: "FirstClassNoScenario", options: opts).end()
     }
 }

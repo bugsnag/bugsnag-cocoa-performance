@@ -7,6 +7,7 @@
 
 import BugsnagPerformance
 
+@objcMembers
 class InitialPScenario: Scenario {
 
     override func configure() {
@@ -17,7 +18,9 @@ class InitialPScenario: Scenario {
         // Wait to receive an initial P value response.
         waitForCurrentBatch()
         BugsnagPerformance.startSpan(name: "First").end()
-        waitForCurrentBatch()
+    }
+
+    func step2() {
         BugsnagPerformance.startSpan(name: "Second").end()
     }
 }
