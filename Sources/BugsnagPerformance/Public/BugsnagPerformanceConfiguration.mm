@@ -35,15 +35,48 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 }
 
 + (instancetype)loadConfig {
-    auto dict = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
-    auto apiKey = BSGDynamicCast<NSString>(dict[@"apiKey"]);
-    auto releaseStage = BSGDynamicCast<NSString>(dict[@"releaseStage"]);
-    auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(dict[@"enabledReleaseStages"]);
+    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
+    __block auto bugsnagPerformanceConfiguration = BSGDynamicCast<NSDictionary>(bugsnagConfiguration[@"performance"]);
+    NSString *(^getSharedConfigValue)(NSString *) = ^NSString *(NSString *property) {
+        return BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
+    };
+    auto apiKey = getSharedConfigValue(@"apiKey");
+    auto appVersion = getSharedConfigValue(@"appVersion");
+    auto bundleVersion = getSharedConfigValue(@"bundleVersion");
+    
+    auto releaseStage = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"releaseStage"]);
+    auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"enabledReleaseStages"]);
+    auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
+    auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
+    auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
+    auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
+    if (appVersion) {
+        configuration.appVersion = appVersion;
+    }
+    if (bundleVersion) {
+        configuration.bundleVersion = bundleVersion;
+    }
     if (releaseStage) {
-        configuration.releaseStage = releaseStage;
+        configuration.bundleVersion = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    if (endpoint) {
+        configuration.endpoint = [[NSURL alloc] initWithString: endpoint];
+    }
+    if (autoInstrumentAppStarts) {
+        configuration.autoInstrumentAppStarts = [autoInstrumentAppStarts boolValue];
+    }
+    if (autoInstrumentViewControllers) {
+        configuration.autoInstrumentViewControllers = [autoInstrumentViewControllers boolValue];
+    }
+    if (autoInstrumentNetworkRequests) {
+        configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
+    }
+    if (samplingProbability) {
+        configuration.samplingProbability = [samplingProbability doubleValue];
+    }
     return configuration;
 }
 
