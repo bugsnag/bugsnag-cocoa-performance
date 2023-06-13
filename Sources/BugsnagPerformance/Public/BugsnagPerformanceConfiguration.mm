@@ -65,16 +65,16 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     if (endpoint) {
         configuration.endpoint = [[NSURL alloc] initWithString: endpoint];
     }
-    if (autoInstrumentAppStarts) {
+    if (autoInstrumentAppStarts != nil) {
         configuration.autoInstrumentAppStarts = [autoInstrumentAppStarts boolValue];
     }
-    if (autoInstrumentViewControllers) {
+    if (autoInstrumentViewControllers != nil) {
         configuration.autoInstrumentViewControllers = [autoInstrumentViewControllers boolValue];
     }
-    if (autoInstrumentNetworkRequests) {
+    if (autoInstrumentNetworkRequests != nil) {
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
     }
-    if (samplingProbability) {
+    if (samplingProbability != nil) {
         configuration.samplingProbability = [samplingProbability doubleValue];
     }
     return configuration;
