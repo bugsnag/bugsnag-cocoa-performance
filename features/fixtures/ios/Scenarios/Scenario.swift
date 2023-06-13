@@ -90,7 +90,7 @@ class Scenario: NSObject {
         body["os.name"] = UIDevice.current.systemName
         body["os.version"] = UIDevice.current.systemVersion
         let jsonData = try? JSONSerialization.data(withJSONObject: body)
-        guard let jsonData else {
+        guard let jsonData = jsonData else {
             return
         }
         request.httpBody = jsonData
