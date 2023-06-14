@@ -1,9 +1,16 @@
-GIT
-  remote: https://github.com/bugsnag/maze-runner
-  revision: 8821d276b7236eec9a7c36f71e4e04c6714016b1
-  branch: integration/v8
+GEM
+  remote: https://rubygems.org/
   specs:
-    bugsnag-maze-runner (8.0.0.pre.rc1)
+    appium_lib (12.0.1)
+      appium_lib_core (~> 5.0)
+      nokogiri (~> 1.8, >= 1.8.1)
+      tomlrb (>= 1.1, < 3.0)
+    appium_lib_core (5.4.0)
+      faye-websocket (~> 0.11.0)
+      selenium-webdriver (~> 4.2, < 4.6)
+    bugsnag (6.25.2)
+      concurrent-ruby (~> 1.0)
+    bugsnag-maze-runner (8.0.0)
       appium_lib (~> 12.0.0)
       appium_lib_core (~> 5.4.0)
       bugsnag (~> 6.24)
@@ -20,19 +27,6 @@ GIT
       selenium-webdriver (~> 4.0)
       test-unit (~> 3.5.2)
       webrick (~> 1.7.0)
-
-GEM
-  remote: https://rubygems.org/
-  specs:
-    appium_lib (12.0.1)
-      appium_lib_core (~> 5.0)
-      nokogiri (~> 1.8, >= 1.8.1)
-      tomlrb (>= 1.1, < 3.0)
-    appium_lib_core (5.4.0)
-      faye-websocket (~> 0.11.0)
-      selenium-webdriver (~> 4.2, < 4.6)
-    bugsnag (6.25.2)
-      concurrent-ruby (~> 1.0)
     builder (3.2.4)
     childprocess (4.1.0)
     concurrent-ruby (1.2.2)
@@ -78,10 +72,11 @@ GEM
       websocket-driver (>= 0.5.1)
     ffi (1.15.5)
     hana (1.3.7)
-    json_schemer (0.2.24)
+    json_schemer (0.2.25)
       ecma-re-validator (~> 0.3)
       hana (~> 1.3)
       regexp_parser (~> 2.0)
+      simpleidn (~> 0.2)
       uri_template (~> 0.7)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
@@ -92,10 +87,10 @@ GEM
     optimist (3.0.1)
     os (1.0.1)
     power_assert (2.0.3)
-    racc (1.6.2)
+    racc (1.7.1)
     rack (2.2.7)
     rake (12.3.3)
-    regexp_parser (2.8.0)
+    regexp_parser (2.8.1)
     rexml (3.2.5)
     rubyzip (2.3.2)
     selenium-webdriver (4.5.0)
@@ -103,11 +98,16 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
+    simpleidn (0.2.1)
+      unf (~> 0.1.4)
     sys-uname (1.2.3)
       ffi (~> 1.1)
-    test-unit (3.5.8)
+    test-unit (3.5.9)
       power_assert
     tomlrb (2.0.3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
     uri_template (0.7.0)
     webrick (1.7.0)
     websocket (1.2.9)
@@ -121,7 +121,7 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
-  bugsnag-maze-runner!
+  bugsnag-maze-runner (~> 8.0)
 
 BUNDLED WITH
    2.4.8
