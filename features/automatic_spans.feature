@@ -68,6 +68,7 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentSubViewLoadScenario"
     And I wait for 2 seconds
     And I wait for 20 spans
+    And I wait for 10 seconds
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
