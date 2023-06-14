@@ -3,7 +3,7 @@ Feature: Manual creation of spans
   # Workaround to clear out the initial startup P request
 
   Scenario: Retry a manual span
-    Given I set the HTTP status code for the next requests to "200,500,200,200"
+    Given I set the HTTP status code for the next requests to 200,500,200,200
     And I run "RetryScenario"
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
