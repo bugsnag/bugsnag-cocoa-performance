@@ -15,6 +15,9 @@ The following changes need attention when updating to this version of the librar
 * Added `appVersion` and `bundleVersion` to `BugsnagPerformanceConfiguration`.
   [162](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/162)
   
+* Added `startWithApiKey` to `BugsnagPerformance`.
+  [165](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/165)
+  
 * Loading the complete config from Info.plist
   [166](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/166)
 

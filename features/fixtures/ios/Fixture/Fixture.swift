@@ -75,6 +75,9 @@ class Fixture: NSObject {
         NSLog("[Fixture] Running scenario \(scenarioClass)")
         scenario!.run()
         NSLog("[Fixture] Scenario \(scenarioClass) complete")
+        Thread.sleep(forTimeInterval: 2.0)
+        scenario!.reportMeasurements()
+        Thread.sleep(forTimeInterval: 1.0)
     }
 
     private func invokeMethod(methodName: String, args: Array<String>) {
