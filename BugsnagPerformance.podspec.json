@@ -1,6 +1,6 @@
 {
   "name": "BugsnagPerformance",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "summary": "The Bugsnag performance monitoring framework for iOS.",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
   "license": {
@@ -12,7 +12,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa-performance.git",
-    "tag": "v0.5.0"
+    "tag": "v0.6.0"
   },
   "platforms": {
     "ios": "11.0"
