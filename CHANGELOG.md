@@ -20,6 +20,14 @@ The following changes need attention when updating to this version of the librar
   
 * Loading the complete config from Info.plist
   [166](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/166)
+  
+### Bug fixes
+
+* Added subseconds to iso8601 dates even on ios 11.
+  [159](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/159)
+  
+* Fixed new warnings in Xcode 14.3
+  [163](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/163)
 
 ## 0.5.0 (2023-05-31)
 
