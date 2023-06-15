@@ -188,6 +188,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     auto name = @"[AppStartPhase/App launching - pre main()]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
+    options.parentContext = appStartSpan_;
     preMainSpan_ = tracer_->startAppStartSpan(name, options);
     [preMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
@@ -204,6 +205,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     auto name = @"[AppStartPhase/App launching - post main()]";
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
+    options.parentContext = appStartSpan_;
     postMainSpan_ = tracer_->startAppStartSpan(name, options);
     [postMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
@@ -219,7 +221,8 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
 
     auto name = @"[AppStartPhase/UI init]";
     SpanOptions options;
-    options.startTime = didBecomeActiveAtTime_;
+    options.startTime = didFinishLaunchingAtTime_;
+    options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
     [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
