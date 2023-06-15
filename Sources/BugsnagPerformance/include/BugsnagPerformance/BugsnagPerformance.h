@@ -20,6 +20,8 @@ OBJC_EXPORT
 
 + (void)start;
 
++ (void)startWithApiKey:(NSString *)apiKey;
+
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration NS_SWIFT_NAME(start(configuration:));
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));

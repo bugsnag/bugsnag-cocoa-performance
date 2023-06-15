@@ -11,6 +11,8 @@ import BugsnagPerformance
 class ManualSpanBeforeStartScenario: Scenario {
     
     override func startBugsnag() {
+        config.appVersion = "42"
+        config.bundleVersion = "42.42"
         BugsnagPerformance.startSpan(name: "BeforeStart").end()
         super.startBugsnag()
     }

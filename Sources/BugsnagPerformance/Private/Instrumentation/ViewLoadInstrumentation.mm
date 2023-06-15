@@ -201,7 +201,7 @@ ViewLoadInstrumentation::viewControllerSubclasses(const char *image) noexcept {
     if (names) {
         for (unsigned int i = 0; i < count; i++) {
             auto cls = objc_getClass(names[i]);
-            if (isViewControllerSubclass(cls)) {
+            if (cls && isViewControllerSubclass((Class)cls)) {
                 classes.push_back(cls);
             }
         }

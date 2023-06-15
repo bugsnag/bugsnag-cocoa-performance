@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## 0.6.0 (2023-06-15)
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* Replaced the constructor of BugsnagPerformanceSpanOptions with chained setters
+  [161](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/161)
+  
+### Enhancements
+
+* Added `appVersion` and `bundleVersion` to `BugsnagPerformanceConfiguration`.
+  [162](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/162)
+  
+* Added `startWithApiKey` to `BugsnagPerformance`.
+  [165](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/165)
+  
+### Bug fixes
+
+* Added subseconds to iso8601 dates even on ios 11.
+  [159](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/159)
+  
+* Fixed new warnings in Xcode 14.3
+  [163](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/163)
+  
+* Fixed incorrect ui span start time
+  [168](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/168)
+
 ## 0.5.0 (2023-05-31)
 
 ### Breaking changes

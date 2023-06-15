@@ -17,6 +17,10 @@ using namespace bugsnag;
     [self startWithConfiguration:[BugsnagPerformanceConfiguration loadConfig]];
 }
 
++ (void)startWithApiKey:(NSString *)apiKey {
+    [self startWithConfiguration:[[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey]];
+}
+
 + (void)startWithConfiguration:(BugsnagPerformanceConfiguration *)configuration {
     BugsnagPerformanceLibrary::configureLibrary(configuration);
     BugsnagPerformanceLibrary::startLibrary();
