@@ -15,61 +15,6 @@
 
 using namespace bugsnag;
 
-// Used to compute deviceId; mimics +[BSG_KSSystemInfo CPUArchForCPUType:subType:]
-static NSString *cpuType() noexcept {
-    cpu_type_t cpuType = 0;
-    auto size = sizeof cpuType;
-    if (sysctlbyname("hw.cputype", &cpuType, &size, NULL, 0) != 0) {
-        return nil;
-    }
-    
-    cpu_subtype_t subType = 0;
-    size = sizeof subType;
-    if (sysctlbyname("hw.cpusubtype", &subType, &size, NULL, 0) != 0) {
-        return nil;
-    }
-    
-    switch (cpuType) {
-        case CPU_TYPE_ARM: {
-            switch (subType) {
-                case CPU_SUBTYPE_ARM_V6:
-                    return @"armv6";
-                case CPU_SUBTYPE_ARM_V7:
-                    return @"armv7";
-                case CPU_SUBTYPE_ARM_V7F:
-                    return @"armv7f";
-                case CPU_SUBTYPE_ARM_V7K:
-                    return @"armv7k";
-#ifdef CPU_SUBTYPE_ARM_V7S
-                case CPU_SUBTYPE_ARM_V7S:
-                    return @"armv7s";
-#endif
-                case CPU_SUBTYPE_ARM_V8:
-                    return @"armv8";
-            }
-            break;
-        }
-        case CPU_TYPE_ARM64: {
-            switch (subType) {
-                case CPU_SUBTYPE_ARM64E:
-                    return @"arm64e";
-                default:
-                    return @"arm64";
-            }
-        }
-        case CPU_TYPE_ARM64_32: {
-            // Ignore arm64_32_v8 subtype
-            return @"arm64_32";
-        }
-        case CPU_TYPE_X86:
-            return @"x86";
-        case CPU_TYPE_X86_64:
-            return @"x86_64";
-    }
-    
-    return nil;
-}
-
 static NSString *sysctlString(const char *name) noexcept {
     char value[32];
     auto size = sizeof value;
@@ -79,47 +24,6 @@ static NSString *sysctlString(const char *name) noexcept {
     } else {
         return nil;
     }
-}
-
-/// Returns a device ID that matches +[BSG_KSSystemInfo deviceAndAppHash]
-static NSString *deviceId() noexcept {
-    CC_SHA1_CTX sha1;
-    CC_SHA1_Init(&sha1);
-    
-#if __has_include(<UIKit/UIDevice.h>)
-    uuid_t uuid = {0};
-    [UIDevice.currentDevice.identifierForVendor getUUIDBytes:uuid];
-    CC_SHA1_Update(&sha1, uuid, sizeof uuid);
-#else
-#error Other platforms not supported yet
-#endif
-    
-    if (auto data = [sysctlString("hw.machine") dataUsingEncoding:NSUTF8StringEncoding]) {
-        CC_SHA1_Update(&sha1, data.bytes, (CC_LONG)data.length);
-    }
-    
-    if (auto data = [sysctlString("hw.model") dataUsingEncoding:NSUTF8StringEncoding]) {
-        CC_SHA1_Update(&sha1, data.bytes, (CC_LONG)data.length);
-    }
-    
-    if (auto data = [cpuType() dataUsingEncoding:NSUTF8StringEncoding]) {
-        CC_SHA1_Update(&sha1, data.bytes, (CC_LONG)data.length);
-    }
-    
-    if (auto data = [NSBundle.mainBundle.bundleIdentifier dataUsingEncoding:NSUTF8StringEncoding]) {
-        CC_SHA1_Update(&sha1, data.bytes, (CC_LONG)data.length);
-    }
-    
-    unsigned char md[CC_SHA1_DIGEST_LENGTH];
-    CC_SHA1_Final(md, &sha1);
-    
-    char hex[2 * sizeof md];
-    for (size_t i = 0; i < sizeof md; i++) {
-        static char chars[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
-        hex[i * 2 + 0] = chars[(md[i] & 0xf0) >> 4];
-        hex[i * 2 + 1] = chars[(md[i] & 0x0f)];
-    }
-    return [[NSString alloc] initWithBytes:hex length:sizeof hex encoding:NSASCIIStringEncoding];
 }
 
 static NSString *deviceModelIdentifier() noexcept {
@@ -173,7 +77,7 @@ void ResourceAttributes::start() noexcept {
         @"deployment.environment": releaseStage_ ?: [NSNull null],
 
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/
-        @"device.id": deviceId(),
+        @"device.id": deviceID_->current(),
         @"device.manufacturer": @"Apple",
         @"device.model.identifier": deviceModelIdentifier() ?: [NSNull null],
 

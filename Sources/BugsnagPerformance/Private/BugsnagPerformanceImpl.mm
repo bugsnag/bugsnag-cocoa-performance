@@ -18,10 +18,7 @@ using namespace bugsnag;
 
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
-    // Namespace it to the bundle identifier because all MacOS non-sandboxed apps share the same cache dir.
-    NSString *cachesDir = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-    NSString *topDir = [NSString stringWithFormat:@"bugsnag-performance-%@", [[NSBundle mainBundle] bundleIdentifier]];
-    return [cachesDir stringByAppendingPathComponent:topDir];
+    return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
 }
 
 void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
@@ -34,19 +31,21 @@ void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
 : persistence_(std::make_shared<Persistence>(getPersistenceDir()))
+, persistentState_(std::make_shared<PersistentState>(persistence_))
 , spanStackingHandler_(std::make_shared<SpanStackingHandler>())
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
 , tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, generateOnSpanStarted(this)))
-, retryQueue_(std::make_unique<RetryQueue>([persistence_->topLevelDirectory() stringByAppendingPathComponent:@"retry-queue"]))
+, retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
-, resourceAttributes_(std::make_shared<ResourceAttributes>())
+, deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
+, resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
@@ -54,7 +53,9 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 }
 
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    persistentState_->earlyConfigure(config);
     tracer_->earlyConfigure(config);
+    deviceID_->earlyConfigure(config);
     resourceAttributes_->earlyConfigure(config);
     retryQueue_->earlyConfigure(config);
     batch_->earlyConfigure(config);
@@ -63,7 +64,9 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
+    persistentState_->earlySetup();
     tracer_->earlySetup();
+    deviceID_->earlySetup();
     resourceAttributes_->earlySetup();
     retryQueue_->earlySetup();
     batch_->earlySetup();
@@ -77,6 +80,8 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
 
     configuration_ = config;
+    persistentState_->configure(config);
+    deviceID_->configure(config);
     resourceAttributes_->configure(config);
     tracer_->configure(config);
     retryQueue_->configure(config);
@@ -111,8 +116,11 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistence_->start();
 
     if (configuration_.internal.clearPersistenceOnStart) {
-        persistence_->clear();
+        persistence_->clearPerformanceData();
     }
+
+    persistentState_->start();
+    deviceID_->start();
 
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
@@ -125,18 +133,9 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onProbabilityChanged(newProbability);
     });
 
-    auto persistentStateFile = [persistence_->topLevelDirectory() stringByAppendingPathComponent:@"persistent-state.json"];
-    persistentState_ = std::make_shared<PersistentState>(persistentStateFile, ^void() {
-        blockThis->onPersistentStateChanged();
-    });
+    sampler_->setProbability(persistentState_->probability());
 
     resourceAttributes_->start();
-
-    if (persistentState_->probabilityIsValid()) {
-        sampler_->setProbability(persistentState_->probability());
-    } else {
-        sampler_->setProbability(configuration_.samplingProbability);
-    }
 
     [worker_ start];
 
@@ -179,7 +178,6 @@ NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
 NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     __block auto blockThis = this;
     return @[
-        ^bool() { return blockThis->maybePersistStateTask(); },
         ^bool() { return blockThis->sendCurrentBatchTask(); },
         ^bool() { return blockThis->sendRetriesTask(); },
     ];
@@ -220,22 +218,10 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
     return false;
 }
 
-bool BugsnagPerformanceImpl::maybePersistStateTask() noexcept {
-    if (shouldPersistState_.exchange(false)) {
-        auto error = persistentState_->persist();
-        if (error != nil) {
-            BSGLogError(@"error while persisting state: %@", error);
-            onFilesystemError();
-        }
-        return true;
-    }
-    return false;
-}
-
 #pragma mark Event Reactions
 
 void BugsnagPerformanceImpl::onFilesystemError() noexcept {
-    persistence_->clear();
+    persistence_->clearPerformanceData();
 }
 
 void BugsnagPerformanceImpl::onBatchFull() noexcept {
@@ -257,11 +243,6 @@ void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcep
     probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
-}
-
-void BugsnagPerformanceImpl::onPersistentStateChanged() noexcept {
-    shouldPersistState_ = true;
-    wakeWorker();
 }
 
 void BugsnagPerformanceImpl::onSpanStarted() noexcept {

@@ -9,11 +9,17 @@
 #pragma once
 
 #import "PhasedStartup.h"
+#import "PersistentDeviceID.h"
+#import <memory>
 
 NS_ASSUME_NONNULL_BEGIN
 namespace bugsnag {
 class ResourceAttributes: public PhasedStartup {
 public:
+    ResourceAttributes(std::shared_ptr<PersistentDeviceID> deviceID) noexcept
+    : deviceID_(deviceID)
+    {}
+
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
@@ -22,6 +28,7 @@ public:
     NSDictionary *get() noexcept { return cachedAttributes_; };
     
 private:
+    std::shared_ptr<PersistentDeviceID> deviceID_;
     NSString *releaseStage_{nil};
     NSString *bundleVersion_{nil};
     NSString *serviceVersion_{nil};
