@@ -9,6 +9,7 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/ResourceAttributes.h"
+#import <memory>
 
 using namespace bugsnag;
 
@@ -31,19 +32,28 @@ using namespace bugsnag;
     self.config = nil;
 }
 
+- (std::shared_ptr<ResourceAttributes>) resourceAttributesWithConfig:(BugsnagPerformanceConfiguration *)config {
+    auto attributes = std::make_shared<ResourceAttributes>();
+    attributes->earlyConfigure([BSGEarlyConfiguration new]);
+    attributes->earlySetup();
+    attributes->configure(config);
+    attributes->start();
+    return attributes;
+}
+
 - (void)testDeploymentEnvironment {
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"development");
 }
 
 - (void)testDeploymentEnvironmentFromReleaseStage {
     self.config.releaseStage = @"staging";
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"staging");
 }
 
 - (void)testDeviceModelIdentifier {
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     auto modelId = (NSString *)attributes[@"device.model.identifier"];
     XCTAssertGreaterThan(modelId.length, 0U);
     XCTAssertTrue([modelId containsString:@","]);

@@ -8,21 +8,24 @@
 
 #pragma once
 
-#import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+#import "PhasedStartup.h"
+
 NS_ASSUME_NONNULL_BEGIN
 namespace bugsnag {
-class ResourceAttributes {
+class ResourceAttributes: public PhasedStartup {
 public:
-    ResourceAttributes(BugsnagPerformanceConfiguration *configuration) noexcept
-    : releaseStage_(configuration.releaseStage)
-    , configuration_(configuration)
-    {}
-    
-    NSDictionary *get() noexcept;
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void start() noexcept;
+
+    NSDictionary *get() noexcept { return cachedAttributes_; };
     
 private:
-    BugsnagPerformanceConfiguration * configuration_;
     NSString *releaseStage_{nil};
+    NSString *bundleVersion_{nil};
+    NSString *serviceVersion_{nil};
+    NSDictionary *cachedAttributes_{nil};
 };
 }
 NS_ASSUME_NONNULL_END

@@ -158,32 +158,37 @@ static NSString *osVersion() noexcept {
 #endif
 }
 
-NSDictionary *
-ResourceAttributes::get() noexcept {
+void ResourceAttributes::configure(BugsnagPerformanceConfiguration *config) noexcept {
     auto infoDictionary = NSBundle.mainBundle.infoDictionary;
-    return @{
-        @"bugsnag.app.bundle_version": (id)configuration_.bundleVersion ?: infoDictionary[@"CFBundleVersion"] ?: [NSNull null],
-        
+    bundleVersion_ = (id)config.bundleVersion ?: infoDictionary[@"CFBundleVersion"] ?: [NSNull null];
+    serviceVersion_ = (id)config.appVersion ?: infoDictionary[@"CFBundleShortVersionString"] ?: [NSNull null];
+    releaseStage_ = config.releaseStage;
+}
+
+void ResourceAttributes::start() noexcept {
+    cachedAttributes_ = @{
+        @"bugsnag.app.bundle_version": bundleVersion_,
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/deployment_environment/
         @"deployment.environment": releaseStage_ ?: [NSNull null],
-        
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/
         @"device.id": deviceId(),
         @"device.manufacturer": @"Apple",
         @"device.model.identifier": deviceModelIdentifier() ?: [NSNull null],
-        
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/host/
         @"host.arch": hostArch(),
-        
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/os/
         @"os.name": osName(),
         @"os.type": @"darwin",
         @"os.version": osVersion() ?: [NSNull null],
-        
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#service
         @"service.name": NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName,
-        @"service.version": (id)configuration_.appVersion ?: infoDictionary[@"CFBundleShortVersionString"] ?: [NSNull null],
-        
+        @"service.version": serviceVersion_,
+
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#telemetry-sdk
         @"telemetry.sdk.name": @ TELEMETRY_SDK_NAME,
         @"telemetry.sdk.version": @ TELEMETRY_SDK_VERSION,

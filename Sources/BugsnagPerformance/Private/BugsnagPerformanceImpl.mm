@@ -10,7 +10,6 @@
 #import "BugsnagPerformanceConfiguration+Private.h"
 
 #import "OtlpTraceEncoding.h"
-#import "ResourceAttributes.h"
 #import "Utils.h"
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
@@ -47,6 +46,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
+, resourceAttributes_(std::make_shared<ResourceAttributes>())
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
@@ -55,6 +55,7 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     tracer_->earlyConfigure(config);
+    resourceAttributes_->earlyConfigure(config);
     retryQueue_->earlyConfigure(config);
     batch_->earlyConfigure(config);
     instrumentation_->earlyConfigure(config);
@@ -63,6 +64,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
     tracer_->earlySetup();
+    resourceAttributes_->earlySetup();
     retryQueue_->earlySetup();
     batch_->earlySetup();
     instrumentation_->earlySetup();
@@ -75,6 +77,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
 
     configuration_ = config;
+    resourceAttributes_->configure(config);
     tracer_->configure(config);
     retryQueue_->configure(config);
     batch_->configure(config);
@@ -111,8 +114,6 @@ void BugsnagPerformanceImpl::start() noexcept {
         persistence_->clear();
     }
 
-    resourceAttributes_ = ResourceAttributes(configuration_).get();
-
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
     });
@@ -128,6 +129,8 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistentState_ = std::make_shared<PersistentState>(persistentStateFile, ^void() {
         blockThis->onPersistentStateChanged();
     });
+
+    resourceAttributes_->start();
 
     if (persistentState_->probabilityIsValid()) {
         sampler_->setProbability(persistentState_->probability());
@@ -194,7 +197,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
         return false;
     }
 
-    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_), false);
+    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get()), false);
     return true;
 }
 

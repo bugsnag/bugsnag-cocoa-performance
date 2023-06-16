@@ -23,6 +23,7 @@
 #import "AppStateTracker.h"
 #import "PhasedStartup.h"
 #import "Instrumentation/Instrumentation.h"
+#import "ResourceAttributes.h"
 
 #import <mutex>
 
@@ -75,7 +76,7 @@ private:
     std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
-    NSDictionary *resourceAttributes_{nil};
+    std::shared_ptr<ResourceAttributes> resourceAttributes_;
     std::atomic<bool> shouldPersistState_{false};
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
