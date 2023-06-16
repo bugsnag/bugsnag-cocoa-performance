@@ -40,12 +40,15 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     NSString *(^getSharedConfigValue)(NSString *) = ^NSString *(NSString *property) {
         return BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
     };
+    NSArray<NSString *> *(^getSharedConfigArray)(NSString *) = ^NSArray<NSString *> *(NSString *property) {
+        return BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
+    };
     auto apiKey = getSharedConfigValue(@"apiKey");
     auto appVersion = getSharedConfigValue(@"appVersion");
     auto bundleVersion = getSharedConfigValue(@"bundleVersion");
+    auto releaseStage = getSharedConfigValue(@"releaseStage");
+    auto enabledReleaseStages = getSharedConfigArray(@"enabledReleaseStages");
     
-    auto releaseStage = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"releaseStage"]);
-    auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"enabledReleaseStages"]);
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
@@ -59,7 +62,7 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         configuration.bundleVersion = bundleVersion;
     }
     if (releaseStage) {
-        configuration.bundleVersion = releaseStage;
+        configuration.releaseStage = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
     if (endpoint) {
