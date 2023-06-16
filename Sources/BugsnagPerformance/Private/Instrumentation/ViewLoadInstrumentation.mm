@@ -275,6 +275,11 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     viewDidLoad = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
         if (*isEnabled) {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+            if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil) {
+                onLoadView(self);
+                BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"loadView");
+                [span end];
+            }
         }
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLoad");
         reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
