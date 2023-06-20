@@ -17,33 +17,69 @@ using namespace bugsnag;
 
 @implementation PersistenceTests
 
-- (void)testPersistence {
+- (void)testBugsnagPerformancePersistence {
     auto fm = [NSFileManager defaultManager];
     BOOL isDir = false;
     NSError *error = nil;
+    NSString *expectedBasePath = [self.filePath stringByAppendingPathComponent:
+                                  [NSString stringWithFormat:@"bugsnag-performance-%@",
+                                   NSBundle.mainBundle.bundleIdentifier]];
     auto persistence = Persistence(self.filePath);
-    XCTAssertEqualObjects([self.filePath stringByAppendingPathComponent:@"v1"], persistence.topLevelDirectory());
-    XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+    XCTAssertEqualObjects([expectedBasePath stringByAppendingPathComponent:@"v1"], persistence.bugsnagPerformanceDir());
+    XCTAssertFalse([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
 
     persistence.start();
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+    XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
+    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
     XCTAssertNil(error);
 
-    auto internalFile = [self.filePath stringByAppendingPathComponent:@"a"];
+    auto internalFile = [expectedBasePath stringByAppendingPathComponent:@"a"];
     XCTAssertTrue([[@"a" dataUsingEncoding:NSUTF8StringEncoding]
                    writeToFile:internalFile
                    atomically:YES]);
     XCTAssertTrue([fm fileExistsAtPath:internalFile isDirectory:&isDir]);
     XCTAssertFalse(isDir);
 
-    persistence.clear();
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+    persistence.clearPerformanceData();
+    XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:self.filePath error:&error].count);
+    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
     XCTAssertNil(error);
     XCTAssertFalse([fm fileExistsAtPath:internalFile isDirectory:&isDir]);
+}
+
+- (void)testBugsnagSharedPersistence {
+    auto fm = [NSFileManager defaultManager];
+    BOOL isDir = false;
+    NSError *error = nil;
+    NSString *expectedBasePath = [self.filePath stringByAppendingPathComponent:
+                                  [NSString stringWithFormat:@"bugsnag-shared-%@",
+                                   NSBundle.mainBundle.bundleIdentifier]];
+    auto persistence = Persistence(self.filePath);
+    XCTAssertEqualObjects(expectedBasePath, persistence.bugsnagSharedDir());
+    XCTAssertFalse([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
+
+    persistence.start();
+    XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
+    XCTAssertTrue(isDir);
+    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
+    XCTAssertNil(error);
+
+    auto internalFile = [expectedBasePath stringByAppendingPathComponent:@"a"];
+    XCTAssertTrue([[@"a" dataUsingEncoding:NSUTF8StringEncoding]
+                   writeToFile:internalFile
+                   atomically:YES]);
+    XCTAssertTrue([fm fileExistsAtPath:internalFile isDirectory:&isDir]);
+    XCTAssertFalse(isDir);
+
+    // clear() does NOT clear the shared directory!
+    persistence.clearPerformanceData();
+    XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
+    XCTAssertTrue(isDir);
+    XCTAssertEqual(1U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
+    XCTAssertNil(error);
+    XCTAssertTrue([fm fileExistsAtPath:internalFile isDirectory:&isDir]);
 }
 
 @end

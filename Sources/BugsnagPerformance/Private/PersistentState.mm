@@ -18,11 +18,14 @@ static NSNumber *getNumber(NSDictionary* dict, NSString *key) {
 }
 
 void PersistentState::setProbability(double probability) noexcept {
-    probability_ = probability;
-    onPersistenceNeeded_();
+    if (probability != probability_) {
+        probability_ = probability;
+        persist();
+    }
 }
 
 NSError *PersistentState::persist() noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
     NSError *error = [Filesystem ensurePathExists:persistentStateDir_];
     if (error != nil) {
         return error;
@@ -33,19 +36,24 @@ NSError *PersistentState::persist() noexcept {
     });
 }
 
-NSError *PersistentState::load() noexcept {
+void PersistentState::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    probability_ = config.samplingProbability;
+};
+
+void PersistentState::start() noexcept {
+    persistentStateDir_ = persistence_->bugsnagPerformanceDir();
+    jsonFilePath_ = [persistentStateDir_ stringByAppendingPathComponent:@"persistent-state.json"];
+
     NSError *error = nil;
     NSDictionary *dict = JSON::fileToDictionary(jsonFilePath_, &error);
     if (dict == nil) {
-        return error;
+        persist();
+        return;
     }
 
     NSNumber *probability = getNumber(dict, @"probability");
     if (probability != nil) {
         probability_ = probability.doubleValue;
-        probabilityIsValid_= true;
     }
-
-    return nil;
 }
 
