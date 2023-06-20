@@ -117,7 +117,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentTabViewLoadScenario
     Given I run "AutoInstrumentTabViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 20 spans
+    And I wait for 5 spans
     And I wait for 10 seconds
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -130,15 +130,15 @@ Feature: Automatic instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
-    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
@@ -155,7 +155,6 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
-    * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentTabViewLoadScenario_ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
@@ -167,7 +166,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentNavigationViewLoadScenario
     Given I run "AutoInstrumentNavigationViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 20 spans
+    And I wait for 5 spans
     And I wait for 10 seconds
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -180,15 +179,15 @@ Feature: Automatic instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
-    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
-    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
+    * no span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
@@ -205,7 +204,6 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
-    * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentNavigationViewLoadScenario_ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
