@@ -35,7 +35,11 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 }
 
 + (instancetype)loadConfig {
-    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
+    return [self loadConfigWithInfoDictionary:NSBundle.mainBundle.infoDictionary];
+}
+
++ (instancetype)loadConfigWithInfoDictionary:(NSDictionary * _Nullable)infoDictionary {
+    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(infoDictionary[@"bugsnag"]);
     __block auto bugsnagPerformanceConfiguration = BSGDynamicCast<NSDictionary>(bugsnagConfiguration[@"performance"]);
     NSString *(^getSharedConfigValue)(NSString *) = ^NSString *(NSString *property) {
         return BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);

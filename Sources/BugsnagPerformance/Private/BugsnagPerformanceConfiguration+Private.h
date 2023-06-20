@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceConfiguration ()
 
++ (instancetype)loadConfigWithInfoDictionary:(NSDictionary * _Nullable)infoDictionary;
+
 /**
  *  Whether reports should be sent, based on release stage options
  *
