@@ -15,15 +15,22 @@ namespace bugsnag {
 class Persistence {
 public:
     Persistence() = delete;
-    Persistence(NSString *topLevelDir) noexcept
-    : topLevelDir_(topLevelDir)
-    {}
+    Persistence(NSString *topLevelDir) noexcept;
 
     void start() noexcept;
-    NSError *clear(void) noexcept;
-    NSString *topLevelDirectory(void) noexcept;
+
+    // Clear all "performance" data. "shared" data is unaffected.
+    NSError *clearPerformanceData(void) noexcept;
+
+    // "performance" dir is for regular bugsnag-performance persistent data, and is versioned.
+    NSString *bugsnagPerformanceDir(void) noexcept;
+
+    // "shared" dir is shared between bugsnag and bugsnag-persistence. It is *not* versioned!
+    NSString *bugsnagSharedDir(void) noexcept;
+
 private:
-    NSString *topLevelDir_{nil};
+    NSString *bugsnagSharedDir_{nil};
+    NSString *bugsnagPerformanceDir_{nil};
 };
 
 }

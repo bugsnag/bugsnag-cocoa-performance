@@ -8,42 +8,38 @@
 
 #pragma once
 
+#import "PhasedStartup.h"
+#import "Persistence.h"
+
 #import <Foundation/Foundation.h>
+#import <mutex>
+#import <memory>
 
 namespace bugsnag {
 
-class PersistentState {
+class PersistentState: PhasedStartup {
 public:
     PersistentState() = delete;
-    PersistentState(NSString *jsonFilePath, void (^onPersistenceNeeded)()) noexcept
-    : jsonFilePath_(jsonFilePath)
-    , persistentStateDir_([jsonFilePath_ stringByDeletingLastPathComponent])
-    , probability_(0)
-    , probabilityIsValid_(false)
-    , onPersistenceNeeded_(onPersistenceNeeded)
+    PersistentState(std::shared_ptr<Persistence> persistence) noexcept
+    : persistence_(persistence)
     {}
+
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void start() noexcept;
 
     void setProbability(double probability) noexcept;
     double probability(void) noexcept {return probability_;};
-    bool probabilityIsValid() noexcept {return probabilityIsValid_;}
 
-    /**
-     * Save this object to persistent storage.
-     * This method should only be called from the worker thread.
-     */
-    NSError *persist() noexcept;
-
-    /**
-     * Load this object from persistent storage.
-     * This method should only be called once at startup.
-     */
-    NSError *load() noexcept;
 private:
+    std::mutex mutex_;
+    std::shared_ptr<Persistence> persistence_;
     NSString *jsonFilePath_{nil};
     NSString *persistentStateDir_{nil};
     double probability_{0};
-    bool probabilityIsValid_{false};
-    void (^onPersistenceNeeded_)(){nil};
+
+    NSError *persist() noexcept;
 };
 
 }
