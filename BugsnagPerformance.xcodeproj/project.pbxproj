@@ -274,6 +274,7 @@
 		CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EarlyConfiguration.h; sourceTree = "<group>"; };
 		CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfiguration.mm; sourceTree = "<group>"; };
 		CBA22C982A03EA300066A2C1 /* NetworkCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkCommon.h; sourceTree = "<group>"; };
+		CBA686CB2A41AE2700C7BD39 /* BugsnagPerformanceTestsApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceTestsApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBC90C4429C84DEB00280884 /* Targets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targets.h; sourceTree = "<group>"; };
@@ -565,11 +566,12 @@
 			isa = PBXGroup;
 			children = (
 				96D415F229E6ADC500AEE435 /* AppDelegate.swift */,
-				96D415F629E6ADC500AEE435 /* ViewController.swift */,
-				96D415F829E6ADC500AEE435 /* Main.storyboard */,
 				96D415FB29E6ADC600AEE435 /* Assets.xcassets */,
-				96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */,
+				CBA686CB2A41AE2700C7BD39 /* BugsnagPerformanceTestsApp-Bridging-Header.h */,
 				96D4160029E6ADC600AEE435 /* Info.plist */,
+				96D415FD29E6ADC600AEE435 /* LaunchScreen.storyboard */,
+				96D415F829E6ADC500AEE435 /* Main.storyboard */,
+				96D415F629E6ADC500AEE435 /* ViewController.swift */,
 			);
 			path = BugsnagPerformanceTestsApp;
 			sourceTree = "<group>";
@@ -761,6 +763,7 @@
 					96D415EF29E6ADC500AEE435 = {
 						CreatedOnToolsVersion = 14.2;
 						DevelopmentTeam = 7W9PZ27Y5F;
+						LastSwiftMigration = 1420;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -975,6 +978,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -996,6 +1000,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
@@ -1255,6 +1260,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
@@ -1274,6 +1280,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
@@ -1287,6 +1294,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
@@ -1304,6 +1312,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1315,6 +1325,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
@@ -1332,6 +1343,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

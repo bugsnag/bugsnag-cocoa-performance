@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## TBD
+
+### Breaking changes
+
+The following changes need attention when updating to this version of the library:
+
+* RRemove public access to the samplingProbability config option because it gets too confusing when mixed with server-side P values.
+  [174](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/174)
+
 ## 0.6.0 (2023-06-15)
 
 ### Breaking changes
