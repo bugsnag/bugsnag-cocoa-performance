@@ -80,6 +80,9 @@
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
 		CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB572EA829BB783200FD7A2A /* AppStateTracker.h */; };
 		CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB572EA929BB783200FD7A2A /* AppStateTracker.m */; };
+		CB68FAB92A3C27B9005B2CDB /* PersistentDeviceID.h in Headers */ = {isa = PBXBuildFile; fileRef = CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */; };
+		CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB68FAB82A3C27B9005B2CDB /* PersistentDeviceID.mm */; };
+		CB68FABC2A3C4208005B2CDB /* PersistentDeviceIDTest.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */; };
 		CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */; };
 		CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB747D20299E5458003CA1B4 /* TimeTests.mm */; };
 		CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */; };
@@ -256,6 +259,9 @@
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
 		CB572EA829BB783200FD7A2A /* AppStateTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStateTracker.h; sourceTree = "<group>"; };
 		CB572EA929BB783200FD7A2A /* AppStateTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStateTracker.m; sourceTree = "<group>"; };
+		CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistentDeviceID.h; sourceTree = "<group>"; };
+		CB68FAB82A3C27B9005B2CDB /* PersistentDeviceID.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistentDeviceID.mm; sourceTree = "<group>"; };
+		CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistentDeviceIDTest.mm; sourceTree = "<group>"; };
 		CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanOptionsTests.mm; sourceTree = "<group>"; };
 		CB747D20299E5458003CA1B4 /* TimeTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimeTests.mm; sourceTree = "<group>"; };
 		CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLibrary.mm; sourceTree = "<group>"; };
@@ -432,6 +438,8 @@
 				CB04969A2915194E0097E526 /* OtlpUploader.mm */,
 				CBEC51B6296D8386009C0CE3 /* Persistence.h */,
 				CBEC51B7296D8386009C0CE3 /* Persistence.mm */,
+				CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */,
+				CB68FAB82A3C27B9005B2CDB /* PersistentDeviceID.mm */,
 				CBEC51BA296D9EED009C0CE3 /* PersistentState.h */,
 				CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */,
 				CB78819F29E698BF00A58906 /* PhasedStartup.h */,
@@ -444,6 +452,7 @@
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
 				01A58C0D29092D25006E4DF7 /* Sampler.mm */,
 				0122C23529019770002D243C /* Span.h */,
+				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
 				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
@@ -452,6 +461,8 @@
 				0122C22129019770002D243C /* SpanData.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
+				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
+				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
 				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
 				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
 				CBC90C4429C84DEB00280884 /* Targets.h */,
@@ -462,9 +473,6 @@
 				015836C3291264E0002F54C8 /* Version.h */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
-				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
-				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
-				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -517,17 +525,18 @@
 				CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */,
 				CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
+				CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */,
 				CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */,
 				CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
+				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
 				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
-				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -611,6 +620,7 @@
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
 				CBA22C962A0137230066A2C1 /* EarlyConfiguration.h in Headers */,
+				CB68FAB92A3C27B9005B2CDB /* PersistentDeviceID.h in Headers */,
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
 				0122C25329019770002D243C /* Span.h in Headers */,
 				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
@@ -830,6 +840,7 @@
 				96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */,
 				CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */,
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
+				CB68FABC2A3C4208005B2CDB /* PersistentDeviceIDTest.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
@@ -868,6 +879,7 @@
 				CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */,
 				0122C24029019770002D243C /* SpanData.mm in Sources */,
 				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
+				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,

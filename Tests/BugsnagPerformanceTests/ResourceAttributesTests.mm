@@ -6,13 +6,15 @@
 //  Copyright © 2022 Bugsnag. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "FileBasedTest.h"
 
 #import "../../Sources/BugsnagPerformance/Private/ResourceAttributes.h"
+#import "../../Sources/BugsnagPerformance/Private/PersistentState.h"
+#import <memory>
 
 using namespace bugsnag;
 
-@interface ResourceAttributesTests : XCTestCase
+@interface ResourceAttributesTests : FileBasedTest
 
 @property(nonatomic,readwrite,strong) BugsnagPerformanceConfiguration *config;
 
@@ -21,6 +23,7 @@ using namespace bugsnag;
 @implementation ResourceAttributesTests
 
 - (void)setUp {
+    [super setUp];
     NSError *error = nil;
     self.config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef"];
     XCTAssertNil(error);
@@ -31,19 +34,36 @@ using namespace bugsnag;
     self.config = nil;
 }
 
+- (std::shared_ptr<ResourceAttributes>) resourceAttributesWithConfig:(BugsnagPerformanceConfiguration *)config {
+    auto persistence = std::make_shared<Persistence>(self.filePath);
+    auto deviceID = std::make_shared<PersistentDeviceID>(persistence);
+    auto attributes = std::make_shared<ResourceAttributes>(deviceID);
+
+    deviceID->earlyConfigure([BSGEarlyConfiguration new]);
+    attributes->earlyConfigure([BSGEarlyConfiguration new]);
+    deviceID->earlySetup();
+    attributes->earlySetup();
+    deviceID->configure(config);
+    attributes->configure(config);
+    persistence->start();
+    deviceID->start();
+    attributes->start();
+    return attributes;
+}
+
 - (void)testDeploymentEnvironment {
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"development");
 }
 
 - (void)testDeploymentEnvironmentFromReleaseStage {
     self.config.releaseStage = @"staging";
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     XCTAssertEqualObjects(attributes[@"deployment.environment"], @"staging");
 }
 
 - (void)testDeviceModelIdentifier {
-    auto attributes = ResourceAttributes(self.config).get();
+    auto attributes = [self resourceAttributesWithConfig:self.config]->get();
     auto modelId = (NSString *)attributes[@"device.model.identifier"];
     XCTAssertGreaterThan(modelId.length, 0U);
     XCTAssertTrue([modelId containsString:@","]);
