@@ -9,6 +9,7 @@
 #import "FileBasedTest.h"
 
 #import "PersistentState.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
@@ -50,7 +51,7 @@ using namespace bugsnag;
     XCTAssertTrue([fm fileExistsAtPath:expectedPath]);
     XCTAssertEqual(1, state->probability());
 
-    config.samplingProbability = 0.1;
+    config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
     // pre-start probability uses config
     XCTAssertEqual(0.1, state->probability());
@@ -60,7 +61,7 @@ using namespace bugsnag;
 
     // Corrupt or missing file reverts to the config probability
     [fm removeItemAtPath:expectedPath error:nil];
-    config.samplingProbability = 0.1;
+    config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
     state->start();
     XCTAssertEqual(0.1, state->probability());
@@ -72,7 +73,7 @@ using namespace bugsnag;
     XCTAssertEqual(0.6, state->probability());
 
     // ... even after reload
-    config.samplingProbability = 0.1;
+    config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
     state->start();
     XCTAssertEqual(0.6, state->probability());

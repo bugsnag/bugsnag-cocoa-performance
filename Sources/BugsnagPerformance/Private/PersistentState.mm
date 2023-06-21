@@ -9,6 +9,7 @@
 #import "PersistentState.h"
 #import "JSON.h"
 #import "Filesystem.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
@@ -37,7 +38,7 @@ NSError *PersistentState::persist() noexcept {
 }
 
 void PersistentState::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    probability_ = config.samplingProbability;
+    probability_ = config.internal.initialSamplingProbability;
 };
 
 void PersistentState::start() noexcept {

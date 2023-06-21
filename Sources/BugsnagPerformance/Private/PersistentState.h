@@ -26,7 +26,7 @@ public:
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
-    void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void configure(BugsnagPerformanceConfiguration *) noexcept;
     void start() noexcept;
 
     void setProbability(double probability) noexcept;
@@ -37,7 +37,7 @@ private:
     std::shared_ptr<Persistence> persistence_;
     NSString *jsonFilePath_{nil};
     NSString *persistentStateDir_{nil};
-    double probability_{0};
+    double probability_{1.0};
 
     NSError *persist() noexcept;
 };
