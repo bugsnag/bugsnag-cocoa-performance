@@ -185,7 +185,7 @@ endif
 	# before it goes live always seems like a good thing
 	@open 'https://github.com/bugsnag/bugsnag-cocoa-performance/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
-	#@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)

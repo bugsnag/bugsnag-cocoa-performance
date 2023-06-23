@@ -21,7 +21,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
 
     @available(iOS 13.0, *)
     func testCreateAndEndSpansWithSampling() throws {
-        config.samplingProbability = 1
+        config.internal.initialSamplingProbability = 1
         BugsnagPerformance.start(configuration: config)
         self.measure {
             for _ in 0..<numberOfTestSpans {
@@ -33,7 +33,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
     
     @available(iOS 13.0, *)
     func testCreateAndEndSpansWithoutSampling() throws {
-        config.samplingProbability = 0
+        config.internal.initialSamplingProbability = 0
         BugsnagPerformance.start(configuration: config)
         self.measure {
             for _ in 0..<numberOfTestSpans {
@@ -45,7 +45,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
     
     @available(iOS 13.0, *)
     func testCreateAndEndViewSpansWithSampling() throws {
-        config.samplingProbability = 1
+        config.internal.initialSamplingProbability = 1
         BugsnagPerformance.start(configuration: config)
         self.measure {
             for _ in 0..<numberOfTestSpans {
@@ -57,7 +57,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
     
     @available(iOS 13.0, *)
     func testCreateAndEndViewSpansWithoutSampling() throws {
-        config.samplingProbability = 0
+        config.internal.initialSamplingProbability = 0
         BugsnagPerformance.start(configuration: config)
         self.measure {
             for _ in 0..<numberOfTestSpans {
@@ -69,7 +69,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
     
     @available(iOS 13.0, *)
     func testCreateBatchAndEndSpansWithSampling() throws {
-        config.samplingProbability = 1
+        config.internal.initialSamplingProbability = 1
         BugsnagPerformance.start(configuration: config)
         self.measure {
             var spans: [BugsnagPerformanceSpan] = []
@@ -82,7 +82,7 @@ final class PerformanceMicrobenchmarkTests: XCTestCase {
     
     @available(iOS 13.0, *)
     func testCreateBatchAndEndSpansWithoutSampling() throws {
-        config.samplingProbability = 0
+        config.internal.initialSamplingProbability = 0
         BugsnagPerformance.start(configuration: config)
         self.measure {
             var spans: [BugsnagPerformanceSpan] = []

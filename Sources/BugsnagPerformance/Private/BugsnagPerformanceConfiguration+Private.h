@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,readwrite) CFTimeInterval probabilityValueExpiresAfterSeconds;
 @property(nonatomic,readwrite) CFTimeInterval probabilityRequestsPauseForSeconds;
 
+@property (nonatomic) double initialSamplingProbability;
+
 /**
  * Delay between sending the initial P value request and doing the first cycle of work
  * (to ensure that the initial P value request span is the first one received during an e2e test)

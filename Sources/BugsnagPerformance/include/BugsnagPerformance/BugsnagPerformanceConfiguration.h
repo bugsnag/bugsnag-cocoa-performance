@@ -34,8 +34,6 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentNetworkRequests;
 
-@property (nonatomic) double samplingProbability;
-
 /**
  *  The version of the application
  */

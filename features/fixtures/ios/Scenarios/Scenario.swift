@@ -29,7 +29,6 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.samplingProbability = 1
         config.endpoint = URL(string:"\(Scenario.mazeRunnerURL)/traces")!
     }
     
