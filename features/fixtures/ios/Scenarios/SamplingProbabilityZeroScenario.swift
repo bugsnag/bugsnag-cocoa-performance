@@ -15,7 +15,7 @@ class SamplingProbabilityZeroScenario: Scenario {
         config.autoInstrumentAppStarts = true
         config.autoInstrumentNetworkRequests = true
         config.autoInstrumentViewControllers = true
-        config.samplingProbability = 0
+        config.internal.initialSamplingProbability = 0
     }
     
     override func startBugsnag() {

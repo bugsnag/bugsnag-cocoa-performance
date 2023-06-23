@@ -29,7 +29,6 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 #else
         _releaseStage = @"production";
 #endif
-        _samplingProbability = 1.0;
     }
     return self;
 }
@@ -147,6 +146,8 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 
         _probabilityValueExpiresAfterSeconds = 24 * 3600;
         _probabilityRequestsPauseForSeconds = 30;
+
+        _initialSamplingProbability = 1.0;
     }
     return self;
 }
