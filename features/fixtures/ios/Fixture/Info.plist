@@ -32,8 +32,6 @@
 		<dict>
 			<key>bundleVersion</key>
 			<string>30</string>
-			<key>samplingProbability</key>
-			<real>1</real>
 			<key>autoInstrumentNetworkRequests</key>
 			<true/>
 			<key>autoInstrumentViewControllers</key>

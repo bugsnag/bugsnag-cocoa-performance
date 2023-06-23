@@ -101,7 +101,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
-                @"samplingProbability": @(42.0),
             }
         }
     }];
@@ -116,7 +115,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertEqual(config.samplingProbability, 42.0);
 }
 
 - (void)testLoadConfigDoesntTakeValuesFromBugsnagWhenAllValuesAreInPerformanceDictionary {
@@ -137,7 +135,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
-                @"samplingProbability": @(42.0),
             }
         }
     }];
@@ -152,7 +149,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertEqual(config.samplingProbability, 42.0);
 }
 
 - (void)testLoadConfigDoesTakeValuesFromBugsnagWhenSomeValuesAreMissingInPerformanceDictionary {
@@ -168,7 +164,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
-                @"samplingProbability": @(42.0),
             }
         }
     }];
@@ -183,7 +178,6 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertEqual(config.samplingProbability, 42.0);
 }
 
 @end
