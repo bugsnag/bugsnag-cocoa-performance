@@ -28,6 +28,28 @@
 	</dict>
 	<key>bugsnag</key>
 	<dict>
+		<key>performance</key>
+		<dict>
+			<key>bundleVersion</key>
+			<string>30</string>
+			<key>autoInstrumentNetworkRequests</key>
+			<true/>
+			<key>autoInstrumentViewControllers</key>
+			<false/>
+			<key>autoInstrumentAppStarts</key>
+			<true/>
+		</dict>
+		<key>enabledReleaseStages</key>
+		<array>
+			<string>release</string>
+			<string>staging</string>
+		</array>
+		<key>releaseStage</key>
+		<string>staging</string>
+		<key>bundleVersion</key>
+		<string>40</string>
+		<key>appVersion</key>
+		<string>10.0</string>
 		<key>apiKey</key>
 		<string>0123456789abcdef0123456789abcdef</string>
 	</dict>

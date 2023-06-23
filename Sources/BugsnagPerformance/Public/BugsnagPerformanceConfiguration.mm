@@ -34,15 +34,51 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 }
 
 + (instancetype)loadConfig {
-    auto dict = BSGDynamicCast<NSDictionary>(NSBundle.mainBundle.infoDictionary[@"bugsnag"]);
-    auto apiKey = BSGDynamicCast<NSString>(dict[@"apiKey"]);
-    auto releaseStage = BSGDynamicCast<NSString>(dict[@"releaseStage"]);
-    auto enabledReleaseStages = BSGDynamicCast<NSArray<NSString *>>(dict[@"enabledReleaseStages"]);
+    return [self loadConfigWithInfoDictionary:NSBundle.mainBundle.infoDictionary];
+}
+
++ (instancetype)loadConfigWithInfoDictionary:(NSDictionary * _Nullable)infoDictionary {
+    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(infoDictionary[@"bugsnag"]);
+    __block auto bugsnagPerformanceConfiguration = BSGDynamicCast<NSDictionary>(bugsnagConfiguration[@"performance"]);
+    NSString *(^getSharedConfigValue)(NSString *) = ^NSString *(NSString *property) {
+        return BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
+    };
+    NSArray<NSString *> *(^getSharedConfigArray)(NSString *) = ^NSArray<NSString *> *(NSString *property) {
+        return BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
+    };
+    auto apiKey = getSharedConfigValue(@"apiKey");
+    auto appVersion = getSharedConfigValue(@"appVersion");
+    auto bundleVersion = getSharedConfigValue(@"bundleVersion");
+    auto releaseStage = getSharedConfigValue(@"releaseStage");
+    auto enabledReleaseStages = getSharedConfigArray(@"enabledReleaseStages");
+    
+    auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
+    auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
+    auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
+    auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
+    if (appVersion) {
+        configuration.appVersion = appVersion;
+    }
+    if (bundleVersion) {
+        configuration.bundleVersion = bundleVersion;
+    }
     if (releaseStage) {
         configuration.releaseStage = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    if (endpoint) {
+        configuration.endpoint = [[NSURL alloc] initWithString: endpoint];
+    }
+    if (autoInstrumentAppStarts != nil) {
+        configuration.autoInstrumentAppStarts = [autoInstrumentAppStarts boolValue];
+    }
+    if (autoInstrumentViewControllers != nil) {
+        configuration.autoInstrumentViewControllers = [autoInstrumentViewControllers boolValue];
+    }
+    if (autoInstrumentNetworkRequests != nil) {
+        configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
+    }
     return configuration;
 }
 
