@@ -7,8 +7,13 @@ Changelog
 
 The following changes need attention when updating to this version of the library:
 
-* RRemove public access to the samplingProbability config option because it gets too confusing when mixed with server-side P values.
+* Remove public access to the samplingProbability config option because it gets too confusing when mixed with server-side P values.
   [174](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/174)
+  
+### Bug fixes
+
+* Removed logging [ViewLoadPhase/loadView] spans for ViewControllers that don't call loadView
+  [172](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/172)
 
 ### Enhancements
 

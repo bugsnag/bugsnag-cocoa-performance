@@ -103,6 +103,12 @@ Then('a span field {string} does not exist') do |key|
   Maze.check.false(selected_keys.empty?)
 end
 
+Then('no span field {string} equals {string}') do |key, value|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_span = spans.find { |span| span[key] and span[key] == value }
+  Maze.check.nil(selected_span)
+end
+
 Then('a span bool attribute {string} does not exist') do |attribute|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_keys = spans.map { |span| !span['attributes'].find { |a| a['key'] == attribute } }
