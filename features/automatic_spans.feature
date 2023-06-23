@@ -268,6 +268,27 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
+  Scenario: Auto-capture multiple network spans
+    Given I run "AutoInstrumentNetworkMultiple"
+    And I wait for 10 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "parentSpanId" does not exist
+    * a span field "name" equals "[HTTP/GET]"
+    * a span string attribute "http.flavor" exists
+    * a span string attribute "http.method" equals "GET"
+    * a span integer attribute "http.status_code" is greater than 0
+    * a span integer attribute "http.response_content_length" is greater than 0
+    * a span string attribute "net.host.connection.type" equals "wifi"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+
   Scenario: Automatically start a network span that is a file:// scheme
     Given I run "AutoInstrumentFileURLRequestScenario"
     And I wait for 2 seconds

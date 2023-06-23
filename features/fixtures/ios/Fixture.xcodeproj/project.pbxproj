@@ -42,6 +42,7 @@
 		CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */; };
 		CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
+		CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -85,6 +86,7 @@
 		CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProbabilityExpiryScenario.swift; sourceTree = "<group>"; };
 		CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentSpanScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
+		CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkMultiple.swift; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -158,6 +160,7 @@
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */,
 				CB2B8A9E2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift */,
+				CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */,
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
@@ -270,6 +273,7 @@
 				CBE0872B29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
+				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
 				CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
