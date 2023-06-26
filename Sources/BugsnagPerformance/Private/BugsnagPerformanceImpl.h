@@ -23,6 +23,7 @@
 #import "AppStateTracker.h"
 #import "PhasedStartup.h"
 #import "Instrumentation/Instrumentation.h"
+#import "ResourceAttributes.h"
 
 #import <mutex>
 
@@ -65,6 +66,7 @@ public:
 
 private:
     std::shared_ptr<Persistence> persistence_;
+    std::shared_ptr<PersistentState> persistentState_;
     std::atomic<bool> isStarted_{false};
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<Batch> batch_;
@@ -72,11 +74,10 @@ private:
     std::shared_ptr<Tracer> tracer_;
     Worker *worker_{nil};
     BugsnagPerformanceConfiguration *configuration_;
-    std::shared_ptr<PersistentState> persistentState_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::unique_ptr<RetryQueue> retryQueue_;
-    NSDictionary *resourceAttributes_{nil};
-    std::atomic<bool> shouldPersistState_{false};
+    std::shared_ptr<PersistentDeviceID> deviceID_;
+    std::shared_ptr<ResourceAttributes> resourceAttributes_;
     std::mutex viewControllersToSpansMutex_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
     CFAbsoluteTime probabilityExpiry_{0};
@@ -96,13 +97,11 @@ private:
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
     bool sendPValueRequestTask() noexcept;
-    bool maybePersistStateTask() noexcept;
 
     // Event reactions
     void onBatchFull() noexcept;
     void onConnectivityChanged(Reachability::Connectivity connectivity) noexcept;
     void onProbabilityChanged(double newProbability) noexcept;
-    void onPersistentStateChanged() noexcept;
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;

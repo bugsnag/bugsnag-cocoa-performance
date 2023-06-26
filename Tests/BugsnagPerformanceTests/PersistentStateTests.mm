@@ -9,6 +9,7 @@
 #import "FileBasedTest.h"
 
 #import "PersistentState.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
@@ -18,40 +19,64 @@ using namespace bugsnag;
 
 @implementation PersistentStateTests
 
+- (std::shared_ptr<PersistentState>)persistentStateWithConfig:(BugsnagPerformanceConfiguration *)config {
+    auto persistence = std::make_shared<Persistence>(self.filePath);
+    auto persistentState = std::make_shared<PersistentState>(persistence);
+    persistentState->earlyConfigure([BSGEarlyConfiguration new]);
+    persistentState->earlySetup();
+    persistentState->configure(config);
+    persistence->start();
+    // Don't start persistentState yet...
+    return persistentState;
+}
+
 - (void)testPersistentState {
+    NSString *expectedPath = [self.filePath stringByAppendingPathComponent:
+                                  [NSString stringWithFormat:@"bugsnag-performance-%@/v1/persistent-state.json",
+                                   NSBundle.mainBundle.bundleIdentifier]];
+
     auto fm = [NSFileManager defaultManager];
-    __block int callbackCallCount = false;
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef"];
 
-    auto state = PersistentState(self.filePath, ^{
-        callbackCallCount++;
-    });
+    XCTAssertFalse([fm fileExistsAtPath:expectedPath]);
 
-    XCTAssertEqual(0, state.probability());
-    XCTAssertFalse([fm fileExistsAtPath:self.filePath]);
-    XCTAssertEqual(0, callbackCallCount);
+    auto state = [self persistentStateWithConfig:config];
 
-    state.setProbability(0.5);
-    XCTAssertEqual(0.5, state.probability());
-    XCTAssertFalse([fm fileExistsAtPath:self.filePath]);
-    XCTAssertEqual(1, callbackCallCount);
+    // Default BugsnagPerformanceConfiguration probability is 1
+    XCTAssertEqual(1, state->probability());
 
-    state.setProbability(0.6);
-    XCTAssertEqual(0.6, state.probability());
-    XCTAssertFalse([fm fileExistsAtPath:self.filePath]);
-    XCTAssertEqual(2, callbackCallCount);
+    // File gets created on start()
+    XCTAssertFalse([fm fileExistsAtPath:expectedPath]);
+    state->start();
+    XCTAssertTrue([fm fileExistsAtPath:expectedPath]);
+    XCTAssertEqual(1, state->probability());
 
-    state.persist();
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath]);
+    config.internal.initialSamplingProbability = 0.1;
+    state = [self persistentStateWithConfig:config];
+    // pre-start probability uses config
+    XCTAssertEqual(0.1, state->probability());
+    // start() loads persisted data, which overrides config probability
+    state->start();
+    XCTAssertEqual(1, state->probability());
 
-    callbackCallCount = 0;
-    state = PersistentState(self.filePath, ^{
-        callbackCallCount++;
-    });
-    XCTAssertEqual(0, state.probability());
-    XCTAssertNil(state.load());
-    XCTAssertEqual(0.6, state.probability());
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath]);
-    XCTAssertEqual(0, callbackCallCount);
+    // Corrupt or missing file reverts to the config probability
+    [fm removeItemAtPath:expectedPath error:nil];
+    config.internal.initialSamplingProbability = 0.1;
+    state = [self persistentStateWithConfig:config];
+    state->start();
+    XCTAssertEqual(0.1, state->probability());
+
+    // Multiple changes are properly reflected
+    state->setProbability(0.5);
+    XCTAssertEqual(0.5, state->probability());
+    state->setProbability(0.6);
+    XCTAssertEqual(0.6, state->probability());
+
+    // ... even after reload
+    config.internal.initialSamplingProbability = 0.1;
+    state = [self persistentStateWithConfig:config];
+    state->start();
+    XCTAssertEqual(0.6, state->probability());
 }
 
 @end

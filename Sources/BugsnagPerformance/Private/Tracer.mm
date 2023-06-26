@@ -7,7 +7,6 @@
 
 #import "Tracer.h"
 
-#import "ResourceAttributes.h"
 #import "SpanAttributes.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
