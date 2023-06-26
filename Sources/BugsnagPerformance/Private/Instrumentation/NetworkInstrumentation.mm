@@ -114,6 +114,7 @@ NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
         return;
     }
     SpanOptions options;
+    options.makeCurrentContext = false;
     auto span = tracer_->startNetworkSpan(task.originalRequest.HTTPMethod, options);
     objc_setAssociatedObject(task, associatedNetworkSpanKey, span,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);

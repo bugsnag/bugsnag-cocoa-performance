@@ -399,6 +399,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
     auto interval = metrics.taskInterval;
     auto name = task.originalRequest.HTTPMethod;
     SpanOptions options;
+    options.makeCurrentContext = false;
     options.startTime = dateToAbsoluteTime(interval.startDate);
     auto span = tracer_->startNetworkSpan(name, options);
     [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
