@@ -88,3 +88,8 @@ NSData *OtlpPackage::serialize() noexcept {
     [data appendData:(NSData * _Nonnull)payload_];
     return data;
 }
+
+uint64_t OtlpPackage::uncompressedContentLength() {
+    NSString *strValue = headers_[@"Bugsnag-Uncompressed-Content-Length"];
+    return (uint64_t)strValue.longLongValue;
+}

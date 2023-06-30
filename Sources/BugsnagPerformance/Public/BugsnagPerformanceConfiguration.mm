@@ -144,6 +144,8 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         _probabilityRequestsPauseForSeconds = 30;
 
         _initialSamplingProbability = 1.0;
+
+        _maxPackageContentLength = 1000000;
     }
     return self;
 }

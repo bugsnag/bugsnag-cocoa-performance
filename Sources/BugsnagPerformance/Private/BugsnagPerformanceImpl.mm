@@ -78,6 +78,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     performWorkInterval_ = config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
+    maxPackageContentLength_ = config.internal.maxPackageContentLength;
 
     configuration_ = config;
     persistentState_->configure(config);
@@ -306,7 +307,7 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
                 }
                 break;
             case UploadResult::FAILED_CAN_RETRY:
-                if (!isRetry) {
+                if (!isRetry && blockPackage->uncompressedContentLength() <= maxPackageContentLength_) {
                     blockThis->retryQueue_->add(*blockPackage);
                 }
                 break;

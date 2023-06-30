@@ -43,6 +43,7 @@
 		CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */; };
 		CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */; };
 		CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */; };
+		CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +88,7 @@
 		CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentSpanScenario.swift; sourceTree = "<group>"; };
 		CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanScenario.swift; sourceTree = "<group>"; };
 		CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkMultiple.swift; sourceTree = "<group>"; };
+		CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPayloadSizeScenario.swift; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -159,11 +161,13 @@
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */,
+				9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */,
 				CB2B8A9E2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift */,
 				CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */,
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
+				9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
@@ -178,14 +182,13 @@
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
+				CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */,
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
-				9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */,
-				9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 				CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */,
 				967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */,
 				9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */,
+				CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */,
 				CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */,
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,

@@ -142,3 +142,34 @@ Then('a span named {string} started before a span named {string}') do |name1, na
   second_span = spans.find { |span| span['name'] == name2 }
   Maze.check.true(first_span['startTimeUnixNano'].to_i < second_span['startTimeUnixNano'].to_i)
 end
+
+When('I wait for exactly {int} span(s)') do |span_count|
+  assert_received_exactly_spans span_count, Maze::Server.list_for('traces')
+end
+
+def assert_received_exactly_spans(span_count, list)
+  timeout = Maze.config.receive_requests_wait
+  wait = Maze::Wait.new(timeout: timeout)
+
+  received = wait.until { spans_from_request_list(list).size == span_count }
+  received_count = spans_from_request_list(list).size
+
+  unless received
+    raise Test::Unit::AssertionFailedError.new <<-MESSAGE
+    Expected #{span_count} spans but received #{received_count} within the #{timeout}s timeout.
+    This could indicate that:
+    - Bugsnag crashed with a fatal error.
+    - Bugsnag did not make the requests that it should have done.
+    - The requests were made, but not deemed to be valid (e.g. missing integrity header).
+    - The requests made were prevented from being received due to a network or other infrastructure issue.
+    Please check the Maze Runner and device logs to confirm.)
+    MESSAGE
+  end
+
+  wait = Maze::Wait.new(timeout: 5)
+
+  Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
+
+  Maze::Schemas::Validator.verify_against_schema(list, 'trace')
+  Maze::Schemas::Validator.validate_payload_elements(list, 'trace')
+end
