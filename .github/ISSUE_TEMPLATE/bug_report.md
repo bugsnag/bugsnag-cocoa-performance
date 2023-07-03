@@ -22,7 +22,6 @@ A clear and concise description of what the bug is.
 * BugSnag Performance library version:
 * BugSnag Error Monitoring library version (if any):
 * CocoaPods version:
-*  Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
 * Xcode version:
