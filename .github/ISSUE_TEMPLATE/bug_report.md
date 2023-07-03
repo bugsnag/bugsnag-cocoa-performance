@@ -19,9 +19,10 @@ A clear and concise description of what the bug is.
 4. See error
 
 ### Environment
-* BugSnag Cocoa Performance version:
+* Bugsnag Performance library version:
+* Bugsnag Error Monitoring library version (if any):
 * CocoaPods version:
-* Carthage version (if any):
+*  Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
 * Xcode version:
