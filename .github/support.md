@@ -12,7 +12,6 @@ When contacting support, please include as much information as necessary, includ
 * BugSnag Performance library version:
 * BugSnag Error Monitoring library version (if any):
 * CocoaPods version:
-* Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
 * Xcode version:
