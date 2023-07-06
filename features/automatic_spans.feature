@@ -110,6 +110,9 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
