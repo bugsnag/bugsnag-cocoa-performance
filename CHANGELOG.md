@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed ViewLoadPhase spans parentage
+  [181](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/181)
+
 ## 0.7.0 (2023-06-26)
 
 ### Breaking changes
