@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Removed duplicate ViewLoadPhase spans
+  [182](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/182)
+
 ## 0.7.0 (2023-06-26)
 
 ### Breaking changes
