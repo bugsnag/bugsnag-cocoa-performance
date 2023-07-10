@@ -26,11 +26,15 @@ public:
     void configure(BugsnagPerformanceConfiguration *) noexcept {};
     void start() noexcept;
 
-    NSString *current() noexcept { return cachedDeviceID_; };
+    NSString *external() noexcept { return externalDeviceID_; };
+
+    // Not used by bugsnag-cocoa-performance
+    NSString *unittest_internal() noexcept { return internalDeviceID_; };
 
 private:
     std::shared_ptr<Persistence> persistence_;
-    NSString *cachedDeviceID_{@""};
+    NSString *externalDeviceID_{@""};
+    NSString *internalDeviceID_{@""};
     NSString *persistenceDir_{nil};
 
     NSString *getFilePath();

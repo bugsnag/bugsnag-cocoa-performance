@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 0.8.0 (2023-07-10)
+
+### Enhancements
+
+* Update persistent device id code to match bugsnag-cocoa
+  [177](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/177)
+
+### Bug fixes
+
+* Removed duplicate ViewLoadPhase spans
+  [182](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/182)
+
+* Fixed ViewLoadPhase spans parentage
+  [181](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/181)
+
 ## 0.7.0 (2023-06-26)
 
 ### Breaking changes

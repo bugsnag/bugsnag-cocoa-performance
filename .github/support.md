@@ -9,9 +9,9 @@ When contacting support, please include as much information as necessary, includ
 - steps to reproduce
 - expected/actual behaviour 
 
-* BugSnag Cocoa Performance version:
+* BugSnag Performance library version:
+* BugSnag Error Monitoring library version (if any):
 * CocoaPods version:
-* Carthage version (if any):
 * iOS/tvOS/macOS version(s):
 * Simulator or physical device:
 * Xcode version:

@@ -11,8 +11,15 @@
 #import "JSON.h"
 #import "Filesystem.h"
 
+#if __has_include(<UIKit/UIDevice.h>)
+#import <UIKit/UIKit.h>
+#endif
+#if __has_include(<WatchKit/WatchKit.h>)
+#import <WatchKit/WatchKit.h>
+#endif
 #import <CommonCrypto/CommonDigest.h>
 #import <sys/sysctl.h>
+#import <mach/machine.h>
 
 using namespace bugsnag;
 
@@ -99,10 +106,13 @@ static bool isAllZeroes(NSData *data) {
     return true;
 }
 
-static NSString *newDeviceAndAppHash() {
+static NSMutableData * _Nonnull generateIdentificationData() {
     NSMutableData *data = nil;
 
-#if __has_include(<UIKit/UIDevice.h>)
+#if TARGET_OS_WATCH
+    data = [NSMutableData dataWithLength:16];
+    [[[WKInterfaceDevice currentDevice] identifierForVendor] getUUIDBytes:(uint8_t*)data.mutableBytes];
+#elif __has_include(<UIKit/UIDevice.h>)
     data = [NSMutableData dataWithLength:16];
     [[UIDevice currentDevice].identifierForVendor getUUIDBytes:(uint8_t*)data.mutableBytes];
 #else
@@ -124,6 +134,10 @@ static NSString *newDeviceAndAppHash() {
     // Append the bundle ID.
     [data appendData:dataForString(NSBundle.mainBundle.bundleIdentifier)];
 
+    return data;
+}
+
+static NSString * _Nonnull computeHash(NSData * _Nullable data) {
     // SHA the whole thing.
     uint8_t sha[CC_SHA1_DIGEST_LENGTH];
     CC_SHA1([data bytes], (CC_LONG)[data length], sha);
@@ -134,6 +148,18 @@ static NSString *newDeviceAndAppHash() {
     }
 
     return hash;
+}
+
+static NSString * _Nonnull generateExternalDeviceID() {
+    return computeHash(generateIdentificationData());
+}
+
+static NSString * _Nonnull generateInternalDeviceID() {
+    // ROAD-1488: internal device ID should be different.
+    uint8_t additionalData[] = {251};
+    NSMutableData *data = generateIdentificationData();
+    [data appendBytes:additionalData length:sizeof(additionalData)];
+    return computeHash(data);
 }
 
 static NSString *getString(NSDictionary* dict, NSString *key) {
@@ -152,7 +178,8 @@ NSError *PersistentDeviceID::load() {
         return error;
     }
 
-    cachedDeviceID_ = getString(dict, @"deviceID");
+    externalDeviceID_ = getString(dict, @"deviceID");
+    internalDeviceID_ = getString(dict, @"internalDeviceID");
     return nil;
 }
 
@@ -163,15 +190,27 @@ NSError *PersistentDeviceID::save() {
     }
 
     return JSON::dictionaryToFile(getFilePath(), @{
-        @"deviceID": cachedDeviceID_
+        @"deviceID": externalDeviceID_,
+        @"internalDeviceID": internalDeviceID_,
     });
 }
 
 void PersistentDeviceID::start() noexcept {
     persistenceDir_ = persistence_->bugsnagSharedDir();
     load();
-    if (cachedDeviceID_.length == 0) {
-        cachedDeviceID_ = newDeviceAndAppHash();
+
+    bool requiresSave = false;
+    if (externalDeviceID_.length == 0) {
+        externalDeviceID_ = generateExternalDeviceID();
+        requiresSave = true;
+    }
+
+    if (internalDeviceID_.length == 0) {
+        internalDeviceID_ = generateInternalDeviceID();
+        requiresSave = true;
+    }
+
+    if (requiresSave) {
         save();
     }
 }

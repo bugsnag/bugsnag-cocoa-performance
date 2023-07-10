@@ -44,14 +44,13 @@ Tracer::start() noexcept {
 BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
     __block auto blockThis = this;
-    auto currentSpan = spanStackingHandler_->currentSpan();
-    auto traceId = currentSpan.traceId;
+    auto parentSpan = options.parentContext;
+    if (parentSpan == nil) {
+        parentSpan = spanStackingHandler_->currentSpan();
+    }
+    auto traceId = parentSpan.traceId;
     if (traceId.value == 0) {
         traceId = IdGenerator::generateTraceId();
-    }
-    auto parentSpanId = options.parentContext.spanId;
-    if (parentSpanId == 0) {
-        parentSpanId = currentSpan.spanId;
     }
     BSGFirstClass firstClass = options.firstClass;
     if (firstClass == BSGFirstClassUnset) {
@@ -61,7 +60,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
                                                               traceId,
                                                               spanId,
-                                                              parentSpanId,
+                                                              parentSpan.spanId,
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {

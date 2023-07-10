@@ -77,7 +77,7 @@ void ResourceAttributes::start() noexcept {
         @"deployment.environment": releaseStage_ ?: [NSNull null],
 
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/device/
-        @"device.id": deviceID_->current(),
+        @"device.id": deviceID_->external(),
         @"device.manufacturer": @"Apple",
         @"device.model.identifier": deviceModelIdentifier() ?: [NSNull null],
 
