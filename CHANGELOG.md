@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 0.8.0 (2023-07-10)
+
+### Enhancements
+
+* Update persistent device id code to match bugsnag-cocoa
+  [177](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/177)
 
 ### Bug fixes
 
