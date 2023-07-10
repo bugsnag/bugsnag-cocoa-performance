@@ -129,6 +129,13 @@ Then('a span integer attribute {string} is greater than {int}') do |attribute, e
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('a span named {string} is a child of span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['traceId'] == second_span['traceId'] && first_span['parentSpanId'] == second_span['spanId'])
+end
+
 Then('a span named {string} started before a span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }

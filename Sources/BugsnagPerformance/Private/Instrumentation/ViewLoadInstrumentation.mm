@@ -255,6 +255,8 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
     }
     auto className = NSStringFromClass([viewController class]);
     SpanOptions options;
+    BugsnagPerformanceSpan *viewLoadSpan = objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
+    options.parentContext = viewLoadSpan;
     auto span = tracer_->startViewLoadPhaseSpan([NSString stringWithFormat:@"[ViewLoadPhase/%@]/%@", phase, className], options);
     [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
 
