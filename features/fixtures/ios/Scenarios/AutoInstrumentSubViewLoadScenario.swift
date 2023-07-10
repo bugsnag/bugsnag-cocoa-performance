@@ -25,6 +25,7 @@ class AutoInstrumentSubViewLoadScenario_ViewController: UIViewController {
     let subVC = AutoInstrumentSubViewLoadScenario_SubViewController()
 
     override func viewDidLoad() {
+        super.viewDidLoad()
         add(childViewController:AutoInstrumentSubViewLoadScenario_SubViewController(), to:view)
     }
 }
@@ -37,6 +38,10 @@ class AutoInstrumentSubViewLoadScenario_SubViewController: UIViewController {
         label.textAlignment = .center
         label.text = String(describing: type(of: self))
         view = label
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
     }
 }
 

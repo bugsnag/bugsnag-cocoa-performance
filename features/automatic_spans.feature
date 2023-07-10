@@ -28,8 +28,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario"
-    And I wait for 20 spans
-    And I wait for 10 seconds
+    And I wait for 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -67,8 +66,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentSubViewLoadScenario
     Given I run "AutoInstrumentSubViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 20 spans
-    And I wait for 10 seconds
+    And I wait for 27 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -134,6 +132,22 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
@@ -141,8 +155,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentTabViewLoadScenario
     Given I run "AutoInstrumentTabViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 5 spans
-    And I wait for 10 seconds
+    And I wait for 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -190,8 +203,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentNavigationViewLoadScenario
     Given I run "AutoInstrumentNavigationViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 5 spans
-    And I wait for 10 seconds
+    And I wait for 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"

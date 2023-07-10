@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Removed duplicate ViewLoadPhase spans
+  [182](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/182)
+
 * Fixed ViewLoadPhase spans parentage
   [181](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/181)
 
