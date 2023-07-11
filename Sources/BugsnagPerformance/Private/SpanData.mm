@@ -49,6 +49,7 @@ SpanData::hasAttribute(NSString *attributeName, id value) noexcept {
 void
 SpanData::updateSamplingProbability(double value) noexcept {
     if (samplingProbability > value) {
+        std::lock_guard<std::mutex> guard(mutex_);
         samplingProbability = value;
         attributes[@"bugsnag.sampling.p"] = @(value);
     }
