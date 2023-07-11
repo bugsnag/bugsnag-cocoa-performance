@@ -10,6 +10,7 @@ import Foundation
 
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
+@objcMembers
 class Scenario: NSObject {
     
     static let mazeRunnerURL = "http://bs-local.com:9339"
