@@ -67,7 +67,8 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
 
 UploadResult OtlpUploader::getUploadResult(NSURLResponse *response) const {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
-        return UploadResult::FAILED_CANNOT_RETRY;
+        // Failed to connect. We may be able to connect later.
+        return UploadResult::FAILED_CAN_RETRY;
     }
 
     auto httpResponse = (NSHTTPURLResponse *_Nonnull)response;

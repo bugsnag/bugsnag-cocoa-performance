@@ -90,6 +90,7 @@ private:
     CFTimeInterval probabilityRequestsPauseForSeconds_{0};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<Instrumentation> instrumentation_;
+    uint64_t maxPackageContentLength_{1000000};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
