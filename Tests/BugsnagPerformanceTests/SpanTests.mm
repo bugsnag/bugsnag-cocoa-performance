@@ -32,6 +32,16 @@ static std::shared_ptr<Span> spanWithStartTime(CFAbsoluteTime startTime, OnSpanE
     XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
 }
 
+- (void)testStartEndUnset2 {
+    CFAbsoluteTime startTime = CFABSOLUTETIME_INVALID;
+    CFAbsoluteTime endTime = startTime;
+    __block std::shared_ptr<SpanData> spanData = nullptr;
+    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
+    sleep(1);
+    span->end(endTime);
+    XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
+}
+
 - (void)testStartNearPastEndUnset {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 0.0005;
     CFAbsoluteTime endTime = CFABSOLUTETIME_INVALID;
