@@ -73,13 +73,10 @@ public:
             return;
         }
 
-        // If our start and end times were both "unset", then it's on us to counter any
-        // clock skew using the monotonic clock.
-        if (isMonotonicClockValid(startClock_)) {
-            auto endClock = currentMonotonicClockNsecIfUnset(time);
-            if (isMonotonicClockValid(endClock)) {
-                time = data_->startTime + ((double)(endClock - startClock_)) / NSEC_PER_SEC;
-            }
+        // If our start and end times were both "unset", then try to counter any
+        // clock skew by using the monotonic clock.
+        if (!isCFAbsoluteTimeValid(time) && isMonotonicClockValid(startClock_)) {
+            time = calculateEndTimeFromMonotonicClock();
         }
 
         data_->endTime = currentTimeIfUnset(time);
@@ -97,6 +94,18 @@ private:
     uint64_t startClock_{MONOTONIC_CLOCK_INVALID};
 
     static const uint64_t MONOTONIC_CLOCK_INVALID = 0;
+    static constexpr CFAbsoluteTime MAX_CFTIME_SKEW = 60 * 60 * 24;
+
+    CFAbsoluteTime calculateEndTimeFromMonotonicClock() {
+        auto nowTime = CFAbsoluteTimeGetCurrent();
+        auto endClock = clock_gettime_nsec_np(CLOCK_MONOTONIC);
+        auto endTime = data_->startTime + ((double)(endClock - startClock_)) / NSEC_PER_SEC;
+        // Only trust the monotonic clock if the result is within reason.
+        if (fabs(endTime - nowTime) > MAX_CFTIME_SKEW) {
+            return CFABSOLUTETIME_INVALID;
+        }
+        return endTime;
+    }
 
     static bool isMonotonicClockValid(uint64_t clock) {
         return clock != MONOTONIC_CLOCK_INVALID;
