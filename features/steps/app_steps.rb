@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
 When('I run {string}') do |scenario_name|
-  Maze::Server.commands.add({ action: "run_scenario", args: [scenario_name] })
-  Maze.driver.click_element :execute_command
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  invoke_command('run_scenario', [scenario_name])
 end
 
 When('I invoke {string}') do |method_name|
@@ -14,13 +9,7 @@ When('I invoke {string}') do |method_name|
 end
 
 When('I invoke {string} with parameter {string}') do |method_name, arg1|
-  # Note: The method will usually be of the form "xyzWithParam:"
-  Maze::Server.commands.add({ action: "invoke_method", args: [method_name, arg1] })
-  Maze.driver.click_element :execute_command
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  invoke_command('invoke_method', [method_name, arg1])
 end
 
 # Note:
