@@ -78,7 +78,8 @@ public:
         if (isMonotonicClockValid(startClock_)) {
             auto endClock = currentMonotonicClockNsecIfUnset(time);
             if (isMonotonicClockValid(endClock)) {
-                time = data_->startTime + ((double)(endClock - startClock_)) / NSEC_PER_SEC;
+                // Calculate using signed int so that an end time < start time doesn't overflow.
+                time = data_->startTime + ((double)((int64_t)endClock - (int64_t)startClock_)) / NSEC_PER_SEC;
             }
         }
 

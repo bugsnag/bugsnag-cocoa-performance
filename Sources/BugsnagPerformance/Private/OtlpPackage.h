@@ -35,6 +35,7 @@ public:
 
     const dispatch_time_t timestamp{0};
 
+    uint64_t uncompressedContentLength();
 
 private:
     friend bool operator==(const OtlpPackage &lhs, const OtlpPackage &rhs);

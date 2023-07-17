@@ -281,6 +281,7 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
     auto headers = @{
         @"Content-Type": @"application/json",
         @"Bugsnag-Integrity": integrityDigestForData(payload),
+        @"Bugsnag-Uncompressed-Content-Length": [NSString stringWithFormat:@"%ld", payload.length],
         @"Bugsnag-Span-Sampling": pValueHistogramForSpans(spans),
     };
 
