@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## 1.0.0 (2023-07-17)
+
+### Bug fixes
+
+* Stop span end calculation from generating a date 500 years into the future
+  [187](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/187)
+
+* Don't retry sending payloads that are over 1MB
+  [185](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/185)
+
+* Cover every potential race condition in span attributes with a mutex
+  [184](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/184)
+
 ## 0.8.0 (2023-07-10)
 
 ### Enhancements
