@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Stop span end calculation from generating a date 500 years into the future
+* Perform end time calculation using signed ints to prevent unsigned overflow
   [187](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/187)
 
 * Don't retry sending payloads that are over 1MB
