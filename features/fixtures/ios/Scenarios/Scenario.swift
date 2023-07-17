@@ -10,6 +10,7 @@ import Foundation
 
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
+@objcMembers
 class Scenario: NSObject {
     
     static let mazeRunnerURL = "http://bs-local.com:9339"
@@ -36,6 +37,10 @@ class Scenario: NSObject {
         NSLog("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
+        let cachesUrl = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+        for file in try! FileManager.default.contentsOfDirectory(at: cachesUrl, includingPropertiesForKeys: nil) {
+            try! FileManager.default.removeItem(at: file)
+        }
     }
     
     func startBugsnag() {

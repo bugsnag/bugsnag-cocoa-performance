@@ -68,8 +68,6 @@ class Fixture: NSObject {
         scenario = (scenarioClass as! NSObject.Type).init() as! Scenario?
         NSLog("[Fixture] Configuring scenario \(scenarioName)")
         scenario!.configure()
-        NSLog("[Fixture] Clearing persistent data")
-        scenario!.clearPersistentData()
         NSLog("[Fixture] Starting bugsnag")
         scenario!.startBugsnag()
         NSLog("[Fixture] Running scenario \(scenarioClass)")
