@@ -26,19 +26,20 @@ SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
     auto transactionMetrics = metrics.transactionMetrics;
     if (transactionMetrics.count > 0) {
-        NSString *protocolName = transactionMetrics[0].networkProtocolName;
-        if ([protocolName isEqualToString:@"http/1.1"]) {
-            return @"1.1";
-        }
-        if ([protocolName isEqualToString:@"h2"]) {
-            return @"2.0";
-        }
-        if ([protocolName isEqualToString:@"h3"]) {
-            return @"3.0";
-        }
-        if ([protocolName hasPrefix:@"spdy/"]) {
-            return @"SPDY";
-        }
+        return [NSString stringWithFormat:@"Received %@", transactionMetrics[0].networkProtocolName];
+//        NSString *protocolName = transactionMetrics[0].networkProtocolName;
+//        if ([protocolName isEqualToString:@"http/1.1"]) {
+//            return @"1.1";
+//        }
+//        if ([protocolName isEqualToString:@"h2"]) {
+//            return @"2.0";
+//        }
+//        if ([protocolName isEqualToString:@"h3"]) {
+//            return @"3.0";
+//        }
+//        if ([protocolName hasPrefix:@"spdy/"]) {
+//            return @"SPDY";
+//        }
     }
     return nil;
 }
