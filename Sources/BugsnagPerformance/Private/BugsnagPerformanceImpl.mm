@@ -402,7 +402,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
     SpanOptions options;
     options.makeCurrentContext = false;
     options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = tracer_->startNetworkSpan(name, options);
+    auto span = tracer_->startNetworkSpan(task.originalRequest.URL, name, options);
     [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
     [span endWithEndTime:interval.endDate];
 }

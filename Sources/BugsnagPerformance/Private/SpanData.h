@@ -28,7 +28,9 @@ public:
              BSGFirstClass firstClass) noexcept;
     
     SpanData(const SpanData&) = delete;
-    
+
+    void addAttribute(NSString *attributeName, id value) noexcept;
+
     void addAttributes(NSDictionary *attributes) noexcept;
 
     bool hasAttribute(NSString *attributeName, id value) noexcept;

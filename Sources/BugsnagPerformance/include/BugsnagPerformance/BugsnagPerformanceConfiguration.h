@@ -6,6 +6,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceErrors.h>
+#import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
 
 #import <UIKit/UIKit.h>
 
@@ -60,6 +61,11 @@ OBJC_EXPORT
  *  Release stages which are allowed to notify Bugsnag
  */
 @property (copy, nullable, nonatomic) NSSet<NSString *> *enabledReleaseStages;
+
+/**
+ * Callback used to control how network request spans are created.
+ */
+@property(nullable, nonatomic) BugsnagPerformanceNetworkRequestCallback networkRequestCallback;
 
 @end
 

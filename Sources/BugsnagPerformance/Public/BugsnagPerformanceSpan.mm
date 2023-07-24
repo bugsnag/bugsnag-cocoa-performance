@@ -58,12 +58,20 @@ using namespace bugsnag;
     return !_span->isEnded();
 }
 
+- (void)addAttribute:(NSString *)attributeName withValue:(id)value {
+    _span->addAttribute(attributeName, value);
+}
+
 - (void)addAttributes:(NSDictionary *)attributes {
     _span->addAttributes(attributes);
 }
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value {
     return _span->hasAttribute(attributeName, value);
+}
+
+- (id)getAttribute:(NSString *)attributeName {
+    return _span->getAttribute(attributeName);
 }
 
 @end

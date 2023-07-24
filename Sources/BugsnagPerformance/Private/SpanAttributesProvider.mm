@@ -113,7 +113,6 @@ SpanAttributesProvider::networkSpanAttributes(NSURLSessionTask *task,
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = task.originalRequest.HTTPMethod;
     attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;
-    attributes[@"http.url"] = task.originalRequest.URL.absoluteString;
     attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
     attributes[@"net.host.connection.subtype"] = getConnectionSubtype(attributes[@"net.host.connection.type"]);
     addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));

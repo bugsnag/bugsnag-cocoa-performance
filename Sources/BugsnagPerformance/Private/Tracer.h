@@ -50,7 +50,7 @@ public:
                                               NSString *className,
                                               SpanOptions options) noexcept;
 
-    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept;
     
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *name, SpanOptions options) noexcept;
 
@@ -59,16 +59,21 @@ public:
 private:
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
-    
+
+    std::atomic<bool> isEarlySpansPhase_{true};
+    std::mutex earlySpansMutex_;
+    NSMutableArray<BugsnagPerformanceSpan *> *earlyNetworkSpans_;
+
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};
     void (^onViewLoadSpanStarted_)(NSString *className){
         ^(NSString *) {}
     };
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
 
-    BugsnagPerformanceConfiguration *configuration;
-    
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);
+    void markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept;
+    void endEarlySpansPhase() noexcept;
 };
 }
