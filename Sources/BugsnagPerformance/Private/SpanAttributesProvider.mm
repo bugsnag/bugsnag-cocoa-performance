@@ -24,9 +24,8 @@ static NSString * const connectionTypeCell = @"cell";
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
-    auto transactionMetrics = metrics.transactionMetrics;
-    if (transactionMetrics.count > 0) {
-        NSString *protocolName = transactionMetrics[0].networkProtocolName;
+    for (NSURLSessionTaskTransactionMetrics *transactionMetrics in metrics.transactionMetrics) {
+        NSString *protocolName = transactionMetrics.networkProtocolName;
         if ([protocolName isEqualToString:@"http/1.1"]) {
             return @"1.1";
         }
