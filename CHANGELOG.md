@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Network spans can now be controlled via user callbacks.
+  [189](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/189)
+
+
 ## 1.0.0 (2023-07-17)
 
 ### Bug fixes
