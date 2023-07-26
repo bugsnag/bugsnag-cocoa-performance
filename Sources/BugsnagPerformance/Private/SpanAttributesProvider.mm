@@ -25,8 +25,10 @@ SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
     auto transactionMetrics = metrics.transactionMetrics;
+    NSLog(@"### transactionMetrics.count = %lu", (unsigned long)transactionMetrics.count);
     if (transactionMetrics.count > 0) {
         NSString *protocolName = transactionMetrics[0].networkProtocolName;
+        NSLog(@"### protocolName = %@", transactionMetrics[0].networkProtocolName);
         if ([protocolName isEqualToString:@"http/1.1"]) {
             return @"1.1";
         }
