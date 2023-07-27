@@ -10,6 +10,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+#import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

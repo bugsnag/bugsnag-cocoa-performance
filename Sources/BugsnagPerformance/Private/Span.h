@@ -42,7 +42,11 @@ public:
     {};
     
     Span(const Span&) = delete;
-    
+
+    void addAttribute(NSString *attributeName, id value) noexcept {
+        data_->addAttribute(attributeName, value);
+    }
+
     void addAttributes(NSDictionary *attributes) noexcept {
         // This doesn't have to be thread safe because this method is never called
         // after the span is started.
@@ -58,6 +62,10 @@ public:
             return data->hasAttribute(attributeName, value);
         }
         return false;
+    }
+
+    id getAttribute(NSString *attributeName) noexcept {
+        return data_->attributes[attributeName];
     }
 
     bool isEnded(void) {
