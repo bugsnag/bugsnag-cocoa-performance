@@ -84,6 +84,8 @@ GEM
     multi_test (0.1.2)
     nokogiri (1.15.3-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.15.3-x86_64-darwin)
+      racc (~> 1.4)
     optimist (3.0.1)
     os (1.0.1)
     power_assert (2.0.3)
@@ -117,6 +119,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  x86_64-darwin-21
 
 DEPENDENCIES
   bugsnag-maze-runner (~> 8.0)

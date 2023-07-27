@@ -27,6 +27,7 @@ SpanData::SpanData(NSString *name,
     if (firstClass != BSGFirstClassUnset) {
         attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
     }
+    attributes[@"bugsnag.sampling.p"] = @(samplingProbability);
 }
 
 void
