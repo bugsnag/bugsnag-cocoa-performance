@@ -5,9 +5,13 @@ Changelog
 
 ### Enhancements
 
-* Network spans can now be controlled via user callbacks.
+* Network spans can now be controlled via user callbacks
   [189](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/189)
+  
+### Bug fixes
 
+* The span sampling attribute was not being set when equal to 1.0
+  [195](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/195)
 
 ## 1.0.0 (2023-07-17)
 
