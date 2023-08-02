@@ -27,6 +27,13 @@ SpanData::SpanData(NSString *name,
     if (firstClass != BSGFirstClassUnset) {
         attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
     }
+    attributes[@"bugsnag.sampling.p"] = @(samplingProbability);
+}
+
+void
+SpanData::addAttribute(NSString *attributeName, id value) noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    this->attributes[attributeName] = value;
 }
 
 void

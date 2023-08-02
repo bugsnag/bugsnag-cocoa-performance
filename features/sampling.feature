@@ -12,3 +12,4 @@ Feature: Sampling
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "Post-start"
+    * a span double attribute "bugsnag.sampling.p" equals 1.0

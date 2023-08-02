@@ -173,3 +173,10 @@ def assert_received_exactly_spans(span_count, list)
   Maze::Schemas::Validator.verify_against_schema(list, 'trace')
   Maze::Schemas::Validator.validate_payload_elements(list, 'trace')
 end
+
+Then('a span double attribute {string} equals {float}') do |attribute, value|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
+  selected_attributes = selected_attributes.map { |a| a['value']['doubleValue'] == value }
+  Maze.check.false(selected_attributes.empty?)
+end
