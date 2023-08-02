@@ -156,11 +156,11 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
           docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.8.0"
+              - "--appium-version=1.16.0"
               - "--device=IOS_12"
               - "--fail-fast"
               - "--farm=bs"
@@ -182,11 +182,11 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
           docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
+            pull: cocoa-maze-runner-legacy
+            run: cocoa-maze-runner-legacy
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.8.0"
+              - "--appium-version=1.16.0"
               - "--device=IOS_11"
               - "--fail-fast"
               - "--farm=bs"
