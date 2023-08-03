@@ -37,9 +37,12 @@ steps:
         agents:
           queue: macos-11
 
+  #
+  # BitBar
+  #
   - group: ":iphone: E2E Tests"
     steps:
-      - label: "iOS 16 E2E Tests"
+      - label: ":bitbar: iOS 16 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
@@ -54,18 +57,18 @@ steps:
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
+            service-ports: true
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_16"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
               - "--order=random"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: "iOS 15 E2E Tests"
+      - label: ":bitbar: iOS 15 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
@@ -80,18 +83,18 @@ steps:
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
+            service-ports: true
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_15"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
               - "--order=random"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: "iOS 14 E2E Tests"
+      - label: ":bitbar: iOS 14 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
@@ -106,18 +109,18 @@ steps:
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
+            service-ports: true
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_14"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
               - "--order=random"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: "iOS 13 E2E Tests"
+      - label: ":bitbar: iOS 13 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
@@ -132,18 +135,18 @@ steps:
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
+            service-ports: true
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_13"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
               - "--order=random"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: "iOS 12 E2E Tests"
+      - label: ":bitbar: iOS 12 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
@@ -158,17 +161,21 @@ steps:
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
+            service-ports: true
             command:
               - "--app=@build/ipa_url.txt"
               - "--device=IOS_12"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
               - "--order=random"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: "iOS 11 E2E Tests"
+      #
+      # BrowserStack
+      #
+      - label: ":browserstack: iOS 11 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 10
