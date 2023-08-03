@@ -11,7 +11,7 @@ import Foundation
 class AutoInstrumentNetworkBadAddressScenario: Scenario {
 
     lazy var baseURL: URL = {
-        var components = URLComponents(string: Scenario.mazeRunnerURL)!
+        var components = URLComponents(string: Fixture.mazeRunnerURL)!
         components.port = 9876 // Use the wrong port
         return components.url!
     }()
