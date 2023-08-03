@@ -22,9 +22,11 @@ steps:
         commands:
           - ./features/fixtures/ios/build.sh
           - bundle install
-          - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bb_ipa_url.txt
+          - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bs_ipa_url.txt
         artifact_paths:
-          - features/fixtures/ios/output/ipa_url.txt
+          - features/fixtures/ios/output/bb_ipa_url.txt
+          - features/fixtures/ios/output/bs_ipa_url.txt
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
@@ -50,7 +52,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -59,7 +61,7 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bb"
@@ -78,7 +80,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -87,7 +89,7 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_15"
               - "--fail-fast"
               - "--farm=bb"
@@ -106,7 +108,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -115,7 +117,7 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bb"
@@ -134,7 +136,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -143,7 +145,7 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bb"
@@ -162,7 +164,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -171,7 +173,7 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_12"
               - "--fail-fast"
               - "--farm=bb"
@@ -193,7 +195,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
+            download: "features/fixtures/ios/output/bs_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -201,7 +203,7 @@ steps:
             pull: maze-runner-bs-legacy
             run: maze-runner-bs-legacy
             command:
-              - "--app=@build/ipa_url.txt"
+              - "--app=@build/bs_ipa_url.txt"
               - "--appium-version=1.16.0"
               - "--device=IOS_11"
               - "--fail-fast"
