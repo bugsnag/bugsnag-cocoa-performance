@@ -16,10 +16,9 @@ class Scenario: NSObject {
     
     func configure() {
         NSLog("Scenario.configure()")
-
+        
         // Make sure the initial P value has time to be fully received before sending spans
         config.internal.initialRecurringWorkDelay = 0.5
-
         config.internal.clearPersistenceOnStart = true
         config.internal.autoTriggerExportOnBatchSize = 1
         config.apiKey = "12312312312312312312312312312312"
@@ -27,6 +26,15 @@ class Scenario: NSObject {
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
         config.endpoint = URL(string:"\(Fixture.mazeRunnerURL)/traces")!
+        // Discard any spans for internally generated requests to avoid confusing scenarios
+        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            let url = info.url!
+
+            if (url.absoluteString.contains("/command") || url.absoluteString.contains("/metrics")) {
+                info.url = nil
+            }
+            return info
+        }
     }
     
     func clearPersistentData() {
