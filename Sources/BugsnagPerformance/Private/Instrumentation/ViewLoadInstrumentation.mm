@@ -49,18 +49,34 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         return;
     }
 
-    auto observedClasses = [NSMutableSet<Class> set];
-
-    for (auto image : imagesToInstrument()) {
-        Trace(@"Instrumenting %s", image);
-        for (auto cls : viewControllerSubclasses(image)) {
-            Trace(@" - %s", class_getName(cls));
-            [observedClasses addObject:cls];
-            instrument(cls);
+    classToIsObserved_[[UIViewController class]] = true;
+    __block auto classToIsObserved = &classToIsObserved_;
+    __block bool *isEnabled = &isEnabled_;
+    SEL selector = @selector(initWithCoder:);
+    IMP initWithCoder __block = nullptr;
+    initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
+        std::lock_guard<std::mutex> guard(vcInitMutex_);
+        auto viewControllerClass = [self class];
+        if (*isEnabled && !isClassObserved(viewControllerClass)) {
+            Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+            instrument(viewControllerClass);
+            (*classToIsObserved)[viewControllerClass] = true;
         }
-    }
-
-    observedClasses_ = observedClasses;
+        reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
+    });
+    
+    selector = @selector(initWithNibName:bundle:);
+    IMP initWithNibNameBundle __block = nullptr;
+    initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
+        std::lock_guard<std::mutex> guard(vcInitMutex_);
+        auto viewControllerClass = [self class];
+        if (*isEnabled && !isClassObserved(viewControllerClass)) {
+            Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+            instrument(viewControllerClass);
+            (*classToIsObserved)[viewControllerClass] = true;
+        }
+        reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
+    });
 
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
@@ -236,7 +252,7 @@ ViewLoadInstrumentation::canCreateSpans(UIViewController *viewController) noexce
         return false;
     }
 
-    if (![observedClasses_ containsObject:[viewController class]]) {
+    if (!isClassObserved([viewController class])) {
         return false;
     }
     
@@ -246,6 +262,15 @@ ViewLoadInstrumentation::canCreateSpans(UIViewController *viewController) noexce
     }
     
     return true;
+}
+
+bool
+ViewLoadInstrumentation::isClassObserved(Class cls) noexcept {
+    auto result = classToIsObserved_.find(cls);
+    if (result == classToIsObserved_.end()) {
+        return false;
+    }
+    return (*result).second;
 }
 
 BugsnagPerformanceSpan *

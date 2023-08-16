@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Reduced impact on application launch time
+  [197](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/197)
+
 ## 1.1.0 (2023-07-27)
 
 ### Enhancements

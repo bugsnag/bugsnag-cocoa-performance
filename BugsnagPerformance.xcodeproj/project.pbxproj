@@ -66,6 +66,7 @@
 		96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */; };
 		96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C822A1EBA35006D1F29 /* SpanActivityState.h */; };
 		96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */; };
+		96E917122A8D6C750091FD79 /* SetupPerformanceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96E917112A8D6C750091FD79 /* SetupPerformanceTests.mm */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -247,6 +248,7 @@
 		96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandler.mm; sourceTree = "<group>"; };
 		96D55C822A1EBA35006D1F29 /* SpanActivityState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanActivityState.h; sourceTree = "<group>"; };
 		96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandlerTests.mm; sourceTree = "<group>"; };
+		96E917112A8D6C750091FD79 /* SetupPerformanceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SetupPerformanceTests.mm; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
 				CB7FD928299BA5AD00499E13 /* ViewControllerSpanTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
+				96E917112A8D6C750091FD79 /* SetupPerformanceTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -837,6 +840,7 @@
 			files = (
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
+				96E917122A8D6C750091FD79 /* SetupPerformanceTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
