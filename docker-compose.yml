@@ -22,9 +22,8 @@ services:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
       - ./features/fixtures/ios/output:/app/build
-      - ./features/:/app/features/
+      - ./:/app
       - ./maze_output:/app/maze_output
-      - ./maze_output.zip:/app/maze_output.zip
 
   cocoa-maze-runner-legacy:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli-legacy

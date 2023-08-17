@@ -78,7 +78,7 @@ steps:
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-              - "maze_output.zip"
+              - "./maze_output.zip"
           docker-compose#v4.8.0:
             pull: cocoa-maze-runner
             run: cocoa-maze-runner
