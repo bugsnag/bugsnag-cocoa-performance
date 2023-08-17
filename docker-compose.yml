@@ -24,7 +24,7 @@ services:
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
-      - ./app-root:/app
+      - ./:/app
 
   cocoa-maze-runner-legacy:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli-legacy
