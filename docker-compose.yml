@@ -22,7 +22,7 @@ services:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
       - ./features/fixtures/ios/output:/app/build
-      - ./:/app
+      - ./features/:/app/features/
       - ./maze_output:/app/maze_output
 
   cocoa-maze-runner-legacy:
