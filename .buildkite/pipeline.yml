@@ -31,9 +31,17 @@ steps:
       - label: "iOS 15 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
       - label: "iOS 11 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
         agents:
           queue: macos-11
 
