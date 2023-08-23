@@ -42,42 +42,54 @@ static constexpr int kAssociatedViewLoadInstrumentationState = 0;
 
 void ViewLoadInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     isEnabled_ = config.enableSwizzling;
+    swizzleViewLoadPreMain_ = config.swizzleViewLoadPreMain;
 }
 
 void ViewLoadInstrumentation::earlySetup() noexcept {
     if (!isEnabled_) {
         return;
     }
-
-    classToIsObserved_[[UIViewController class]] = true;
-    __block auto classToIsObserved = &classToIsObserved_;
-    __block bool *isEnabled = &isEnabled_;
-    SEL selector = @selector(initWithCoder:);
-    IMP initWithCoder __block = nullptr;
-    initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
-        std::lock_guard<std::mutex> guard(vcInitMutex_);
-        auto viewControllerClass = [self class];
-        if (*isEnabled && !isClassObserved(viewControllerClass)) {
-            Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
-            instrument(viewControllerClass);
-            (*classToIsObserved)[viewControllerClass] = true;
-        }
-        reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
-    });
     
-    selector = @selector(initWithNibName:bundle:);
-    IMP initWithNibNameBundle __block = nullptr;
-    initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
-        std::lock_guard<std::mutex> guard(vcInitMutex_);
-        auto viewControllerClass = [self class];
-        if (*isEnabled && !isClassObserved(viewControllerClass)) {
-            Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
-            instrument(viewControllerClass);
-            (*classToIsObserved)[viewControllerClass] = true;
+    if (swizzleViewLoadPreMain_) {
+        for (auto image : imagesToInstrument()) {
+            Trace(@"Instrumenting %s", image);
+            for (auto cls : viewControllerSubclasses(image)) {
+                Trace(@" - %s", class_getName(cls));
+                classToIsObserved_[cls] = true;
+                instrument(cls);
+            }
         }
-        reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
-    });
-
+    } else {
+        classToIsObserved_[[UIViewController class]] = true;
+        __block auto classToIsObserved = &classToIsObserved_;
+        __block bool *isEnabled = &isEnabled_;
+        SEL selector = @selector(initWithCoder:);
+        IMP initWithCoder __block = nullptr;
+        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
+            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            auto viewControllerClass = [self class];
+            if (*isEnabled && !isClassObserved(viewControllerClass)) {
+                Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+                instrument(viewControllerClass);
+                (*classToIsObserved)[viewControllerClass] = true;
+            }
+            reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
+        });
+        
+        selector = @selector(initWithNibName:bundle:);
+        IMP initWithNibNameBundle __block = nullptr;
+        initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
+            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            auto viewControllerClass = [self class];
+            if (*isEnabled && !isClassObserved(viewControllerClass)) {
+                Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+                instrument(viewControllerClass);
+                (*classToIsObserved)[viewControllerClass] = true;
+            }
+            reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
+        });
+    }
+    
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
     instrument([UIViewController class]);

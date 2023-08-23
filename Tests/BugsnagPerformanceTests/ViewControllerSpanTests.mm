@@ -25,7 +25,6 @@ using namespace bugsnag;
 @implementation ViewControllerSpanTests
 
 - (void)testNormalUsage {
-    BugsnagPerformanceLibrary::testing_reset();
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
     config.autoInstrumentViewControllers = NO;
     config.autoInstrumentAppStarts = NO;
@@ -43,7 +42,6 @@ using namespace bugsnag;
 }
 
 - (void)testForgotToEnd {
-    BugsnagPerformanceLibrary::testing_reset();
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
     config.autoInstrumentViewControllers = NO;
     config.autoInstrumentAppStarts = NO;
@@ -77,7 +75,6 @@ using namespace bugsnag;
 - (void)testAutoViewControllerDidAppearWillDisappear {
     // Combined into one test because there is some memory corruption bug when
     // testing_reset() is called multiple times.
-    BugsnagPerformanceLibrary::testing_reset();
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"];
     config.autoInstrumentViewControllers = YES;
     config.autoInstrumentAppStarts = NO;

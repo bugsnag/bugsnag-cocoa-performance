@@ -50,6 +50,7 @@ private:
     bool isClassObserved(Class cls) noexcept;
 
     bool isEnabled_{true};
+    bool swizzleViewLoadPreMain_{true};
     std::shared_ptr<Tracer> tracer_;
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
     std::map<Class, bool> classToIsObserved_{};
