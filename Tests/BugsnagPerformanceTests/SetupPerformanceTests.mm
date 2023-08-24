@@ -20,12 +20,14 @@ using namespace bugsnag;
 @implementation SetupPerformanceTests
 
 - (void)testBugsnagEarlySetupTime API_AVAILABLE(ios(13)) {
-    XCTMeasureOptions *options = [XCTMeasureOptions defaultOptions];
-    options.iterationCount = 100;
-    [self measureWithOptions:options block:^{
-        auto performance = std::make_shared<BugsnagPerformanceImpl>(BugsnagPerformanceLibrary::getReachability(), BugsnagPerformanceLibrary::getAppStateTracker());
-        performance->earlySetup();
-    }];
+    if ([self respondsToSelector:@selector(measureWithOptions:block:)]) {
+        XCTMeasureOptions *options = [XCTMeasureOptions defaultOptions];
+        options.iterationCount = 100;
+        [self measureWithOptions:options block:^{
+            auto performance = std::make_shared<BugsnagPerformanceImpl>(BugsnagPerformanceLibrary::getReachability(), BugsnagPerformanceLibrary::getAppStateTracker());
+            performance->earlySetup();
+        }];
+    }
 }
 
 @end
