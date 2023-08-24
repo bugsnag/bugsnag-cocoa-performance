@@ -31,7 +31,7 @@ steps:
         commands:
           - ./features/fixtures/ios/build.sh --disableSwizzling
           - bundle install
-          - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
+          - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
           
@@ -40,7 +40,7 @@ steps:
         commands:
           - ./features/fixtures/ios/build.sh --swizzlingPremain
           - bundle install
-          - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_premain.txt
+          - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_premain.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url_swizzling_premain.txt
 
@@ -512,7 +512,7 @@ steps:
               - "--fail-fast"
               - "--farm=bs"
               - "--order=random"
-              - "features/swizzling_default"
+              - "features/default"
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
