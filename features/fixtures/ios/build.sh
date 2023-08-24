@@ -36,9 +36,11 @@ sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "
 
 cd $(dirname "${BASH_SOURCE[0]}")
 
-xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -scheme Fixture archive -allowProvisioningUpdates -quiet
+xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture archive -allowProvisioningUpdates -quiet
 
-xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
+xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
+
+mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
 sed -i '' -e 's|'$disable_swizzling_key'|DISABLE_SWIZZLING_KEY|' ./Fixture/Info.plist
 sed -i '' -e 's|'$disable_swizzling_value'|DISABLE_SWIZZLING_VALUE|' ./Fixture/Info.plist
