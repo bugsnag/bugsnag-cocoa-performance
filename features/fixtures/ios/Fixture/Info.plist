@@ -30,8 +30,10 @@
 	<dict>
 		<key>performance</key>
 		<dict>
-            DISABLE_SWIZZLING
-            SWIZZLING_PREMAIN
+            DISABLE_SWIZZLING_KEY
+            DISABLE_SWIZZLING_VALUE
+            SWIZZLING_PREMAIN_KEY
+            SWIZZLING_PREMAIN_VALUE
 			<key>bundleVersion</key>
 			<string>30</string>
 			<key>autoInstrumentNetworkRequests</key>

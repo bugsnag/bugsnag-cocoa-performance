@@ -29,7 +29,7 @@ steps:
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
         commands:
-          - ./features/fixtures/ios/build.sh --disableSwizzling
+          - ./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling
           - bundle install
           - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
         artifact_paths:
@@ -38,7 +38,7 @@ steps:
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
         commands:
-          - ./features/fixtures/ios/build.sh --swizzlingPremain
+          - ./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain
           - bundle install
           - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_premain.txt
         artifact_paths:
