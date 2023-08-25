@@ -96,6 +96,8 @@ iOSInjectionProject/
 # Bugsnag
 appium_server.log
 maze_output
+BugsnagTests-*.xcresult
+logs/*
 
 # Other
 .DS_Store
