@@ -64,10 +64,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         __block auto classToIsObserved = &classToIsObserved_;
         __block bool *isEnabled = &isEnabled_;
         __block auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
-        SEL selector = @selector(initWithCoder:);
-        IMP initWithCoder __block = nullptr;
-        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
-            std::lock_guard<std::mutex> guard(vcInitMutex_);
+        auto initInstrumentation = ^(id self) {
             auto viewControllerClass = [self class];
             auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
             if (strstr(viewControllerBundlePath, appPath)
@@ -83,6 +80,12 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
                     (*classToIsObserved)[viewControllerClass] = true;
                 }
             }
+        };
+        SEL selector = @selector(initWithCoder:);
+        IMP initWithCoder __block = nullptr;
+        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
+            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            initInstrumentation(self);
             reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
         });
         
@@ -90,21 +93,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         IMP initWithNibNameBundle __block = nullptr;
         initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
             std::lock_guard<std::mutex> guard(vcInitMutex_);
-            auto viewControllerClass = [self class];
-            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
-            if (strstr(viewControllerBundlePath, appPath)
-#if TARGET_OS_SIMULATOR
-                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
-                // doesn't embed them when building for the Simulator.
-                || strstr(viewControllerBundlePath, "/DerivedData/")
-#endif
-                ) {
-                if (*isEnabled && !isClassObserved(viewControllerClass)) {
-                    Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
-                    instrument(viewControllerClass);
-                    (*classToIsObserved)[viewControllerClass] = true;
-                }
-            }
+            initInstrumentation(self);
             reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
         });
     }
