@@ -81,10 +81,20 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
             std::lock_guard<std::mutex> guard(vcInitMutex_);
             auto viewControllerClass = [self class];
-            if (*isEnabled && !isClassObserved(viewControllerClass)) {
-                Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
-                instrument(viewControllerClass);
-                (*classToIsObserved)[viewControllerClass] = true;
+            auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
+            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
+            if (strstr(viewControllerBundlePath, appPath)
+#if TARGET_OS_SIMULATOR
+                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
+                // doesn't embed them when building for the Simulator.
+                || strstr(viewControllerBundlePath, "/DerivedData/")
+#endif
+                ) {
+                if (*isEnabled && !isClassObserved(viewControllerClass)) {
+                    Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+                    instrument(viewControllerClass);
+                    (*classToIsObserved)[viewControllerClass] = true;
+                }
             }
             reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
         });
