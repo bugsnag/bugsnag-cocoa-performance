@@ -47,15 +47,18 @@ private:
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpanPhase() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;
+    bool isClassObserved(Class cls) noexcept;
 
     bool isEnabled_{true};
+    bool swizzleViewLoadPreMain_{true};
     std::shared_ptr<Tracer> tracer_;
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
-    NSSet *observedClasses_{nil};
+    std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::atomic<bool> isEarlySpanPhase_{true};
     std::mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
+    std::mutex vcInitMutex_;
 };
 }
 

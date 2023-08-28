@@ -8,14 +8,17 @@
 import Foundation
 
 class Fixture: NSObject {
+    static let defaultMazeRunnerURL = "http://bs-local.com:9339"
+    static let mazeRunnerURL = loadMazeRunnerAddress()
+
     var scenario: Scenario? = nil
 
     func fetchAndExecuteCommand() {
-        let url = URL(string: "\(Scenario.mazeRunnerURL)/command")!
+        let url = URL(string: "\(Fixture.mazeRunnerURL)/command")!
 
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        NSLog("[Fixture] Sending command request to \(Scenario.mazeRunnerURL)/command: \(request.httpMethod!) \(request) \(request.allHTTPHeaderFields!)")
+        NSLog("[Fixture] Sending command request to \(Fixture.mazeRunnerURL)/command: \(request.httpMethod!) \(request) \(request.allHTTPHeaderFields!)")
 
         URLSession.shared.dataTask(with: request) { data, response, connectionError in
             if let response = response {
@@ -99,9 +102,48 @@ class Fixture: NSObject {
         }
     }
 
+    static func loadMazeRunnerAddress() -> String {
+        let bsAddress = Fixture.defaultMazeRunnerURL
+
+        // Only iOS 12 and above will run on BitBar for now
+        if #available(iOS 12.0, *) {} else {
+            return bsAddress;
+        }
+
+        for _ in 1...60 {
+            let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+            NSLog("Reading Maze Runner address from fixture_config.json")
+            do {
+                let fileUrl = URL(fileURLWithPath: "fixture_config",
+                                  relativeTo: documentsUrl).appendingPathExtension("json")
+                let savedData = try Data(contentsOf: fileUrl)
+                if let contents = String(data: savedData, encoding: .utf8) {
+                    let decoder = JSONDecoder()
+                    let jsonData = contents.data(using: .utf8)
+                    let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
+                    let address = "http://" + config.maze_address
+                    NSLog("Using Maze Runner address: " + address)
+                    return address
+                }
+            }
+            catch let error as NSError {
+                NSLog("Failed to read fixture_config.json: \(error)")
+            }
+            NSLog("Waiting for fixture_config.json to appear")
+            sleep(1)
+        }
+
+        NSLog("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
+        return bsAddress;
+    }
+
     private struct Command: Decodable {
         let action: String
         let args: Array<String>
     }
 
+    private struct FixtureConfig: Decodable {
+        var maze_address: String
+    }
 }

@@ -11,9 +11,6 @@ import Foundation
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
 class Scenario: NSObject {
-    
-    static let mazeRunnerURL = "http://bs-local.com:9339"
-    
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
     
@@ -29,7 +26,7 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.endpoint = URL(string:"\(Scenario.mazeRunnerURL)/traces")!
+        config.endpoint = URL(string:"\(Fixture.mazeRunnerURL)/traces")!
     }
     
     func clearPersistentData() {
@@ -75,7 +72,7 @@ class Scenario: NSObject {
     }
     
     func report(metrics: [String: Any], name: String) {
-        guard let url = URL(string: "\(Scenario.mazeRunnerURL)/metrics") else {
+        guard let url = URL(string: "\(Fixture.mazeRunnerURL)/metrics") else {
             return
         }
         var request = URLRequest(url: url)

@@ -42,26 +42,62 @@ static constexpr int kAssociatedViewLoadInstrumentationState = 0;
 
 void ViewLoadInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     isEnabled_ = config.enableSwizzling;
+    swizzleViewLoadPreMain_ = config.swizzleViewLoadPreMain;
 }
 
 void ViewLoadInstrumentation::earlySetup() noexcept {
     if (!isEnabled_) {
         return;
     }
-
-    auto observedClasses = [NSMutableSet<Class> set];
-
-    for (auto image : imagesToInstrument()) {
-        Trace(@"Instrumenting %s", image);
-        for (auto cls : viewControllerSubclasses(image)) {
-            Trace(@" - %s", class_getName(cls));
-            [observedClasses addObject:cls];
-            instrument(cls);
+    
+    if (swizzleViewLoadPreMain_) {
+        for (auto image : imagesToInstrument()) {
+            Trace(@"Instrumenting %s", image);
+            for (auto cls : viewControllerSubclasses(image)) {
+                Trace(@" - %s", class_getName(cls));
+                classToIsObserved_[cls] = true;
+                instrument(cls);
+            }
         }
+    } else {
+        classToIsObserved_[[UIViewController class]] = true;
+        __block auto classToIsObserved = &classToIsObserved_;
+        __block bool *isEnabled = &isEnabled_;
+        __block auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
+        auto initInstrumentation = ^(id self) {
+            auto viewControllerClass = [self class];
+            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
+            if (strstr(viewControllerBundlePath, appPath)
+#if TARGET_OS_SIMULATOR
+                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
+                // doesn't embed them when building for the Simulator.
+                || strstr(viewControllerBundlePath, "/DerivedData/")
+#endif
+                ) {
+                if (*isEnabled && !isClassObserved(viewControllerClass)) {
+                    Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+                    instrument(viewControllerClass);
+                    (*classToIsObserved)[viewControllerClass] = true;
+                }
+            }
+        };
+        SEL selector = @selector(initWithCoder:);
+        IMP initWithCoder __block = nullptr;
+        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
+            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            initInstrumentation(self);
+            reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
+        });
+        
+        selector = @selector(initWithNibName:bundle:);
+        IMP initWithNibNameBundle __block = nullptr;
+        initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
+            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            initInstrumentation(self);
+            reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
+        });
     }
-
-    observedClasses_ = observedClasses;
-
+    
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
     instrument([UIViewController class]);
@@ -236,7 +272,7 @@ ViewLoadInstrumentation::canCreateSpans(UIViewController *viewController) noexce
         return false;
     }
 
-    if (![observedClasses_ containsObject:[viewController class]]) {
+    if (!isClassObserved([viewController class])) {
         return false;
     }
     
@@ -246,6 +282,15 @@ ViewLoadInstrumentation::canCreateSpans(UIViewController *viewController) noexce
     }
     
     return true;
+}
+
+bool
+ViewLoadInstrumentation::isClassObserved(Class cls) noexcept {
+    auto result = classToIsObserved_.find(cls);
+    if (result == classToIsObserved_.end()) {
+        return false;
+    }
+    return (*result).second;
 }
 
 BugsnagPerformanceSpan *
