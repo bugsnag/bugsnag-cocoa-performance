@@ -5,10 +5,10 @@ echo "$(sw_vers -productName) $(sw_vers -productVersion) $(sw_vers -buildVersion
 
 set -euxo pipefail
 
-disable_swizzling_key='<key>test_key_to_replace1</key>'
-disable_swizzling_value='<string>test_value_to_replace1</string>'
-swizzling_premain_key='<key>test_key_to_replace2</key>'
-swizzling_premain_value='<string>test_value_to_replace2</string>'
+disable_swizzling_key=''
+disable_swizzling_value=''
+swizzling_premain_key=''
+swizzling_premain_value=''
 
 fixture_name='Fixture'
 for ((i=1;i<=$#;i++));
@@ -29,6 +29,8 @@ do
     fi
 done;
 
+cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
+
 sed -i '' -e 's|DISABLE_SWIZZLING_KEY|'$disable_swizzling_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 sed -i '' -e 's|DISABLE_SWIZZLING_VALUE|'$disable_swizzling_value'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 sed -i '' -e 's|SWIZZLING_PREMAIN_KEY|'$swizzling_premain_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
@@ -42,7 +44,4 @@ xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exp
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
-sed -i '' -e 's|'$disable_swizzling_key'|DISABLE_SWIZZLING_KEY|' ./Fixture/Info.plist
-sed -i '' -e 's|'$disable_swizzling_value'|DISABLE_SWIZZLING_VALUE|' ./Fixture/Info.plist
-sed -i '' -e 's|'$swizzling_premain_key'|SWIZZLING_PREMAIN_KEY|' ./Fixture/Info.plist
-sed -i '' -e 's|'$swizzling_premain_value'|SWIZZLING_PREMAIN_VALUE|' ./Fixture/Info.plist
+rm ./Fixture/Info.plist
