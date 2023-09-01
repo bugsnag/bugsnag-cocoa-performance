@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Set the default value of swizzleViewLoadPreMain to false
+  [202](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/202)
+
 ## 1.1.1 (2023-08-28)
 
 ### Enhancements
