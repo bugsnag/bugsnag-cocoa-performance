@@ -17,7 +17,7 @@
             _enableSwizzling = YES;
         }
         id swizzleViewLoadPreMain = [dict valueForKeyPath:@"bugsnag.performance.swizzleViewLoadPreMain"];
-        _swizzleViewLoadPreMain = [swizzleViewLoadPreMain boolValue];
+        _swizzleViewLoadPreMain = swizzleViewLoadPreMain != nil && [swizzleViewLoadPreMain boolValue];
     }
 
     return self;
