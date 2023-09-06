@@ -147,6 +147,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     }];
 
     batch_->setBatchFullCallback(^{
+//        NSLog(@"###### BATCH FULL");
         blockThis->onBatchFull();
     });
 
@@ -190,12 +191,14 @@ bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
+//    NSLog(@"### SEND CURRENT BATCH");
     auto origSpans = batch_->drain(false);
     auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
         return false;
     }
 
+//    NSLog(@"### SEND CURRENT BATCH 2");
     uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get()), false);
     return true;
 }
@@ -256,7 +259,7 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
-    batch_->allowDrain();
+//    batch_->allowDrain();
     wakeWorker();
 }
 
@@ -284,6 +287,7 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
+//    NSLog(@"### SEND PACKAGE %lu", (unsigned long)package->getPayloadForUnitTest().length);
     if (!configuration_.shouldSendReports) {
         return;
     }

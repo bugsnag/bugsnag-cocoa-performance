@@ -84,6 +84,7 @@ public:
      */
     std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain(bool force) noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
+        drainIsAllowed_ = false;
         if (!drainIsAllowed_ && !force) {
             return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
         }

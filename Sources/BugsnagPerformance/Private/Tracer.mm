@@ -90,19 +90,26 @@ void Tracer::tryAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
 BugsnagPerformanceSpan *
 Tracer::startAppStartSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGFirstClassUnset);
+    uint64_t startTime = begin_timed_op();
+    auto span = startSpan(name, options, BSGFirstClassUnset);
+    end_timed_op(@"Tracer::startAppStartSpan", startTime);
+    return span;
 }
 
 BugsnagPerformanceSpan *
 Tracer::startCustomSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGFirstClassYes);
+//    uint64_t startTime = begin_timed_op();
+    auto span = startSpan(name, options, BSGFirstClassYes);
+//    end_timed_op(@"Tracer::startCustomSpan", startTime);
+    return span;
 }
 
 BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
+    uint64_t startTime = begin_timed_op();
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
@@ -111,11 +118,14 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGFirstClassNo;
         }
     }
-    return startSpan(name, options, BSGFirstClassYes);
+    auto span = startSpan(name, options, BSGFirstClassYes);
+    end_timed_op(@"Tracer::startViewLoadSpan", startTime);
+    return span;
 }
 
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept {
+    uint64_t startTime = begin_timed_op();
     if (networkRequestCallback_ != nil) {
         auto info = [BugsnagPerformanceNetworkRequestInfo new];
         info.url = url;
@@ -133,13 +143,17 @@ Tracer::startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) 
     if (isEarlySpansPhase_ && !networkRequestCallback_) {
         markEarlyNetworkSpan(span);
     }
+    end_timed_op(@"Tracer::startNetworkSpan", startTime);
     return span;
 }
 
 BugsnagPerformanceSpan *
 Tracer::startViewLoadPhaseSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGFirstClassUnset);
+    uint64_t startTime = begin_timed_op();
+    auto span = startSpan(name, options, BSGFirstClassUnset);
+    end_timed_op(@"Tracer::startViewLoadPhaseSpan", startTime);
+    return span;
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {

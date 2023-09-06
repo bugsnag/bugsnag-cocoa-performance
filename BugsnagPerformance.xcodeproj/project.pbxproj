@@ -770,6 +770,9 @@
 						LastSwiftMigration = 1420;
 						ProvisioningStyle = Automatic;
 					};
+					B4A4A4DE1EA43C6C4D6D3894 = {
+						DevelopmentTeam = 7W9PZ27Y5F;
+					};
 				};
 			};
 			buildConfigurationList = 1B656A3BE38DEADBDE72618E /* Build configuration list for PBXProject "BugsnagPerformance" */;
@@ -1018,8 +1021,10 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_MODULES_AUTOLINK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1044,8 +1049,10 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CLANG_MODULES_AUTOLINK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

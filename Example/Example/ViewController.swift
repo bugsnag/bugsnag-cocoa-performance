@@ -23,17 +23,36 @@ class ViewController: UIViewController {
     }
 
     @IBAction func DoNetworkRequest(_ sender: Any) {
-        let url = URL(string: "https://bugsnag.com")!
-        let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+        for _ in 1...1000 {
+            let url = URL(string: "https://bugsnag.com")!
+            let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+            }
+            task.resume()
         }
-        task.resume()
     }
 
+    func doManualSpans() {
+        var opts = BugsnagPerformanceSpanOptions()
+        opts.setMakeCurrentContext(true)
+        
+        
+        
+        //        var arr = [BugsnagPerformanceSpan]()
+        //        arr.reserveCapacity(1000)
+                let startTime = begin_timed_op()
+                for _ in 1...4 {
+        //            arr.append(BugsnagPerformance.startSpan(name: "my span"))
+                    let span = BugsnagPerformance.startSpan(name: "my span", options: opts)
+                    span.end()
+                }
+                end_timed_op("4 manual nested spans", startTime)
+
+    }
+    
     @IBAction func DoManualSpan(_ sender: Any) {
-        let span = BugsnagPerformance.startSpan(name: "my span")
-        // Wait between 100ms and 1s
-        let waitTime = arc4random() % 900000
-        usleep(100000 + waitTime)
-        span.end()
+        for _ in 1...1000 {
+            doManualSpans()
+        }
+        Thread.sleep(forTimeInterval: 2)
     }
 }

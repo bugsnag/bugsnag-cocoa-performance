@@ -96,6 +96,7 @@ std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
     // If this fails, we don't care why. Just delete the file.
     NSData *contents = [NSData dataWithContentsOfFile:fullPath(filenameFromTimestamp(ts))
                                               options:0 error:nil];
+//    NSLog(@"### READ contents of %@: %lu", fullPath(filenameFromTimestamp(ts)), (unsigned long)contents.length);
     if (contents == nil) {
         remove(ts);
         return nullptr;
