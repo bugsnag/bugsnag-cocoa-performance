@@ -53,9 +53,9 @@ steps:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
-      - label: "iOS 11 Unit Tests"
+      - label: "iOS 12 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=12.4
         plugins:
           artifacts#v1.5.0:
             upload:
