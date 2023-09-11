@@ -61,7 +61,7 @@ steps:
             upload:
               - "logs/*"
         agents:
-          queue: macos-11
+          queue: macos-12
 
   - group: ":iphone: E2E Tests"
     steps:
