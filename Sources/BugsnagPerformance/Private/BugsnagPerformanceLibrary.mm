@@ -51,17 +51,16 @@ BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 : appStateTracker_([[AppStateTracker alloc] init])
 , reachability_(std::make_shared<Reachability>())
 , bugsnagPerformanceImpl_(std::make_shared<BugsnagPerformanceImpl>(reachability_, appStateTracker_))
-{
-    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
-        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
-    });
-}
+{}
 
 void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     bugsnagPerformanceImpl_->earlyConfigure(config);
 }
 
 void BugsnagPerformanceLibrary::earlySetup() noexcept {
+    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
+        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
+    });
     bugsnagPerformanceImpl_->earlySetup();
 }
 

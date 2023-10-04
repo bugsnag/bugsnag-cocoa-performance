@@ -64,9 +64,11 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tra
 , tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
-, didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
+, didInitializeAtTime_(CFAbsoluteTimeGetCurrent())
 , isColdLaunch_(isColdLaunch())
-{
+{}
+
+void AppStartupInstrumentation::earlySetup() noexcept {
     if (!canInstallInstrumentation()) {
         disable();
     }
@@ -86,7 +88,7 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
     beginAppStartSpan();
     beginPreMainSpan();
-    [preMainSpan_ endWithAbsoluteTime:didCallMainFunctionAtTime_];
+    [preMainSpan_ endWithAbsoluteTime:didInitializeAtTime_];
     beginPostMainSpan();
 
     shouldRespondToAppDidBecomeActive_ = true;
@@ -103,6 +105,7 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
                                     CFSTR("UIApplicationDidBecomeActiveNotification"),
                                     nullptr,
                                     CFNotificationSuspensionBehaviorDeliverImmediately);
+    didCallMainFunctionAtTime_ = CFAbsoluteTimeGetCurrent();
 }
 
 void AppStartupInstrumentation::disable() noexcept {
