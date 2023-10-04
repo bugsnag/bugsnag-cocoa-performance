@@ -83,7 +83,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bs"
@@ -111,7 +110,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_15"
               - "--fail-fast"
               - "--farm=bs"
@@ -139,7 +137,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bs"
@@ -167,7 +164,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bs"
@@ -251,7 +247,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url_swizzling_disabled.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bs"
@@ -278,7 +273,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url_swizzling_disabled.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bs"
@@ -334,7 +328,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url_swizzling_premain.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bs"
@@ -361,7 +354,6 @@ steps:
             run: cocoa-maze-runner
             command:
               - "--app=@build/ipa_url_swizzling_premain.txt"
-              - "--appium-version=1.21.0"
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bs"
