@@ -27,7 +27,7 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void start() noexcept {}
+    void start() noexcept {};
     
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;

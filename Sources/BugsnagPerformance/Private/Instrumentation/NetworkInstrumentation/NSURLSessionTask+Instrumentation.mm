@@ -51,7 +51,7 @@ static void replace_NSURLSessionTask_resume(Class cls, BSGSessionTaskResumeCallb
             localOnResume(self);
         }
         originalIMP(self, selector);
-    });
+    }, nullptr);
 }
 
 void bsg_installNSURLSessionTaskPerformance(void (^onResume)(NSURLSessionTask *)) noexcept {

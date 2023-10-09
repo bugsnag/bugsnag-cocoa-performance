@@ -13,6 +13,7 @@
 namespace bugsnag {
 
 IMP ObjCSwizzle::setClassMethodImplementation(Class _Nonnull clazz, SEL selector, id _Nonnull implementationBlock) noexcept {
+    NSLog(@"### setClassMethodImplementation %s for class %@", sel_getName(selector), clazz);
     Method method = class_getClassMethod(clazz, selector);
     if (method) {
         return method_setImplementation(method, imp_implementationWithBlock(implementationBlock));
@@ -22,7 +23,7 @@ IMP ObjCSwizzle::setClassMethodImplementation(Class _Nonnull clazz, SEL selector
     }
 }
 
-IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id block) noexcept {
+IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id block, const char* objcCallingSignature) noexcept {
     Method method = nullptr;
 
     // Not using class_getInstanceMethod because we don't want to modify the
@@ -40,11 +41,18 @@ IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id blo
     }
 
     if (!method) {
-        // This is not considered an error.
+        if (objcCallingSignature != nullptr) {
+            NSLog(@"### replaceInstanceMethodOverride: Adding %s to class %@", sel_getName(selector), clazz);
+            IMP methodIMP = imp_implementationWithBlock(block);
+            if (!class_addMethod(clazz, selector, methodIMP, objcCallingSignature)) {
+                NSLog(@" WARNING: Could not add method %s to class %@", sel_getName(selector), clazz);
+            }
+        }
         return nil;
+    } else {
+        NSLog(@"### replaceInstanceMethodOverride: Setting %s for class %@", sel_getName(selector), clazz);
+        return method_setImplementation(method, imp_implementationWithBlock(block));
     }
-
-    return method_setImplementation(method, imp_implementationWithBlock(block));
 }
 
 NSArray<Class> *ObjCSwizzle::getClassesWithSelector(Class cls, SEL selector) noexcept {

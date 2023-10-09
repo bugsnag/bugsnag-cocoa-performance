@@ -22,9 +22,10 @@ public:
 
     /**
      * Replace a class's override of a method (i.e. only if this class overrides the method). No superclass implementation is replaced.
-     * Returns nil if no method was replaced (either method not found, or this class doesn't overrde the method).
+     * If the class doesn't implement the method, it's instead injected into the class provided objcCallingSignature is not null.
+     * Returns the previous method implementation if it exists.
      */
-    static IMP _Nullable replaceInstanceMethodOverride(Class _Nonnull cls, SEL _Nonnull name, id _Nonnull block) noexcept;
+    static IMP _Nullable replaceInstanceMethodOverride(Class _Nonnull cls, SEL _Nonnull name, id _Nonnull block, const char* _Nullable objcCallingSignature) noexcept;
 
     /**
      * Get any classes or superclasses that implement the specified selector.

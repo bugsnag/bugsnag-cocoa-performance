@@ -104,6 +104,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
+    NSLog(@"###### calling onViewLoadSpanStarted");
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGFirstClassUnset) {
