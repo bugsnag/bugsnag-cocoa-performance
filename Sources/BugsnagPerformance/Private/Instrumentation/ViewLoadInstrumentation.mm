@@ -313,127 +313,181 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
 }
 
 void
-ViewLoadInstrumentation::instrument(Class cls) noexcept {
-    __block bool *isEnabled = &isEnabled_;
-
-    SEL selector = @selector(loadView);
-    IMP loadView __block = nullptr;
-    loadView = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
+ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
+    __block SEL selector = @selector(loadView);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP loadView = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         if (*isEnabled) {
             // Prevent replacing an existing span for view controllers that override
             // loadView and call through to superclass implementation(s).
             ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
             if (instrumentationState.loadViewPhaseSpanCreated) {
-                reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+                if (loadView) {
+                    reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+                }
                 return;
             }
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
             onLoadView(self);
             BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"loadView");
-            reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+            if (loadView) {
+                reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+            }
             [span end];
         } else {
-            reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+            if (loadView) {
+                reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
+            }
         }
     });
-    
-    selector = @selector(viewDidLoad);
-    IMP viewDidLoad __block = nullptr;
-    viewDidLoad = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self){
+}
+
+void
+ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
+    __block SEL selector = @selector(viewDidLoad);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewDidLoad = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
         if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidLoadPhaseSpanCreated) {
-            reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
+            if (viewDidLoad) {
+                reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
+            }
             return;
         }
         
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLoad");
         instrumentationState.viewDidLoadPhaseSpanCreated = YES;
-        reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
+        if (viewDidLoad) {
+            reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
+        }
         [span end];
     });
-    
-    selector = @selector(viewWillAppear:);
-    IMP viewWillAppear __block = nullptr;
-    viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
+}
+
+void
+ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
+    __block SEL selector = @selector(viewWillAppear:);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
         if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewWillAppearPhaseSpanCreated) {
-            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
+            if (viewWillAppear) {
+                reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
+            }
             return;
         }
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillAppear");
         instrumentationState.viewWillAppearPhaseSpanCreated = YES;
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
+        if (viewWillAppear) {
+            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
+        }
         [span end];
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     });
+}
 
-    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
-    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
-
-    selector = @selector(viewDidAppear:);
-    IMP viewDidAppear __block = nullptr;
-    viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
+void
+ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
+    __block SEL selector = @selector(viewDidAppear:);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
         if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidAppearPhaseSpanCreated) {
-            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+            if (viewDidAppear) {
+                reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+            }
             return;
         }
         endViewAppearingSpan(self);
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidAppear");
         instrumentationState.viewDidAppearPhaseSpanCreated = YES;
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+        if (viewDidAppear) {
+            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
+        }
         [span end];
         onViewDidAppear(self);
     });
+}
 
-    selector = @selector(viewWillDisappear:);
-    IMP viewWillDisappear __block = nullptr;
-    viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
+void
+ViewLoadInstrumentation::instrumentViewWillDisappear(Class cls) noexcept {
+    __block SEL selector = @selector(viewWillDisappear:);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         if (*isEnabled) {
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
             onViewWillDisappear(self);
         }
-        reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
+        if (viewWillDisappear) {
+            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
+        }
     });
-    
-    selector = @selector(viewWillLayoutSubviews);
-    IMP viewWillLayoutSubviews __block = nullptr;
-    viewWillLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
+}
+
+void
+ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
+    __block SEL selector = @selector(viewWillLayoutSubviews);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewWillLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
         if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewWillLayoutSubviewsPhaseSpanCreated) {
-            reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
+            if (viewWillLayoutSubviews) {
+                reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
+            }
             return;
         }
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillLayoutSubviews");
         instrumentationState.viewWillLayoutSubviewsPhaseSpanCreated = YES;
-        reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
+        if (viewWillLayoutSubviews) {
+            reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
+        }
         [span end];
         BugsnagPerformanceSpan *subviewLayoutSpan = startViewLoadPhaseSpan(self, @"Subview layout");
         objc_setAssociatedObject(self, &kAssociatedSubviewLayoutSpan, subviewLayoutSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     });
-    
-    selector = @selector(viewDidLayoutSubviews);
-    IMP viewDidLayoutSubviews __block = nullptr;
-    viewDidLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
+}
+
+void
+ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
+    __block SEL selector = @selector(viewDidLayoutSubviews);
+    __block bool const * const isEnabled = &isEnabled_;
+    __block IMP viewDidLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
         if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidLayoutSubviewsPhaseSpanCreated) {
-            reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
+            if (viewDidLayoutSubviews) {
+                reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
+            }
             return;
         }
         endSubviewsLayoutSpan(self);
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLayoutSubviews");
         instrumentationState.viewDidLayoutSubviewsPhaseSpanCreated = YES;
-        reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
+        if (viewDidLayoutSubviews) {
+            reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
+        }
         [span end];
     });
+}
+
+void
+ViewLoadInstrumentation::instrument(Class cls) noexcept {
+    instrumentLoadView(cls);
+    instrumentViewDidLoad(cls);
+    instrumentViewWillAppear(cls);
+    instrumentViewDidAppear(cls);
+    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
+    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
+    instrumentViewWillDisappear(cls);
+    instrumentViewWillLayoutSubviews(cls);
+    instrumentViewDidLayoutSubviews(cls);
 }
 
 // NOLINTEND(cppcoreguidelines-*)
