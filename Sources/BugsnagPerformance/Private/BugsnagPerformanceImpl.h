@@ -57,7 +57,7 @@ public:
 
     void onSpanStarted() noexcept;
 
-    void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
+    void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
         tracer_->setOnViewLoadSpanStarted(onViewLoadSpanStarted);
     }
 

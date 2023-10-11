@@ -21,13 +21,6 @@ static NSString *getPersistenceDir() {
     return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
 }
 
-void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
-    __block auto blockImpl = impl;
-  return ^{
-      blockImpl->onSpanStarted();
-  };
-}
-
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
 : persistence_(std::make_shared<Persistence>(getPersistenceDir()))
@@ -36,7 +29,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, generateOnSpanStarted(this)))
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality

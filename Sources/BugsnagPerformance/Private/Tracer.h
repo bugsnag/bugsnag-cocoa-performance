@@ -38,7 +38,7 @@ public:
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
     void start() noexcept;
 
-    void setOnViewLoadSpanStarted(void (^onViewLoadSpanStarted)(NSString *className)) noexcept {
+    void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
     }
 
@@ -66,9 +66,7 @@ private:
 
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){nil};
-    void (^onViewLoadSpanStarted_)(NSString *className){
-        ^(NSString *) {}
-    };
+    std::function<void(NSString *)> onViewLoadSpanStarted_{};
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;

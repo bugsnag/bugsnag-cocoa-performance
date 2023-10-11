@@ -23,7 +23,7 @@ public:
                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
-    void earlySetup() noexcept {}
+    void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept {}
 
@@ -35,6 +35,7 @@ private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     CFAbsoluteTime didStartProcessAtTime_{0};
+    CFAbsoluteTime didInitializeAtTime_{0};
     CFAbsoluteTime didCallMainFunctionAtTime_{0};
     CFAbsoluteTime didBecomeActiveAtTime_{0};
     CFAbsoluteTime didFinishLaunchingAtTime_{0};
