@@ -23,7 +23,7 @@ public:
     /**
      * Replace a class's override of a method (i.e. only if this class overrides the method). No superclass implementation is replaced.
      * If the class doesn't implement the method, it's instead injected into the class provided objcCallingSignature is not null.
-     * Returns the previous method implementation if it exists.
+     * Returns the previous method implementation if it exists. You MUST guard calls to the previous IMP for nil!
      */
     static IMP _Nullable replaceInstanceMethodOverride(Class _Nonnull cls, SEL _Nonnull name, id _Nonnull block, const char* _Nullable objcCallingSignature) noexcept;
 

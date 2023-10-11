@@ -58,13 +58,9 @@ void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) no
 }
 
 void BugsnagPerformanceLibrary::earlySetup() noexcept {
-    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted([&](NSString *className) {
-        NSLog(@"###### Implementation onViewLoadSpanStarted");
-//        calling get here crashes from a stack smash...
-//        Are objc blocks to blame?
-        NSLog(@"###### > %p", bugsnagPerformanceImpl_.get());
-        usleep(10);
-        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
+    auto impl = bugsnagPerformanceImpl_;
+    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted([=](NSString *className) {
+        impl->didStartViewLoadSpan(className);
     });
     bugsnagPerformanceImpl_->earlySetup();
 }

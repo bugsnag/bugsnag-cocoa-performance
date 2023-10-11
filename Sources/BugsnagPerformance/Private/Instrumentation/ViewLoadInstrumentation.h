@@ -35,7 +35,14 @@ private:
     static bool isViewControllerSubclass(Class subclass) noexcept;
     
     void instrument(Class cls) noexcept;
-    
+    void instrumentLoadView(Class cls) noexcept;
+    void instrumentViewDidLoad(Class cls) noexcept;
+    void instrumentViewWillAppear(Class cls) noexcept;
+    void instrumentViewDidAppear(Class cls) noexcept;
+    void instrumentViewWillDisappear(Class cls) noexcept;
+    void instrumentViewWillLayoutSubviews(Class cls) noexcept;
+    void instrumentViewDidLayoutSubviews(Class cls) noexcept;
+
     void onLoadView(UIViewController *viewController) noexcept;
     void onViewDidAppear(UIViewController *viewController) noexcept;
     void onViewWillDisappear(UIViewController *viewController) noexcept;
