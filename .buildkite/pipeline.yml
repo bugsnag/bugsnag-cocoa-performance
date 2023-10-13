@@ -46,6 +46,15 @@ steps:
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
+      - label: "iOS 16 Unit Tests"
+        commands:
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.0
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
+        agents:
+          queue: macos-13
       - label: "iOS 15 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
@@ -53,6 +62,31 @@ steps:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
+      - label: "iOS 14 Unit Tests"
+        commands:
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
+      - label: "iOS 13 Unit Tests"
+        commands:
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
+        agents:
+          queue: macos-11
+      - label: "iOS 12 Unit Tests"
+        commands:
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=12.4
+        plugins:
+          artifacts#v1.5.0:
+            upload:
+              - "logs/*"
+        agents:
+          queue: macos-11
       - label: "iOS 11 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
