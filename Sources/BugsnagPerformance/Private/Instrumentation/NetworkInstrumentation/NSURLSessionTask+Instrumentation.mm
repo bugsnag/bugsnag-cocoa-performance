@@ -50,7 +50,7 @@ static void replace_NSURLSessionTask_resume(Class cls, BSGSessionTaskResumeCallb
         if (resume) {
             reinterpret_cast<void (*)(id, SEL)>(resume)(self, selector);
         }
-    });
+    }, nil);
 }
 
 void bsg_installNSURLSessionTaskPerformance(void (^onResume)(NSURLSessionTask *)) noexcept {

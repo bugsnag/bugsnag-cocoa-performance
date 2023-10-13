@@ -22,13 +22,13 @@ IMP ObjCSwizzle::setClassMethodImplementation(Class _Nonnull clazz, SEL selector
     }
 }
 
-IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id block) noexcept {
-    Method method = nullptr;
+IMP ObjCSwizzle::replaceInstanceMethodOverride(Class cls, SEL selector, id block, const char* objcCallingSignature) noexcept {
+    Method method = nil;
 
     // Not using class_getInstanceMethod because we don't want to modify the
     // superclass's implementation.
     auto methodCount = 0U;
-    Method *methods = class_copyMethodList(clazz, &methodCount);
+    Method *methods = class_copyMethodList(cls, &methodCount);
     if (methods) {
         for (auto i = 0U; i < methodCount; i++) {
             if (sel_isEqual(method_getName(methods[i]), selector)) {
@@ -39,12 +39,32 @@ IMP ObjCSwizzle::replaceInstanceMethodOverride(Class clazz, SEL selector, id blo
         free(methods);
     }
 
-    if (!method) {
-        // This is not considered an error.
+    if (method) {
+        // We found a method to replace, so replace it and return the old IMP
+        return method_setImplementation(method, imp_implementationWithBlock(block));
+    }
+
+    if (objcCallingSignature == nil) {
+        // We didn't find an existing method, and we weren't asked to add one either.
         return nil;
     }
 
-    return method_setImplementation(method, imp_implementationWithBlock(block));
+    // Try to add a new method to the class.
+    IMP newIMP = imp_implementationWithBlock(block);
+    if (!class_addMethod(cls, selector, newIMP, objcCallingSignature)) {
+        return nil;
+    }
+
+    // Find the closest superclass IMP of this method and return it.
+    for (cls = [cls superclass]; cls && class_getInstanceMethod(cls, selector); cls = [cls superclass]) {
+        method = class_getInstanceMethod(cls, selector);
+        if (method) {
+            return method_getImplementation(method);
+        }
+    }
+
+    // We didn't find a superclass IMP of the method, so there's no old IMP to return
+    return nil;
 }
 
 NSArray<Class> *ObjCSwizzle::getClassesWithSelector(Class cls, SEL selector) noexcept {
