@@ -59,48 +59,48 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
                 instrument(cls);
             }
         }
-    } else {
-        classToIsObserved_[[UIViewController class]] = true;
-        __block auto classToIsObserved = &classToIsObserved_;
-        __block bool *isEnabled = &isEnabled_;
-        __block auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
-        auto initInstrumentation = ^(id self) {
-            auto viewControllerClass = [self class];
-            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
-            if (strstr(viewControllerBundlePath, appPath)
-#if TARGET_OS_SIMULATOR
-                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
-                // doesn't embed them when building for the Simulator.
-                || strstr(viewControllerBundlePath, "/DerivedData/")
-#endif
-                ) {
-                if (*isEnabled && !isClassObserved(viewControllerClass)) {
-                    Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
-                    instrument(viewControllerClass);
-                    (*classToIsObserved)[viewControllerClass] = true;
-                }
-            }
-        };
-        SEL selector = @selector(initWithCoder:);
-        IMP initWithCoder __block = nullptr;
-        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
-            std::lock_guard<std::mutex> guard(vcInitMutex_);
-            initInstrumentation(self);
-            reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
-        });
-        
-        selector = @selector(initWithNibName:bundle:);
-        IMP initWithNibNameBundle __block = nullptr;
-        initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
-            std::lock_guard<std::mutex> guard(vcInitMutex_);
-            initInstrumentation(self);
-            reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
-        });
+//    } else {
+//        classToIsObserved_[[UIViewController class]] = true;
+//        __block auto classToIsObserved = &classToIsObserved_;
+//        __block bool *isEnabled = &isEnabled_;
+//        __block auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
+//        auto initInstrumentation = ^(id self) {
+//            auto viewControllerClass = [self class];
+//            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
+//            if (strstr(viewControllerBundlePath, appPath)
+//#if TARGET_OS_SIMULATOR
+//                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
+//                // doesn't embed them when building for the Simulator.
+//                || strstr(viewControllerBundlePath, "/DerivedData/")
+//#endif
+//                ) {
+//                if (*isEnabled && !isClassObserved(viewControllerClass)) {
+//                    Trace(@"%@   -[%s %s]", self, class_getName(viewControllerClass), sel_getName(selector));
+//                    instrument(viewControllerClass);
+//                    (*classToIsObserved)[viewControllerClass] = true;
+//                }
+//            }
+//        };
+//        SEL selector = @selector(initWithCoder:);
+//        IMP initWithCoder __block = nullptr;
+//        initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
+//            std::lock_guard<std::mutex> guard(vcInitMutex_);
+//            initInstrumentation(self);
+//            reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
+//        });
+//        
+//        selector = @selector(initWithNibName:bundle:);
+//        IMP initWithNibNameBundle __block = nullptr;
+//        initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
+//            std::lock_guard<std::mutex> guard(vcInitMutex_);
+//            initInstrumentation(self);
+//            reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
+//        });
     }
     
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
-    instrument([UIViewController class]);
+//    instrument([UIViewController class]);
 }
 
 void
@@ -339,7 +339,7 @@ ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
                 reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
             }
         }
-    });
+    }, "@@:");
 }
 
 void
@@ -362,7 +362,7 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
         }
         [span end];
-    });
+    }, "@@:");
 }
 
 void
@@ -387,7 +387,7 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    });
+    }, "@@:b");
 }
 
 void
@@ -411,7 +411,7 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
         }
         [span end];
         onViewDidAppear(self);
-    });
+    }, "@@:b");
 }
 
 void
@@ -426,7 +426,7 @@ ViewLoadInstrumentation::instrumentViewWillDisappear(Class cls) noexcept {
         if (viewWillDisappear) {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
         }
-    });
+    }, "@@:b");
 }
 
 void
@@ -451,7 +451,7 @@ ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
         BugsnagPerformanceSpan *subviewLayoutSpan = startViewLoadPhaseSpan(self, @"Subview layout");
         objc_setAssociatedObject(self, &kAssociatedSubviewLayoutSpan, subviewLayoutSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    });
+    }, "@@:");
 }
 
 void
@@ -474,7 +474,7 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
         }
         [span end];
-    });
+    }, "@@:");
 }
 
 void
