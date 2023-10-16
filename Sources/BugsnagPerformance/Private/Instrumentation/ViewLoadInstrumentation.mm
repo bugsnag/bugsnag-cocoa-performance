@@ -100,7 +100,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
     
     // We need to instrument UIViewController because not all subclasses will
     // override loadView and viewDidAppear:
-//    instrument([UIViewController class]);
+    instrument([UIViewController class]);
 }
 
 void
