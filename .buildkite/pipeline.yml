@@ -53,8 +53,6 @@ steps:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
-        agents:
-          queue: macos-13
       - label: "iOS 15 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
