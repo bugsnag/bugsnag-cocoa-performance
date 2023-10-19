@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 1.1.2 (2023-10-19)
+
+### Bug fixes
+
+* Renamed "AppStart/Cold" to "AppStart/iOSCold", and "AppStart/Warm" to "AppStart/iOSWarm"
+  [207](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/207)
+
+* Fixed some subtle swizzling bugs and harmonized all swizzling code
+  [206](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/206)
+
 ## 1.1.1 (2023-08-28)
 
 ### Enhancements

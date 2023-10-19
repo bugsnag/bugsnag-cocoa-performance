@@ -52,8 +52,9 @@ BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
 , reachability_(std::make_shared<Reachability>())
 , bugsnagPerformanceImpl_(std::make_shared<BugsnagPerformanceImpl>(reachability_, appStateTracker_))
 {
-    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted(^(NSString *className) {
-        bugsnagPerformanceImpl_->didStartViewLoadSpan(className);
+    auto impl = bugsnagPerformanceImpl_;
+    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted([=](NSString *className) {
+        impl->didStartViewLoadSpan(className);
     });
 }
 
