@@ -19,6 +19,9 @@
   },
   "requires_arc": true,
   "source_files": "Sources/BugsnagPerformance/**/*",
+  "resources": [
+    "Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy"
+  ],
   "public_header_files": "Sources/BugsnagPerformance/include/BugsnagPerformance/*.h",
   "prefix_header_file": false,
   "frameworks": [

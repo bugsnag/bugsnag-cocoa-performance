@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added [privacy manifest](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) to declare data use and required reasons for API usage
+  [212](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/212)
+
 ## 1.1.2 (2023-10-19)
 
 ### Bug fixes

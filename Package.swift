@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:5.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -16,6 +16,10 @@ let package = Package(
     targets: [
         .target(
             name: "BugsnagPerformance",
+            path: "Sources/BugsnagPerformance",
+            resources: [
+               .copy("resources/PrivacyInfo.xcprivacy")
+            ],
             linkerSettings: [
                 .linkedFramework("SystemConfiguration"),
                 .linkedFramework("UIKit"),

@@ -315,6 +315,7 @@
 		CBF7C5DF297A8E9100D47719 /* Gzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gzip.h; sourceTree = "<group>"; };
 		CBF7C5E0297A8E9100D47719 /* Gzip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gzip.m; sourceTree = "<group>"; };
 		CBF7C5E3297A963A00D47719 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -583,6 +584,7 @@
 			isa = PBXGroup;
 			children = (
 				01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */,
+				EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */,
 				0122C21329019770002D243C /* Sources */,
 				0122C25B29019C05002D243C /* Tests */,
 				96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
