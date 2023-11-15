@@ -2,6 +2,7 @@ Feature: Initial P values
 
   Scenario: Initial P value of 0
     Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
     And I run "InitialPScenario"
     And I wait to receive a sampling request
     * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
