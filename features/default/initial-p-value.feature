@@ -11,6 +11,72 @@ Feature: Initial P values
     Then I invoke "step2"
     And I should receive no traces
 
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
+  Scenario: Initial P value of 0
+    Given I set the sampling probability for the next traces to "0"
+    And I wait for 2 seconds
+    And I run "InitialPScenario"
+    And I wait to receive a sampling request
+    * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
+    * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I invoke "step2"
+    And I should receive no traces
+
   Scenario: Initial P value of 1
     Given I set the sampling probability for the next traces to "1"
     And I run "InitialPScenario"
