@@ -24,6 +24,10 @@
 		01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC428E1AF9600D1F239 /* Scenario.swift */; };
 		01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC628E1D5A400D1F239 /* Fixture.swift */; };
 		0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */; };
+		09637A3C2B0607F300F4F776 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3B2B0607F300F4F776 /* Logging.swift */; };
+		09637A3F2B06082200F4F776 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3E2B06082200F4F776 /* Logging.m */; };
+		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
+		09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
@@ -68,6 +72,11 @@
 		01FE4DC428E1AF9600D1F239 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		01FE4DC628E1D5A400D1F239 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkCallbackScenario.swift; sourceTree = "<group>"; };
+		09637A3B2B0607F300F4F776 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
+		09637A3D2B06082200F4F776 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
+		09637A3E2B06082200F4F776 /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
+		09637A402B060E7C00F4F776 /* CommandReaderThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
+		09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -112,6 +121,7 @@
 		01FE4D9C28E1AEBD00D1F239 = {
 			isa = PBXGroup;
 			children = (
+				09637A3A2B0607DA00F4F776 /* utils */,
 				01FE4DA728E1AEBD00D1F239 /* Fixture */,
 				01FE4DC128E1AF0700D1F239 /* Scenarios */,
 				01FE4DBC28E1AED000D1F239 /* Packages */,
@@ -132,15 +142,17 @@
 			isa = PBXGroup;
 			children = (
 				01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */,
+				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
+				CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */,
+				09637A402B060E7C00F4F776 /* CommandReaderThread.swift */,
+				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
 				01FE4DC628E1D5A400D1F239 /* Fixture.swift */,
+				01FE4DB628E1AEBF00D1F239 /* Info.plist */,
+				01FE4DB328E1AEBF00D1F239 /* LaunchScreen.storyboard */,
+				01FE4DAE28E1AEBD00D1F239 /* Main.storyboard */,
+				09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */,
 				01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */,
 				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
-				01FE4DAE28E1AEBD00D1F239 /* Main.storyboard */,
-				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
-				01FE4DB328E1AEBF00D1F239 /* LaunchScreen.storyboard */,
-				01FE4DB628E1AEBF00D1F239 /* Info.plist */,
-				CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */,
-				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
 			);
 			path = Fixture;
 			sourceTree = "<group>";
@@ -197,6 +209,16 @@
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
 			);
 			path = Scenarios;
+			sourceTree = "<group>";
+		};
+		09637A3A2B0607DA00F4F776 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				09637A3B2B0607F300F4F776 /* Logging.swift */,
+				09637A3D2B06082200F4F776 /* Logging.h */,
+				09637A3E2B06082200F4F776 /* Logging.m */,
+			);
+			path = utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,11 +302,13 @@
 			files = (
 				CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */,
 				CBE0872B29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift in Sources */,
+				09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
 				CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */,
+				09637A3C2B0607F300F4F776 /* Logging.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
@@ -293,6 +317,7 @@
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
+				09637A3F2B06082200F4F776 /* Logging.m in Sources */,
 				CB3477182901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift in Sources */,
 				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
@@ -306,6 +331,7 @@
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
+				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
