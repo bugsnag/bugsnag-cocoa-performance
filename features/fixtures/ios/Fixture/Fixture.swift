@@ -15,6 +15,15 @@ protocol CommandReceiver {
 class Fixture: NSObject, CommandReceiver {
     static let defaultMazeRunnerURL = "http://bs-local.com:9339"
     static let mazeRunnerURL = loadMazeRunnerAddress()
+    static let tracesURL = "\(mazeRunnerURL)/traces"
+    static let commandURL = "\(mazeRunnerURL)/command"
+    static let metricsURL = "\(mazeRunnerURL)/metrics"
+    static let reflectURL: String = {
+        var components = URLComponents(string: "\(mazeRunnerURL)/reflect")!
+        components.port = 9340 // `/reflect` listens on a different port :-((
+        return components.url!.absoluteString
+    }()
+
     var readyToReceiveCommand = false
 
     var commandReaderThread: CommandReaderThread?
@@ -23,9 +32,20 @@ class Fixture: NSObject, CommandReceiver {
 
     func start() {
         readyToReceiveCommand = true
-        let url = URL(string:Fixture.defaultMazeRunnerURL)!.appendingPathComponent("/command")
+        let url = URL(string:Fixture.commandURL)!
         commandReaderThread = CommandReaderThread(commandProviderUrl: url, commandReceiver: self)
         commandReaderThread!.start()
+    }
+
+    static func isMazeRunnerAdministrationURL(url: URL) -> Bool {
+        switch url.absoluteString {
+        case tracesURL, commandURL, metricsURL:
+            return true
+        case reflectURL:
+            return false // reflectURL is fair game!
+        default:
+            return false
+        }
     }
 
     func canReceiveCommand() -> Bool {

@@ -26,7 +26,7 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.endpoint = URL(string:"\(Fixture.mazeRunnerURL)/traces")!
+        config.endpoint = URL(string:Fixture.tracesURL)!
     }
     
     func clearPersistentData() {
@@ -72,7 +72,7 @@ class Scenario: NSObject {
     }
     
     func report(metrics: [String: Any], name: String) {
-        guard let url = URL(string: "\(Fixture.mazeRunnerURL)/metrics") else {
+        guard let url = URL(string:Fixture.metricsURL) else {
             return
         }
         var request = URLRequest(url: url)

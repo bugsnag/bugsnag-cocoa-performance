@@ -252,8 +252,6 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentNetworkWithParentScenario"
     And I wait for 2 seconds
     And I wait for 3 spans
-    # Discard the request to http://bs-local.com:9339/command
-    And I discard the oldest trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
@@ -281,8 +279,6 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentNetworkNoParentScenario"
     And I wait for 2 seconds
     And I wait for 3 spans
-    # Discard the request to http://bs-local.com:9339/command
-    And I discard the oldest trace
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist

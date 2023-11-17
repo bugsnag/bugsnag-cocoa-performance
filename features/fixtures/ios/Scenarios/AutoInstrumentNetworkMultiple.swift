@@ -10,15 +10,19 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkMultiple: Scenario {
 
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Fixture.mazeRunnerURL)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
-
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = true
+        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            let testUrl = info.url
+            if (testUrl == nil) {
+                return info
+            }
+            if (Fixture.isMazeRunnerAdministrationURL(url: testUrl!)) {
+                info.url = nil
+            }
+            return info
+        }
     }
 
     func query(url: String) {
