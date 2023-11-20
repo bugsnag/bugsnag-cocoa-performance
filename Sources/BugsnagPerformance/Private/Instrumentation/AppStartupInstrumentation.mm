@@ -169,7 +169,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
         return;
     }
 
-    auto name = isColdLaunch_ ? @"[AppStart/Cold]" : @"[AppStart/Warm]";
+    auto name = isColdLaunch_ ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = tracer_->startAppStartSpan(name, options);

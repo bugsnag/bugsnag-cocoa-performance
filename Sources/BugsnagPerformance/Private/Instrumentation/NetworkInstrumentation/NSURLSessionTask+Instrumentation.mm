@@ -41,16 +41,15 @@ static NSArray<Class> *getURLSessionTaskClassesWithResumeMethod() {
 
 static void replace_NSURLSessionTask_resume(Class cls, BSGSessionTaskResumeCallback onResume) {
     __weak BSGSessionTaskResumeCallback weakOnResume = onResume;
-    SEL selector = @selector(resume);
-    typedef void (*IMPPrototype)(id, SEL);
-    __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::replaceInstanceMethodOverride(cls,
-                                                                                            selector,
-                                                                                            ^(id self) {
+    __block SEL selector = @selector(resume);
+    __block IMP resume = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         BSGSessionTaskResumeCallback localOnResume = weakOnResume;
         if (localOnResume != nil) {
             localOnResume(self);
         }
-        originalIMP(self, selector);
+        if (resume) {
+            reinterpret_cast<void (*)(id, SEL)>(resume)(self, selector);
+        }
     });
 }
 

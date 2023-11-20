@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype) initWithBundleDictionary:(NSDictionary *)dict;
 
 @property(nonatomic, readonly) BOOL enableSwizzling;
+@property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
 
 @end
 
