@@ -10,11 +10,11 @@ import UIKit
 import os
 
 class CommandReaderThread: Thread {
-    var url: URL
+    var fixtureConfig: FixtureConfig
     var commandReceiver: CommandReceiver
 
-    init(commandProviderUrl: URL, commandReceiver: CommandReceiver) {
-        self.url = commandProviderUrl
+    init(fixtureConfig: FixtureConfig, commandReceiver: CommandReceiver) {
+        self.fixtureConfig = fixtureConfig
         self.commandReceiver = commandReceiver
     }
 
@@ -30,7 +30,7 @@ class CommandReaderThread: Thread {
     }
 
     func receiveNextCommand() {
-        let fetchTask = CommandFetchTask(url: url)
+        let fetchTask = CommandFetchTask(url: fixtureConfig.commandURL)
         fetchTask.start()
 
         while true {
@@ -66,7 +66,7 @@ class CommandFetchTask {
     }
 
     func start() {
-        logInfo("Fetching next command")
+        logInfo("Fetching next command from \(url)")
         state = CommandFetchState.fetching
         let request = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: request) { data, response, error in

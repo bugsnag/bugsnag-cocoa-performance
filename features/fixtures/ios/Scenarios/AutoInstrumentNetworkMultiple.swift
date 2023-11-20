@@ -18,7 +18,7 @@ class AutoInstrumentNetworkMultiple: Scenario {
             if (testUrl == nil) {
                 return info
             }
-            if (Fixture.isMazeRunnerAdministrationURL(url: testUrl!)) {
+            if (self.isMazeRunnerAdministrationURL(url: testUrl!)) {
                 info.url = nil
             }
             return info

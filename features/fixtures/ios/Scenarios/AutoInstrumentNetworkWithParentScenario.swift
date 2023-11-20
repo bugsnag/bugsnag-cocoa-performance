@@ -18,7 +18,7 @@ class AutoInstrumentNetworkWithParentScenario: Scenario {
             if (testUrl == nil) {
                 return info
             }
-            if (Fixture.isMazeRunnerAdministrationURL(url: testUrl!)) {
+            if (self.isMazeRunnerAdministrationURL(url: testUrl!)) {
                 info.url = nil
             }
             return info
@@ -26,7 +26,7 @@ class AutoInstrumentNetworkWithParentScenario: Scenario {
     }
 
     func query(string: String) {
-        let url = URL(string: string, relativeTo: URL(string:Fixture.reflectURL))!
+        let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
         URLSession.shared.dataTask(with: url).resume()
     }
 
@@ -34,7 +34,7 @@ class AutoInstrumentNetworkWithParentScenario: Scenario {
         // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "parentSpan")
-        query(string: "/?status=200")
+        query(string: "?status=200")
         span.end();
     }
 }

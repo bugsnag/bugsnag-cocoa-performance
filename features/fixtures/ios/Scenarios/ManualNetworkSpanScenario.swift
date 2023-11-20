@@ -29,11 +29,11 @@ extension MyNetworkDelegate : URLSessionDataDelegate {
 class ManualNetworkSpanScenario: Scenario {
 
     func query(string: String) {
-        let url = URL(string: string, relativeTo: URL(string:Fixture.reflectURL))!
+        let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
         MyNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
     }
 
     override func run() {
-        query(string: "/?status=200")
+        query(string: "?status=200")
     }
 }

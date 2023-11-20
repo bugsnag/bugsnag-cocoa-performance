@@ -28,6 +28,7 @@
 		09637A3F2B06082200F4F776 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3E2B06082200F4F776 /* Logging.m */; };
 		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
 		09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */; };
+		09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A442B0B883B00F4F776 /* FixtureConfig.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
@@ -77,6 +78,7 @@
 		09637A3E2B06082200F4F776 /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		09637A402B060E7C00F4F776 /* CommandReaderThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
 		09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
+		09637A442B0B883B00F4F776 /* FixtureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */,
 				01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */,
 				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
+				09637A442B0B883B00F4F776 /* FixtureConfig.swift */,
 			);
 			path = Fixture;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
+				09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */,
 				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,

@@ -18,7 +18,7 @@ class AutoInstrumentNetworkNoParentScenario: Scenario {
             if (testUrl == nil) {
                 return info
             }
-            if (Fixture.isMazeRunnerAdministrationURL(url: testUrl!)) {
+            if (self.isMazeRunnerAdministrationURL(url: testUrl!)) {
                 info.url = nil
             }
             return info
@@ -26,7 +26,7 @@ class AutoInstrumentNetworkNoParentScenario: Scenario {
     }
 
     func query(string: String) {
-        let url = URL(string: string, relativeTo: URL(string:Fixture.reflectURL))!
+        let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
         URLSession.shared.dataTask(with: url).resume()
     }
 
@@ -35,6 +35,6 @@ class AutoInstrumentNetworkNoParentScenario: Scenario {
         waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "parentSpan")
         span.end();
-        query(string: "/?status=200")
+        query(string: "?status=200")
     }
 }
