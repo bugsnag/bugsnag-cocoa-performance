@@ -112,6 +112,7 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     static func loadMazeRunnerAddress() -> String {
+        logInfo("loadMazeRunnerAddress 1")
         let defaultUrl = Fixture.defaultMazeRunnerURL
 
         // Only iOS 12 and above will run on BitBar for now
@@ -120,30 +121,38 @@ class Fixture: NSObject, CommandReceiver {
         }
 
         for n in 1...60 {
+            logInfo("loadMazeRunnerAddress 2")
             let documentsUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
 
             logInfo("Reading Maze Runner address from fixture_config.json")
             do {
                 let fileUrl = URL(fileURLWithPath: "fixture_config",
                                   relativeTo: documentsUrl).appendingPathExtension("json")
+                logInfo("loadMazeRunnerAddress 3")
                 let savedData = try Data(contentsOf: fileUrl)
+                logInfo("loadMazeRunnerAddress 4")
                 if let contents = String(data: savedData, encoding: .utf8) {
+                    logInfo("loadMazeRunnerAddress 5")
                     logInfo(String(format: "Found fixture_config.json after %d seconds", n))
                     let decoder = JSONDecoder()
                     let jsonData = contents.data(using: .utf8)
                     let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
                     let address = "http://" + config.maze_address
+                    logInfo("loadMazeRunnerAddress 6")
                     logInfo("Using Maze Runner address: \(address)")
                     return address
                 }
             }
             catch let error as NSError {
+                logInfo("loadMazeRunnerAddress 7")
                 logWarn("Failed to read fixture_config.json: \(error)")
             }
+            logInfo("loadMazeRunnerAddress 8")
             logInfo("Waiting for fixture_config.json to appear")
             sleep(1)
         }
 
+        logInfo("loadMazeRunnerAddress 9")
         logError("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
         return defaultUrl;
     }
