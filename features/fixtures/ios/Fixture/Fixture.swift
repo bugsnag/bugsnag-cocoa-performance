@@ -14,23 +14,38 @@ protocol CommandReceiver {
 
 class Fixture: NSObject, CommandReceiver {
     static let defaultMazeRunnerURL = "http://bs-local.com:9339"
-    static let mazeRunnerURL = loadMazeRunnerAddress()
-    static let tracesURL = "\(mazeRunnerURL)/traces"
-    static let commandURL = "\(mazeRunnerURL)/command"
-    static let metricsURL = "\(mazeRunnerURL)/metrics"
-    static let reflectURL: String = {
-        var components = URLComponents(string: "\(mazeRunnerURL)/reflect")!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!.absoluteString
-    }()
+    static var mazeRunnerURL = defaultMazeRunnerURL
+    static var tracesURL = defaultMazeRunnerURL
+    static var commandURL = defaultMazeRunnerURL
+    static var metricsURL = defaultMazeRunnerURL
+    static var reflectURL = defaultMazeRunnerURL
 
     var readyToReceiveCommand = false
-
     var commandReaderThread: CommandReaderThread?
-
     var scenario: Scenario? = nil
 
     func start() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            self.loadMazeRunnerAddress { address in
+                Fixture.setGlobalMazeRunnerAddress(address: address)
+                self.beginReceivingCommands()
+            }
+        }
+    }
+
+    static func setGlobalMazeRunnerAddress(address: String) {
+        mazeRunnerURL = address
+        tracesURL = "\(mazeRunnerURL)/traces"
+        commandURL = "\(mazeRunnerURL)/command"
+        metricsURL = "\(mazeRunnerURL)/metrics"
+        reflectURL = {
+            var components = URLComponents(string: "\(mazeRunnerURL)/reflect")!
+            components.port = 9340 // `/reflect` listens on a different port :-((
+            return components.url!.absoluteString
+        }()
+    }
+
+    func beginReceivingCommands() {
         readyToReceiveCommand = true
         let url = URL(string:Fixture.commandURL)!
         commandReaderThread = CommandReaderThread(commandProviderUrl: url, commandReceiver: self)
@@ -111,12 +126,13 @@ class Fixture: NSObject, CommandReceiver {
         }
     }
 
-    static func loadMazeRunnerAddress() -> String {
+    func loadMazeRunnerAddress(completion: (String)->()) {
         let defaultUrl = Fixture.defaultMazeRunnerURL
 
         // Only iOS 12 and above will run on BitBar for now
         if #available(iOS 12.0, *) {} else {
-            return defaultUrl
+            completion(defaultUrl)
+            return
         }
 
         for n in 1...60 {
@@ -134,7 +150,8 @@ class Fixture: NSObject, CommandReceiver {
                     let config = try decoder.decode(FixtureConfig.self, from: jsonData!)
                     let address = "http://" + config.maze_address
                     logInfo("Using Maze Runner address: \(address)")
-                    return address
+                    completion(address)
+                    return
                 }
             }
             catch let error as NSError {
@@ -145,7 +162,8 @@ class Fixture: NSObject, CommandReceiver {
         }
 
         logError("Unable to read from fixture_config.json, defaulting to BrowserStack environment")
-        return defaultUrl;
+        completion(defaultUrl)
+        return
     }
 
     private struct FixtureConfig: Decodable {
