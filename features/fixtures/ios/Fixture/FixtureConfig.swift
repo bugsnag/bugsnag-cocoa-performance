@@ -23,10 +23,6 @@ class FixtureConfig {
         metricsURL = mazeRunnerBaseAddress.appendingPathComponent("metrics")
         notifyURL = mazeRunnerBaseAddress.appendingPathComponent("notify")
         sessionsURL = mazeRunnerBaseAddress.appendingPathComponent("sessions")
-
-        let url = mazeRunnerBaseAddress.appendingPathComponent("reflect")
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        reflectURL = components.url!
+        reflectURL = mazeRunnerBaseAddress.appendingPathComponent("reflect")
     }
 }
