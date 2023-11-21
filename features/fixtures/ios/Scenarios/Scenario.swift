@@ -24,7 +24,7 @@ class Scenario: NSObject {
     }
 
     func configure() {
-        NSLog("Scenario.configure()")
+        logDebug("Scenario.configure()")
 
         // Make sure the initial P value has time to be fully received before sending spans
         config.internal.initialRecurringWorkDelay = 0.5
@@ -39,20 +39,20 @@ class Scenario: NSObject {
     }
     
     func clearPersistentData() {
-        NSLog("Scenario.clearPersistentData()")
+        logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
     }
     
     func startBugsnag() {
-        NSLog("Scenario.startBugsnag()")
+        logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
             BugsnagPerformance.start(configuration: config)
         }, measurement: "start")
     }
     
     func run() {
-        NSLog("Scenario.run() has not been overridden!")
+        logError("Scenario.run() has not been overridden!")
         fatalError("To be implemented by subclass")
     }
     
@@ -75,7 +75,7 @@ class Scenario: NSObject {
     }
 
     func waitForCurrentBatch() {
-        NSLog("Scenario.waitForCurrentBatch()")
+        logDebug("Scenario.waitForCurrentBatch()")
         // Wait long enough to allow the current batch to be packaged and sent
         Thread.sleep(forTimeInterval: 1.0)
     }

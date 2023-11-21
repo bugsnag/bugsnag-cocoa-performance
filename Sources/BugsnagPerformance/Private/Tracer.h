@@ -65,12 +65,16 @@ private:
     NSMutableArray<BugsnagPerformanceSpan *> *earlyNetworkSpans_;
 
     std::shared_ptr<Batch> batch_;
-    void (^onSpanStarted_)(){nil};
-    std::function<void(NSString *)> onViewLoadSpanStarted_{};
-    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
+    void (^onSpanStarted_)(){ ^(){} };
+    std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_ {
+        ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+            return info;
+        }
+    };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);
+    void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
     void markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpansPhase() noexcept;
 };

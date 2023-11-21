@@ -44,4 +44,4 @@ xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exp
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
-rm ./Fixture/Info.plist
+#rm ./Fixture/Info.plist

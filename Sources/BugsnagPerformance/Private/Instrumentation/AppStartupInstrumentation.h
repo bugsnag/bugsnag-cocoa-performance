@@ -23,7 +23,7 @@ public:
                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
-    void earlySetup() noexcept {}
+    void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept {}
 
