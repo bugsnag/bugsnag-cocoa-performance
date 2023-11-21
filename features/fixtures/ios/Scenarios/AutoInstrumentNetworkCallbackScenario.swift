@@ -10,12 +10,6 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkCallbackScenario: Scenario {
 
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Fixture.mazeRunnerURL)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
-
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = true
