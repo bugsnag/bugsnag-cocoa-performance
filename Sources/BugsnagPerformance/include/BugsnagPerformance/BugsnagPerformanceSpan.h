@@ -28,6 +28,8 @@ OBJC_EXPORT
 
 - (instancetype)init NS_UNAVAILABLE;
 
+- (void)abort;
+
 - (void)end;
 
 - (void)endWithEndTime:(NSDate *)endTime NS_SWIFT_NAME(end(endTime:));
