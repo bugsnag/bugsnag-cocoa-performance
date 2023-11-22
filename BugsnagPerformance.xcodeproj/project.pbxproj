@@ -49,6 +49,7 @@
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
 		0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0921F02C2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */; };
+		09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09509B742ADFE9A900A358EC /* TracerTests.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
@@ -227,6 +228,7 @@
 		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
 		0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNetworkRequestInfo.h; sourceTree = "<group>"; };
 		0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNetworkRequestInfo.m; sourceTree = "<group>"; };
+		09509B742ADFE9A900A358EC /* TracerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracerTests.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -531,8 +533,8 @@
 				CBEC51C2296EC0AC009C0CE3 /* JSONTests.mm */,
 				CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
-				CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */,
 				CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */,
+				CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */,
 				CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
@@ -541,6 +543,7 @@
 				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
+				09509B742ADFE9A900A358EC /* TracerTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
 			path = BugsnagPerformanceTests;
@@ -851,6 +854,7 @@
 				CB68FABC2A3C4208005B2CDB /* PersistentDeviceIDTest.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
+				09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
