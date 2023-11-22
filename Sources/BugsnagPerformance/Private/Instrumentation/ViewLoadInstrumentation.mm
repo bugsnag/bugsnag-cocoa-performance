@@ -111,7 +111,10 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     }
 
     isEnabled_ &= config.autoInstrumentViewControllers;
-    callback_ = config.viewControllerInstrumentationCallback;
+    auto callback = config.viewControllerInstrumentationCallback;
+    if (callback != nullptr) {
+        callback_ = callback;
+    }
 
     endEarlySpanPhase();
 }
