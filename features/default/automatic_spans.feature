@@ -251,9 +251,7 @@ Feature: Automatic instrumentation spans
   Scenario: Automatically start a network span that has a parent
     Given I run "AutoInstrumentNetworkWithParentScenario"
     And I wait for 2 seconds
-    And I wait for 3 spans
-    # Discard the request to http://bs-local.com:9339/command
-    And I discard the oldest trace
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
@@ -261,7 +259,7 @@ Feature: Automatic instrumentation spans
     * a span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
+    * a span string attribute "http.url" matches the regex "http://.*:9339/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
@@ -280,15 +278,13 @@ Feature: Automatic instrumentation spans
   Scenario: Automatically start a network span that has no parent
     Given I run "AutoInstrumentNetworkNoParentScenario"
     And I wait for 2 seconds
-    And I wait for 3 spans
-    # Discard the request to http://bs-local.com:9339/command
-    And I discard the oldest trace
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
+    * a span string attribute "http.url" matches the regex "http://.*:9339/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0

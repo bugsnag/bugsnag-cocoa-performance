@@ -11,11 +11,20 @@ import Foundation
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
 class Scenario: NSObject {
+    let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
     
+    private override init() {
+        fatalError("do not use the default init of Scenario")
+    }
+    
+    required init(fixtureConfig: FixtureConfig) {
+        self.fixtureConfig = fixtureConfig
+    }
+
     func configure() {
-        NSLog("Scenario.configure()")
+        logDebug("Scenario.configure()")
 
         // Make sure the initial P value has time to be fully received before sending spans
         config.internal.initialRecurringWorkDelay = 0.5
@@ -26,27 +35,38 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.endpoint = URL(string:"\(Fixture.mazeRunnerURL)/traces")!
+        config.endpoint = fixtureConfig.tracesURL
     }
     
     func clearPersistentData() {
-        NSLog("Scenario.clearPersistentData()")
+        logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
     }
     
     func startBugsnag() {
-        NSLog("Scenario.startBugsnag()")
+        logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
             BugsnagPerformance.start(configuration: config)
         }, measurement: "start")
     }
     
     func run() {
-        NSLog("Scenario.run() has not been overridden!")
+        logError("Scenario.run() has not been overridden!")
         fatalError("To be implemented by subclass")
     }
     
+    func isMazeRunnerAdministrationURL(url: URL) -> Bool {
+        switch url {
+        case fixtureConfig.tracesURL, fixtureConfig.commandURL, fixtureConfig.metricsURL:
+            return true
+        case fixtureConfig.reflectURL:
+            return false // reflectURL is fair game!
+        default:
+            return false
+        }
+    }
+
     func reportMeasurements() {
         pendingMeasurements.forEach { measurement in
             report(metrics: measurement.metrics, name: measurement.name)
@@ -55,7 +75,7 @@ class Scenario: NSObject {
     }
 
     func waitForCurrentBatch() {
-        NSLog("Scenario.waitForCurrentBatch()")
+        logDebug("Scenario.waitForCurrentBatch()")
         // Wait long enough to allow the current batch to be packaged and sent
         Thread.sleep(forTimeInterval: 1.0)
     }
@@ -72,10 +92,7 @@ class Scenario: NSObject {
     }
     
     func report(metrics: [String: Any], name: String) {
-        guard let url = URL(string: "\(Fixture.mazeRunnerURL)/metrics") else {
-            return
-        }
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: fixtureConfig.metricsURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         

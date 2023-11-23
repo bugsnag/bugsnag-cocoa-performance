@@ -108,7 +108,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
     * every span field "name" equals "[HTTP/GET]"
     * every span string attribute "http.flavor" exists
-    * every span string attribute "http.url" matches the regex "http://.*:9340/reflect/"
+    * every span string attribute "http.url" matches the regex "http://.*:9339/reflect\?status=200"
     * every span string attribute "http.method" equals "GET"
     * every span integer attribute "http.status_code" is greater than 0
     * every span integer attribute "http.response_content_length" is greater than 0

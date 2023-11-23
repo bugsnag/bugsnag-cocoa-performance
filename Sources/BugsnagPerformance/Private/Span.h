@@ -72,6 +72,10 @@ public:
         return isEnded_;
     }
 
+    void abort() noexcept {
+        isEnded_ = true;
+    }
+
     void end(CFAbsoluteTime time) noexcept {
         bool expected = false;
         if (!isEnded_.compare_exchange_strong(expected, true)) {

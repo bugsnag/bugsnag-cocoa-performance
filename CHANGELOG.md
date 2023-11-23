@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 1.1.3 (2023-11-23)
+
+### Enhancements
+
+* Added [privacy manifest](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) to declare data use and required reasons for API usage
+  [212](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/212)
+
+* Detect app prewarming and discard any view load spans that would be distorted by it. 
+  [211](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/211)
+
+### Bug fixes
+
+* Fetching of network swizzle targets is now done on a BG queue in order to avoid a potential deadlock 
+  [218](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/218)
+
+* Ensure span cancellation is done with concurrency protection 
+  [217](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/217)
+
 ## 1.1.2 (2023-10-19)
 
 ### Bug fixes

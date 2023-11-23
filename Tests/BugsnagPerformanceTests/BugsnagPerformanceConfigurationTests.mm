@@ -104,14 +104,14 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
             }
         }
     }];
-    XCTAssertEqual(config.apiKey, performanceApiKey);
-    XCTAssertEqual(config.appVersion, performanceAppVersion);
-    XCTAssertEqual(config.bundleVersion, performanceBundleVersion);
-    XCTAssertEqual(config.releaseStage, performanceReleaseStage);
+    XCTAssertEqualObjects(config.apiKey, performanceApiKey);
+    XCTAssertEqualObjects(config.appVersion, performanceAppVersion);
+    XCTAssertEqualObjects(config.bundleVersion, performanceBundleVersion);
+    XCTAssertEqualObjects(config.releaseStage, performanceReleaseStage);
     XCTAssertEqual(config.enabledReleaseStages.count, performanceEnabledReleaseStages.count);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage1]);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage2]);
-    XCTAssertEqual([config.endpoint description], performanceEndpoint);
+    XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
@@ -138,14 +138,14 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
             }
         }
     }];
-    XCTAssertEqual(config.apiKey, performanceApiKey);
-    XCTAssertEqual(config.appVersion, performanceAppVersion);
-    XCTAssertEqual(config.bundleVersion, performanceBundleVersion);
-    XCTAssertEqual(config.releaseStage, performanceReleaseStage);
+    XCTAssertEqualObjects(config.apiKey, performanceApiKey);
+    XCTAssertEqualObjects(config.appVersion, performanceAppVersion);
+    XCTAssertEqualObjects(config.bundleVersion, performanceBundleVersion);
+    XCTAssertEqualObjects(config.releaseStage, performanceReleaseStage);
     XCTAssertEqual(config.enabledReleaseStages.count, performanceEnabledReleaseStages.count);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage1]);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage2]);
-    XCTAssertEqual([config.endpoint description], performanceEndpoint);
+    XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
@@ -167,14 +167,14 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
             }
         }
     }];
-    XCTAssertEqual(config.apiKey, bugsnagApiKey);
-    XCTAssertEqual(config.appVersion, bugsnagAppVersion);
-    XCTAssertEqual(config.bundleVersion, bugsnagBundleVersion);
-    XCTAssertEqual(config.releaseStage, bugsnagReleaseStage);
+    XCTAssertEqualObjects(config.apiKey, bugsnagApiKey);
+    XCTAssertEqualObjects(config.appVersion, bugsnagAppVersion);
+    XCTAssertEqualObjects(config.bundleVersion, bugsnagBundleVersion);
+    XCTAssertEqualObjects(config.releaseStage, bugsnagReleaseStage);
     XCTAssertEqual(config.enabledReleaseStages.count, bugsnagEnabledReleaseStages.count);
     XCTAssertTrue([config.enabledReleaseStages containsObject:bugsnagReleaseStage1]);
     XCTAssertTrue([config.enabledReleaseStages containsObject:bugsnagReleaseStage2]);
-    XCTAssertEqual([config.endpoint description], performanceEndpoint);
+    XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);

@@ -64,9 +64,10 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tra
 , tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
-, didCallMainFunctionAtTime_(CFAbsoluteTimeGetCurrent())
 , isColdLaunch_(isColdLaunch())
-{
+{}
+
+void AppStartupInstrumentation::earlySetup() noexcept {
     if (!canInstallInstrumentation()) {
         disable();
     }
@@ -86,6 +87,7 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
     beginAppStartSpan();
     beginPreMainSpan();
+    didCallMainFunctionAtTime_ = CFAbsoluteTimeGetCurrent();
     [preMainSpan_ endWithAbsoluteTime:didCallMainFunctionAtTime_];
     beginPostMainSpan();
 

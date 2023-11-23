@@ -30,6 +30,10 @@ using namespace bugsnag;
 // We want direct ivar access to avoid accessors copying unique_ptrs
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
+- (void)abort {
+    _span->abort();
+}
+
 - (void)end {
     _span->end(CFABSOLUTETIME_INVALID);
 }
