@@ -54,7 +54,11 @@ static void replace_NSURLSessionTask_resume(Class cls, BSGSessionTaskResumeCallb
 }
 
 void bsg_installNSURLSessionTaskPerformance(void (^onResume)(NSURLSessionTask *)) noexcept {
-    for (Class cls in getURLSessionTaskClassesWithResumeMethod()) {
-        replace_NSURLSessionTask_resume(cls, onResume);
-    }
+    // We must do this in a separate thread to avoid a potential mutex deadlock with
+    // Apple's com.apple.network.connections queue during early app startup.
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+        for (Class cls in getURLSessionTaskClassesWithResumeMethod()) {
+            replace_NSURLSessionTask_resume(cls, onResume);
+        }
+    });
 }
