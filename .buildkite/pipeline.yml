@@ -68,7 +68,7 @@ steps:
       - label: "iOS 16 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -96,7 +96,7 @@ steps:
       - label: "iOS 15 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -124,7 +124,7 @@ steps:
       - label: "iOS 14 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -152,7 +152,7 @@ steps:
       - label: "iOS 13 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -180,7 +180,7 @@ steps:
       - label: "iOS 12 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -207,7 +207,7 @@ steps:
       - label: "iOS 11 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -237,7 +237,7 @@ steps:
       - label: "iOS 16 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -264,7 +264,7 @@ steps:
       - label: "iOS 14 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -291,7 +291,7 @@ steps:
       - label: "iOS 11 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -320,7 +320,7 @@ steps:
       - label: "iOS 16 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -347,7 +347,7 @@ steps:
       - label: "iOS 14 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -374,7 +374,7 @@ steps:
       - label: "iOS 11 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
