@@ -51,6 +51,9 @@ public:
                                               BugsnagPerformanceViewType viewType,
                                               BugsnagPerformanceSpanOptions *options) noexcept;
 
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className, NSString *phase,
+                                                   BugsnagPerformanceSpan *parentContext) noexcept;
+
     void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) noexcept;
 
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
