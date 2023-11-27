@@ -29,6 +29,8 @@
 		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
 		09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */; };
 		09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A442B0B883B00F4F776 /* FixtureConfig.swift */; };
+		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
+		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
@@ -80,6 +82,7 @@
 		09637A402B060E7C00F4F776 /* CommandReaderThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
 		09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09637A442B0B883B00F4F776 /* FixtureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
+		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A414C82912CA18003152A4 /* Bugsnag in Frameworks */,
+				0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */,
 				01FE4DC028E1AEDF00D1F239 /* BugsnagPerformance in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -189,6 +193,7 @@
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
+				0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */,
 				9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
@@ -204,6 +209,7 @@
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
+				098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
 				CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */,
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
@@ -212,7 +218,6 @@
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
-				098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -246,6 +251,7 @@
 			packageProductDependencies = (
 				01FE4DBF28E1AEDF00D1F239 /* BugsnagPerformance */,
 				01A414C72912CA18003152A4 /* Bugsnag */,
+				0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */,
 			);
 			productName = Fixture;
 			productReference = 01FE4DA528E1AEBD00D1F239 /* Fixture.app */;
@@ -321,6 +327,7 @@
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
 				CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
+				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
 				09637A3F2B06082200F4F776 /* Logging.m in Sources */,
@@ -502,7 +509,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -534,7 +541,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -592,6 +599,10 @@
 		01FE4DBF28E1AEDF00D1F239 /* BugsnagPerformance */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BugsnagPerformance;
+		};
+		0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformanceSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

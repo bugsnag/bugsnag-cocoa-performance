@@ -6,6 +6,7 @@
 //
 
 import BugsnagPerformance
+import BugsnagPerformanceSwiftUI
 import SwiftUI
 
 @available(iOS 13.0.0, *)
@@ -16,7 +17,7 @@ struct SomeView: View {
         Text("Hello from SwiftUI 🙃")
             .onAppear {
                 span.end()
-            }
+            }.bugsnagTraced("My text view")
     }
 }
 
