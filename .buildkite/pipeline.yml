@@ -2,7 +2,7 @@ env:
   LANG: "en_GB.UTF-8"
 
 agents:
-  queue: macos-12-arm
+  queue: macos-13-arm
 
 steps:
 
@@ -25,7 +25,7 @@ steps:
           - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url.txt
-          
+
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
         commands:
@@ -34,7 +34,7 @@ steps:
           - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
-          
+
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
         commands:
@@ -48,7 +48,7 @@ steps:
     steps:
       - label: "iOS 15 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0 DEVICE="iPhone 13"
         plugins:
           artifacts#v1.5.0:
             upload:
@@ -231,7 +231,7 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
-        
+
   - group: ":iphone: Swizzling disabled E2E Tests"
     steps:
       - label: "iOS 16 E2E Tests swizzling disabled"
@@ -287,7 +287,7 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
-        
+
       - label: "iOS 11 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
@@ -370,7 +370,7 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
-        
+
       - label: "iOS 11 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
