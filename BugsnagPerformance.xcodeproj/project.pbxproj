@@ -57,7 +57,7 @@
 		094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		094FA7522B10EEB600112ED4 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09509B742ADFE9A900A358EC /* TracerTests.mm */; };
-		0983A1962B1624C000DDF4FF /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7502B10EE5600112ED4 /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
+		096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
@@ -270,8 +270,8 @@
 		094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
 		094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUITests.swift; sourceTree = "<group>"; };
-		094FA7502B10EE5600112ED4 /* BugsnagPerformanceSwiftUIInstrumentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BugsnagPerformanceSwiftUIInstrumentation.swift; path = ../../BugsnagPerformanceSwiftUI/BugsnagPerformanceSwiftUIInstrumentation.swift; sourceTree = "<group>"; };
 		09509B742ADFE9A900A358EC /* TracerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracerTests.mm; sourceTree = "<group>"; };
+		096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUIInstrumentation.swift; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,6 +423,7 @@
 			isa = PBXGroup;
 			children = (
 				0122C21429019770002D243C /* BugsnagPerformance */,
+				096CBC142B1752B000534F0C /* BugsnagPerformanceSwiftUI */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -433,7 +434,6 @@
 				0122C21529019770002D243C /* include */,
 				0122C21F29019770002D243C /* Private */,
 				0122C21B29019770002D243C /* Public */,
-				094FA74F2B10EE2100112ED4 /* SwiftUI */,
 			);
 			path = BugsnagPerformance;
 			sourceTree = "<group>";
@@ -627,12 +627,12 @@
 			path = BugsnagPerformanceSwiftUITests;
 			sourceTree = "<group>";
 		};
-		094FA74F2B10EE2100112ED4 /* SwiftUI */ = {
+		096CBC142B1752B000534F0C /* BugsnagPerformanceSwiftUI */ = {
 			isa = PBXGroup;
 			children = (
-				094FA7502B10EE5600112ED4 /* BugsnagPerformanceSwiftUIInstrumentation.swift */,
+				096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */,
 			);
-			path = SwiftUI;
+			path = BugsnagPerformanceSwiftUI;
 			sourceTree = "<group>";
 		};
 		450CB5014AAED50046482044 /* Products */ = {
@@ -1033,7 +1033,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc in Sources */,
-				0983A1962B1624C000DDF4FF /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */,
+				096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
