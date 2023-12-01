@@ -10,6 +10,31 @@ import SwiftUI
 import BugsnagPerformance
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
+final class BugsnagViewContext: ObservableObject {
+    public var firstViewLoadSpan: BugsnagPerformanceSpan? = nil
+}
+
+@available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
+private struct BSGEnvironmentKey: EnvironmentKey {
+    static let defaultValue: BugsnagViewContext = .init()
+}
+
+@available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
+extension EnvironmentValues {
+    var keyBSGViewContext: BugsnagViewContext {
+        get { self[BSGEnvironmentKey.self] }
+        set { self[BSGEnvironmentKey.self] = newValue }
+    }
+}
+
+@available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
+extension View {
+    func bsgViewContext(_ bsgViewContext: BugsnagViewContext) -> some View {
+        environment(\.keyBSGViewContext, bsgViewContext)
+    }
+}
+
+@available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
 public extension View {
     func bugsnagTraced(_ viewName: String? = nil) -> some View {
         return BugsnagTracedView(viewName) {
@@ -20,6 +45,8 @@ public extension View {
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
 public struct BugsnagTracedView<Content: View>: View {
+    @Environment(\.keyBSGViewContext) private var bsgViewContext: BugsnagViewContext
+
     let content: () -> Content
     let name: String
 
@@ -37,27 +64,24 @@ public struct BugsnagTracedView<Content: View>: View {
     }
 
     public var body: some View {
-        let parentSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI)
-        let viewLoadSpan = BugsnagPerformance.startViewLoadPhaseSpan(name: name, phase: "loadView", parentContext: parentSpan)
+        let firstViewLoadSpan = bsgViewContext.firstViewLoadSpan
 
-        if #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) {
-            var viewAppearSpan: BugsnagPerformanceSpan? = nil
-            content()
-            .onAppear {
-                viewLoadSpan.end()
-                viewAppearSpan = BugsnagPerformance.startViewLoadPhaseSpan(name: name, phase: "View appearing", parentContext: parentSpan)
+        if firstViewLoadSpan == nil {
+            let opts = BugsnagPerformanceSpanOptions()
+            opts.setParentContext(nil)
+            let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: "\(name) (top-level view)", viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+            bsgViewContext.firstViewLoadSpan = thisViewLoadSpan
+            DispatchQueue.main.async {
+                thisViewLoadSpan.end()
             }
-            .task(priority: .background) {
-                viewAppearSpan?.end()
-                parentSpan.end()
-            }
-        } else {
-            content()
-            .onAppear {
-                viewLoadSpan.end()
-                parentSpan.end()
-            }
-
         }
+
+        let opts = BugsnagPerformanceSpanOptions()
+        opts.setParentContext(firstViewLoadSpan)
+        let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+        defer {
+            thisViewLoadSpan.end()
+        }
+        return content()
     }
 }

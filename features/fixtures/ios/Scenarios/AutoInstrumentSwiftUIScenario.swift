@@ -27,8 +27,9 @@ struct AutoInstrumentSwiftUIScenario_View: View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
-                .bugsnagTraced("My text view")
+                .bugsnagTraced("My Image view")
         }
+        .bugsnagTraced("My VStack view")
         .padding()
     }
 }
