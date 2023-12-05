@@ -64,12 +64,13 @@ public struct BugsnagTracedView<Content: View>: View {
     }
 
     public var body: some View {
-        let firstViewLoadSpan = bsgViewContext.firstViewLoadSpan
+        var firstViewLoadSpan = bsgViewContext.firstViewLoadSpan
 
         if firstViewLoadSpan == nil {
             let opts = BugsnagPerformanceSpanOptions()
             opts.setParentContext(nil)
-            let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: "\(name) (top-level view)", viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+            let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+            firstViewLoadSpan = thisViewLoadSpan
             bsgViewContext.firstViewLoadSpan = thisViewLoadSpan
             DispatchQueue.main.async {
                 thisViewLoadSpan.end()
@@ -78,7 +79,7 @@ public struct BugsnagTracedView<Content: View>: View {
 
         let opts = BugsnagPerformanceSpanOptions()
         opts.setParentContext(firstViewLoadSpan)
-        let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+        let thisViewLoadSpan = BugsnagPerformance.startViewLoadPhaseSpan(name: name, phase: "body", parentContext: firstViewLoadSpan!)
         defer {
             thisViewLoadSpan.end()
         }
