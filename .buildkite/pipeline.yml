@@ -48,20 +48,20 @@ steps:
     steps:
       - label: "iOS 17 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 13"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 14"
         plugins:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
       - label: "iOS 13 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.0
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         plugins:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
         agents:
-          queue: macos-11
+          queue: macos-12-arm
 
   - group: ":iphone: E2E Tests"
     steps:
