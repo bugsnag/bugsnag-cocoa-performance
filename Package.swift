@@ -12,6 +12,9 @@ let package = Package(
         .library(
             name: "BugsnagPerformance",
             targets: ["BugsnagPerformance"]),
+        .library(
+            name: "BugsnagPerformanceSwiftUI",
+            targets: ["BugsnagPerformanceSwiftUI"]),
     ],
     targets: [
         .target(
@@ -25,6 +28,11 @@ let package = Package(
                 .linkedFramework("UIKit"),
                 .linkedFramework("CoreTelephony"),
             ]
+        ),
+        .target(
+            name: "BugsnagPerformanceSwiftUI",
+            dependencies: ["BugsnagPerformance"],
+            path: "Sources/BugsnagPerformanceSwiftUI"
         ),
         .testTarget(
             name: "BugsnagPerformanceTests",

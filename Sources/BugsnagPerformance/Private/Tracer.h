@@ -52,7 +52,9 @@ public:
 
     BugsnagPerformanceSpan *startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept;
 
-    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *name, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
+                                                   NSString *phase,
+                                                   BugsnagPerformanceSpan *parentContext) noexcept;
 
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 

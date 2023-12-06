@@ -30,7 +30,7 @@ else
  else
   ifeq ($(PLATFORM),iOS)
    SDK?=iphonesimulator
-   DEVICE?=iPhone 8
+   DEVICE?=iPhone 11
    DESTINATION?=platform=iOS Simulator,name=$(DEVICE),OS=$(OS)
    RELEASE_DIR=Release-iphoneos
   else
@@ -195,6 +195,9 @@ endif
 	@echo $(VERSION) > VERSION
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformance.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformance.podspec.json
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceSwiftUI.podspec.json
+	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceSwiftUI.podspec.json
+	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceSwiftUI.podspec.json
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" .jazzy.yaml
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" Sources/BugsnagPerformance/Private/Version.h

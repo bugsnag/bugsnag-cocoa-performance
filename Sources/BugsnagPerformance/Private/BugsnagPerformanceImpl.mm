@@ -370,6 +370,13 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     [viewControllersToSpans_ setObject:span forKey:controller];
 }
 
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
+                                                                       BugsnagPerformanceSpan *parentContext) noexcept {
+    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
+    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    return span;
+}
+
 void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {
     /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
      * until certain internal operations occur (such as the map resizing itself).

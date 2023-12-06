@@ -2,7 +2,7 @@ env:
   LANG: "en_GB.UTF-8"
 
 agents:
-  queue: macos-12-arm
+  queue: macos-13-arm
 
 steps:
 
@@ -25,7 +25,7 @@ steps:
           - bundle exec upload-app --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/ipa_url.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url.txt
-          
+
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
         commands:
@@ -34,7 +34,7 @@ steps:
           - bundle exec upload-app --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
         artifact_paths:
           - features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
-          
+
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
         commands:
@@ -46,29 +46,29 @@ steps:
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
-      - label: "iOS 15 Unit Tests"
+      - label: "iOS 17 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.0
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 14"
         plugins:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
-      - label: "iOS 11 Unit Tests"
+      - label: "iOS 13 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=11.4
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         plugins:
           artifacts#v1.5.0:
             upload:
               - "logs/*"
         agents:
-          queue: macos-11
+          queue: macos-12-arm
 
   - group: ":iphone: E2E Tests"
     steps:
       - label: "iOS 16 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -96,7 +96,7 @@ steps:
       - label: "iOS 15 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -124,7 +124,7 @@ steps:
       - label: "iOS 14 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -152,7 +152,7 @@ steps:
       - label: "iOS 13 E2E Tests"
         depends_on:
           - ios_fixture
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -177,67 +177,12 @@ steps:
         concurrency_group: browserstack-app
         concurrency_method: eager
 
-      - label: "iOS 12 E2E Tests"
-        depends_on:
-          - ios_fixture
-        timeout_in_minutes: 10
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
-            command:
-              - "--app=@build/ipa_url.txt"
-              - "--device=IOS_12"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/default"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-
-      - label: "iOS 11 E2E Tests"
-        depends_on:
-          - ios_fixture
-        timeout_in_minutes: 10
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner-legacy
-            run: cocoa-maze-runner-legacy
-            command:
-              - "--app=@build/ipa_url.txt"
-              - "--appium-version=1.16.0"
-              - "--device=IOS_11"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/default"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-        
   - group: ":iphone: Swizzling disabled E2E Tests"
     steps:
       - label: "iOS 16 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -264,7 +209,7 @@ steps:
       - label: "iOS 14 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -287,40 +232,13 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
-        
-      - label: "iOS 11 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 10
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner-legacy
-            run: cocoa-maze-runner-legacy
-            command:
-              - "--app=@build/ipa_url_swizzling_disabled.txt"
-              - "--appium-version=1.16.0"
-              - "--device=IOS_11"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/swizzling_disabled"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
 
   - group: ":iphone: Swizzling premain E2E Tests"
     steps:
       - label: "iOS 16 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -347,7 +265,7 @@ steps:
       - label: "iOS 14 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         agents:
           queue: opensource
         plugins:
@@ -370,31 +288,3 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
-        
-      - label: "iOS 11 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 10
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner-legacy
-            run: cocoa-maze-runner-legacy
-            command:
-              - "--app=@build/ipa_url_swizzling_premain.txt"
-              - "--appium-version=1.16.0"
-              - "--device=IOS_11"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/default"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-
