@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## 1.2.0 (2023-12-06)
+
+This release increases the minimum supported iOS version of the library from 11 to 13.
+
+### Enhancements
+
+* Added support for instrumenting SwiftUI views
+  [222](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/222)
+
 ## 1.1.3 (2023-11-23)
 
 ### Enhancements
