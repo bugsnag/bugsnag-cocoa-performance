@@ -65,6 +65,34 @@ steps:
 
   - group: ":iphone: E2E Tests"
     steps:
+      - label: "iOS 17 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/ipa_url.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/ipa_url.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_17"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "--order=random"
+              - "features/default"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
       - label: "iOS 16 E2E Tests"
         depends_on:
           - ios_fixture
