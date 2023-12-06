@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+def skip_above(os, version)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version > version
+end
+
+def skip_below(os, version)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
+end
+
+def skip_between(os, version_lo, version_hi)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version >= version_lo and Maze.config.os_version <= version_hi
+end
+
+Before('@skip_below_ios_15') do |_scenario|
+  skip_below('ios', 15.00)
+end
+
+Before('@skip_ios_15_and_above') do |_scenario|
+  skip_above('ios', 14.99)
+end
+
 When('I run {string}') do |scenario_name|
   Maze::Server.commands.add({ action: "run_scenario", args: [scenario_name] })
   # Ensure fixture has read the command

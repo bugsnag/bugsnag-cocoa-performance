@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,6 +17,8 @@
 		011C69DD28F5747200C5BA3C /* SomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DC28F5747200C5BA3C /* SomeView.swift */; };
 		011C69E128F5CA1E00C5BA3C /* IgnoredViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69E028F5CA1E00C5BA3C /* IgnoredViewController.swift */; };
 		0185C46728F6C04B006F9BDC /* ExampleLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = 0185C46628F6C04B006F9BDC /* ExampleLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0983A1752B14966B00DDF4FF /* BugsnagPerformance in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A1742B14966B00DDF4FF /* BugsnagPerformance */; };
+		0983A1772B14966B00DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A1762B14966B00DDF4FF /* BugsnagPerformanceSwiftUI */; };
 		CB572EF429C1B96100FD7A2A /* AnotherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DE28F57F1500C5BA3C /* AnotherViewController.swift */; };
 		CBC90C4029C45DCB00280884 /* ForceUBSan.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC90C3F29C45DCB00280884 /* ForceUBSan.m */; };
 /* End PBXBuildFile section */
@@ -30,7 +32,6 @@
 		010656B028DB2E8E00F2A9A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		010656B328DB2E8E00F2A9A6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		010656B528DB2E8E00F2A9A6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		010656C028DB2F5E00F2A9A6 /* bugsnag-cocoa-performance */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = "bugsnag-cocoa-performance"; path = ..; sourceTree = "<group>"; };
 		011C69DC28F5747200C5BA3C /* SomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SomeView.swift; sourceTree = "<group>"; };
 		011C69DE28F57F1500C5BA3C /* AnotherViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnotherViewController.swift; sourceTree = "<group>"; };
 		011C69E028F5CA1E00C5BA3C /* IgnoredViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IgnoredViewController.swift; sourceTree = "<group>"; };
@@ -47,6 +48,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				010656C328DB543B00F2A9A6 /* BugsnagPerformance in Frameworks */,
+				0983A1772B14966B00DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */,
+				0983A1752B14966B00DDF4FF /* BugsnagPerformance in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +105,6 @@
 		010656BF28DB2F5E00F2A9A6 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				010656C028DB2F5E00F2A9A6 /* bugsnag-cocoa-performance */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -152,6 +154,8 @@
 			name = Example;
 			packageProductDependencies = (
 				010656C228DB543B00F2A9A6 /* BugsnagPerformance */,
+				0983A1742B14966B00DDF4FF /* BugsnagPerformance */,
+				0983A1762B14966B00DDF4FF /* BugsnagPerformanceSwiftUI */,
 			);
 			productName = Example;
 			productReference = 010656A428DB2E8C00F2A9A6 /* Example.app */;
@@ -203,6 +207,9 @@
 				Base,
 			);
 			mainGroup = 0106569B28DB2E8C00F2A9A6;
+			packageReferences = (
+				0983A1732B14966B00DDF4FF /* XCLocalSwiftPackageReference ".." */,
+			);
 			productRefGroup = 010656A528DB2E8C00F2A9A6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -407,6 +414,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -438,6 +446,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -546,10 +555,25 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		0983A1732B14966B00DDF4FF /* XCLocalSwiftPackageReference ".." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		010656C228DB543B00F2A9A6 /* BugsnagPerformance */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BugsnagPerformance;
+		};
+		0983A1742B14966B00DDF4FF /* BugsnagPerformance */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformance;
+		};
+		0983A1762B14966B00DDF4FF /* BugsnagPerformanceSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformanceSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

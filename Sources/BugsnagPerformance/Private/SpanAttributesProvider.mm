@@ -83,12 +83,7 @@ static NSDictionary *accessTechnologyMappingDictionary() {
 static NSString *getConnectionSubtype(NSString *networkType) {
     if ([networkType isEqual:connectionTypeCell]) {
 #if TARGET_OS_IOS
-        NSString *accessTechnology;
-        if (@available(iOS 12.0, *)) {
-            accessTechnology = [[CTTelephonyNetworkInfo new].serviceCurrentRadioAccessTechnology objectForKey:networkSubtypeKey];
-        } else {
-            accessTechnology = [CTTelephonyNetworkInfo new].currentRadioAccessTechnology;
-        }
+        NSString *accessTechnology = [[CTTelephonyNetworkInfo new].serviceCurrentRadioAccessTechnology objectForKey:networkSubtypeKey];
         if (accessTechnology) {
             return accessTechnologyMappingDictionary()[accessTechnology];
         }
