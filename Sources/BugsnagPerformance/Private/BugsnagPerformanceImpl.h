@@ -101,6 +101,7 @@ private:
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
     bool sendPValueRequestTask() noexcept;
+    bool sweepTracerTask() noexcept;
 
     // Event reactions
     void onBatchFull() noexcept;
@@ -109,6 +110,7 @@ private:
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
+    void onAppEnteredBackground() noexcept;
 
     // Utility
     void wakeWorker() noexcept;
