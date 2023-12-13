@@ -52,16 +52,16 @@ public struct BugsnagTracedView<Content: View>: View {
 
     public init(_ viewName: String? = nil, content: @escaping () -> Content) {
         self.content = content
-        self.name = viewName ?? BugsnagTracedView.getViewName(content: Content.self)
+        self.name = viewName ?? defaultViewName
     }
 
-    private static func getViewName(content: Any) -> String {
-        let viewName = String(describing: content)
+    private static let defaultViewName = {
+        let viewName = String(describing: Content.self)
         if let angleBracketIndex = viewName.firstIndex(of: "<") {
             return String(viewName[viewName.startIndex ..< angleBracketIndex])
         }
         return viewName
-    }
+    }()
 
     public var body: some View {
         var firstViewLoadSpan = bsgViewContext.firstViewLoadSpan
