@@ -68,13 +68,13 @@ public extension View {
     }
 }
 
-private func generateNameFromContent(content: Any) -> String {
+private static let defaultViewName = {
     let viewName = String(describing: content)
     if let angleBracketIndex = viewName.firstIndex(of: "<") {
         return String(viewName[viewName.startIndex ..< angleBracketIndex])
     }
     return viewName
-}
+}()
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
 public struct BugsnagDeferredTraceEndView<Content: View>: View {
@@ -108,7 +108,7 @@ public struct BugsnagTracedView<Content: View>: View {
 
     public init(_ viewName: String? = nil, content: @escaping () -> Content) {
         self.content = content
-        self.name = viewName ?? generateNameFromContent(content: Content.self)
+        self.name = viewName ?? defaultViewName
     }
 
     public var body: some View {
