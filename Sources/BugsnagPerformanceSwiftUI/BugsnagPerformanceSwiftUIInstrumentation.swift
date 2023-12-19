@@ -73,6 +73,7 @@ public struct BugsnagTracedView<Content: View>: View {
             firstViewLoadSpan = thisViewLoadSpan
             bsgViewContext.firstViewLoadSpan = thisViewLoadSpan
             DispatchQueue.main.async {
+                bsgViewContext.firstViewLoadSpan = nil
                 thisViewLoadSpan.end()
             }
         }
