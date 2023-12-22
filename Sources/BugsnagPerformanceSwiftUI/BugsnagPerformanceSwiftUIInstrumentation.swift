@@ -11,7 +11,9 @@ import BugsnagPerformance
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
 final class BugsnagViewContext: ObservableObject {
-    public var firstViewLoadSpan: BugsnagPerformanceSpan? = nil
+    public var isFirstBodyThisCycle = true
+    public var parentViewLoadSpan: BugsnagPerformanceSpan? = nil
+    public var unresolvedDeferCount = 0
 }
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
@@ -36,10 +38,64 @@ extension View {
 
 @available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
 public extension View {
+
+    /**
+     * Trace this view through Bugsnag.
+     * If viewName is not specified, one will be generated based on the struct's class.
+     */
     func bugsnagTraced(_ viewName: String? = nil) -> some View {
         return BugsnagTracedView(viewName) {
             return self
         }
+    }
+
+    /**
+     * Defer ending the overarching view load span until the supplied function returns true during a body build cycle.
+     * The view load span will not be ended until ALL deferred-end conditions are true.
+     */
+    func bugsnagDeferEndUntil(deferUntil: @escaping ()->(Bool)) -> some View {
+        return BugsnagDeferredTraceEndView(deferUntil: deferUntil) {self}
+    }
+
+    /**
+     * Defer ending the overarching view load span until this view disappears from the view hierarchy.
+     * The view load span will not be ended until ALL deferred-end conditions are true.
+     */
+    func bugsnagDeferEndUntilViewDisappears() -> some View {
+        return self.bugsnagDeferEndUntil {
+            return false
+        }
+    }
+}
+
+private func generateNameFromContent(content: Any) -> String {
+    let viewName = String(describing: content)
+    if let angleBracketIndex = viewName.firstIndex(of: "<") {
+        return String(viewName[viewName.startIndex ..< angleBracketIndex])
+    }
+    return viewName
+}
+
+@available(iOS 13, macOS 10.15, tvOS 13, watchOS 6.0, *)
+public struct BugsnagDeferredTraceEndView<Content: View>: View {
+    @Environment(\.keyBSGViewContext) private var bsgViewContext: BugsnagViewContext
+
+    private let content: () -> Content
+    private let deferUntilCondition: ()->(Bool)
+
+    public init(deferUntil: @escaping ()->(Bool), content: @escaping () -> Content) {
+        self.content = content
+        self.deferUntilCondition = deferUntil
+    }
+
+    public var body: some View {
+        if !deferUntilCondition() {
+            bsgViewContext.unresolvedDeferCount += 1
+        }
+
+        // We're not generating our own content; merely passing through the content
+        // of the body we wrapped. The rendered scene will not contain any Bugsnag views.
+        return content()
     }
 }
 
@@ -47,42 +103,45 @@ public extension View {
 public struct BugsnagTracedView<Content: View>: View {
     @Environment(\.keyBSGViewContext) private var bsgViewContext: BugsnagViewContext
 
-    let content: () -> Content
-    let name: String
+    private let content: () -> Content
+    private let name: String
 
     public init(_ viewName: String? = nil, content: @escaping () -> Content) {
         self.content = content
-        self.name = viewName ?? BugsnagTracedView.getViewName(content: Content.self)
-    }
-
-    private static func getViewName(content: Any) -> String {
-        let viewName = String(describing: content)
-        if let angleBracketIndex = viewName.firstIndex(of: "<") {
-            return String(viewName[viewName.startIndex ..< angleBracketIndex])
-        }
-        return viewName
+        self.name = viewName ?? generateNameFromContent(content: Content.self)
     }
 
     public var body: some View {
-        var firstViewLoadSpan = bsgViewContext.firstViewLoadSpan
+        var parentViewLoadSpan = bsgViewContext.parentViewLoadSpan
 
-        if firstViewLoadSpan == nil {
-            let opts = BugsnagPerformanceSpanOptions()
-            opts.setParentContext(nil)
-            let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
-            firstViewLoadSpan = thisViewLoadSpan
-            bsgViewContext.firstViewLoadSpan = thisViewLoadSpan
+        if bsgViewContext.isFirstBodyThisCycle {
+            bsgViewContext.isFirstBodyThisCycle = false
+
+            if parentViewLoadSpan == nil {
+                let opts = BugsnagPerformanceSpanOptions()
+                opts.setParentContext(nil)
+                let thisViewLoadSpan = BugsnagPerformance.startViewLoadSpan(name: name, viewType: BugsnagPerformanceViewType.swiftUI, options: opts)
+                parentViewLoadSpan = thisViewLoadSpan
+                bsgViewContext.parentViewLoadSpan = thisViewLoadSpan
+            }
+
             DispatchQueue.main.async {
-                thisViewLoadSpan.end()
+                if bsgViewContext.unresolvedDeferCount == 0 {
+                    bsgViewContext.parentViewLoadSpan?.end()
+                    bsgViewContext.parentViewLoadSpan = nil
+                }
+                bsgViewContext.unresolvedDeferCount = 0
+                bsgViewContext.isFirstBodyThisCycle = true
             }
         }
 
         let opts = BugsnagPerformanceSpanOptions()
-        opts.setParentContext(firstViewLoadSpan)
-        let thisViewLoadSpan = BugsnagPerformance.startViewLoadPhaseSpan(name: name, phase: "body", parentContext: firstViewLoadSpan!)
-        defer {
-            thisViewLoadSpan.end()
-        }
+        opts.setParentContext(parentViewLoadSpan)
+        // We are actually recording a point here, not measuring a duration.
+        BugsnagPerformance.startViewLoadPhaseSpan(name: name, phase: "body", parentContext: parentViewLoadSpan!).end()
+
+        // We're not generating our own content; merely passing through the content
+        // of the body we wrapped. The rendered scene will not contain any Bugsnag views.
         return content()
     }
 }
