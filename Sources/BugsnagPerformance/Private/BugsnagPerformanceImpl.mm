@@ -146,6 +146,9 @@ void BugsnagPerformanceImpl::start() noexcept {
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
     };
+    appStateTracker_.onTransitionToBackground = ^{
+        blockThis->onAppEnteredBackground();
+    };
 
     tracer_->start();
 
@@ -174,6 +177,7 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     return @[
         ^bool() { return blockThis->sendCurrentBatchTask(); },
         ^bool() { return blockThis->sendRetriesTask(); },
+        ^bool() { return blockThis->sweepTracerTask(); },
     ];
 }
 
@@ -209,6 +213,12 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
     }
 
     // Retries never count as work, otherwise we'd loop endlessly on a network outage.
+    return false;
+}
+
+bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
+    tracer_->sweep();
+    // Never auto-repeat this task, even if work was done; it can wait.
     return false;
 }
 
@@ -256,6 +266,10 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     batch_->allowDrain();
     wakeWorker();
+}
+
+void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
+    tracer_->abortAllOpenSpans();
 }
 
 #pragma mark Utility

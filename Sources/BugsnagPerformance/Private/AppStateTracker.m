@@ -182,6 +182,10 @@ static bool GetIsForeground(void) {
 - (void) handleAppBackgroundEvent {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     _isInForeground = NO;
+    void (^callback)(void) = self.onTransitionToBackground;
+    if (callback != nil) {
+        callback();
+    }
 }
 
 @end
