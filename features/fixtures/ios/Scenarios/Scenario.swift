@@ -57,14 +57,17 @@ class Scenario: NSObject {
     }
     
     func isMazeRunnerAdministrationURL(url: URL) -> Bool {
-        switch url {
-        case fixtureConfig.tracesURL, fixtureConfig.commandURL, fixtureConfig.metricsURL:
+        if url.absoluteString.hasPrefix(fixtureConfig.tracesURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.commandURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.metricsURL.absoluteString) {
             return true
-        case fixtureConfig.reflectURL:
-            return false // reflectURL is fair game!
-        default:
-            return false
         }
+
+        if url.absoluteString.hasPrefix(fixtureConfig.reflectURL.absoluteString) {
+            return false // reflectURL is fair game!
+        }
+
+        return false
     }
 
     func reportMeasurements() {
