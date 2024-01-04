@@ -26,6 +26,7 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 , sampler_(sampler)
 , earlyNetworkSpans_([NSMutableArray new])
 , prewarmSpans_([NSMutableArray new])
+, potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
 , batch_(batch)
 , onSpanStarted_(onSpanStarted)
 {}
@@ -51,6 +52,19 @@ Tracer::start() noexcept {
     auto unsampledBatch = batch_->drain(true);
     for (auto spanData: *unsampledBatch) {
         trySampleAndAddSpanToBatch(spanData);
+    }
+}
+
+void
+Tracer::abortAllOpenSpans() noexcept {
+    potentiallyOpenSpans_->abortAll();
+}
+
+void
+Tracer::sweep() noexcept {
+    constexpr unsigned minEntriesBeforeCompacting = 10000;
+    if (potentiallyOpenSpans_->count() >= minEntriesBeforeCompacting) {
+        potentiallyOpenSpans_->compact();
     }
 }
 
@@ -84,6 +98,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         spanStackingHandler_->push(span);
     }
     [span addAttributes:SpanAttributes::get()];
+    potentiallyOpenSpans_->add(span);
     onSpanStarted_();
     return span;
 }

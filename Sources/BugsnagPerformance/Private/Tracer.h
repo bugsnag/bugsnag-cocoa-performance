@@ -16,6 +16,7 @@
 #import "PhasedStartup.h"
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
+#import "WeakSpansList.h"
 
 #import <memory>
 
@@ -59,6 +60,11 @@ public:
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
     void onPrewarmPhaseEnded(void) noexcept;
+    
+    void abortAllOpenSpans() noexcept;
+
+    // Sweep must be called periodically to avoid a buildup of dead pointers.
+    void sweep() noexcept;
 
 private:
     Tracer() = delete;
@@ -72,6 +78,10 @@ private:
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
+
+    // Sloppy list of "open" spans. Some spans may have already been closed,
+    // but span abort/end are idempotent so it doesn't matter.
+    std::shared_ptr<WeakSpansList> potentiallyOpenSpans_;
 
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){ ^(){} };

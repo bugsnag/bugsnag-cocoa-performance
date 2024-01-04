@@ -29,6 +29,7 @@
 		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
 		09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */; };
 		09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A442B0B883B00F4F776 /* FixtureConfig.swift */; };
+		096EE5EF2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */; };
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
@@ -82,6 +83,7 @@
 		09637A402B060E7C00F4F776 /* CommandReaderThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandReaderThread.swift; sourceTree = "<group>"; };
 		09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MazeRunnerCommand.swift; sourceTree = "<group>"; };
 		09637A442B0B883B00F4F776 /* FixtureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureConfig.swift; sourceTree = "<group>"; };
+		096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIDeferredScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
+				096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */,
 				0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */,
 				9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
@@ -319,6 +322,7 @@
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
+				096EE5EF2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift in Sources */,
 				CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */,
 				09637A3C2B0607F300F4F776 /* Logging.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,

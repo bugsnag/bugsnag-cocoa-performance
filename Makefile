@@ -186,6 +186,7 @@ endif
 	@open 'https://github.com/bugsnag/bugsnag-cocoa-performance/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformanceSwiftUI.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -208,7 +209,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h
+	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwiftUI.podspec.json
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)

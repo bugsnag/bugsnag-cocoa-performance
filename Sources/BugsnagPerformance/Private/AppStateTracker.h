@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,readonly) BOOL isInForeground;
 
 @property(nonatomic,readwrite,strong) void (^onTransitionToForeground)(void);
+@property(nonatomic,readwrite,strong) void (^onTransitionToBackground)(void);
 
 @end
 

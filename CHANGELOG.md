@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## 1.3.0 (2024-01-04)
+
+### Enhancements
+
+* Added support for deferring view load span end
+  [230](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/230)
+
+* Discard unfinished spans when the app goes into the background
+  [228](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/228)
+
 ## 1.2.0 (2023-12-06)
 
 This release increases the minimum supported iOS version of the library from 11 to 13.

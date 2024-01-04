@@ -20,6 +20,12 @@ Before('@skip_ios_15_and_above') do |_scenario|
   skip_above('ios', 14.99)
 end
 
+Then('I discard every {request_type}') do |request_type|
+  until Maze::Server.list_for(request_type).current.nil?
+    Maze::Server.list_for(request_type).next
+  end
+end
+
 When('I run {string}') do |scenario_name|
   Maze::Server.commands.add({ action: "run_scenario", args: [scenario_name] })
   # Ensure fixture has read the command
