@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 1.3.0 (2024-01-04)
 
 ### Enhancements
 
