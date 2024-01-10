@@ -21,6 +21,7 @@ class ManualNetworkCallbackScenario: Scenario {
         super.configure()
         config.autoInstrumentNetworkRequests = false
         config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            super.ignoreInternalRequests(info: info)
 
             let testUrl = info.url
             if (testUrl == nil) {

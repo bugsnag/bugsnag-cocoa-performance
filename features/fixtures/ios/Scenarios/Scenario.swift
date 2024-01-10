@@ -36,6 +36,21 @@ class Scenario: NSObject {
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
         config.endpoint = fixtureConfig.tracesURL
+        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            self.ignoreInternalRequests(info: info)
+
+            return info
+        }
+    }
+    
+    func ignoreInternalRequests(info: BugsnagPerformanceNetworkRequestInfo) {
+        if (info.url == nil) {
+            return
+        }
+        let urlString = info.url!.absoluteString
+        if (urlString.hasSuffix("/metrics") || urlString.hasSuffix("/command")) {
+            info.url = nil
+        }
     }
     
     func clearPersistentData() {
