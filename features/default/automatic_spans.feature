@@ -462,19 +462,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: Automatically start a network span that is a file:// scheme
     Given I run "AutoInstrumentFileURLRequestScenario"
-    And I wait for 2 seconds
-    And I wait for 1 span
-    # We should only see the request to http://bs-local.com:9339/command, not the file:// request
-    Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "parentSpanId" exists
-    * a span field "parentSpanId" is greater than 0
-    * a span field "parentSpanId" does not exist
-    * a span field "name" equals "[HTTP/GET]"
-    * a span string attribute "http.url" matches the regex "http://.*:9339/command"
-    * a span string attribute "http.method" equals "GET"
-    * a span integer attribute "http.status_code" is greater than 0
-    * a span integer attribute "http.response_content_length" is greater than 0
+    Then I should receive no traces
 
   Scenario: Don't send an auto network span that failed to send
     Given I run "AutoInstrumentNetworkBadAddressScenario"
