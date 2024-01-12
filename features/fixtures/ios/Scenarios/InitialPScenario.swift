@@ -9,14 +9,15 @@ import BugsnagPerformance
 
 @objcMembers
 class InitialPScenario: Scenario {
+    let initialDelayBeforeSpans = 5.0
 
     override func configure() {
         super.configure()
-        config.internal.initialRecurringWorkDelay = 0
+        config.internal.initialRecurringWorkDelay = initialDelayBeforeSpans
     }
     override func run() {
         // Wait to receive an initial P value response.
-        waitForCurrentBatch()
+        Thread.sleep(forTimeInterval: initialDelayBeforeSpans + 0.1)
         BugsnagPerformance.startSpan(name: "First").end()
     }
 

@@ -14,6 +14,7 @@ class AutoInstrumentNetworkBadAddressScenario: Scenario {
         super.configure()
         config.autoInstrumentNetworkRequests = true
         config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            super.ignoreInternalRequests(info: info)
             let testUrl = info.url
             if (testUrl == nil) {
                 return info
