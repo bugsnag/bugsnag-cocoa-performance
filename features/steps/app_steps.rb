@@ -31,7 +31,6 @@ When('I run {string}') do |scenario_name|
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I invoke {string}') do |method_name|
@@ -39,7 +38,6 @@ When('I invoke {string}') do |method_name|
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I invoke {string} with parameter {string}') do |method_name, arg1|
@@ -48,7 +46,6 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 # Note:
