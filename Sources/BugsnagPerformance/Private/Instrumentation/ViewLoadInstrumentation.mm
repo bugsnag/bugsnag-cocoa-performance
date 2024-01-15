@@ -152,14 +152,6 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
     endViewLoadSpan(viewController);
 }
 
-void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
-    if (!isEnabled_) {
-        return;
-    }
-
-    endViewLoadSpan(viewController);
-}
-
 void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
     if (!isEnabled_) {
         return;
@@ -416,21 +408,6 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
 }
 
 void
-ViewLoadInstrumentation::instrumentViewWillDisappear(Class cls) noexcept {
-    __block SEL selector = @selector(viewWillDisappear:);
-    __block bool const * const isEnabled = &isEnabled_;
-    __block IMP viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
-        if (*isEnabled) {
-            Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-            onViewWillDisappear(self);
-        }
-        if (viewWillDisappear) {
-            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
-        }
-    });
-}
-
-void
 ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
     __block SEL selector = @selector(viewWillLayoutSubviews);
     __block bool const * const isEnabled = &isEnabled_;
@@ -484,9 +461,6 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     instrumentViewDidLoad(cls);
     instrumentViewWillAppear(cls);
     instrumentViewDidAppear(cls);
-    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
-    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
-    instrumentViewWillDisappear(cls);
     instrumentViewWillLayoutSubviews(cls);
     instrumentViewDidLayoutSubviews(cls);
 }
