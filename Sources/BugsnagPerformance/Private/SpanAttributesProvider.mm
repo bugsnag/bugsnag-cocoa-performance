@@ -145,6 +145,15 @@ SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerfo
 }
 
 NSDictionary *
+SpanAttributesProvider::preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load",
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (pre-loaded)", className],
+        @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
+    };
+}
+
+NSDictionary *
 SpanAttributesProvider::viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load_phase",
