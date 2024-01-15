@@ -49,7 +49,9 @@ class CommandReaderThread: Thread {
             case CommandFetchState.success:
                 logDebug("Command fetch: Request succeeded")
                 let command = fetchTask.command!
-                lastCommandID = command.uuid
+                if (command.uuid != "") {
+                    lastCommandID = command.uuid
+                }
                 commandReceiver.receiveCommand(command: command)
                 return
             case CommandFetchState.fetching:
