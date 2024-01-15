@@ -86,7 +86,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
             std::lock_guard<std::mutex> guard(vcInitMutex_);
             initInstrumentation(self);
-            reinterpret_cast<void (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
+            return reinterpret_cast<id (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
         });
         
         selector = @selector(initWithNibName:bundle:);
@@ -94,7 +94,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
             std::lock_guard<std::mutex> guard(vcInitMutex_);
             initInstrumentation(self);
-            reinterpret_cast<void (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
+            return reinterpret_cast<id (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
         });
     }
     
