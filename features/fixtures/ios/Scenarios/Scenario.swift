@@ -48,7 +48,7 @@ class Scenario: NSObject {
             return
         }
         let urlString = info.url!.absoluteString
-        if (urlString.hasSuffix("/metrics") || urlString.hasSuffix("/command")) {
+        if (urlString.hasSuffix("/metrics") || urlString.contains("/command")) {
             info.url = nil
         }
     }
