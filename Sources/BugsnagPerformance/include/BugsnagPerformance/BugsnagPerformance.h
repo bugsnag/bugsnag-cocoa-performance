@@ -11,6 +11,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
+#import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -10,16 +10,26 @@ import SwiftUI
 import BugsnagPerformance
 
 class ViewController: UIViewController {
+    
+    var container: UIViewController!
 
     @IBAction func showSwiftUIView(_ sender: Any) {
-        if #available(iOS 13.0.0, *) {
-            show(UIHostingController(rootView: SomeView()), sender: sender)
-        } else {
-            present(UIAlertController(
-                title: "Error",
-                message: "SwiftUI is not available on this version of iOS",
-                preferredStyle: .alert), animated: true)
-        }
+//        if #available(iOS 13.0.0, *) {
+//            show(UIHostingController(rootView: SomeView()), sender: sender)
+//        } else {
+//            present(UIAlertController(
+//                title: "Error",
+//                message: "SwiftUI is not available on this version of iOS",
+//                preferredStyle: .alert), animated: true)
+//        }
+        let viewController = AnotherViewController()
+        container = BugsnagPerformanceTrackedViewContainer.trackViewController(viewController) as? UIViewController
+        
+        
+        addChild(container)
+        view.addSubview(container.view)
+//        container.didMove(toParent: self)
+//        navigationController?.pushViewController(container, animated: true)
     }
 
     @IBAction func DoNetworkRequest(_ sender: Any) {

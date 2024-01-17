@@ -63,6 +63,7 @@
 		09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09B473092B2313570024CF11 /* WeakSpansListTests.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
+		960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -281,6 +282,7 @@
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceTrackedViewContainer.h; sourceTree = "<group>"; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -462,6 +464,7 @@
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
 				CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */,
 				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
+				960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */,
 			);
 			path = BugsnagPerformance;
 			sourceTree = "<group>";
@@ -725,6 +728,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
+				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				0122C24729019770002D243C /* SpanData.h in Headers */,
