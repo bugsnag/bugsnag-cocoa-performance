@@ -27,6 +27,7 @@ static constexpr int kAssociatedViewLoadSpan = 0;
 static constexpr int kAssociatedViewAppearingSpan = 0;
 static constexpr int kAssociatedSubviewLayoutSpan = 0;
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 @implementation ViewLoadInstrumentationState
 @end
@@ -203,7 +204,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
     if (instrumentationState.isMarkedAsPreloaded || viewDidLoadEndTime == nil) {
         return;
     }
-    auto isPreloaded = [viewWillAppearStartTime timeIntervalSinceDate: viewDidLoadEndTime] > 1.0;
+    auto isPreloaded = [viewWillAppearStartTime timeIntervalSinceDate: viewDidLoadEndTime] > kViewWillAppearPreloadedDelayThreshold;
     if (isPreloaded) {
         auto viewType = BugsnagPerformanceViewTypeUIKit;
         auto className = NSStringFromClass([viewController class]);
