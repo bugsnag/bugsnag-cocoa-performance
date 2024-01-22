@@ -27,15 +27,7 @@ static constexpr int kAssociatedViewLoadSpan = 0;
 static constexpr int kAssociatedViewAppearingSpan = 0;
 static constexpr int kAssociatedSubviewLayoutSpan = 0;
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
-
-@interface ViewLoadInstrumentationState : NSObject
-@property (nonatomic) BOOL loadViewPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLoadPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
-@end
+static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 @implementation ViewLoadInstrumentationState
 @end
@@ -152,14 +144,6 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
     endViewLoadSpan(viewController);
 }
 
-void ViewLoadInstrumentation::onViewWillDisappear(UIViewController *viewController) noexcept {
-    if (!isEnabled_) {
-        return;
-    }
-
-    endViewLoadSpan(viewController);
-}
-
 void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
     if (!isEnabled_) {
         return;
@@ -213,6 +197,22 @@ void ViewLoadInstrumentation::endEarlySpanPhase() noexcept {
     }
     earlySpans_ = nil;
     isEarlySpanPhase_ = false;
+}
+
+void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *instrumentationState, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept {
+    NSDate *viewDidLoadEndTime = instrumentationState.viewDidLoadEndTime;
+    if (instrumentationState.isMarkedAsPreloaded || viewDidLoadEndTime == nil) {
+        return;
+    }
+    auto isPreloaded = [viewWillAppearStartTime timeIntervalSinceDate: viewDidLoadEndTime] > kViewWillAppearPreloadedDelayThreshold;
+    if (isPreloaded) {
+        auto viewType = BugsnagPerformanceViewTypeUIKit;
+        auto className = NSStringFromClass([viewController class]);
+        [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
+        [span updateStartTime: viewWillAppearStartTime];
+        [span addAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
+        instrumentationState.isMarkedAsPreloaded = true;
+    }
 }
 
 
@@ -363,6 +363,7 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
         }
         [span end];
+        instrumentationState.viewDidLoadEndTime = span.endTime;
     });
 }
 
@@ -372,7 +373,8 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewWillAppearPhaseSpanCreated) {
+        BugsnagPerformanceSpan *viewLoadSpan = objc_getAssociatedObject(self, &kAssociatedViewLoadSpan);
+        if (viewLoadSpan == nil || !(*isEnabled) || instrumentationState.viewWillAppearPhaseSpanCreated) {
             if (viewWillAppear) {
                 reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
             }
@@ -385,6 +387,7 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
+        adjustSpanIfPreloaded(viewLoadSpan, instrumentationState, [span startTime], self);
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -412,21 +415,6 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
         }
         [span end];
         onViewDidAppear(self);
-    });
-}
-
-void
-ViewLoadInstrumentation::instrumentViewWillDisappear(Class cls) noexcept {
-    __block SEL selector = @selector(viewWillDisappear:);
-    __block bool const * const isEnabled = &isEnabled_;
-    __block IMP viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
-        if (*isEnabled) {
-            Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-            onViewWillDisappear(self);
-        }
-        if (viewWillDisappear) {
-            reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
-        }
     });
 }
 
@@ -484,9 +472,6 @@ ViewLoadInstrumentation::instrument(Class cls) noexcept {
     instrumentViewDidLoad(cls);
     instrumentViewWillAppear(cls);
     instrumentViewDidAppear(cls);
-    // viewDidAppear may not fire, so as a fallback we use viewWillDisappear.
-    // https://developer.apple.com/documentation/uikit/uiviewcontroller#1652793
-    instrumentViewWillDisappear(cls);
     instrumentViewWillLayoutSubviews(cls);
     instrumentViewDidLayoutSubviews(cls);
 }

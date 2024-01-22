@@ -41,12 +41,15 @@ class Fixture: NSObject, CommandReceiver {
 
     func receiveCommand(command: MazeRunnerCommand) {
         readyToReceiveCommand = false
-
+        var isReady = true
         DispatchQueue.main.async {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
             switch command.action {
             case "run_scenario":
-                self.runScenario(scenarioName: command.args[0])
+                self.runScenario(scenarioName: command.args[0], completion: {
+                    self.readyToReceiveCommand = true
+                })
+                isReady = false;
                 break
             case "invoke_method":
                 self.invokeMethod(methodName: command.args[0], args: Array(command.args[1...]))
@@ -56,11 +59,13 @@ class Fixture: NSObject, CommandReceiver {
             default:
                 assertionFailure("\(command.action): Unknown command")
             }
-            self.readyToReceiveCommand = true
+            if isReady {
+                self.readyToReceiveCommand = true
+            }
         }
     }
 
-    private func runScenario(scenarioName: String) {
+    private func runScenario(scenarioName: String, completion: @escaping () -> ()) {
         logInfo("========== Running scenario \(scenarioName) ==========")
         let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
         logInfo("Loaded scenario class: \(scenarioClass)")
@@ -74,9 +79,12 @@ class Fixture: NSObject, CommandReceiver {
         logInfo("Starting scenario in class \(scenarioClass)")
         scenario!.run()
         logInfo("========== Completed scenario \(scenarioName) ==========")
-        Thread.sleep(forTimeInterval: 2.0)
-        scenario!.reportMeasurements()
-        Thread.sleep(forTimeInterval: 1.0)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.scenario!.reportMeasurements()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                completion()
+            }
+        }
     }
 
     private func invokeMethod(methodName: String, args: Array<String>) {
