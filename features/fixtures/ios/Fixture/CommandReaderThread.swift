@@ -12,6 +12,7 @@ import os
 class CommandReaderThread: Thread {
     var fixtureConfig: FixtureConfig
     var commandReceiver: CommandReceiver
+    var lastCommandID: String = ""
 
     init(fixtureConfig: FixtureConfig, commandReceiver: CommandReceiver) {
         self.fixtureConfig = fixtureConfig
@@ -29,26 +30,52 @@ class CommandReaderThread: Thread {
         }
     }
 
-    func receiveNextCommand() {
-        let fetchTask = CommandFetchTask(url: fixtureConfig.commandURL)
+    func newStartedFetchTask() -> CommandFetchTask {
+        let fetchTask = CommandFetchTask(url: fixtureConfig.commandURL, afterCommandID: lastCommandID)
         fetchTask.start()
+        return fetchTask
+    }
+
+    func receiveNextCommand() {
+        let maxWaitTime = 5.0
+        let pollingInterval = 1.0
+
+        var fetchTask = newStartedFetchTask()
+        let startTime = Date()
 
         while true {
+            Thread.sleep(forTimeInterval: pollingInterval)
             switch fetchTask.state {
             case CommandFetchState.success:
-                commandReceiver.receiveCommand(command: fetchTask.command!)
+                logDebug("Command fetch: Request succeeded")
+                let command = fetchTask.command!
+                if (command.uuid != "") {
+                    lastCommandID = command.uuid
+                }
+                commandReceiver.receiveCommand(command: command)
                 return
             case CommandFetchState.fetching:
-                logDebug("Command fetch server hasn't responded yet, waiting 1 second more...")
-                Thread.sleep(forTimeInterval: 1)
+                let duration = Date() - startTime
+                if duration < maxWaitTime {
+                    logDebug("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Waiting \(pollingInterval)s more...")
+                } else {
+                    fetchTask.cancel()
+                    logInfo("Command fetch: Server hasn't responded in \(duration)s (max \(maxWaitTime)). Trying again...")
+                    fetchTask = newStartedFetchTask()
+                }
                 break
             case CommandFetchState.failed:
-                logInfo("Command fetch request failed. Trying again...")
-                Thread.sleep(forTimeInterval: 1)
-                fetchTask.start()
+                logInfo("Command fetch: Request failed. Trying again...")
+                fetchTask = newStartedFetchTask()
                 break
             }
         }
+    }
+}
+
+extension Date {
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
     }
 }
 
@@ -60,16 +87,21 @@ class CommandFetchTask {
     var url: URL
     var state = CommandFetchState.failed
     var command: MazeRunnerCommand?
+    var task: URLSessionTask?
 
-    init(url: URL) {
-        self.url = url
+    init(url: URL, afterCommandID: String) {
+        self.url = URL(string: "\(url.absoluteString)?after=\(afterCommandID)")!
+    }
+
+    func cancel() {
+        task?.cancel()
     }
 
     func start() {
         logInfo("Fetching next command from \(url)")
         state = CommandFetchState.fetching
         let request = URLRequest(url: url)
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
                 let decoder = JSONDecoder()
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -88,6 +120,6 @@ class CommandFetchTask {
                 logError("Failed to fetch command: HTTP Request to \(String(describing: self.url)) failed: \(error)")
             }
         }
-        task.resume()
+        task?.resume()
     }
 }
