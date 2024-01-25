@@ -9,4 +9,4 @@
 #pragma once
 
 #define TELEMETRY_SDK_NAME "bugsnag.performance.cocoa"
-#define TELEMETRY_SDK_VERSION "1.3.0"
+#define TELEMETRY_SDK_VERSION "1.3.1"
