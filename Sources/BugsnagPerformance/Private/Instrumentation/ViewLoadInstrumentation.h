@@ -75,9 +75,9 @@ private:
     std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::atomic<bool> isEarlySpanPhase_{true};
-    std::mutex earlySpansMutex_;
+    std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
-    std::mutex vcInitMutex_;
+    std::recursive_mutex vcInitMutex_;
 };
 }
 
