@@ -76,7 +76,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         SEL selector = @selector(initWithCoder:);
         IMP initWithCoder __block = nullptr;
         initWithCoder = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSCoder *coder) {
-            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            std::lock_guard<std::recursive_mutex> guard(vcInitMutex_);
             initInstrumentation(self);
             return reinterpret_cast<id (*)(id, SEL, NSCoder *)>(initWithCoder)(self, selector, coder);
         });
@@ -84,7 +84,7 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         selector = @selector(initWithNibName:bundle:);
         IMP initWithNibNameBundle __block = nullptr;
         initWithNibNameBundle = ObjCSwizzle::replaceInstanceMethodOverride([UIViewController class], selector, ^(id self, NSString *name, NSBundle *bundle) {
-            std::lock_guard<std::mutex> guard(vcInitMutex_);
+            std::lock_guard<std::recursive_mutex> guard(vcInitMutex_);
             initInstrumentation(self);
             return reinterpret_cast<id (*)(id, SEL, NSString *, NSBundle *)>(initWithNibNameBundle)(self, selector, name, bundle);
         });
@@ -184,12 +184,12 @@ void ViewLoadInstrumentation::endSubviewsLayoutSpan(UIViewController *viewContro
 }
 
 void ViewLoadInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcept {
-    std::lock_guard<std::mutex> guard(earlySpansMutex_);
+    std::lock_guard<std::recursive_mutex> guard(earlySpansMutex_);
     [earlySpans_ addObject:span];
 }
 
 void ViewLoadInstrumentation::endEarlySpanPhase() noexcept {
-    std::lock_guard<std::mutex> guard(earlySpansMutex_);
+    std::lock_guard<std::recursive_mutex> guard(earlySpansMutex_);
     if (!isEnabled_) {
         for (BugsnagPerformanceSpan *span: earlySpans_) {
             tracer_->cancelQueuedSpan(span);

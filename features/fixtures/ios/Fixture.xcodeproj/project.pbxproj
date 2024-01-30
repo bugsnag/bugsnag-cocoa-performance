@@ -24,6 +24,7 @@
 		01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC428E1AF9600D1F239 /* Scenario.swift */; };
 		01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FE4DC628E1D5A400D1F239 /* Fixture.swift */; };
 		0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */; };
+		09301DC12B63A65A000A7C12 /* ComplexViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */; };
 		09637A3C2B0607F300F4F776 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3B2B0607F300F4F776 /* Logging.swift */; };
 		09637A3F2B06082200F4F776 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3E2B06082200F4F776 /* Logging.m */; };
 		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
@@ -78,6 +79,7 @@
 		01FE4DC428E1AF9600D1F239 /* Scenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenario.swift; sourceTree = "<group>"; };
 		01FE4DC628E1D5A400D1F239 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
 		0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkCallbackScenario.swift; sourceTree = "<group>"; };
+		09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplexViewScenario.swift; sourceTree = "<group>"; };
 		09637A3B2B0607F300F4F776 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		09637A3D2B06082200F4F776 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		09637A3E2B06082200F4F776 /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
+				09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */,
 				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
 				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
 				CBC90C4129C466BD00280884 /* ForceUBSan.h */,
@@ -344,6 +347,7 @@
 				098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */,
+				09301DC12B63A65A000A7C12 /* ComplexViewScenario.swift in Sources */,
 				CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */,
 				967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */,
 				9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */,
