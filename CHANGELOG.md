@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 1.4.0 (2024-01-31)
+
+### Enhancements
+
+* swizzleViewLoadPreMain setting is now false by default. When this config value is true, all custom view controllers are swizzled at app start, which may delay app start if there are many of them.
+  [202](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/202)
+
+* Detect pre-loaded views and correct their durations. These can occur in container views, such as `UITabViewController` when the view is loaded in anticipation of the user opening the next tab. The resulting spans are now marked with a "pre-loaded" suffix and the timings adjusted to start from `viewWillAppear` only. 
+  [236](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/236)
+
+### Bug fixes
+
+* Use recursive mutexes in places that might be reentrantly accessed.
+  [242](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/242)
+
+* Fix for potential incorrect span list size due to race condition.
+  [238](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/238)
+
+* Ensure that swizzled method return values are always propagated correctly.
+  [202](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/202)
+
 ## 1.3.0 (2024-01-04)
 
 ### Enhancements

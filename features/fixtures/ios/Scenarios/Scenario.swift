@@ -36,6 +36,21 @@ class Scenario: NSObject {
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
         config.endpoint = fixtureConfig.tracesURL
+        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            self.ignoreInternalRequests(info: info)
+
+            return info
+        }
+    }
+    
+    func ignoreInternalRequests(info: BugsnagPerformanceNetworkRequestInfo) {
+        if (info.url == nil) {
+            return
+        }
+        let urlString = info.url!.absoluteString
+        if (urlString.hasSuffix("/metrics") || urlString.contains("/command")) {
+            info.url = nil
+        }
     }
     
     func clearPersistentData() {
@@ -57,14 +72,17 @@ class Scenario: NSObject {
     }
     
     func isMazeRunnerAdministrationURL(url: URL) -> Bool {
-        switch url {
-        case fixtureConfig.tracesURL, fixtureConfig.commandURL, fixtureConfig.metricsURL:
+        if url.absoluteString.hasPrefix(fixtureConfig.tracesURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.commandURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.metricsURL.absoluteString) {
             return true
-        case fixtureConfig.reflectURL:
-            return false // reflectURL is fair game!
-        default:
-            return false
         }
+
+        if url.absoluteString.hasPrefix(fixtureConfig.reflectURL.absoluteString) {
+            return false // reflectURL is fair game!
+        }
+
+        return false
     }
 
     func reportMeasurements() {

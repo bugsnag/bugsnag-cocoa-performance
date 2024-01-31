@@ -63,6 +63,7 @@ public:
     }
 
     NSUInteger count() noexcept {
+        std::lock_guard<std::mutex> guard(mutex_);
         return spans_.count;
     }
 

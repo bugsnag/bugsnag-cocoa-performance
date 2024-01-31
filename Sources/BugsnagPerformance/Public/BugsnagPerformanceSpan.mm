@@ -58,6 +58,26 @@ using namespace bugsnag;
     return _span->parentId();
 }
 
+- (NSString *)name {
+    return _span->name();
+}
+
+- (NSDate *)startTime {
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->startTime()];
+}
+
+- (NSDate *)endTime {
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->endTime()];
+}
+
+- (void)updateStartTime:(NSDate *)startTime {
+    _span->updateStartTime(dateToAbsoluteTime(startTime));
+}
+
+- (void)updateName:(NSString *)name {
+    _span->updateName(name);
+}
+
 - (BOOL)isValid {
     return !_span->isEnded();
 }

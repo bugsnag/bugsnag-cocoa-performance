@@ -248,6 +248,43 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
+  Scenario: AutoInstrumentPreLoadedViewLoadScenario
+    Given I run "AutoInstrumentPreLoadedViewLoadScenario"
+    And I wait for 18 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (pre-loaded)"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (pre-loaded)"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+
   Scenario: AutoInstrumentSwiftUIScenario no change
     Given I run "AutoInstrumentSwiftUIScenario"
     And I wait for 3 spans
@@ -462,21 +499,60 @@ Feature: Automatic instrumentation spans
 
   Scenario: Automatically start a network span that is a file:// scheme
     Given I run "AutoInstrumentFileURLRequestScenario"
-    And I wait for 2 seconds
-    And I wait for 1 span
-    # We should only see the request to http://bs-local.com:9339/command, not the file:// request
-    Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "parentSpanId" exists
-    * a span field "parentSpanId" is greater than 0
-    * a span field "parentSpanId" does not exist
-    * a span field "name" equals "[HTTP/GET]"
-    * a span string attribute "http.url" matches the regex "http://.*:9339/command"
-    * a span string attribute "http.method" equals "GET"
-    * a span integer attribute "http.status_code" is greater than 0
-    * a span integer attribute "http.response_content_length" is greater than 0
+    Then I should receive no traces
 
   Scenario: Don't send an auto network span that failed to send
     Given I run "AutoInstrumentNetworkBadAddressScenario"
     # Only the initial command request should be captured.
     Then I wait for 1 span
+
+  Scenario: ComplexViewScenario
+    Given I run "ComplexViewScenario"
+    And I wait for 27 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:21"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ComplexViewScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ComplexViewScenario_TableViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ComplexViewScenario_TableViewController"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.phase" equals "loadView"
+    * a span string attribute "bugsnag.phase" equals "viewDidLoad"
+    * a span string attribute "bugsnag.phase" equals "viewWillAppear"
+    * a span string attribute "bugsnag.phase" equals "viewDidAppear"
+    * a span string attribute "bugsnag.phase" equals "viewWillLayoutSubviews"
+    * a span string attribute "bugsnag.phase" equals "viewDidLayoutSubviews"
+    * a span string attribute "bugsnag.phase" equals "View appearing"
+    * a span string attribute "bugsnag.phase" equals "Subview layout"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.span.category" equals "view_load_phase"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
