@@ -83,12 +83,7 @@ static NSDictionary *accessTechnologyMappingDictionary() {
 static NSString *getConnectionSubtype(NSString *networkType) {
     if ([networkType isEqual:connectionTypeCell]) {
 #if TARGET_OS_IOS
-        NSString *accessTechnology;
-        if (@available(iOS 12.0, *)) {
-            accessTechnology = [[CTTelephonyNetworkInfo new].serviceCurrentRadioAccessTechnology objectForKey:networkSubtypeKey];
-        } else {
-            accessTechnology = [CTTelephonyNetworkInfo new].currentRadioAccessTechnology;
-        }
+        NSString *accessTechnology = [[CTTelephonyNetworkInfo new].serviceCurrentRadioAccessTechnology objectForKey:networkSubtypeKey];
         if (accessTechnology) {
             return accessTechnologyMappingDictionary()[accessTechnology];
         }
@@ -145,6 +140,15 @@ SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerfo
     return @{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
+        @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
+    };
+}
+
+NSDictionary *
+SpanAttributesProvider::preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load",
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (pre-loaded)", className],
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
     };
 }

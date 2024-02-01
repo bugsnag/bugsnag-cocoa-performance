@@ -51,6 +51,9 @@ public:
                                               BugsnagPerformanceViewType viewType,
                                               BugsnagPerformanceSpanOptions *options) noexcept;
 
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className, NSString *phase,
+                                                   BugsnagPerformanceSpan *parentContext) noexcept;
+
     void startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *options) noexcept;
 
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
@@ -98,6 +101,7 @@ private:
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
     bool sendPValueRequestTask() noexcept;
+    bool sweepTracerTask() noexcept;
 
     // Event reactions
     void onBatchFull() noexcept;
@@ -106,6 +110,7 @@ private:
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
+    void onAppEnteredBackground() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

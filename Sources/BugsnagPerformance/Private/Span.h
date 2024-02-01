@@ -72,6 +72,10 @@ public:
         return isEnded_;
     }
 
+    void abort() noexcept {
+        isEnded_ = true;
+    }
+
     void end(CFAbsoluteTime time) noexcept {
         bool expected = false;
         if (!isEnded_.compare_exchange_strong(expected, true)) {
@@ -98,6 +102,14 @@ public:
     TraceId traceId() {return data_->traceId;}
     SpanId spanId() {return data_->spanId;}
     SpanId parentId() {return data_->parentId;}
+    NSString *name() {return data_->name;}
+    CFAbsoluteTime startTime() {return data_->startTime;}
+    CFAbsoluteTime endTime() {return data_->endTime;}
+    void updateName(NSString *name) {data_->name = name;}
+    void updateStartTime(CFAbsoluteTime time) noexcept {
+        data_->startTime = time;
+        startClock_ = currentMonotonicClockNsecIfUnset(time);
+    }
 
 private:
     std::shared_ptr<SpanData> data_;

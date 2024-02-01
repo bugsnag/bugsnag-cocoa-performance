@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * The early confguration happens duing the library early init phase (before main is called), and thus cannot be done
  * using a configuration object passed in by the user (because control hasn't been passed to user code yet).
- * Instead, we get the early configuration from the app's Info.plist file.
+ * Instead, we get the early configuration from the app's Info.plist file and environment variables.
  */
 @interface BSGEarlyConfiguration : NSObject
 
@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, readonly) BOOL enableSwizzling;
 @property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
+@property(nonatomic, readwrite) BOOL appWasLaunchedPreWarmed;
 
 @end
 

@@ -30,6 +30,10 @@ using namespace bugsnag;
 // We want direct ivar access to avoid accessors copying unique_ptrs
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 
+- (void)abort {
+    _span->abort();
+}
+
 - (void)end {
     _span->end(CFABSOLUTETIME_INVALID);
 }
@@ -52,6 +56,26 @@ using namespace bugsnag;
 
 - (SpanId)parentId {
     return _span->parentId();
+}
+
+- (NSString *)name {
+    return _span->name();
+}
+
+- (NSDate *)startTime {
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->startTime()];
+}
+
+- (NSDate *)endTime {
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->endTime()];
+}
+
+- (void)updateStartTime:(NSDate *)startTime {
+    _span->updateStartTime(dateToAbsoluteTime(startTime));
+}
+
+- (void)updateName:(NSString *)name {
+    _span->updateName(name);
 }
 
 - (BOOL)isValid {

@@ -50,6 +50,11 @@ OBJC_EXPORT
                               endTime:(NSDate *)endTime
   NS_SWIFT_NAME(endViewLoadSpan(controller:endTime:));
 
++ (BugsnagPerformanceSpan *)startViewLoadPhaseSpanWithName:(NSString *)name
+                                                     phase:(NSString *)phase
+                                             parentContext:(BugsnagPerformanceSpan *)parentContext
+  NS_SWIFT_NAME(startViewLoadPhaseSpan(name:phase:parentContext:));
+
 @end
 
 @interface BugsnagPerformance (/* Manual network spans */)

@@ -1,31 +1,51 @@
 # frozen_string_literal: true
 
+def skip_above(os, version)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version > version
+end
+
+def skip_below(os, version)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version < version
+end
+
+def skip_between(os, version_lo, version_hi)
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == os and Maze.config.os_version >= version_lo and Maze.config.os_version <= version_hi
+end
+
+Before('@skip_below_ios_15') do |_scenario|
+  skip_below('ios', 15.00)
+end
+
+Before('@skip_ios_15_and_above') do |_scenario|
+  skip_above('ios', 14.99)
+end
+
+Then('I discard every {request_type}') do |request_type|
+  until Maze::Server.list_for(request_type).current.nil?
+    Maze::Server.list_for(request_type).next
+  end
+end
+
 When('I run {string}') do |scenario_name|
   Maze::Server.commands.add({ action: "run_scenario", args: [scenario_name] })
-  Maze.driver.click_element :execute_command
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I invoke {string}') do |method_name|
   Maze::Server.commands.add({ action: "invoke_method", args: [method_name] })
-  Maze.driver.click_element :execute_command
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I invoke {string} with parameter {string}') do |method_name, arg1|
   # Note: The method will usually be of the form "xyzWithParam:"
   Maze::Server.commands.add({ action: "invoke_method", args: [method_name, arg1] })
-  Maze.driver.click_element :execute_command
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 # Note:

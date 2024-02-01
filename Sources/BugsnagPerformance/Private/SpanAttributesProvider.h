@@ -18,6 +18,7 @@ public:
     NSDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
+    NSDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
 };
 }

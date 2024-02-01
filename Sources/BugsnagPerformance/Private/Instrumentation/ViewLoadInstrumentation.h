@@ -13,6 +13,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface ViewLoadInstrumentationState : NSObject
+@property (nonatomic) BOOL loadViewPhaseSpanCreated;
+@property (nonatomic) BOOL viewDidLoadPhaseSpanCreated;
+@property (nonatomic) BOOL viewWillAppearPhaseSpanCreated;
+@property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
+@property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
+@property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
+@property (nonatomic) BOOL isMarkedAsPreloaded;
+@property (nonatomic, nullable, strong) NSDate *viewDidLoadEndTime;
+@end
+
 namespace bugsnag {
 class ViewLoadInstrumentation: public PhasedStartup {
 public:
@@ -55,6 +66,7 @@ private:
     void endEarlySpanPhase() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;
     bool isClassObserved(Class cls) noexcept;
+    void adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *instrumentationState, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept;
 
     bool isEnabled_{true};
     bool swizzleViewLoadPreMain_{true};
@@ -63,9 +75,9 @@ private:
     std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::atomic<bool> isEarlySpanPhase_{true};
-    std::mutex earlySpansMutex_;
+    std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
-    std::mutex vcInitMutex_;
+    std::recursive_mutex vcInitMutex_;
 };
 }
 

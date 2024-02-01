@@ -28,18 +28,12 @@ extension MyNetworkDelegate : URLSessionDataDelegate {
 @objcMembers
 class ManualNetworkSpanScenario: Scenario {
 
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Fixture.mazeRunnerURL)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
-
     func query(string: String) {
-        let url = URL(string: string, relativeTo: baseURL)!
+        let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
         MyNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
     }
 
     override func run() {
-        query(string: "/reflect/?status=200")
+        query(string: "?status=200")
     }
 }

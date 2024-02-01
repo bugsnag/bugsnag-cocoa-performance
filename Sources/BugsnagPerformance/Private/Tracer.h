@@ -16,6 +16,7 @@
 #import "PhasedStartup.h"
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
+#import "WeakSpansList.h"
 
 #import <memory>
 
@@ -33,7 +34,7 @@ public:
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
-    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
     void start() noexcept;
@@ -51,27 +52,50 @@ public:
                                               SpanOptions options) noexcept;
 
     BugsnagPerformanceSpan *startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept;
-    
-    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *name, SpanOptions options) noexcept;
+
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
+                                                   NSString *phase,
+                                                   BugsnagPerformanceSpan *parentContext) noexcept;
 
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 
+    void onPrewarmPhaseEnded(void) noexcept;
+    
+    void abortAllOpenSpans() noexcept;
+
+    // Sweep must be called periodically to avoid a buildup of dead pointers.
+    void sweep() noexcept;
+
 private:
+    Tracer() = delete;
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
 
-    std::atomic<bool> isEarlySpansPhase_{true};
-    std::mutex earlySpansMutex_;
+    std::atomic<bool> isCapturingEarlyNetworkSpans_{true};
+    std::mutex earlyNetworkSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *earlyNetworkSpans_;
 
+    std::atomic<bool> willDiscardPrewarmSpans_{false};
+    std::mutex prewarmSpansMutex_;
+    NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
+
+    // Sloppy list of "open" spans. Some spans may have already been closed,
+    // but span abort/end are idempotent so it doesn't matter.
+    std::shared_ptr<WeakSpansList> potentiallyOpenSpans_;
+
     std::shared_ptr<Batch> batch_;
-    void (^onSpanStarted_)(){nil};
-    std::function<void(NSString *)> onViewLoadSpanStarted_{};
-    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
+    void (^onSpanStarted_)(){ ^(){} };
+    std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_ {
+        ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+            return info;
+        }
+    };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void tryAddSpanToBatch(std::shared_ptr<SpanData> spanData);
+    void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
     void markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept;
-    void endEarlySpansPhase() noexcept;
+    void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
+    void endEarlyNetworkSpansPhase() noexcept;
 };
 }

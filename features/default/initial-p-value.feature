@@ -7,6 +7,7 @@ Feature: Initial P values
     * the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
     * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the sampling request payload field "resourceSpans" is an array with 0 elements
+    Then I set the sampling probability for the next traces to "0"
     Then I invoke "step2"
     And I should receive no traces
 

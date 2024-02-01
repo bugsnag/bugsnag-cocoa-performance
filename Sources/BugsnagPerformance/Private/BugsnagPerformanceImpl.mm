@@ -21,13 +21,6 @@ static NSString *getPersistenceDir() {
     return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
 }
 
-void (^generateOnSpanStarted(BugsnagPerformanceImpl *impl))(void) {
-    __block auto blockImpl = impl;
-  return ^{
-      blockImpl->onSpanStarted();
-  };
-}
-
 BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
                                                AppStateTracker *appStateTracker) noexcept
 : persistence_(std::make_shared<Persistence>(getPersistenceDir()))
@@ -36,7 +29,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
 , sampler_(std::make_shared<Sampler>())
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, generateOnSpanStarted(this)))
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -153,6 +146,9 @@ void BugsnagPerformanceImpl::start() noexcept {
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
     };
+    appStateTracker_.onTransitionToBackground = ^{
+        blockThis->onAppEnteredBackground();
+    };
 
     tracer_->start();
 
@@ -181,6 +177,7 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     return @[
         ^bool() { return blockThis->sendCurrentBatchTask(); },
         ^bool() { return blockThis->sendRetriesTask(); },
+        ^bool() { return blockThis->sweepTracerTask(); },
     ];
 }
 
@@ -216,6 +213,12 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
     }
 
     // Retries never count as work, otherwise we'd loop endlessly on a network outage.
+    return false;
+}
+
+bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
+    tracer_->sweep();
+    // Never auto-repeat this task, even if work was done; it can wait.
     return false;
 }
 
@@ -263,6 +266,10 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     batch_->allowDrain();
     wakeWorker();
+}
+
+void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
+    tracer_->abortAllOpenSpans();
 }
 
 #pragma mark Utility
@@ -375,6 +382,13 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
+                                                                       BugsnagPerformanceSpan *parentContext) noexcept {
+    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
+    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    return span;
 }
 
 void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {

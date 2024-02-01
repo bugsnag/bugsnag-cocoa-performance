@@ -11,12 +11,20 @@ import Foundation
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
 class Scenario: NSObject {
+    let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
     
+    private override init() {
+        fatalError("do not use the default init of Scenario")
+    }
+    
+    required init(fixtureConfig: FixtureConfig) {
+        self.fixtureConfig = fixtureConfig
+    }
+
     func configure() {
-        NSLog("Scenario.configure()")
-        
+        logDebug("Scenario.configure()")
         // Make sure the initial P value has time to be fully received before sending spans
         config.internal.initialRecurringWorkDelay = 0.5
         config.internal.clearPersistenceOnStart = true
@@ -25,36 +33,56 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.endpoint = URL(string:"\(Fixture.mazeRunnerURL)/traces")!
-        // Discard any spans for internally generated requests to avoid confusing scenarios
+        config.endpoint = fixtureConfig.tracesURL
         config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
-            let url = info.url!
+            self.ignoreInternalRequests(info: info)
 
-            if (url.absoluteString.contains("/command") || url.absoluteString.contains("/metrics")) {
-                info.url = nil
-            }
             return info
         }
     }
     
+    func ignoreInternalRequests(info: BugsnagPerformanceNetworkRequestInfo) {
+        if (info.url == nil) {
+            return
+        }
+        let urlString = info.url!.absoluteString
+        if (urlString.hasSuffix("/metrics") || urlString.contains("/command")) {
+            info.url = nil
+        }
+    }
+    
     func clearPersistentData() {
-        NSLog("Scenario.clearPersistentData()")
+        logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
     }
     
     func startBugsnag() {
-        NSLog("Scenario.startBugsnag()")
+        logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
             BugsnagPerformance.start(configuration: config)
         }, measurement: "start")
     }
     
     func run() {
-        NSLog("Scenario.run() has not been overridden!")
+        logError("Scenario.run() has not been overridden!")
         fatalError("To be implemented by subclass")
     }
     
+    func isMazeRunnerAdministrationURL(url: URL) -> Bool {
+        if url.absoluteString.hasPrefix(fixtureConfig.tracesURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.commandURL.absoluteString) ||
+            url.absoluteString.hasPrefix(fixtureConfig.metricsURL.absoluteString) {
+            return true
+        }
+
+        if url.absoluteString.hasPrefix(fixtureConfig.reflectURL.absoluteString) {
+            return false // reflectURL is fair game!
+        }
+
+        return false
+    }
+
     func reportMeasurements() {
         pendingMeasurements.forEach { measurement in
             report(metrics: measurement.metrics, name: measurement.name)
@@ -63,7 +91,7 @@ class Scenario: NSObject {
     }
 
     func waitForCurrentBatch() {
-        NSLog("Scenario.waitForCurrentBatch()")
+        logDebug("Scenario.waitForCurrentBatch()")
         // Wait long enough to allow the current batch to be packaged and sent
         Thread.sleep(forTimeInterval: 1.0)
     }
@@ -80,10 +108,7 @@ class Scenario: NSObject {
     }
     
     func report(metrics: [String: Any], name: String) {
-        guard let url = URL(string: "\(Fixture.mazeRunnerURL)/metrics") else {
-            return
-        }
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: fixtureConfig.metricsURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         

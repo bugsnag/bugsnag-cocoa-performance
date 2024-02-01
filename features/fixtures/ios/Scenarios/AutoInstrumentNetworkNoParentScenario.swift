@@ -10,19 +10,24 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkNoParentScenario: Scenario {
 
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Fixture.mazeRunnerURL)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
-
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = true
+        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            super.ignoreInternalRequests(info: info)
+            let testUrl = info.url
+            if (testUrl == nil) {
+                return info
+            }
+            if (self.isMazeRunnerAdministrationURL(url: testUrl!)) {
+                info.url = nil
+            }
+            return info
+        }
     }
 
     func query(string: String) {
-        let url = URL(string: string, relativeTo: baseURL)!
+        let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
         URLSession.shared.dataTask(with: url).resume()
     }
 
@@ -31,6 +36,6 @@ class AutoInstrumentNetworkNoParentScenario: Scenario {
         waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "parentSpan")
         span.end();
-        query(string: "/reflect/?status=200")
+        query(string: "?status=200")
     }
 }

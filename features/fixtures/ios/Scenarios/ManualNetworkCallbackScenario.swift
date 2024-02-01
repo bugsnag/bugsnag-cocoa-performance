@@ -12,21 +12,16 @@ class ManualNetworkCallbackScenario: Scenario {
 
     public var urlSession: URLSession?
 
-    private override init() {
-        super.init()
+    required init(fixtureConfig: FixtureConfig) {
+        super.init(fixtureConfig: fixtureConfig)
         self.urlSession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
     }
-
-    lazy var baseURL: URL = {
-        var components = URLComponents(string: Fixture.mazeRunnerURL)!
-        components.port = 9340 // `/reflect` listens on a different port :-((
-        return components.url!
-    }()
 
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = false
         config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            super.ignoreInternalRequests(info: info)
 
             let testUrl = info.url
             if (testUrl == nil) {
