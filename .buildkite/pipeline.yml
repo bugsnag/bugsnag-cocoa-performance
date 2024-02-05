@@ -35,20 +35,18 @@ steps:
         commands:
           - ./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling
           - bundle install
-          - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_disabled.txt
         artifact_paths:
-          - features/fixtures/ios/output/ipa_url_swizzling_disabled.txt
+          - features/fixtures/ios/output/bs_url_swizzling_disabled.txt
 
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
         commands:
           - ./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain
           - bundle install
-          - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_premain.txt
         artifact_paths:
-          - features/fixtures/ios/output/ipa_url_swizzling_premain.txt
+          - features/fixtures/ios/output/bs_url_swizzling_premain.txt
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
@@ -98,7 +96,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--order=random"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -128,7 +125,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--order=random"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -158,7 +154,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--order=random"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -188,17 +183,132 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--order=random"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
 
+  - group: ":bitbar: Swizzling disabled E2E Tests"
+    steps:
+      - label: ":bitbar: iOS 16 E2E Tests swizzling disabled"
+        depends_on:
+          - ios_fixture_swizzling_disabled
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/bb_ipa_url_swizzling_disabled.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/bb_ipa_url_swizzling_disabled.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_16"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/swizzling_disabled"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: ":bitbar: iOS 14 E2E Tests swizzling disabled"
+        depends_on:
+          - ios_fixture_swizzling_disabled
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/bb_ipa_url_swizzling_disabled.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/bb_ipa_url_swizzling_disabled.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_14"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/swizzling_disabled"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+  - group: ":bitbar: Swizzling premain E2E Tests"
+    steps:
+      - label: ":bitbar: iOS 16 E2E Tests swizzling premain"
+        depends_on:
+          - ios_fixture_swizzling_premain
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/bb_ipa_url_swizzling_premain.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/bb_ipa_url_swizzling_premain.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_16"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/default"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: ":bitbar: iOS 14 E2E Tests swizzling premain"
+        depends_on:
+          - ios_fixture_swizzling_premain
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.5.0:
+            download: "features/fixtures/ios/output/bb_ipa_url_swizzling_premain.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.8.0:
+            pull: cocoa-maze-runner
+            run: cocoa-maze-runner
+            command:
+              - "--app=@build/bb_ipa_url_swizzling_premain.txt"
+              - "--appium-version=1.21.0"
+              - "--device=IOS_14"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/default"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
   #
   # BrowserStack
-  # TODO - To be moved to BrowserStack
+  # TODO - To be moved to BitBar once they provide iOS 17.
   #
-  - label: ":bitbar: iOS 17 E2E Tests"
+  - label: ":browserstack: iOS 17 E2E Tests"
     depends_on:
       - ios_fixture
     timeout_in_minutes: 30
@@ -220,120 +330,7 @@ steps:
           - "--device=IOS_17"
           - "--fail-fast"
           - "--farm=bs"
-          - "--order=random"
           - "features/default"
     concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
-
-  - group: ":iphone: Swizzling disabled E2E Tests"
-    steps:
-      - label: "iOS 16 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
-            command:
-              - "--app=@build/ipa_url_swizzling_disabled.txt"
-              - "--appium-version=1.21.0"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/swizzling_disabled"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-
-      - label: "iOS 14 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
-            command:
-              - "--app=@build/ipa_url_swizzling_disabled.txt"
-              - "--appium-version=1.21.0"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/swizzling_disabled"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-
-  - group: ":iphone: Swizzling premain E2E Tests"
-    steps:
-      - label: "iOS 16 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
-            command:
-              - "--app=@build/ipa_url_swizzling_premain.txt"
-              - "--appium-version=1.21.0"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/default"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
-
-      - label: "iOS 14 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download: "features/fixtures/ios/output/ipa_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: cocoa-maze-runner
-            run: cocoa-maze-runner
-            command:
-              - "--app=@build/ipa_url_swizzling_premain.txt"
-              - "--appium-version=1.21.0"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--order=random"
-              - "features/default"
-        concurrency: 5
-        concurrency_group: browserstack-app
-        concurrency_method: eager
