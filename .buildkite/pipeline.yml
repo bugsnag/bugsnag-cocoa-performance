@@ -10,7 +10,9 @@ steps:
     steps:
       - label: "Carthage"
         commands:
+          - gem environment
           - bundle install
+          - gem environment
           - ./features/fixtures/carthage/build.sh
 
       - label: "CocoaPods"
@@ -21,7 +23,7 @@ steps:
       - label: "Example"
         env:
           XCODE_VERSION: 15.0.1
-        commands: 
+        commands:
           - bundle install
           - ./Example/build.sh
 
