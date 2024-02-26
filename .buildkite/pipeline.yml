@@ -9,15 +9,21 @@ steps:
   - group: ":hammer: Builds"
     steps:
       - label: "Carthage"
-        command: ./features/fixtures/carthage/build.sh
+        commands:
+          - bundle install
+          - ./features/fixtures/carthage/build.sh
 
       - label: "CocoaPods"
-        command: pod lib lint BugsnagPerformance.podspec.json
+        commands:
+          - bundle install
+          - pod lib lint BugsnagPerformance.podspec.json
 
       - label: "Example"
         env:
           XCODE_VERSION: 15.0.1
-        command: ./Example/build.sh
+        commands:
+          - bundle install
+          - ./Example/build.sh
 
       - label: "Fixture"
         key: ios_fixture
