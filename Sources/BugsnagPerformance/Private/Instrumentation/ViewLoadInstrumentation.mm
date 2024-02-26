@@ -55,15 +55,15 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
         classToIsObserved_[[UIViewController class]] = true;
         __block auto classToIsObserved = &classToIsObserved_;
         __block bool *isEnabled = &isEnabled_;
-        __block auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
+        __block auto appPath = NSBundle.mainBundle.bundlePath;
         auto initInstrumentation = ^(id self) {
             auto viewControllerClass = [self class];
-            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath.UTF8String;
-            if (strstr(viewControllerBundlePath, appPath)
+            auto viewControllerBundlePath = [NSBundle bundleForClass: viewControllerClass].bundlePath;
+            if ([viewControllerBundlePath containsString:appPath]
 #if TARGET_OS_SIMULATOR
                 // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
                 // doesn't embed them when building for the Simulator.
-                || strstr(viewControllerBundlePath, "/DerivedData/")
+                || [viewControllerBundlePath containsString:@"/DerivedData/"]
 #endif
                 ) {
                 if (*isEnabled && !isClassObserved(viewControllerClass)) {
