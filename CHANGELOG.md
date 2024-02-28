@@ -1,9 +1,12 @@
 Changelog
 =========
 
-## TBD
+## 1.4.1 (2024-02-28)
 
 ### Bug fixes
+
+* Use ObjC strings instead of C strings to avoid ASAN lifetime race condition observed in React Native apps
+  [247](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/247)
 
 * Fixed the issue causing PrivacyInfo collisions when using Cocoapods
   [246](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/246)
