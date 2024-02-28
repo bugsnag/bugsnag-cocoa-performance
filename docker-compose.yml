@@ -1,24 +1,43 @@
 version: '3.6'
+
+x-common-environment: &common-environment
+  DEBUG:
+  BUILDKITE:
+  BUILDKITE_BRANCH:
+  BUILDKITE_BUILD_CREATOR:
+  BUILDKITE_BUILD_NUMBER:
+  BUILDKITE_BUILD_URL:
+  BUILDKITE_JOB_ID:
+  BUILDKITE_LABEL:
+  BUILDKITE_MESSAGE:
+  BUILDKITE_PIPELINE_NAME:
+  BUILDKITE_PIPELINE_SLUG:
+  BUILDKITE_REPO:
+  BUILDKITE_RETRY_COUNT:
+  BUILDKITE_STEP_KEY:
+  MAZE_BUGSNAG_API_KEY:
+  MAZE_REPEATER_API_KEY:
+  MAZE_ASPECTO_REPEATER_API_KEY:
+
 services:
-  cocoa-maze-runner:
+  maze-runner-bb:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
-      DEBUG:
-      BUILDKITE:
-      BUILDKITE_BRANCH:
-      BUILDKITE_BUILD_CREATOR:
-      BUILDKITE_BUILD_NUMBER:
-      BUILDKITE_BUILD_URL:
-      BUILDKITE_JOB_ID:
-      BUILDKITE_LABEL:
-      BUILDKITE_MESSAGE:
-      BUILDKITE_PIPELINE_NAME:
-      BUILDKITE_REPO:
-      BUILDKITE_RETRY_COUNT:
-      BUILDKITE_STEP_KEY:
-      MAZE_BUGSNAG_API_KEY:
-      MAZE_ASPECTO_REPEATER_API_KEY:
-      MAZE_REPEATER_API_KEY:
+      <<: *common-environment
+      BITBAR_USERNAME:
+      BITBAR_ACCESS_KEY:
+    ports:
+      - "9000-9499:9339"
+    volumes:
+      - ./features/fixtures/ios/output:/app/build
+      - ./features/:/app/features/
+      - ./maze_output:/app/maze_output
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  maze-runner-bs:
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    environment:
+      <<: *common-environment
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
