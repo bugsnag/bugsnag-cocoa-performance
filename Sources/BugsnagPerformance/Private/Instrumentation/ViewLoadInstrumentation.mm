@@ -6,6 +6,7 @@
 //
 
 #import "ViewLoadInstrumentation.h"
+#import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
 #import "../BugsnagPerformanceSpan+Private.h"
 #import "../Span.h"
@@ -118,10 +119,10 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     }
 
     auto viewType = BugsnagPerformanceViewTypeUIKit;
-    auto className = NSStringFromClass([viewController class]);
+    auto name = nameForViewController(viewController);
     SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    auto span = tracer_->startViewLoadSpan(viewType, name, options);
+    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
@@ -296,15 +297,23 @@ ViewLoadInstrumentation::isClassObserved(Class cls) noexcept {
     return (*result).second;
 }
 
+NSString *
+ViewLoadInstrumentation::nameForViewController(UIViewController *viewController) noexcept {
+    if ([viewController respondsToSelector:@selector(bugsnagPerformanceTrackedViewName)]) {
+        return [(id)viewController bugsnagPerformanceTrackedViewName];
+    }
+    return NSStringFromClass([viewController class]);
+}
+
 BugsnagPerformanceSpan *
 ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept {
     if (!canCreateSpans(viewController)) {
         return nullptr;
     }
-    auto className = NSStringFromClass([viewController class]);
+    auto name = nameForViewController(viewController);
     BugsnagPerformanceSpan *parentViewLoadSpan = objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
-    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentViewLoadSpan);
-    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    auto span = tracer_->startViewLoadPhaseSpan(name, phase, parentViewLoadSpan);
+    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
