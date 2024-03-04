@@ -29,7 +29,7 @@ class AutoInstrumentGenericViewLoadScenario: Scenario {
     }
 }
 
-@objc class AutoInstrumentGenericViewLoadScenario_ViewController<T: AutoInstrumentGenericViewLoadScenario_GenericsBaseProtocol>: UIViewController {
+class AutoInstrumentGenericViewLoadScenario_ViewController<T: AutoInstrumentGenericViewLoadScenario_GenericsBaseProtocol>: UIViewController {
     
     override func loadView() {
         let label = UILabel()
@@ -40,6 +40,6 @@ class AutoInstrumentGenericViewLoadScenario: Scenario {
     }
 }
 
-@objc class TestViewController: AutoInstrumentGenericViewLoadScenario_ViewController<AutoInstrumentGenericViewLoadScenario_GenericsClass> {
+class TestViewController: AutoInstrumentGenericViewLoadScenario_ViewController<AutoInstrumentGenericViewLoadScenario_GenericsClass> {
     
 }
