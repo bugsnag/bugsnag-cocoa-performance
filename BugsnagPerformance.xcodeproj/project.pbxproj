@@ -282,7 +282,7 @@
 		09B473092B2313570024CF11 /* WeakSpansListTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansListTests.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
-		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceTrackedViewController.swift; sourceTree = "<group>"; };
 		960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceTrackedViewContainer.h; sourceTree = "<group>"; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
@@ -655,7 +655,7 @@
 			children = (
 				72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */,
 				0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */,
-				8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */,
+				8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */,
 				96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */,
 				094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */,
 				094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */,
@@ -844,9 +844,9 @@
 			productReference = 094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */ = {
+		8A80DA862966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */;
+			buildConfigurationList = 8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-iOSTestsSwift" */;
 			buildPhases = (
 				8A80DA832966CE940035BDA9 /* Sources */,
 				8A80DA842966CE940035BDA9 /* Frameworks */,
@@ -858,9 +858,9 @@
 				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
 				96D4160729E6F6B900AEE435 /* PBXTargetDependency */,
 			);
-			name = "BugsnagPerformance-SwiftTests";
+			name = "BugsnagPerformance-iOSTestsSwift";
 			productName = BugsnagPerformanceTestsSwift;
-			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */;
+			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
@@ -961,7 +961,7 @@
 				B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */,
 				094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */,
 				0122C26429019CE1002D243C /* BugsnagPerformance-iOSTests */,
-				8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */,
+				8A80DA862966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift */,
 				96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 				094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests */,
 			);
@@ -1763,7 +1763,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */ = {
+		8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-iOSTestsSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A80DA8F2966CE940035BDA9 /* Debug */,

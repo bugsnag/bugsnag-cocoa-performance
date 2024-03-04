@@ -40,8 +40,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8A80DA862966CE940035BDA9"
-               BuildableName = "BugsnagPerformance-SwiftTests.xctest"
-               BlueprintName = "BugsnagPerformance-SwiftTests"
+               BuildableName = "BugsnagPerformance-iOSTestsSwift.xctest"
+               BlueprintName = "BugsnagPerformance-iOSTestsSwift"
                ReferencedContainer = "container:BugsnagPerformance.xcodeproj">
             </BuildableReference>
          </TestableReference>
