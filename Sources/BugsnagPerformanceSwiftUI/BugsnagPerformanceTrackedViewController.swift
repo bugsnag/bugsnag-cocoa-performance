@@ -18,17 +18,20 @@ public class BugsnagPerformanceTrackedViewController: UIViewController, BugsnagP
     public override func loadView() {
         let view = UIView()
         self.view = view
-        guard let trackedViewController else { return }
-        addChild(trackedViewController)
-        trackedViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(trackedViewController.view)
-        NSLayoutConstraint.activate([
-            trackedViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            trackedViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
-            trackedViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            trackedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        trackedViewController.didMove(toParent: self)
+        // Can't use guard let because this might be compiled on an older compiler
+        if trackedViewController != nil {
+            let trackedViewController = self.trackedViewController!
+            addChild(trackedViewController)
+            trackedViewController.view.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(trackedViewController.view)
+            NSLayoutConstraint.activate([
+                trackedViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                trackedViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
+                trackedViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                trackedViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            ])
+            trackedViewController.didMove(toParent: self)
+        }
     }
     
     public override var navigationItem: UINavigationItem {
