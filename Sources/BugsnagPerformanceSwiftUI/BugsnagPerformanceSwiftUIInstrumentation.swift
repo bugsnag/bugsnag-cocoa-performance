@@ -1,0 +1,1 @@
+../BugsnagPerformanceSwift/BugsnagPerformanceSwiftUIInstrumentation.swift

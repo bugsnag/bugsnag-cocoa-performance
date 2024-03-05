@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Add package BugsnagPerformanceSwift, and deprecate package BugsnagPerformanceSwiftUI.
+  [251](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/251)
+
 ## 1.4.1 (2024-02-28)
 
 ### Bug fixes

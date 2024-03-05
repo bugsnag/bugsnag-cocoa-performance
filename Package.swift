@@ -15,6 +15,9 @@ let package = Package(
         .library(
             name: "BugsnagPerformanceSwift",
             targets: ["BugsnagPerformanceSwift"]),
+        .library(
+            name: "BugsnagPerformanceSwiftUI",
+            targets: ["BugsnagPerformanceSwiftUI"]),
     ],
     targets: [
         .target(
@@ -33,6 +36,11 @@ let package = Package(
             name: "BugsnagPerformanceSwift",
             dependencies: ["BugsnagPerformance"],
             path: "Sources/BugsnagPerformanceSwift"
+        ),
+        .target(
+            name: "BugsnagPerformanceSwiftUI",
+            dependencies: ["BugsnagPerformance"],
+            path: "Sources/BugsnagPerformanceSwiftUI/"
         ),
         .testTarget(
             name: "BugsnagPerformanceTests",

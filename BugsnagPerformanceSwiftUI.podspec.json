@@ -1,7 +1,7 @@
 {
   "name": "BugsnagPerformanceSwiftUI",
   "version": "1.4.1",
-  "summary": "The Bugsnag performance SwiftUI monitoring framework for iOS.",
+  "summary": "DEPRECATED. Please use BugsnagPerformanceSwift instead!",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
   "license": {
     "type": "MIT",
@@ -18,7 +18,7 @@
     "ios": "13.0"
   },
   "requires_arc": true,
-  "source_files": "Sources/BugsnagPerformanceSwiftUI/**/*",
+  "source_files": "Sources/BugsnagPerformanceSwift/BugsnagPerformanceSwiftUIInstrumentation.swift",
   "frameworks": [
     "SwiftUI"
   ],
