@@ -7,7 +7,7 @@
 
 import SwiftUI
 import BugsnagPerformance
-import BugsnagPerformanceSwiftUI
+import BugsnagPerformanceSwift
 
 @objcMembers
 class AutoInstrumentSwiftUIScenario: Scenario {

@@ -32,7 +32,7 @@
 		09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A442B0B883B00F4F776 /* FixtureConfig.swift */; };
 		096EE5EF2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */; };
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
-		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */; };
+		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
@@ -126,7 +126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A414C82912CA18003152A4 /* Bugsnag in Frameworks */,
-				0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI in Frameworks */,
+				0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */,
 				01FE4DC028E1AEDF00D1F239 /* BugsnagPerformance in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,7 +263,7 @@
 			packageProductDependencies = (
 				01FE4DBF28E1AEDF00D1F239 /* BugsnagPerformance */,
 				01A414C72912CA18003152A4 /* Bugsnag */,
-				0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */,
+				0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */,
 			);
 			productName = Fixture;
 			productReference = 01FE4DA528E1AEBD00D1F239 /* Fixture.app */;
@@ -616,9 +616,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = BugsnagPerformance;
 		};
-		0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwiftUI */ = {
+		0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = BugsnagPerformanceSwiftUI;
+			productName = BugsnagPerformanceSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

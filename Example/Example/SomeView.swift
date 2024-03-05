@@ -6,7 +6,7 @@
 //
 
 import BugsnagPerformance
-import BugsnagPerformanceSwiftUI
+import BugsnagPerformanceSwift
 import SwiftUI
 
 @available(iOS 13.0.0, *)
