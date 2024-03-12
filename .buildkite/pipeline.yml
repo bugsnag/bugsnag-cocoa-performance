@@ -71,6 +71,8 @@ steps:
               - "logs/*"
         agents:
           queue: macos-12-arm
+        env:
+          XCODE_VERSION: "14"
 
   #
   # BitBar
