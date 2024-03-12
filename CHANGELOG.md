@@ -8,6 +8,11 @@ Changelog
 * Add package BugsnagPerformanceSwift, and deprecate package BugsnagPerformanceSwiftUI.
   [251](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/251)
 
+### Bug fixes
+
+* Guard against an edge case where an auto-captured URL request with a nil URL can crash the library if it's sent before Bugsnag is initialized.
+  [253](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/253)
+
 ## 1.4.1 (2024-02-28)
 
 ### Bug fixes
