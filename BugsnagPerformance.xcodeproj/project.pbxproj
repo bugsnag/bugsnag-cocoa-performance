@@ -49,20 +49,26 @@
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
 		0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0921F02C2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */; };
-		094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc */; };
-		094FA73C2B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */; };
-		094FA7432B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */; };
-		094FA7442B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */; };
-		094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0922F99A2B98919E00CE2914 /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
+		0922F99B2B98922900CE2914 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwift.docc in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwift.docc */; };
+		094FA73C2B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */; };
+		094FA7442B10EDE700112ED4 /* BugsnagPerformanceSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */; };
+		094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		094FA7522B10EEB600112ED4 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09509B742ADFE9A900A358EC /* TracerTests.mm */; };
 		096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
+		09856B9E2B9606A500620907 /* BugsnagPerformanceSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */; };
 		0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */; };
 		09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B473052B23087D0024CF11 /* WeakSpansList.h */; };
 		09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09B473092B2313570024CF11 /* WeakSpansListTests.mm */; };
+		09D807F52B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */; };
+		09D807F62B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
+		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
+		960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -151,6 +157,13 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		0922F99D2B98922900CE2914 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
 		094FA73D2B10EDE700112ED4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
@@ -217,7 +230,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */,
-				094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Embed Frameworks */,
+				094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,19 +281,24 @@
 		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
 		0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNetworkRequestInfo.h; sourceTree = "<group>"; };
 		0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNetworkRequestInfo.m; sourceTree = "<group>"; };
-		094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSwiftUI.h; sourceTree = "<group>"; };
-		094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
-		094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceSwiftUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSwift.h; sourceTree = "<group>"; };
+		094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwift.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwift.docc; sourceTree = "<group>"; };
+		094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUITests.swift; sourceTree = "<group>"; };
 		09509B742ADFE9A900A358EC /* TracerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracerTests.mm; sourceTree = "<group>"; };
 		096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUIInstrumentation.swift; sourceTree = "<group>"; };
 		0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansList.mm; sourceTree = "<group>"; };
 		09B473052B23087D0024CF11 /* WeakSpansList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeakSpansList.h; sourceTree = "<group>"; };
 		09B473092B2313570024CF11 /* WeakSpansListTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansListTests.mm; sourceTree = "<group>"; };
+		09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSwiftUI.h; sourceTree = "<group>"; };
+		09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
-		8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-SwiftTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceTrackedViewController.swift; sourceTree = "<group>"; };
+		960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceTrackedViewContainer.h; sourceTree = "<group>"; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -390,7 +408,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				094FA73C2B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Frameworks */,
+				094FA73C2B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09D807EE2B9756B000D01DF5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0922F99B2B98922900CE2914 /* BugsnagPerformance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,7 +444,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */,
-				094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.framework in Frameworks */,
+				094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -429,7 +455,7 @@
 			isa = PBXGroup;
 			children = (
 				0122C21429019770002D243C /* BugsnagPerformance */,
-				096CBC142B1752B000534F0C /* BugsnagPerformanceSwiftUI */,
+				096CBC142B1752B000534F0C /* BugsnagPerformanceSwift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -462,6 +488,7 @@
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
 				CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */,
 				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
+				960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */,
 			);
 			path = BugsnagPerformance;
 			sourceTree = "<group>";
@@ -619,27 +646,37 @@
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
 		};
-		094FA7332B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */ = {
+		094FA7332B10EDE600112ED4 /* BugsnagPerformanceSwift */ = {
 			isa = PBXGroup;
 			children = (
-				094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.h */,
-				094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc */,
+				094FA7342B10EDE600112ED4 /* BugsnagPerformanceSwift.h */,
+				094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwift.docc */,
 			);
-			path = BugsnagPerformanceSwiftUI;
+			path = BugsnagPerformanceSwift;
 			sourceTree = "<group>";
 		};
-		094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests */ = {
+		094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */ = {
 			isa = PBXGroup;
 			children = (
 				094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */,
 			);
-			path = BugsnagPerformanceSwiftUITests;
+			path = BugsnagPerformanceSwiftTests;
 			sourceTree = "<group>";
 		};
-		096CBC142B1752B000534F0C /* BugsnagPerformanceSwiftUI */ = {
+		096CBC142B1752B000534F0C /* BugsnagPerformanceSwift */ = {
 			isa = PBXGroup;
 			children = (
+				960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */,
 				096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */,
+			);
+			path = BugsnagPerformanceSwift;
+			sourceTree = "<group>";
+		};
+		09D807F22B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */,
+				09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */,
 			);
 			path = BugsnagPerformanceSwiftUI;
 			sourceTree = "<group>";
@@ -649,10 +686,11 @@
 			children = (
 				72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */,
 				0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */,
-				8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */,
+				8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */,
 				96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */,
-				094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */,
-				094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */,
+				094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */,
+				094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */,
+				09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -688,8 +726,9 @@
 				0122C21329019770002D243C /* Sources */,
 				0122C25B29019C05002D243C /* Tests */,
 				96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
-				094FA7332B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */,
-				094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests */,
+				094FA7332B10EDE600112ED4 /* BugsnagPerformanceSwift */,
+				094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
+				09D807F22B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
 				450CB5014AAED50046482044 /* Products */,
 				0122C25629019904002D243C /* Frameworks */,
 			);
@@ -716,7 +755,15 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				094FA7442B10EDE700112ED4 /* BugsnagPerformanceSwiftUI.h in Headers */,
+				094FA7442B10EDE700112ED4 /* BugsnagPerformanceSwift.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09D807EC2B9756B000D01DF5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09D807F62B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +772,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
+				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				0122C24729019770002D243C /* SpanData.h in Headers */,
@@ -799,9 +847,9 @@
 			productReference = 0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */ = {
+		094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 094FA74D2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUI" */;
+			buildConfigurationList = 094FA74D2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwift" */;
 			buildPhases = (
 				094FA72D2B10EDE600112ED4 /* Headers */,
 				094FA72E2B10EDE600112ED4 /* Sources */,
@@ -813,14 +861,14 @@
 			dependencies = (
 				094FA7552B10EEB600112ED4 /* PBXTargetDependency */,
 			);
-			name = BugsnagPerformanceSwiftUI;
+			name = BugsnagPerformanceSwift;
 			productName = BugsnagPerformanceSwiftUI;
-			productReference = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.framework */;
+			productReference = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests */ = {
+		094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 094FA74E2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUITests" */;
+			buildConfigurationList = 094FA74E2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftTests" */;
 			buildPhases = (
 				094FA7372B10EDE700112ED4 /* Sources */,
 				094FA7382B10EDE700112ED4 /* Frameworks */,
@@ -832,14 +880,33 @@
 				094FA73E2B10EDE700112ED4 /* PBXTargetDependency */,
 				094FA7402B10EDE700112ED4 /* PBXTargetDependency */,
 			);
-			name = BugsnagPerformanceSwiftUITests;
+			name = BugsnagPerformanceSwiftTests;
 			productName = BugsnagPerformanceSwiftUITests;
-			productReference = 094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.xctest */;
+			productReference = 094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */ = {
+		09D807F02B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */;
+			buildConfigurationList = 09D807F92B9756B000D01DF5 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUI" */;
+			buildPhases = (
+				09D807EC2B9756B000D01DF5 /* Headers */,
+				09D807ED2B9756B000D01DF5 /* Sources */,
+				09D807EE2B9756B000D01DF5 /* Frameworks */,
+				09D807EF2B9756B000D01DF5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0922F99E2B98922900CE2914 /* PBXTargetDependency */,
+			);
+			name = BugsnagPerformanceSwiftUI;
+			productName = BugsnagPerformanceSwiftUI;
+			productReference = 09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8A80DA862966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-iOSTestsSwift" */;
 			buildPhases = (
 				8A80DA832966CE940035BDA9 /* Sources */,
 				8A80DA842966CE940035BDA9 /* Frameworks */,
@@ -851,9 +918,9 @@
 				8A80DA8D2966CE940035BDA9 /* PBXTargetDependency */,
 				96D4160729E6F6B900AEE435 /* PBXTargetDependency */,
 			);
-			name = "BugsnagPerformance-SwiftTests";
+			name = "BugsnagPerformance-iOSTestsSwift";
 			productName = BugsnagPerformanceTestsSwift;
-			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-SwiftTests.xctest */;
+			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
@@ -921,6 +988,11 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
+					09D807F02B9756B000D01DF5 = {
+						CreatedOnToolsVersion = 15.2;
+						DevelopmentTeam = 7W9PZ27Y5F;
+						ProvisioningStyle = Automatic;
+					};
 					8A80DA862966CE940035BDA9 = {
 						CreatedOnToolsVersion = 13.4;
 						DevelopmentTeam = 7W9PZ27Y5F;
@@ -934,7 +1006,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					B4A4A4DE1EA43C6C4D6D3894 = {
-						LastSwiftMigration = 1500;
+						LastSwiftMigration = 1520;
 					};
 				};
 			};
@@ -952,11 +1024,12 @@
 			projectRoot = "";
 			targets = (
 				B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */,
-				094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */,
+				094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwift */,
 				0122C26429019CE1002D243C /* BugsnagPerformance-iOSTests */,
-				8A80DA862966CE940035BDA9 /* BugsnagPerformance-SwiftTests */,
+				8A80DA862966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift */,
 				96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
-				094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests */,
+				094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
+				09D807F02B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
 			);
 		};
 /* End PBXProject section */
@@ -977,6 +1050,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		094FA7392B10EDE700112ED4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09D807EF2B9756B000D01DF5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1043,7 +1123,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwiftUI.docc in Sources */,
+				094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwift.docc in Sources */,
+				960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */,
 				096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1052,7 +1133,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				094FA7432B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift in Sources */,
+				09856B9E2B9606A500620907 /* BugsnagPerformanceSwiftUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09D807ED2B9756B000D01DF5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09D807F52B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc in Sources */,
+				0922F99A2B98919E00CE2914 /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1128,9 +1218,14 @@
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 0122C26A29019CE1002D243C /* PBXContainerItemProxy */;
 		};
+		0922F99E2B98922900CE2914 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = 0922F99D2B98922900CE2914 /* PBXContainerItemProxy */;
+		};
 		094FA73E2B10EDE700112ED4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */;
+			target = 094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwift */;
 			targetProxy = 094FA73D2B10EDE700112ED4 /* PBXContainerItemProxy */;
 		};
 		094FA7402B10EDE700112ED4 /* PBXTargetDependency */ = {
@@ -1140,7 +1235,7 @@
 		};
 		094FA7462B10EDE700112ED4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwiftUI */;
+			target = 094FA7312B10EDE600112ED4 /* BugsnagPerformanceSwift */;
 			targetProxy = 094FA7452B10EDE700112ED4 /* PBXContainerItemProxy */;
 		};
 		094FA7552B10EEB600112ED4 /* PBXTargetDependency */ = {
@@ -1353,6 +1448,78 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BugsnagPerformanceTestsApp";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		09D807F72B9756B000D01DF5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Bugsnag. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		09D807F82B9756B000D01DF5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Bugsnag. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -1728,7 +1895,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		094FA74D2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUI" */ = {
+		094FA74D2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				094FA7492B10EDE700112ED4 /* Debug */,
@@ -1737,11 +1904,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		094FA74E2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUITests" */ = {
+		094FA74E2B10EDE700112ED4 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				094FA74B2B10EDE700112ED4 /* Debug */,
 				094FA74C2B10EDE700112ED4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09D807F92B9756B000D01DF5 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceSwiftUI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09D807F72B9756B000D01DF5 /* Debug */,
+				09D807F82B9756B000D01DF5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1755,7 +1931,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-SwiftTests" */ = {
+		8A80DA8E2966CE940035BDA9 /* Build configuration list for PBXNativeTarget "BugsnagPerformance-iOSTestsSwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				8A80DA8F2966CE940035BDA9 /* Debug */,

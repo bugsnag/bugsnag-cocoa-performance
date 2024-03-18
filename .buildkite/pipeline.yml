@@ -1,5 +1,6 @@
 env:
   LANG: "en_GB.UTF-8"
+  XCODE_VERSION: "15.2.0"
 
 agents:
   queue: macos-13-arm
@@ -19,8 +20,6 @@ steps:
           - pod lib lint BugsnagPerformance.podspec.json
 
       - label: "Example"
-        env:
-          XCODE_VERSION: 15.0.1
         commands:
           - bundle install
           - ./Example/build.sh
@@ -72,6 +71,8 @@ steps:
               - "logs/*"
         agents:
           queue: macos-12-arm
+        env:
+          XCODE_VERSION: "14"
 
   #
   # BitBar

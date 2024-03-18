@@ -6,3 +6,4 @@
 #import <Foundation/Foundation.h>
 #import "BugsnagPerformanceConfiguration+Private.h"
 #import "Logging.h"
+#import "ObjCURLSession.h"

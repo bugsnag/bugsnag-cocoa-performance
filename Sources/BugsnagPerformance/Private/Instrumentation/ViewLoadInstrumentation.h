@@ -67,6 +67,7 @@ private:
     bool canCreateSpans(UIViewController *viewController) noexcept;
     bool isClassObserved(Class cls) noexcept;
     void adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *instrumentationState, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept;
+    NSString *nameForViewController(UIViewController *viewController) noexcept;
 
     bool isEnabled_{true};
     bool swizzleViewLoadPreMain_{true};

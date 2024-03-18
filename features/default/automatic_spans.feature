@@ -63,6 +63,43 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
+  Scenario: AutoInstrumentGenericViewLoadScenario
+    Given I run "AutoInstrumentGenericViewLoadScenario"
+    And I wait for 18 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+
   Scenario: AutoInstrumentSubViewLoadScenario
     Given I run "AutoInstrumentSubViewLoadScenario"
     And I wait for 2 seconds
@@ -505,6 +542,28 @@ Feature: Automatic instrumentation spans
     Given I run "AutoInstrumentNetworkBadAddressScenario"
     # Only the initial command request should be captured.
     Then I wait for 1 span
+
+  Scenario: Automatically start a network span that has a null URL
+    Given I run "AutoInstrumentNetworkNullURLScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "parentSpanId" does not exist
+    * a span field "name" equals "[HTTP/GET]"
+    * a span string attribute "http.flavor" exists
+    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+    * a span string attribute "http.method" equals "GET"
+    * a span integer attribute "http.status_code" is greater than 0
+    * a span integer attribute "http.response_content_length" is greater than 0
+    * a span string attribute "net.host.connection.type" equals "wifi"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.PerformanceFixture"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
   Scenario: ComplexViewScenario
     Given I run "ComplexViewScenario"

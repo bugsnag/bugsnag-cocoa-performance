@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## 1.5.0 (2024-03-18)
+
+### Enhancements
+
+* Add package BugsnagPerformanceSwift, and deprecate package BugsnagPerformanceSwiftUI.
+  [251](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/251)
+
+* Add API to support UIViewControllers that use generics
+  [250](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/250)
+
+### Bug fixes
+
+* Guard against an edge case where an auto-captured URL request with a nil URL can crash the library if it's sent before Bugsnag is initialized.
+  [253](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/253)
+
 ## 1.4.1 (2024-02-28)
 
 ### Bug fixes

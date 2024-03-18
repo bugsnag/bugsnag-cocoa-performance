@@ -2,8 +2,8 @@
 //  BugsnagPerformanceSwiftUI.h
 //  BugsnagPerformanceSwiftUI
 //
-//  Created by Karl Stenerud on 24.11.23.
-//  Copyright © 2023 Bugsnag. All rights reserved.
+//  Created by Karl Stenerud on 05.03.24.
+//  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
