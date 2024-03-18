@@ -1,6 +1,6 @@
 {
   "name": "BugsnagPerformanceSwiftUI",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "summary": "DEPRECATED. Please use BugsnagPerformanceSwift instead!",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
   "license": {
@@ -12,7 +12,7 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa-performance.git",
-    "tag": "v1.4.1"
+    "tag": "v1.5.0"
   },
   "platforms": {
     "ios": "13.0"
@@ -23,6 +23,6 @@
     "SwiftUI"
   ],
   "dependencies": {
-    "BugsnagPerformance": "1.4.1"
+    "BugsnagPerformance": "1.5.0"
   }
 }

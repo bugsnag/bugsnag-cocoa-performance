@@ -1,12 +1,15 @@
 Changelog
 =========
 
-## TBD
+## 1.5.0 (2024-03-18)
 
 ### Enhancements
 
 * Add package BugsnagPerformanceSwift, and deprecate package BugsnagPerformanceSwiftUI.
   [251](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/251)
+
+* Add API to support UIViewControllers that use generics
+  [250](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/250)
 
 ### Bug fixes
 
