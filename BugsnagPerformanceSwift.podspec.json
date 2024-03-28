@@ -10,6 +10,7 @@
   "authors": {
     "Bugsnag": "notifiers@bugsnag.com"
   },
+  "swift_version": "4.2",
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa-performance.git",
     "tag": "v1.5.0"
