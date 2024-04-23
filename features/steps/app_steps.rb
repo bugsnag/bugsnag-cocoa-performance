@@ -30,7 +30,7 @@ When('I run {string}') do |scenario_name|
   Maze::Server.commands.add({
     action: "run_scenario",
     args: [scenario_name],
-    index: Maze::Server.commands.size_all.to_s
+    index: Maze::Server.commands.size_all
   })
   # Ensure fixture has read the command
   count = 100
@@ -41,7 +41,7 @@ When('I invoke {string}') do |method_name|
   Maze::Server.commands.add({
     action: "invoke_method",
     args: [method_name],
-    index: Maze::Server.commands.size_all.to_s
+    index: Maze::Server.commands.size_all
   })
   # Ensure fixture has read the command
   count = 100
@@ -53,7 +53,7 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
   Maze::Server.commands.add({
     action: "invoke_method",
     args: [method_name, arg1],
-    index: Maze::Server.commands.size_all.to_s
+    index: Maze::Server.commands.size_all
   })
   # Ensure fixture has read the command
   count = 100
