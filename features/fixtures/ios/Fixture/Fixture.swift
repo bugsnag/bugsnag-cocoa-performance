@@ -39,11 +39,24 @@ class Fixture: NSObject, CommandReceiver {
         return readyToReceiveCommand
     }
 
+    func clearPersistentData() {
+        UserDefaults.standard.removePersistentDomain(
+            forName: Bundle.main.bundleIdentifier!)
+        let cachesUrl = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+        for file in try! FileManager.default.contentsOfDirectory(at: cachesUrl, includingPropertiesForKeys: nil) {
+            try! FileManager.default.removeItem(at: file)
+        }
+    }
+
     func receiveCommand(command: MazeRunnerCommand) {
         readyToReceiveCommand = false
         var isReady = true
         DispatchQueue.main.async {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
+            if command.index == 0 {
+                logInfo("Received command 0, clearing persistent data")
+                self.clearPersistentData()
+            }
             switch command.action {
             case "run_scenario":
                 self.runScenario(scenarioName: command.args[0], completion: {
