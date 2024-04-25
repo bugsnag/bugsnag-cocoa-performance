@@ -55,6 +55,10 @@ class Scenario: NSObject {
         logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
+        let cachesUrl = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+        for file in try! FileManager.default.contentsOfDirectory(at: cachesUrl, includingPropertiesForKeys: nil) {
+            try! FileManager.default.removeItem(at: file)
+        }
     }
     
     func startBugsnag() {
