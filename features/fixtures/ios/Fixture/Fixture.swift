@@ -40,6 +40,7 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     func clearPersistentData() {
+        logInfo("Clearing persistent data")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
         let cachesUrl = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
@@ -53,11 +54,10 @@ class Fixture: NSObject, CommandReceiver {
         var isReady = true
         DispatchQueue.main.async {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
-            if command.index == 0 {
-                logInfo("Received command 0, clearing persistent data")
-                self.clearPersistentData()
-            }
             switch command.action {
+            case "clear_persistent_data":
+                self.clearPersistentData()
+                break
             case "run_scenario":
                 self.runScenario(scenarioName: command.args[0], completion: {
                     self.readyToReceiveCommand = true
