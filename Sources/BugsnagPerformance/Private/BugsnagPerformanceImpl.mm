@@ -35,10 +35,18 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
-, instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
+, instrumentation_(std::make_shared<Instrumentation>(tracer_,
+                                                     spanAttributesProvider_,
+                                                     spanStackingHandler_,
+                                                     sampler_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
 , deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
 , resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
+, networkRequestCallback_(
+    ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+        return info;
+    }
+)
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
@@ -72,6 +80,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
+    networkRequestCallback_ = config.networkRequestCallback;
 
     configuration_ = config;
     persistentState_->configure(config);
@@ -411,12 +420,19 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
 }
 
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
+    auto info = [BugsnagPerformanceNetworkRequestInfo new];
+    info.url = task.originalRequest.URL;
+    info = networkRequestCallback_(info);
+    if (info.url == nil) {
+        return;
+    }
+
     auto interval = metrics.taskInterval;
     auto name = task.originalRequest.HTTPMethod;
     SpanOptions options;
     options.makeCurrentContext = false;
     options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = tracer_->startNetworkSpan(task.originalRequest.URL, name, options);
-    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
+    auto span = tracer_->startNetworkSpan(name, options);
+    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics)];
     [span endWithEndTime:interval.endDate];
 }

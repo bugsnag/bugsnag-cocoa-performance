@@ -13,13 +13,17 @@
 
 #import <memory>
 
+using namespace bugsnag;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan ()
 
 @property(nonatomic, copy) void (^onDumped)(BugsnagPerformanceSpan *);
 
-- (instancetype)initWithSpan:(std::unique_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
+@property(nonatomic) std::shared_ptr<Span> span;
+
+- (instancetype)initWithSpan:(std::shared_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
 
 - (void)addAttribute:(NSString *)attributeName withValue:(id)value;
 

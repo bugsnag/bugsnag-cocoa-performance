@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "../Tracer.h"
 #import "../PhasedStartup.h"
+#import "../Sampler.h"
 #import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
 #import "NetworkInstrumentation/NetworkCommon.h"
 
@@ -22,7 +23,9 @@ class Tracer;
 class NetworkInstrumentation: public PhasedStartup {
 public:
     NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                           std::shared_ptr<SpanStackingHandler> spanStackingHandler,
+                           std::shared_ptr<Sampler> sampler) noexcept;
     virtual ~NetworkInstrumentation() {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
@@ -33,6 +36,10 @@ public:
 private:
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpansPhase() noexcept;
+    BOOL shouldAddTracePropagationHeaders(NSURL *url) noexcept;
+    NSString *generateTraceParent(BugsnagPerformanceSpan * _Nullable span) noexcept;
+    void injectHeaders(NSURLSessionTask *task, BugsnagPerformanceSpan * _Nullable span);
+    void NSURLSessionTask_resume(NSURLSessionTask *task) noexcept;
 
     bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
@@ -43,6 +50,10 @@ private:
     std::atomic<bool> isEarlySpansPhase_{true};
     std::mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
+    NSSet<NSRegularExpression *> * _Nullable propagateTraceParentToUrlsMatching_;
+    std::shared_ptr<Sampler> sampler_;
+    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
 };
 }
 

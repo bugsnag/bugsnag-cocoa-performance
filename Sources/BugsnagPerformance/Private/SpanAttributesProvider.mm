@@ -21,6 +21,8 @@ static NSDictionary *accessTechnologyMappingDictionary();
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
 
+NSString *SpanAttributesProvider::httpUrlAttributeKey() {return @"http.url";};
+
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
@@ -99,11 +101,15 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
 }
 
 NSDictionary *
-SpanAttributesProvider::networkSpanAttributes(NSURLSessionTask *task,
+SpanAttributesProvider::networkSpanAttributes(NSURL *url,
+                                              NSURLSessionTask *task,
                                               NSURLSessionTaskMetrics *metrics) noexcept {
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span.category"] = @"network";
+    if (url != nil) {
+        attributes[@"http.url"] = url.absoluteString;
+    }
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = task.originalRequest.HTTPMethod;
     attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;
@@ -112,6 +118,15 @@ SpanAttributesProvider::networkSpanAttributes(NSURLSessionTask *task,
     addNonZero(attributes, @"http.request_content_length", @(task.countOfBytesSent));
     addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
     return attributes;
+}
+
+NSDictionary *
+SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url) noexcept {
+    NSString *urlString = url.absoluteString;
+    if (urlString == nil) {
+        return @{};
+    }
+    return @{@"http.url": (NSString * _Nonnull)urlString};
 }
 
 NSDictionary *
