@@ -60,7 +60,22 @@ class Scenario: NSObject {
             try! FileManager.default.removeItem(at: file)
         }
     }
-    
+
+    func configureBugsnag(path: String, value: String) {
+        logDebug("Scenario.configureBugsnag()")
+        switch path {
+        case "propagateTraceParentToUrlsMatching":
+            var regexes: Set<NSRegularExpression> = []
+            for reStr in value.split(separator: ",") {
+                regexes.insert(try! NSRegularExpression(pattern: String(reStr)))
+            }
+            config.propagateTraceParentToUrlsMatching = regexes
+            break
+        default:
+            fatalError("\(path): Unknown configuration path")
+        }
+    }
+
     func startBugsnag() {
         logDebug("Scenario.startBugsnag()")
         performAndReportDuration({

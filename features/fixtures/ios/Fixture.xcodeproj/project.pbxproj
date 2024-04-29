@@ -34,6 +34,7 @@
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
+		09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F025062BA08804007D9F73 /* ObjCURLSession.m */; };
 		09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */; };
@@ -93,6 +94,7 @@
 		096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIDeferredScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
+		09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		09F025052BA08804007D9F73 /* ObjCURLSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCURLSession.h; sourceTree = "<group>"; };
 		09F025062BA08804007D9F73 /* ObjCURLSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCURLSession.m; sourceTree = "<group>"; };
@@ -241,6 +243,7 @@
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
+				09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */,
 				09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
+				09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,

@@ -21,9 +21,9 @@ class MazeRunnerCommand {
     }
     
     init(fromJSONDict: Dictionary<String, Any>) {
-        self.uuid = fromJSONDict["uuid"] as! String
+        self.uuid = fromJSONDict["uuid"] as? String ?? ""
         self.action = fromJSONDict["action"] as! String
-        self.args = fromJSONDict["args"] as! Dictionary<String, Any>
+        self.args = fromJSONDict["args"] as? Dictionary<String, Any> ?? [:]
         self.message = fromJSONDict["message"] as? String ?? ""
     }
 }

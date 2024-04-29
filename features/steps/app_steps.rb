@@ -30,6 +30,23 @@ When('I run {string}') do |scenario_name|
   run_command("run_scenario", { scenario: scenario_name })
 end
 
+When('I load scenario {string}') do |scenario_name|
+  run_command("load_scenario", { scenario: scenario_name })
+end
+
+When('I start bugsnag') do
+  run_command("start_bugsnag", {})
+end
+
+When('I configure {string} to {string}') do |config_name, config_value|
+  # Note: The method will usually be of the form "xyzWithParam:"
+  run_command("configure_bugsnag", { path:config_name, value:config_value })
+end
+
+When('I run the loaded scenario') do
+  run_command("run_loaded_scenario", {})
+end
+
 When('I invoke {string}') do |method_name|
   run_command("invoke_method", { method: method_name, arguments:[] })
 end

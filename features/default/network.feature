@@ -27,3 +27,14 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "http.url" equals "https://bugsnag.com"
     * a span string attribute "http.url" equals "https://bugsnag.com/changed"
+
+  Scenario: ManualNetworkTracePropagationScenario
+    Given I load scenario "ManualNetworkTracePropagationScenario"
+    And I configure "propagateTraceParentToUrlsMatching" to ".*"
+    And I invoke "setCallSitesWithCallSiteStrs" with parameter "?test=1"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive a reflection
+    Then the reflection request method equals "GET"
+    And the reflection "X-Test-Header" header equals "test"
+    And the reflection "traceparent" header matches the regex "^00-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-01"
