@@ -181,9 +181,10 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
 }
 
 BOOL NetworkInstrumentation::shouldAddTracePropagationHeaders(NSURL *url) noexcept {
+    NSString *urlStr = url.absoluteString;
+    NSRange range = NSMakeRange(0, [urlStr length]);
     for (NSRegularExpression *regex in propagateTraceParentToUrlsMatching_) {
-        NSString *urlStr = url.absoluteString;
-        if ([regex firstMatchInString:urlStr options:0 range:NSMakeRange(0, [urlStr length])]) {
+        if ([regex firstMatchInString:urlStr options:0 range:range]) {
             return YES;
         }
     }

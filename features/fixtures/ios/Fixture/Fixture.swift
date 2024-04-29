@@ -46,13 +46,14 @@ class Fixture: NSObject, CommandReceiver {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
             switch command.action {
             case "run_scenario":
-                self.runScenario(scenarioName: command.args[0], completion: {
+                self.runScenario(scenarioName: command.args["scenario"] as! String, completion: {
                     self.readyToReceiveCommand = true
                 })
                 isReady = false;
                 break
             case "invoke_method":
-                self.invokeMethod(methodName: command.args[0], args: Array(command.args[1...]))
+                self.invokeMethod(methodName: command.args["method"] as! String,
+                                        args: command.args["arguments"] as! [String])
                 break
             case "noop":
                 break

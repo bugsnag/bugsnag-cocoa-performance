@@ -7,24 +7,23 @@
 
 import Foundation
 
-class MazeRunnerCommand: Codable {
+class MazeRunnerCommand {
     let message: String
     let action: String
     let uuid: String
-    let args: Array<String>
+    let args: Dictionary<String,Any>
     
-    init(uuid: String, action: String, args: Array<String>, message: String) {
+    init(uuid: String, action: String, args: Dictionary<String,Any>, message: String) {
         self.uuid = uuid
         self.message = message
         self.action = action
         self.args = args
     }
-
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.uuid = try container.decodeIfPresent(String.self, forKey: .uuid) ?? ""
-        self.message = try container.decodeIfPresent(String.self, forKey: .message) ?? ""
-        self.action = try container.decodeIfPresent(String.self, forKey: .action) ?? ""
-        self.args = try container.decodeIfPresent(Array<String>.self, forKey: .args) ?? []
+    
+    init(fromJSONDict: Dictionary<String, Any>) {
+        self.uuid = fromJSONDict["uuid"] as! String
+        self.action = fromJSONDict["action"] as! String
+        self.args = fromJSONDict["args"] as! Dictionary<String, Any>
+        self.message = fromJSONDict["message"] as? String ?? ""
     }
 }

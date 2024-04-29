@@ -103,10 +103,9 @@ class CommandFetchTask {
         let request = URLRequest(url: url)
         task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let data = data {
-                let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 do {
-                    let command = try decoder.decode(MazeRunnerCommand.self, from: data)
+                    let decoded = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                    let command = MazeRunnerCommand.init(fromJSONDict: decoded)
                     logInfo("Command fetched and decoded")
                     self.command = command;
                     self.state = CommandFetchState.success
