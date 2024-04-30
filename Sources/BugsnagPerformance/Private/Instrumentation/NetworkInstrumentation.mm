@@ -96,14 +96,12 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 
 NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
                                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                               std::shared_ptr<SpanStackingHandler> spanStackingHandler,
-                                               std::shared_ptr<Sampler> sampler) noexcept
+                                               std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
 : isEnabled_(true)
 , isEarlySpansPhase_(true)
 , tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
-, spanStackingHandler_(spanStackingHandler)
-, sampler_(sampler)
+, networkHeaderInjector_(networkHeaderInjector)
 , earlySpans_([NSMutableArray new])
 , delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer_
                                               spanAttributesProvider:spanAttributesProvider_])
@@ -148,6 +146,7 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
     if (networkRequestCallback != nullptr) {
         networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
     }
+    propagateTraceParentToUrlsMatching_ = config.propagateTraceParentToUrlsMatching;
     endEarlySpansPhase();
 }
 
@@ -180,57 +179,6 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
     }
 }
 
-BOOL NetworkInstrumentation::shouldAddTracePropagationHeaders(NSURL *url) noexcept {
-    NSString *urlStr = url.absoluteString;
-    NSRange range = NSMakeRange(0, [urlStr length]);
-    for (NSRegularExpression *regex in propagateTraceParentToUrlsMatching_) {
-        if ([regex firstMatchInString:urlStr options:0 range:range]) {
-            return YES;
-        }
-    }
-    return NO;
-}
-
-NSString *NetworkInstrumentation::generateTraceParent(BugsnagPerformanceSpan *span) noexcept {
-    if (span == nil) {
-        span = spanStackingHandler_->currentSpan();
-    }
-    if (span == nil) {
-        return nil;
-    }
-    // Sampled status assumes that the current P value won't change soon.
-    return [NSString stringWithFormat:@"00-%016llx%016llx-%016llx-0%d",
-            span.traceId.hi, span.traceId.lo,
-            span.spanId, sampler_->sampled(span)];
-}
-
-@protocol RequestSetter <NSObject>
-- (void) setCurrentRequest:(NSURLRequest *)request;
-@end
-
-void NetworkInstrumentation::injectHeaders(NSURLSessionTask *task, BugsnagPerformanceSpan *span) {
-    NSString *headerName = @"traceparent";
-    NSString *headerValue = generateTraceParent(span);
-    
-    if (headerValue == nil) {
-        return;
-    }
-
-    NSURLRequest *request = task.currentRequest;
-    if ([request isKindOfClass:NSMutableURLRequest.class]) {
-        NSMutableURLRequest *mutableRequest = (NSMutableURLRequest *)request;
-        [mutableRequest setValue:headerValue forHTTPHeaderField:headerName];
-        return;
-    }
-
-    // All subclasses have this method, but check to be safe...
-    if ([request respondsToSelector:@selector(setCurrentRequest:)]) {
-        NSMutableURLRequest *mutableRequest = [request mutableCopy];
-        [mutableRequest setValue:headerValue forHTTPHeaderField:headerName];
-        [((id<RequestSetter>)task) setCurrentRequest:mutableRequest];
-    }
-}
-
 void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noexcept {
     if (!isEnabled_) {
         return;
@@ -259,8 +207,6 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             }
         }
     }
-    
-    if (shouldAddTracePropagationHeaders(task.originalRequest.URL)) {
-        injectHeaders(task, span);
-    }
+
+    networkHeaderInjector_->injectTraceParentIfMatches(task, span);
 }

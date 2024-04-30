@@ -63,6 +63,8 @@
 		0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */; };
 		09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B473052B23087D0024CF11 /* WeakSpansList.h */; };
 		09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09B473092B2313570024CF11 /* WeakSpansListTests.mm */; };
+		09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */; };
+		09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */; };
 		09D807F52B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */; };
 		09D807F62B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
@@ -291,6 +293,8 @@
 		0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansList.mm; sourceTree = "<group>"; };
 		09B473052B23087D0024CF11 /* WeakSpansList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeakSpansList.h; sourceTree = "<group>"; };
 		09B473092B2313570024CF11 /* WeakSpansListTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansListTests.mm; sourceTree = "<group>"; };
+		09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkHeaderInjector.h; sourceTree = "<group>"; };
+		09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkHeaderInjector.mm; sourceTree = "<group>"; };
 		09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceSwiftUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSwiftUI.h; sourceTree = "<group>"; };
 		09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
@@ -577,6 +581,8 @@
 				0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
+				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
+				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -797,6 +803,7 @@
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
+				09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
 				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
@@ -1185,6 +1192,7 @@
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
+				09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,
 				CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */,

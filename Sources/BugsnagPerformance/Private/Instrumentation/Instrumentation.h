@@ -19,14 +19,12 @@ class Instrumentation: public PhasedStartup {
 public:
     Instrumentation(std::shared_ptr<Tracer> tracer,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                    std::shared_ptr<SpanStackingHandler> spanStackingHandler,
-                    std::shared_ptr<Sampler> sampler) noexcept
+                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
     , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
                                                                        spanAttributesProvider,
-                                                                       spanStackingHandler,
-                                                                       sampler))
+                                                                       networkHeaderInjector))
     {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;

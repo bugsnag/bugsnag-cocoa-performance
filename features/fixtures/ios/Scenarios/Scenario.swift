@@ -61,13 +61,17 @@ class Scenario: NSObject {
         }
     }
 
+    func splitArgs(args: String) -> [String] {
+        return args.split(separator: ",").map(String.init)
+    }
+
     func configureBugsnag(path: String, value: String) {
         logDebug("Scenario.configureBugsnag()")
         switch path {
         case "propagateTraceParentToUrlsMatching":
             var regexes: Set<NSRegularExpression> = []
-            for reStr in value.split(separator: ",") {
-                regexes.insert(try! NSRegularExpression(pattern: String(reStr)))
+            for reStr in splitArgs(args: value) {
+                regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
             config.propagateTraceParentToUrlsMatching = regexes
             break

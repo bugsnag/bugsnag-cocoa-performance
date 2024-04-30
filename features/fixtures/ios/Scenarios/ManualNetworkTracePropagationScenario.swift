@@ -31,12 +31,12 @@ class ManualNetworkTracePropagationScenario: Scenario {
 
     func query(string: String) {
         let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
-        MyNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
+        urlSession!.dataTask(with: url).resume()
     }
 
     func setCallSites(callSiteStrs: String) {
         var newSites: [String] = []
-        for path in callSiteStrs.split(separator: ",") {
+        for path in splitArgs(args: callSiteStrs) {
             newSites.append(String(path))
         }
         urlPaths = newSites

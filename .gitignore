@@ -102,3 +102,4 @@ logs/*
 # Other
 .DS_Store
 features/fixtures/ios/Fixture/Info.plist
+maze-runner.log
