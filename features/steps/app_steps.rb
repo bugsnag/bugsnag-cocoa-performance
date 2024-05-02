@@ -58,9 +58,6 @@ end
 
 def run_command(action, args)
   Maze::Server.commands.add({ action: action, args: args })
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
 end
 
 # Note:
