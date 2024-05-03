@@ -114,7 +114,6 @@ private:
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
-    void onAppEnteredBackground() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

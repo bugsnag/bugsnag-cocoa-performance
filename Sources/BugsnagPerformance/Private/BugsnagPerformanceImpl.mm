@@ -66,6 +66,11 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
+    // Connect this early on so that an app backgrounding before the app
+    // has fully started will properly cancel any pending early spans.
+    appStateTracker_.onTransitionToBackground = ^{
+        tracer_->abortAllOpenSpans();
+    };
     persistentState_->earlySetup();
     tracer_->earlySetup();
     deviceID_->earlySetup();
@@ -158,9 +163,6 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
-    };
-    appStateTracker_.onTransitionToBackground = ^{
-        blockThis->onAppEnteredBackground();
     };
 
     tracer_->start();
@@ -279,10 +281,6 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     batch_->allowDrain();
     wakeWorker();
-}
-
-void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
-    tracer_->abortAllOpenSpans();
 }
 
 #pragma mark Utility
