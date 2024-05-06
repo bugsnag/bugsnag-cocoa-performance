@@ -73,6 +73,7 @@ public:
     }
 
     void abort() noexcept {
+        data_->markInvalid();
         isEnded_ = true;
     }
 

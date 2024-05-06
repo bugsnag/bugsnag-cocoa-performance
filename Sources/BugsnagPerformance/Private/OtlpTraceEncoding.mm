@@ -111,7 +111,9 @@ NSDictionary *
 OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
     auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
     for (const auto &span: spans) {
-        [encodedSpans addObject:encode(*span.get())];
+        if (span->isValid()) {
+            [encodedSpans addObject:encode(*span.get())];
+        }
     }
     
     // message ExportTraceServiceRequest / message TracesData

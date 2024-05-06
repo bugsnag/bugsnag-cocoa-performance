@@ -149,17 +149,13 @@ void BugsnagPerformanceImpl::start() noexcept {
     resourceAttributes_->start();
     networkHeaderInjector_->start();
 
-    [worker_ start];
-
-    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
-                                                   repeats:YES
-                                                     block:^(__unused NSTimer * _Nonnull timer) {
-        blockThis->onWorkInterval();
-    }];
-
     batch_->setBatchFullCallback(^{
         blockThis->onBatchFull();
     });
+
+    appStateTracker_.onAppFinishedLaunching = ^{
+        blockThis->onAppFinishedLaunching();
+    };
 
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
@@ -173,6 +169,9 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     instrumentation_->start();
 
+    // Send the initial P value request early on.
+    uploadPValueRequest();
+
     if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
     }
@@ -181,10 +180,7 @@ void BugsnagPerformanceImpl::start() noexcept {
 #pragma mark Tasks
 
 NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
-    __block auto blockThis = this;
-    return @[
-        ^bool() { return blockThis->sendPValueRequestTask(); },
-    ];
+    return @[];
 }
 
 NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
@@ -194,11 +190,6 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
         ^bool() { return blockThis->sendRetriesTask(); },
         ^bool() { return blockThis->sweepTracerTask(); },
     ];
-}
-
-bool BugsnagPerformanceImpl::sendPValueRequestTask() noexcept {
-    uploadPValueRequest();
-    return true;
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
@@ -276,6 +267,21 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     batch_->allowDrain();
     wakeWorker();
+}
+
+void BugsnagPerformanceImpl::onAppFinishedLaunching() noexcept {
+    __block auto blockThis = this;
+
+    // This technically breaks the PhasedStartup contract a bit, but we need
+    // to make sure that the worker isn't started until the app is fully started
+    // (i.e. we've received ApplicationDidFinishLaunchingNotification)
+    [worker_ start];
+
+    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
+                                                   repeats:YES
+                                                     block:^(__unused NSTimer * _Nonnull timer) {
+        blockThis->onWorkInterval();
+    }];
 }
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {

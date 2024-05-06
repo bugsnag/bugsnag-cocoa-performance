@@ -104,7 +104,6 @@ private:
     NSArray<Task> *buildRecurringTasks() noexcept;
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
-    bool sendPValueRequestTask() noexcept;
     bool sweepTracerTask() noexcept;
 
     // Event reactions
@@ -114,6 +113,7 @@ private:
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
+    void onAppFinishedLaunching() noexcept;
 
     // Utility
     void wakeWorker() noexcept;

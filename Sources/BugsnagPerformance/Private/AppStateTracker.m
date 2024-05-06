@@ -132,6 +132,10 @@ static bool GetIsForeground(void) {
 
 #if BSG_TARGET_APPKIT
         [notificationCenter addObserver:self
+                               selector:@selector(handleAppLaunchEvent)
+                                   name:NSApplicationDidFinishLaunchingNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:NSApplicationDidBecomeActiveNotification
                                  object:nil];
@@ -143,6 +147,10 @@ static bool GetIsForeground(void) {
 
 #if BSG_TARGET_UIKIT
         [notificationCenter addObserver:self
+                               selector:@selector(handleAppLaunchEvent)
+                                   name:UIApplicationDidFinishLaunchingNotification
+                                 object:nil];
+        [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:UIApplicationDidBecomeActiveNotification
                                  object:nil];
@@ -153,6 +161,10 @@ static bool GetIsForeground(void) {
 #endif
 
 #if BSG_TARGET_WATCHKIT
+        [notificationCenter addObserver:self
+                               selector:@selector(handleAppLaunchEvent)
+                                   name:WKApplicationDidFinishLaunchingNotification
+                                 object:nil];
         [notificationCenter addObserver:self
                                selector:@selector(handleAppForegroundEvent)
                                    name:WKApplicationDidBecomeActiveNotification
@@ -168,6 +180,13 @@ static bool GetIsForeground(void) {
 
 - (void)dealloc {
     [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+
+- (void) handleAppLaunchEvent {
+    void (^callback)(void) = self.onAppFinishedLaunching;
+    if (callback != nil) {
+        callback();
+    }
 }
 
 - (void) handleAppForegroundEvent {
