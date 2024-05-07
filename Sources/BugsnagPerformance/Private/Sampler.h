@@ -9,6 +9,7 @@
 
 #import "IdGenerator.h"
 #import "SpanData.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 #import <Foundation/Foundation.h>
 #import <vector>
@@ -35,6 +36,10 @@ public:
      * Also updates the span's sampling probability value if it is to be kept.
      */
     bool sampled(SpanData &span) noexcept;
+
+    bool sampled(BugsnagPerformanceSpan *span) noexcept {
+        return sampled(*span.span->data());
+    }
 
     /**
      * Samples the given set of span data, returning those that are to be kept.

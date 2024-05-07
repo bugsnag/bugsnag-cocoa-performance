@@ -17,10 +17,14 @@ namespace bugsnag {
 
 class Instrumentation: public PhasedStartup {
 public:
-    Instrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    Instrumentation(std::shared_ptr<Tracer> tracer,
+                    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
     , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
-    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer, spanAttributesProvider))
+    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
+                                                                       spanAttributesProvider,
+                                                                       networkHeaderInjector))
     {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;

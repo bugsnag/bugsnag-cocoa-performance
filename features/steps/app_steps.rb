@@ -27,31 +27,37 @@ Then('I discard every {request_type}') do |request_type|
 end
 
 When('I run {string}') do |scenario_name|
-  Maze::Server.commands.add({
-    action: "run_scenario",
-    args: [scenario_name]
-  })
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  run_command("run_scenario", { scenario: scenario_name })
+end
+
+When('I load scenario {string}') do |scenario_name|
+  run_command("load_scenario", { scenario: scenario_name })
+end
+
+When('I start bugsnag') do
+  run_command("start_bugsnag", {})
+end
+
+When('I configure {string} to {string}') do |config_name, config_value|
+  # Note: The method will usually be of the form "xyzWithParam:"
+  run_command("configure_bugsnag", { path:config_name, value:config_value })
+end
+
+When('I run the loaded scenario') do
+  run_command("run_loaded_scenario", {})
 end
 
 When('I invoke {string}') do |method_name|
-  Maze::Server.commands.add({
-    action: "invoke_method",
-    args: [method_name]
-  })
-  # Ensure fixture has read the command
-  count = 100
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  run_command("invoke_method", { method: method_name, arguments:[] })
 end
 
 When('I invoke {string} with parameter {string}') do |method_name, arg1|
   # Note: The method will usually be of the form "xyzWithParam:"
-  Maze::Server.commands.add({
-    action: "invoke_method",
-    args: [method_name, arg1]
-  })
+  run_command("invoke_method", { method:method_name, arguments:[arg1] })
+end
+
+def run_command(action, args)
+  Maze::Server.commands.add({ action: action, args: args })
   # Ensure fixture has read the command
   count = 100
   sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1

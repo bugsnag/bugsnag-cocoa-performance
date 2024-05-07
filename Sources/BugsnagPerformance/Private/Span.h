@@ -110,6 +110,8 @@ public:
         data_->startTime = time;
         startClock_ = currentMonotonicClockNsecIfUnset(time);
     }
+    
+    std::shared_ptr<SpanData> data() {return data_;}
 
 private:
     std::shared_ptr<SpanData> data_;

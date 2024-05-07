@@ -67,6 +67,11 @@ OBJC_EXPORT
  */
 @property(nullable, nonatomic) BugsnagPerformanceNetworkRequestCallback networkRequestCallback;
 
+/**
+ * Any network request URLs that match one of these regular expressions will have the "traceparent" header injected.
+ */
+@property (copy, nullable, nonatomic) NSSet<NSRegularExpression *> *propagateTraceParentToUrlsMatching;
+
 @end
 
 NS_ASSUME_NONNULL_END

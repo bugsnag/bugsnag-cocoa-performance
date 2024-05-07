@@ -28,17 +28,25 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanStackingHandler_(std::make_shared<SpanStackingHandler>())
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
+, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , sampler_(std::make_shared<Sampler>())
+, networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
-, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
-, instrumentation_(std::make_shared<Instrumentation>(tracer_, spanAttributesProvider_))
+, instrumentation_(std::make_shared<Instrumentation>(tracer_,
+                                                     spanAttributesProvider_,
+                                                     networkHeaderInjector_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
 , deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
 , resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
+, networkRequestCallback_(
+    ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+        return info;
+    }
+)
 {}
 
 BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
@@ -50,6 +58,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     tracer_->earlyConfigure(config);
     deviceID_->earlyConfigure(config);
     resourceAttributes_->earlyConfigure(config);
+    networkHeaderInjector_->earlyConfigure(config);
     retryQueue_->earlyConfigure(config);
     batch_->earlyConfigure(config);
     instrumentation_->earlyConfigure(config);
@@ -61,6 +70,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     tracer_->earlySetup();
     deviceID_->earlySetup();
     resourceAttributes_->earlySetup();
+    networkHeaderInjector_->earlySetup();
     retryQueue_->earlySetup();
     batch_->earlySetup();
     instrumentation_->earlySetup();
@@ -72,12 +82,14 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
+    networkRequestCallback_ = config.networkRequestCallback;
 
     configuration_ = config;
     persistentState_->configure(config);
     deviceID_->configure(config);
     resourceAttributes_->configure(config);
     tracer_->configure(config);
+    networkHeaderInjector_->configure(config);
     retryQueue_->configure(config);
     batch_->configure(config);
     instrumentation_->configure(config);
@@ -130,6 +142,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     sampler_->setProbability(persistentState_->probability());
 
     resourceAttributes_->start();
+    networkHeaderInjector_->start();
 
     [worker_ start];
 
@@ -411,12 +424,19 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
 }
 
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
-    auto interval = metrics.taskInterval;
-    auto name = task.originalRequest.HTTPMethod;
-    SpanOptions options;
-    options.makeCurrentContext = false;
-    options.startTime = dateToAbsoluteTime(interval.startDate);
-    auto span = tracer_->startNetworkSpan(task.originalRequest.URL, name, options);
-    [span addAttributes:spanAttributesProvider_->networkSpanAttributes(task, metrics)];
-    [span endWithEndTime:interval.endDate];
+    BugsnagPerformanceSpan *span = nil;
+
+    auto info = [BugsnagPerformanceNetworkRequestInfo new];
+    info.url = task.originalRequest.URL;
+    info = networkRequestCallback_(info);
+    if (info.url != nil) {
+        auto interval = metrics.taskInterval;
+        auto name = task.originalRequest.HTTPMethod;
+        SpanOptions options;
+        options.makeCurrentContext = false;
+        options.startTime = dateToAbsoluteTime(interval.startDate);
+        span = tracer_->startNetworkSpan(name, options);
+        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics)];
+        [span endWithEndTime:interval.endDate];
+    }
 }

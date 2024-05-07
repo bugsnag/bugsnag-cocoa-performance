@@ -14,8 +14,6 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 
-static NSString *httpUrlAttributeKey = @"http.url";
-
 using namespace bugsnag;
 
 Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
@@ -24,7 +22,6 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
-, earlyNetworkSpans_([NSMutableArray new])
 , prewarmSpans_([NSMutableArray new])
 , potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
 , batch_(batch)
@@ -34,15 +31,6 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 void
 Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     willDiscardPrewarmSpans_ = config.appWasLaunchedPreWarmed;
-}
-
-void
-Tracer::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    auto networkRequestCallback = config.networkRequestCallback;
-    if (networkRequestCallback != nullptr) {
-        networkRequestCallback_ = networkRequestCallback;
-    }
-    endEarlyNetworkSpansPhase();
 }
 
 void
@@ -141,22 +129,9 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 }
 
 BugsnagPerformanceSpan *
-Tracer::startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept {
-    auto info = [BugsnagPerformanceNetworkRequestInfo new];
-    info.url = url;
-    info = networkRequestCallback_(info);
-    url = info.url;
-    if (url == nil) {
-        return nil;
-    }
-
+Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
-    auto span = startSpan(name, options, BSGFirstClassUnset);
-    [span addAttribute:httpUrlAttributeKey withValue:(NSString *_Nonnull)url.absoluteString];
-    if (isCapturingEarlyNetworkSpans_) {
-        markEarlyNetworkSpan(span);
-    }
-    return span;
+    return startSpan(name, options, BSGFirstClassUnset);
 }
 
 BugsnagPerformanceSpan *
@@ -198,29 +173,4 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
         }
     }
     [prewarmSpans_ removeAllObjects];
-}
-
-void Tracer::markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept {
-    std::lock_guard<std::mutex> guard(earlyNetworkSpansMutex_);
-    if (isCapturingEarlyNetworkSpans_) {
-        [earlyNetworkSpans_ addObject:span];
-    }
-}
-
-void Tracer::endEarlyNetworkSpansPhase() noexcept {
-    std::lock_guard<std::mutex> guard(earlyNetworkSpansMutex_);
-    isCapturingEarlyNetworkSpans_ = false;
-    for (BugsnagPerformanceSpan *span: earlyNetworkSpans_) {
-        auto info = [BugsnagPerformanceNetworkRequestInfo new];
-        NSString *urlString = [span getAttribute:httpUrlAttributeKey];
-        info.url = [NSURL URLWithString:urlString];
-        // We have to check again because the real callback might not have been set initially.
-        info = networkRequestCallback_(info);
-        if (info.url != nil) {
-            [span addAttribute:httpUrlAttributeKey withValue:(NSString *_Nonnull)info.url.absoluteString];
-        } else {
-            cancelQueuedSpan(span);
-        }
-    }
-    [earlyNetworkSpans_ removeAllObjects];
 }
