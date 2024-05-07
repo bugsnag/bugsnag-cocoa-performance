@@ -605,7 +605,7 @@ Feature: Automatic instrumentation spans
     Given I run "ComplexViewScenario"
     And I wait for 27 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:21"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:27"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
