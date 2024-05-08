@@ -29,6 +29,15 @@ public:
 
     void didStartViewLoadSpan(NSString *name) noexcept;
     void willCallMainFunction() noexcept;
+    void abortAllSpans() noexcept;
+
+    /**
+     * Returns the time from when the earliest BugsnagPerformance code ran (__attribute__((constructor(101))))
+     * until we received UIApplicationDidFinishLaunchingNotification (or the current time, if that hasn't happened yet).
+     */
+    CFAbsoluteTime appStartDuration() noexcept;
+
+    CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept;
 
 private:
     bool isEnabled_{true};

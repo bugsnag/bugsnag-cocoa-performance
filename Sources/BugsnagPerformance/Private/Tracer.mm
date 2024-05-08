@@ -45,7 +45,7 @@ Tracer::start() noexcept {
 
 void
 Tracer::abortAllOpenSpans() noexcept {
-    potentiallyOpenSpans_->abortAll();
+    potentiallyOpenSpans_->abortAllOpen();
 }
 
 void
@@ -150,7 +150,7 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     if (span) {
-        [span abort];
+        [span abortIfOpen];
         batch_->removeSpan(span.traceId, span.spanId);
     }
 }

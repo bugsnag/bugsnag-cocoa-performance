@@ -122,6 +122,25 @@ void AppStartupInstrumentation::disable() noexcept {
     }
 }
 
+CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
+    CFAbsoluteTime endTime = didFinishLaunchingAtTime_ > 0 ? didFinishLaunchingAtTime_ : CFAbsoluteTimeGetCurrent();
+    return endTime - didStartProcessAtTime_;
+}
+
+CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
+    if (didBecomeActiveAtTime_ == 0) {
+        return 0;
+    }
+    return CFAbsoluteTimeGetCurrent() - didBecomeActiveAtTime_;
+}
+
+void AppStartupInstrumentation::abortAllSpans() noexcept {
+    [preMainSpan_ abortUnconditionally];
+    [postMainSpan_ abortUnconditionally];
+    [uiInitSpan_ abortUnconditionally];
+    [appStartSpan_ abortUnconditionally];
+}
+
 void
 AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);

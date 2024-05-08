@@ -56,6 +56,12 @@
 }
 
 - (void) run {
+    // Start off asleep
+    [self sleep];
+    if (self.shouldEnd) {
+        return;
+    }
+
     [self performInitialWork];
 
     if (self.initialRecurringWorkDelay > 0) {
@@ -73,9 +79,7 @@
             }
 
             // Once there's no work getting done, go to sleep.
-            [self.condition lock];
-            [self.condition wait];
-            [self.condition unlock];
+            [self sleep];
         }
     }
 }
@@ -96,6 +100,12 @@
     self.isStarted = true;
     self.shouldEnd = false;
     [self.thread start];
+}
+
+- (void) sleep {
+    [self.condition lock];
+    [self.condition wait];
+    [self.condition unlock];
 }
 
 - (void) wake {

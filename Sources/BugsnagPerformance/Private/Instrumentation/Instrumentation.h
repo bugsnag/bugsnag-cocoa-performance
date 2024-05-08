@@ -31,9 +31,12 @@ public:
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
+    void abortAppStartupSpans() noexcept;
 
     void didStartViewLoadSpan(NSString *name) noexcept { appStartupInstrumentation_->didStartViewLoadSpan(name); }
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
+    CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
+    CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
 
 private:
     Instrumentation() = delete;
