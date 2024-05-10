@@ -25,8 +25,6 @@ class Scenario: NSObject {
 
     func configure() {
         logDebug("Scenario.configure()")
-        // Make sure the initial P value has time to be fully received before sending spans
-        config.internal.initialRecurringWorkDelay = 0.5
         config.internal.clearPersistenceOnStart = true
         config.internal.autoTriggerExportOnBatchSize = 1
         config.apiKey = "12312312312312312312312312312312"

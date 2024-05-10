@@ -72,7 +72,15 @@ public:
         return isEnded_;
     }
 
-    void abort() noexcept {
+    void abortIfOpen() noexcept {
+        if (!isEnded_) {
+            data_->markInvalid();
+            isEnded_ = true;
+        }
+    }
+
+    void abortUnconditionally() noexcept {
+        data_->markInvalid();
         isEnded_ = true;
     }
 

@@ -98,13 +98,13 @@ private:
     CFTimeInterval probabilityRequestsPauseForSeconds_{0};
     uint64_t maxPackageContentLength_{1000000};
     std::atomic<bool> isStarted_{false};
+    bool hasCheckedAppStartDuration_{false};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
     NSArray<Task> *buildRecurringTasks() noexcept;
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
-    bool sendPValueRequestTask() noexcept;
     bool sweepTracerTask() noexcept;
 
     // Event reactions
@@ -115,8 +115,10 @@ private:
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
     void onAppEnteredBackground() noexcept;
+    void onAppFinishedLaunching() noexcept;
 
     // Utility
+    void checkAppStartDuration() noexcept;
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;

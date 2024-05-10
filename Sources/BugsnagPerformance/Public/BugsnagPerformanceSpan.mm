@@ -25,11 +25,12 @@ using namespace bugsnag;
     }
 }
 
-// We want direct ivar access to avoid accessors copying unique_ptrs
-#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+- (void)abortIfOpen {
+    self.span->abortIfOpen();
+}
 
-- (void)abort {
-    self.span->abort();
+- (void)abortUnconditionally {
+    self.span->abortUnconditionally();
 }
 
 - (void)end {

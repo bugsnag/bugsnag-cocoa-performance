@@ -146,6 +146,11 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         _initialSamplingProbability = 1.0;
 
         _maxPackageContentLength = 1000000;
+
+        // This gives time for the app to finish loading so that we can receive
+        // any important notifications before the first work cycle is started.
+        // It also gives time for us to receive our initial P value from the server.
+        _initialRecurringWorkDelay = 1.0;
     }
     return self;
 }

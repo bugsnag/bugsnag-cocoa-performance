@@ -36,7 +36,10 @@ public:
     bool hasAttribute(NSString *attributeName, id value) noexcept;
 
     void updateSamplingProbability(double value) noexcept;
-    
+
+    void markInvalid() noexcept { isValid_ = false; };
+    bool isValid() noexcept { return isValid_; }
+
     TraceId traceId{0};
     SpanId spanId{0};
     SpanId parentId{0};
@@ -50,5 +53,6 @@ public:
 
 private:
     std::mutex mutex_;
+    bool isValid_{true};
 };
 }
