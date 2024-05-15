@@ -13,6 +13,7 @@
 #import "Utils.h"
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
+#import "BugsnagPerformanceCrossTalkAPI.h"
 
 using namespace bugsnag;
 
@@ -97,6 +98,8 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     batch_->earlySetup();
     instrumentation_->earlySetup();
     [worker_ earlySetup];
+
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = spanStackingHandler_;
 }
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
