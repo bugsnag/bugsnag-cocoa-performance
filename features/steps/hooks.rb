@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-BeforeAll do
-  Maze.config.enforce_bugsnag_integrity = false
-  Maze.config.document_server_root = 'features/fixtures/docs'
-end
-
 Maze.hooks.after do |scenario|
   folder1 = File.join(Dir.pwd, 'maze_output')
   folder2 = scenario.failed? ? 'failed' : 'passed'
