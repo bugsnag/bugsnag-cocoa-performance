@@ -23,6 +23,7 @@ class BackgroundForegroundScenario: Scenario {
 
     override func run() {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { _ in
+            logInfo("##########")
             BugsnagPerformance.startSpan(name: "BackgroundForegroundScenario").end()
         }
     }
