@@ -314,8 +314,9 @@ steps:
   #
   # BrowserStack
   # TODO - To be moved to BitBar once they provide iOS 17.
-  #
+  # TODO - Also skipped on BrowserStack for for due to issues.
   - label: ":browserstack: iOS 17 E2E Tests"
+    skip: Skipped pending PLAT-12209
     depends_on:
       - ios_fixture
     timeout_in_minutes: 30
