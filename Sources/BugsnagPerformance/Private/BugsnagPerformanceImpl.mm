@@ -413,23 +413,15 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
-    if (options.makeCurrentContext) {
-        spanStackingHandler_->push(span);
-    }
-}
-
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
     SpanOptions options;
     auto span = tracer_->startCustomSpan(name, options);
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startCustomSpan(name, options);
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -437,7 +429,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -445,7 +436,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -455,7 +445,6 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
