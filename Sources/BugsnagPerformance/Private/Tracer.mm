@@ -35,9 +35,11 @@ Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
 
 void
 Tracer::start() noexcept {
+    BSGLogDebug(@"Tracer::start()");
     // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
     // Now that the sampler has been configured, re-sample everything.
     auto unsampledBatch = batch_->drain(true);
+    BSGLogTrace(@"Tracer::start: initial unsampled batch with %zu items", unsampledBatch->size());
     for (auto spanData: *unsampledBatch) {
         trySampleAndAddSpanToBatch(spanData);
     }
@@ -45,11 +47,13 @@ Tracer::start() noexcept {
 
 void
 Tracer::abortAllOpenSpans() noexcept {
+    BSGLogDebug(@"Tracer::abortAllOpenSpans()");
     potentiallyOpenSpans_->abortAllOpen();
 }
 
 void
 Tracer::sweep() noexcept {
+    BSGLogDebug(@"Tracer::sweep()");
     constexpr unsigned minEntriesBeforeCompacting = 10000;
     if (potentiallyOpenSpans_->count() >= minEntriesBeforeCompacting) {
         potentiallyOpenSpans_->compact();
@@ -58,17 +62,21 @@ Tracer::sweep() noexcept {
 
 BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
+    BSGLogDebug(@"Tracer::startSpan(%@, opts, %d)", name, defaultFirstClass);
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
     if (parentSpan == nil) {
+        BSGLogTrace(@"Tracer::startSpan: No parent specified; using current span");
         parentSpan = spanStackingHandler_->currentSpan();
     }
     auto traceId = parentSpan.traceId;
     if (traceId.value == 0) {
+        BSGLogTrace(@"Tracer::startSpan: No parent traceId; generating one");
         traceId = IdGenerator::generateTraceId();
     }
     BSGFirstClass firstClass = options.firstClass;
     if (firstClass == BSGFirstClassUnset) {
+        BSGLogTrace(@"Tracer::startSpan: firstClass not specified; using default of %d", defaultFirstClass);
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
@@ -79,10 +87,12 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
+        BSGLogDebug(@"Tracer::startSpan: callback for span %@", spanData->name);
         blockThis->spanStackingHandler_->didEnd(spanData->spanId);
         blockThis->trySampleAndAddSpanToBatch(spanData);
     })];
     if (options.makeCurrentContext) {
+        BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
     [span addAttributes:SpanAttributes::get()];
@@ -92,7 +102,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
 }
 
 void Tracer::trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
+    BSGLogDebug(@"Tracer::trySampleAndAddSpanToBatch(%@)", spanData->name);
     if (sampler_->sampled(*spanData)) {
+        BSGLogTrace(@"Tracer::trySampleAndAddSpanToBatch: Sampled successfully. Adding to batch.");
         batch_->add(spanData);
     }
 }
@@ -149,6 +161,7 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
+    BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
         [span abortIfOpen];
         batch_->removeSpan(span.traceId, span.spanId);
@@ -156,6 +169,7 @@ void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
 }
 
 void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
+    BSGLogTrace(@"Tracer::markPrewarmSpan(%@)", span.name);
     std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
     if (willDiscardPrewarmSpans_) {
         [prewarmSpans_ addObject:span];
@@ -164,6 +178,7 @@ void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
 
 void
 Tracer::onPrewarmPhaseEnded(void) noexcept {
+    BSGLogDebug(@"Tracer::onPrewarmPhaseEnded()");
     std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
     willDiscardPrewarmSpans_ = false;
     for (BugsnagPerformanceSpan *span: prewarmSpans_) {

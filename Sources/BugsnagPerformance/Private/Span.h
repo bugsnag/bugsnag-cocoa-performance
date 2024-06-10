@@ -16,6 +16,11 @@ namespace bugsnag {
 
 typedef void (^OnSpanEnd)(std::shared_ptr<SpanData>);
 
+typedef enum {
+    AbortOnSpanDestroy,
+    EndOnSpanDestroy
+} SpanDestroyAction;
+
 // https://opentelemetry.io/docs/reference/specification/trace/api/#span
 
 /**
@@ -42,6 +47,19 @@ public:
     {};
     
     Span(const Span&) = delete;
+
+    ~Span() {
+        switch(spanDestroyAction) {
+            case AbortOnSpanDestroy:
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = Abort", data_->name);
+                abortIfOpen();
+                break;
+            case EndOnSpanDestroy:
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = End", data_->name);
+                end(CFAbsoluteTimeGetCurrent());
+                break;
+        }
+    }
 
     void addAttribute(NSString *attributeName, id value) noexcept {
         data_->addAttribute(attributeName, value);
@@ -73,6 +91,7 @@ public:
     }
 
     void abortIfOpen() noexcept {
+        BSGLogDebug(@"Span::abortIfOpen(): isEnded_ = %s", isEnded_ ? "true" : "false");
         if (!isEnded_) {
             data_->markInvalid();
             isEnded_ = true;
@@ -80,11 +99,13 @@ public:
     }
 
     void abortUnconditionally() noexcept {
+        BSGLogDebug(@"Span::abortUnconditionally()");
         data_->markInvalid();
         isEnded_ = true;
     }
 
     void end(CFAbsoluteTime time) noexcept {
+        BSGLogDebug(@"Span::end(%f)", time);
         bool expected = false;
         if (!isEnded_.compare_exchange_strong(expected, true)) {
             // compare_exchange_strong() returns true only if isEnded_ was exchanged (from false to true).
@@ -120,6 +141,9 @@ public:
     }
     
     std::shared_ptr<SpanData> data() {return data_;}
+
+public:
+    SpanDestroyAction spanDestroyAction{AbortOnSpanDestroy};
 
 private:
     std::shared_ptr<SpanData> data_;

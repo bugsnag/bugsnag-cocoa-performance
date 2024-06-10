@@ -45,6 +45,10 @@ using namespace bugsnag;
     self.span->end(endTime);
 }
 
+- (void)endOnDestroy {
+    self.span->spanDestroyAction = EndOnSpanDestroy;
+}
+
 - (TraceId)traceId {
     return self.span->traceId();
 }

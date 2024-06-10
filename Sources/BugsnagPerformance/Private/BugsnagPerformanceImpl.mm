@@ -14,6 +14,7 @@
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceCrossTalkAPI.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -221,6 +222,7 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
     auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
@@ -232,6 +234,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sendRetriesTask()");
     retryQueue_->sweep();
 
     auto retries = retryQueue_->list();
@@ -251,6 +254,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sweepTracerTask()");
     tracer_->sweep();
     // Never auto-repeat this task, even if work was done; it can wait.
     return false;
@@ -263,6 +267,7 @@ void BugsnagPerformanceImpl::onFilesystemError() noexcept {
 }
 
 void BugsnagPerformanceImpl::onBatchFull() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onBatchFull()");
     wakeWorker();
 }
 
@@ -293,6 +298,7 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
+    BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
     batch_->allowDrain();
     wakeWorker();
 }
@@ -333,6 +339,7 @@ void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
 #pragma mark Utility
 
 void BugsnagPerformanceImpl::wakeWorker() noexcept {
+    BSGLogTrace(@"BugsnagPerformanceImpl::wakeWorker()");
     [worker_ wake];
 }
 
@@ -358,10 +365,13 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::uploadPackage(package, isRetry:%s)", isRetry ? "yes" : "no");
     if (!configuration_.shouldSendReports) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: !configuration_.shouldSendReports");
         return;
     }
     if (package == nullptr) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: package == nullptr");
         return;
     }
 
@@ -480,17 +490,24 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     BugsnagPerformanceSpan *span = nil;
 
+    NSError *errorFromGetRequest = nil;
+    NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
+
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
-    info.url = task.originalRequest.URL;
-    info = networkRequestCallback_(info);
+    info.url = req.URL;
+    bool userVetoedTracing = false;
     if (info.url != nil) {
+        info = networkRequestCallback_(info);
+        userVetoedTracing = info.url == nil;
+    }
+    if (!userVetoedTracing) {
         auto interval = metrics.taskInterval;
-        auto name = task.originalRequest.HTTPMethod;
+        auto name = req.HTTPMethod;
         SpanOptions options;
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
-        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics)];
+        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }
 }
