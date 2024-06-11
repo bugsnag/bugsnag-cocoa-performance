@@ -41,32 +41,49 @@ class Fixture: NSObject, CommandReceiver {
 
     func receiveCommand(command: MazeRunnerCommand) {
         readyToReceiveCommand = false
-        var isReady = true
         DispatchQueue.main.async {
             logInfo("Executing command [\(command.action)] with args \(command.args)")
             switch command.action {
-            case "run_scenario":
-                self.runScenario(scenarioName: command.args[0], completion: {
+            case "load_scenario":
+                self.loadScenario(scenarioName: command.args["scenario"] as! String)
+                self.readyToReceiveCommand = true
+                break
+            case "configure_bugsnag":
+                self.configureBugsnag(path: command.args["path"] as! String,
+                                      value: command.args["value"] as! String)
+                self.readyToReceiveCommand = true
+                break
+            case "start_bugsnag":
+                self.startBugsnag()
+                self.readyToReceiveCommand = true
+                break
+            case "run_loaded_scenario":
+                self.runLoadedScenario(completion: {
                     self.readyToReceiveCommand = true
                 })
-                isReady = false;
+                break
+            case "run_scenario":
+                self.runScenario(scenarioName: command.args["scenario"] as! String, completion: {
+                    self.readyToReceiveCommand = true
+                })
                 break
             case "invoke_method":
-                self.invokeMethod(methodName: command.args[0], args: Array(command.args[1...]))
+                self.invokeMethod(methodName: command.args["method"] as! String,
+                                        args: command.args["arguments"] as! [String])
+                self.readyToReceiveCommand = true
                 break
             case "noop":
+                self.readyToReceiveCommand = true
                 break
             default:
                 assertionFailure("\(command.action): Unknown command")
-            }
-            if isReady {
                 self.readyToReceiveCommand = true
             }
         }
     }
 
-    private func runScenario(scenarioName: String, completion: @escaping () -> ()) {
-        logInfo("========== Running scenario \(scenarioName) ==========")
+    private func loadScenario(scenarioName: String) {
+        logInfo("========== Loading scenario \(scenarioName) ==========")
         let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
         logInfo("Loaded scenario class: \(scenarioClass)")
         scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
@@ -74,17 +91,34 @@ class Fixture: NSObject, CommandReceiver {
         scenario!.configure()
         logInfo("Clearing persistent data")
         scenario!.clearPersistentData()
+    }
+
+    private func configureBugsnag(path: String, value: String) {
+        logInfo("Configuring bugsnag [\(path)] to [\(value)]")
+        scenario!.configureBugsnag(path: path, value: value)
+    }
+
+    private func startBugsnag() {
         logInfo("Starting bugsnag performance")
         scenario!.startBugsnag()
-        logInfo("Starting scenario in class \(scenarioClass)")
+    }
+
+    private func runLoadedScenario(completion: @escaping () -> ()) {
+        logInfo("Starting scenario \(String(describing: scenario))")
         scenario!.run()
-        logInfo("========== Completed scenario \(scenarioName) ==========")
+        logInfo("========== Completed scenario \(String(describing: scenario)) ==========")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.scenario!.reportMeasurements()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 completion()
             }
         }
+    }
+
+    private func runScenario(scenarioName: String, completion: @escaping () -> ()) {
+        loadScenario(scenarioName: scenarioName)
+        startBugsnag()
+        runLoadedScenario(completion: completion)
     }
 
     private func invokeMethod(methodName: String, args: Array<String>) {

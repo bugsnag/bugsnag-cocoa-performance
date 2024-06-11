@@ -109,9 +109,13 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
 
 NSDictionary *
 OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+    BSGLogDebug(@"OtlpTraceEncoding::encode(%zu)", spans.size());
     auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
     for (const auto &span: spans) {
-        [encodedSpans addObject:encode(*span.get())];
+        if (span->isValid()) {
+            BSGLogTrace(@"OtlpTraceEncoding::encode: span %@", span->name);
+            [encodedSpans addObject:encode(*span.get())];
+        }
     }
     
     // message ExportTraceServiceRequest / message TracesData

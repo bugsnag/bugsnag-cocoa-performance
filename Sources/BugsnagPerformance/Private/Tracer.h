@@ -36,7 +36,7 @@ public:
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
-    void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
+    void configure(BugsnagPerformanceConfiguration *) noexcept {};
     void start() noexcept;
 
     void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
@@ -51,7 +51,7 @@ public:
                                               NSString *className,
                                               SpanOptions options) noexcept;
 
-    BugsnagPerformanceSpan *startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
                                                    NSString *phase,
@@ -71,10 +71,6 @@ private:
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
 
-    std::atomic<bool> isCapturingEarlyNetworkSpans_{true};
-    std::mutex earlyNetworkSpansMutex_;
-    NSMutableArray<BugsnagPerformanceSpan *> *earlyNetworkSpans_;
-
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
@@ -86,16 +82,9 @@ private:
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){ ^(){} };
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
-    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_ {
-        ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
-            return info;
-        }
-    };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
-    void markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
-    void endEarlyNetworkSpansPhase() noexcept;
 };
 }

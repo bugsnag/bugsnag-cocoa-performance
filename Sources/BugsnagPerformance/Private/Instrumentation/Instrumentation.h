@@ -17,19 +17,26 @@ namespace bugsnag {
 
 class Instrumentation: public PhasedStartup {
 public:
-    Instrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    Instrumentation(std::shared_ptr<Tracer> tracer,
+                    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
     , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
-    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer, spanAttributesProvider))
+    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
+                                                                       spanAttributesProvider,
+                                                                       networkHeaderInjector))
     {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void start() noexcept;
+    void abortAppStartupSpans() noexcept;
 
     void didStartViewLoadSpan(NSString *name) noexcept { appStartupInstrumentation_->didStartViewLoadSpan(name); }
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
+    CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
+    CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
 
 private:
     Instrumentation() = delete;

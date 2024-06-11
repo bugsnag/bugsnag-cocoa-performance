@@ -12,6 +12,7 @@
 @interface Worker ()
 
 @property(readwrite,atomic) NSTimeInterval initialRecurringWorkDelay;
+@property(readwrite,atomic) BOOL isStarted;
 @property(readwrite,atomic) BOOL shouldEnd;
 @property(readonly,nonatomic) NSCondition *condition;
 @property(readonly,nonatomic) NSThread *thread;
@@ -29,6 +30,8 @@
         _thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
         _initialTasks = initialTasks;
         _recurringTasks = recurringTasks;
+        _isStarted = false;
+        _shouldEnd = false;
     }
     return self;
 }
@@ -53,6 +56,12 @@
 }
 
 - (void) run {
+    // Start off asleep
+    [self sleep];
+    if (self.shouldEnd) {
+        return;
+    }
+
     [self performInitialWork];
 
     if (self.initialRecurringWorkDelay > 0) {
@@ -70,9 +79,7 @@
             }
 
             // Once there's no work getting done, go to sleep.
-            [self.condition lock];
-            [self.condition wait];
-            [self.condition unlock];
+            [self sleep];
         }
     }
 }
@@ -90,14 +97,23 @@
 }
 
 - (void) start {
+    self.isStarted = true;
     self.shouldEnd = false;
     [self.thread start];
 }
 
-- (void) wake {
+- (void) sleep {
     [self.condition lock];
-    [self.condition signal];
+    [self.condition wait];
     [self.condition unlock];
+}
+
+- (void) wake {
+    if (self.isStarted) {
+        [self.condition lock];
+        [self.condition signal];
+        [self.condition unlock];
+    }
 }
 
 - (void) destroy {

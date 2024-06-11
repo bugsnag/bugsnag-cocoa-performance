@@ -34,9 +34,13 @@
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
+		099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */; };
+		09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */; };
+		09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F025062BA08804007D9F73 /* ObjCURLSession.m */; };
 		09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */; };
+		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
@@ -92,10 +96,14 @@
 		096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIDeferredScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
+		099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAVAssetScenario.swift; sourceTree = "<group>"; };
+		09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
+		09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		09F025052BA08804007D9F73 /* ObjCURLSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCURLSession.h; sourceTree = "<group>"; };
 		09F025062BA08804007D9F73 /* ObjCURLSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCURLSession.m; sourceTree = "<group>"; };
 		09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkNullURLScenario.swift; sourceTree = "<group>"; };
+		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -198,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
+				099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */,
 				CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */,
 				960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */,
 				9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */,
@@ -206,6 +215,7 @@
 				CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */,
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */,
+				09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */,
 				CB3477172901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift */,
 				96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */,
 				CBC90CE329D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift */,
@@ -224,6 +234,7 @@
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
+				09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
@@ -238,6 +249,7 @@
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
+				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -337,6 +349,8 @@
 				09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */,
 				09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
+				09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */,
+				09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				01FE4DA928E1AEBD00D1F239 /* AppDelegate.swift in Sources */,
@@ -349,6 +363,7 @@
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
 				CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */,
+				099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
@@ -367,6 +382,7 @@
 				CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */,
 				CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */,
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,
+				09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
@@ -541,7 +557,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.PerformanceFixture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.cocoaperformance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";
@@ -573,7 +589,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.PerformanceFixture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.cocoaperformance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";

@@ -72,13 +72,15 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         return;
     }
 
+    NSError *errorFromGetRequest = nil;
+    auto request = getTaskRequest(task, &errorFromGetRequest);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     if (task.error != nil || task.response == nil || httpResponse.statusCode == 0) {
         return;
     }
 
-    if (self.baseEndpointStr.length > 0 && [task.originalRequest.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
+    if (self.baseEndpointStr.length > 0 && [request.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
         return;
     }
 
@@ -88,42 +90,30 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     }
 
     objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(task, metrics)];
+    [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
     [span endWithEndTime:metrics.taskInterval.endDate];
 }
 
 @end
 
 NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+                                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                                               std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
 : isEnabled_(true)
 , isEarlySpansPhase_(true)
 , tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider)
+, networkHeaderInjector_(networkHeaderInjector)
 , earlySpans_([NSMutableArray new])
 , delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer_
                                               spanAttributesProvider:spanAttributesProvider_])
-, checkIsEnabled_(^() {
-    return isEnabled_;
-})
-, onSessionTaskResume_(^(NSURLSessionTask *task) {
-    if (!isEnabled_) {
-        return;
+, checkIsEnabled_(^() { return isEnabled_; })
+, onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
+, networkRequestCallback_(
+    ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+        return info;
     }
-    if ([task.currentRequest.URL.scheme isEqualToString:@"file"]) {
-        return;
-    }
-    SpanOptions options;
-    options.makeCurrentContext = false;
-    auto span = tracer_->startNetworkSpan(task.originalRequest.URL, task.originalRequest.HTTPMethod, options);
-    if (span != nil) {
-        objc_setAssociatedObject(task, associatedNetworkSpanKey, span,
-                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-        if (isEarlySpansPhase_) {
-            markEarlySpan(span);
-        }
-    }
-})
+)
 {}
 
 void NetworkInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
@@ -154,6 +144,11 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
 
     isEnabled_ &= config.autoInstrumentNetworkRequests;
 
+    auto networkRequestCallback = config.networkRequestCallback;
+    if (networkRequestCallback != nullptr) {
+        networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
+    }
+    propagateTraceParentToUrlsMatching_ = config.propagateTraceParentToUrlsMatching;
     endEarlySpansPhase();
 }
 
@@ -169,11 +164,90 @@ void NetworkInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcep
 
 void NetworkInstrumentation::endEarlySpansPhase() noexcept {
     std::lock_guard<std::mutex> guard(earlySpansMutex_);
-    if (!isEnabled_) {
-        for (BugsnagPerformanceSpan *span: earlySpans_) {
+    isEarlySpansPhase_ = false;
+    auto spans = earlySpans_;
+    earlySpans_ = nil;
+    for (BugsnagPerformanceSpan *span: spans) {
+        auto info = [BugsnagPerformanceNetworkRequestInfo new];
+        NSString *urlString = [span getAttribute:spanAttributesProvider_->httpUrlAttributeKey()];
+        info.url = [NSURL URLWithString:urlString];
+        // We have to check again because the real callback might not have been set initially.
+        info = networkRequestCallback_(info);
+        if (info.url != nil) {
+            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+        } else {
             tracer_->cancelQueuedSpan(span);
         }
     }
-    earlySpans_ = nil;
-    isEarlySpansPhase_ = false;
+}
+
+bool NetworkInstrumentation::canTraceTask(NSURLSessionTask *task) noexcept {
+    NSURLRequest *req = getTaskCurrentRequest(task, nil);
+    if (req == nil) {
+        // We still want to trace the task and report an error.
+        return true;
+    }
+
+    NSURL *url = req.URL;
+    if (url == nil) {
+        // We still want to trace the task and report an error.
+        return true;
+    }
+
+    if ([url.scheme isEqualToString:@"file"]) {
+        BSGLogTrace(@"Task %@ has forbidden file scheme in URL %@", task.class, url);
+        // Don't track local activity.
+        return false;
+    }
+
+    return true;
+}
+
+void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
+    if (!canTraceTask(task)) {
+        BSGLogDebug(@"We cannot trace task %@", task.class);
+        return;
+    }
+
+    NSError *errorFromGetRequest = nil;
+    auto req = getTaskRequest(task, &errorFromGetRequest);
+    auto info = [BugsnagPerformanceNetworkRequestInfo new];
+    info.url = req.URL;
+    BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Got request from task %@ with req %@, URL %@ and error %@", task.class, req, info.url, errorFromGetRequest);
+    bool userVetoedTracing = false;
+    if (info.url != nil) {
+        info = networkRequestCallback_(info);
+        userVetoedTracing = info.url == nil;
+        BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: URL after callback is %@", info.url);
+    }
+
+    BugsnagPerformanceSpan *span = nil;
+
+    // Nonnull url signals that we must trace this request.
+    // Or if we had an error and couldn't get the url, we trace this request.
+    if (!userVetoedTracing) {
+        BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Tracing task %@, url %@", task.class, info.url);
+        SpanOptions options;
+        options.makeCurrentContext = false;
+        span = tracer_->startNetworkSpan(req.HTTPMethod, options);
+        if (info.url == nil) {
+            // We couldn't get the request URL, so the metrics phase won't happen either.
+            // As a fallback, make it end the span when it gets dropped and destroyed.
+            [span endOnDestroy];
+        }
+        [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
+        if (span != nil) {
+            objc_setAssociatedObject(task, associatedNetworkSpanKey, span,
+                                     OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            if (isEarlySpansPhase_) {
+                markEarlySpan(span);
+            }
+        }
+    }
+
+    networkHeaderInjector_->injectTraceParentIfMatches(task, span);
 }

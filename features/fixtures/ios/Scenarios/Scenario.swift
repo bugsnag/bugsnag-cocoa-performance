@@ -25,8 +25,6 @@ class Scenario: NSObject {
 
     func configure() {
         logDebug("Scenario.configure()")
-        // Make sure the initial P value has time to be fully received before sending spans
-        config.internal.initialRecurringWorkDelay = 0.5
         config.internal.clearPersistenceOnStart = true
         config.internal.autoTriggerExportOnBatchSize = 1
         config.apiKey = "12312312312312312312312312312312"
@@ -55,8 +53,31 @@ class Scenario: NSObject {
         logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
             forName: Bundle.main.bundleIdentifier!)
+        let cachesUrl = FileManager.default.urls(for: .cachesDirectory, in: .allDomainsMask).first!
+        for file in try! FileManager.default.contentsOfDirectory(at: cachesUrl, includingPropertiesForKeys: nil) {
+            try! FileManager.default.removeItem(at: file)
+        }
     }
-    
+
+    func splitArgs(args: String) -> [String] {
+        return args.split(separator: ",").map(String.init)
+    }
+
+    func configureBugsnag(path: String, value: String) {
+        logDebug("Scenario.configureBugsnag()")
+        switch path {
+        case "propagateTraceParentToUrlsMatching":
+            var regexes: Set<NSRegularExpression> = []
+            for reStr in splitArgs(args: value) {
+                regexes.insert(try! NSRegularExpression(pattern: reStr))
+            }
+            config.propagateTraceParentToUrlsMatching = regexes
+            break
+        default:
+            fatalError("\(path): Unknown configuration path")
+        }
+    }
+
     func startBugsnag() {
         logDebug("Scenario.startBugsnag()")
         performAndReportDuration({

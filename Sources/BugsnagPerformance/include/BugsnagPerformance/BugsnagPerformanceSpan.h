@@ -28,7 +28,9 @@ OBJC_EXPORT
 
 - (instancetype)init NS_UNAVAILABLE;
 
-- (void)abort;
+- (void)abortIfOpen;
+
+- (void)abortUnconditionally;
 
 - (void)end;
 

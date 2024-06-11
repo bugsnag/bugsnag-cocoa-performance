@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 1.6.0 (2024-06-11)
+
+### Enhancements
+
+* Auto-inject OTLP traceparent headers into network requests sent via URLSession. [259](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/259)
+
+* Added support for trace and span IDs to be added to bugsnag-cocoa error notifications if the library is present. [263](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/263)
+
+### Bug fixes
+
+* When we detect a long delay after viewDidLayoutSubviews where viewDidAppear still hasn't been called, assume that this edge case has been triggered and use the time of viewDidLayoutSubviews instead. [257](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/257)
+
+* Detect app backgrounding earlier to detect interrupted app starts and cancel their spans (which would otherwise be VERY long). [262](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/262)
+
+* Workaround for badly behaved NSURLSessionTask classes to avoid a crash. [267](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/267)
+
+* Removed duplicate makeCurrentContext check that was leading to a memory leak. [268](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/268)
+
 ## 1.5.0 (2024-03-18)
 
 ### Enhancements

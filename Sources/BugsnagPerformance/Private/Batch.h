@@ -12,6 +12,7 @@
 #import "BugsnagPerformanceConfiguration+Private.h"
 #import "SpanData.h"
 #import "PhasedStartup.h"
+#import "Utils.h"
 
 #import <memory>
 #import <mutex>
@@ -40,6 +41,7 @@ public:
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
     void add(std::shared_ptr<SpanData> span) noexcept {
+        BSGLogDebug(@"Batch:add(%@)", span->name);
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
@@ -50,11 +52,13 @@ public:
             }
         }
         if (isFull) {
+            BSGLogTrace(@"Batch:add: batch is full");
             onBatchFull();
         }
     }
 
     void removeSpan(TraceId traceId, SpanId spanId) noexcept {
+        BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx)", traceId.hi, traceId.lo, spanId);
         std::lock_guard<std::mutex> guard(mutex_);
 
         if (spans_->empty()) {
@@ -83,14 +87,17 @@ public:
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
     std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain(bool force) noexcept {
+        BSGLogDebug(@"Batch:drain(force:%s)", force ? "yes" : "no");
         std::lock_guard<std::mutex> guard(mutex_);
         if (!drainIsAllowed_ && !force) {
+            BSGLogDebug(@"Batch:drain: not currently allowed");
             return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
         }
         drainIsAllowed_ = false;
 
         auto batch = std::move(spans_);
         spans_ = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
+        BSGLogDebug(@"Batch:drain: draining %zu spans", batch->size());
         return batch;
     }
 
@@ -98,6 +105,7 @@ public:
      * Allows this batch's spans to be drained once.
      */
     void allowDrain() noexcept {
+        BSGLogDebug(@"Batch:allowDrain()");
         std::lock_guard<std::mutex> guard(mutex_);
         drainIsAllowed_ = true;
     }

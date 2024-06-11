@@ -14,8 +14,6 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 
-static NSString *httpUrlAttributeKey = @"http.url";
-
 using namespace bugsnag;
 
 Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
@@ -24,7 +22,6 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
-, earlyNetworkSpans_([NSMutableArray new])
 , prewarmSpans_([NSMutableArray new])
 , potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
 , batch_(batch)
@@ -37,19 +34,12 @@ Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
 }
 
 void
-Tracer::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    auto networkRequestCallback = config.networkRequestCallback;
-    if (networkRequestCallback != nullptr) {
-        networkRequestCallback_ = networkRequestCallback;
-    }
-    endEarlyNetworkSpansPhase();
-}
-
-void
 Tracer::start() noexcept {
+    BSGLogDebug(@"Tracer::start()");
     // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
     // Now that the sampler has been configured, re-sample everything.
     auto unsampledBatch = batch_->drain(true);
+    BSGLogTrace(@"Tracer::start: initial unsampled batch with %zu items", unsampledBatch->size());
     for (auto spanData: *unsampledBatch) {
         trySampleAndAddSpanToBatch(spanData);
     }
@@ -57,11 +47,13 @@ Tracer::start() noexcept {
 
 void
 Tracer::abortAllOpenSpans() noexcept {
-    potentiallyOpenSpans_->abortAll();
+    BSGLogDebug(@"Tracer::abortAllOpenSpans()");
+    potentiallyOpenSpans_->abortAllOpen();
 }
 
 void
 Tracer::sweep() noexcept {
+    BSGLogDebug(@"Tracer::sweep()");
     constexpr unsigned minEntriesBeforeCompacting = 10000;
     if (potentiallyOpenSpans_->count() >= minEntriesBeforeCompacting) {
         potentiallyOpenSpans_->compact();
@@ -70,17 +62,21 @@ Tracer::sweep() noexcept {
 
 BugsnagPerformanceSpan *
 Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
+    BSGLogDebug(@"Tracer::startSpan(%@, opts, %d)", name, defaultFirstClass);
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
     if (parentSpan == nil) {
+        BSGLogTrace(@"Tracer::startSpan: No parent specified; using current span");
         parentSpan = spanStackingHandler_->currentSpan();
     }
     auto traceId = parentSpan.traceId;
     if (traceId.value == 0) {
+        BSGLogTrace(@"Tracer::startSpan: No parent traceId; generating one");
         traceId = IdGenerator::generateTraceId();
     }
     BSGFirstClass firstClass = options.firstClass;
     if (firstClass == BSGFirstClassUnset) {
+        BSGLogTrace(@"Tracer::startSpan: firstClass not specified; using default of %d", defaultFirstClass);
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
@@ -91,10 +87,12 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
+        BSGLogDebug(@"Tracer::startSpan: callback for span %@", spanData->name);
         blockThis->spanStackingHandler_->didEnd(spanData->spanId);
         blockThis->trySampleAndAddSpanToBatch(spanData);
     })];
     if (options.makeCurrentContext) {
+        BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
     [span addAttributes:SpanAttributes::get()];
@@ -104,7 +102,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
 }
 
 void Tracer::trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
+    BSGLogDebug(@"Tracer::trySampleAndAddSpanToBatch(%@)", spanData->name);
     if (sampler_->sampled(*spanData)) {
+        BSGLogTrace(@"Tracer::trySampleAndAddSpanToBatch: Sampled successfully. Adding to batch.");
         batch_->add(spanData);
     }
 }
@@ -141,22 +141,9 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 }
 
 BugsnagPerformanceSpan *
-Tracer::startNetworkSpan(NSURL *url, NSString *httpMethod, SpanOptions options) noexcept {
-    auto info = [BugsnagPerformanceNetworkRequestInfo new];
-    info.url = url;
-    info = networkRequestCallback_(info);
-    url = info.url;
-    if (url == nil) {
-        return nil;
-    }
-
+Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
-    auto span = startSpan(name, options, BSGFirstClassUnset);
-    [span addAttribute:httpUrlAttributeKey withValue:(NSString *_Nonnull)url.absoluteString];
-    if (isCapturingEarlyNetworkSpans_) {
-        markEarlyNetworkSpan(span);
-    }
-    return span;
+    return startSpan(name, options, BSGFirstClassUnset);
 }
 
 BugsnagPerformanceSpan *
@@ -174,13 +161,15 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
+    BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
-        [span abort];
+        [span abortIfOpen];
         batch_->removeSpan(span.traceId, span.spanId);
     }
 }
 
 void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
+    BSGLogTrace(@"Tracer::markPrewarmSpan(%@)", span.name);
     std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
     if (willDiscardPrewarmSpans_) {
         [prewarmSpans_ addObject:span];
@@ -189,6 +178,7 @@ void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
 
 void
 Tracer::onPrewarmPhaseEnded(void) noexcept {
+    BSGLogDebug(@"Tracer::onPrewarmPhaseEnded()");
     std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
     willDiscardPrewarmSpans_ = false;
     for (BugsnagPerformanceSpan *span: prewarmSpans_) {
@@ -198,29 +188,4 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
         }
     }
     [prewarmSpans_ removeAllObjects];
-}
-
-void Tracer::markEarlyNetworkSpan(BugsnagPerformanceSpan *span) noexcept {
-    std::lock_guard<std::mutex> guard(earlyNetworkSpansMutex_);
-    if (isCapturingEarlyNetworkSpans_) {
-        [earlyNetworkSpans_ addObject:span];
-    }
-}
-
-void Tracer::endEarlyNetworkSpansPhase() noexcept {
-    std::lock_guard<std::mutex> guard(earlyNetworkSpansMutex_);
-    isCapturingEarlyNetworkSpans_ = false;
-    for (BugsnagPerformanceSpan *span: earlyNetworkSpans_) {
-        auto info = [BugsnagPerformanceNetworkRequestInfo new];
-        NSString *urlString = [span getAttribute:httpUrlAttributeKey];
-        info.url = [NSURL URLWithString:urlString];
-        // We have to check again because the real callback might not have been set initially.
-        info = networkRequestCallback_(info);
-        if (info.url != nil) {
-            [span addAttribute:httpUrlAttributeKey withValue:(NSString *_Nonnull)info.url.absoluteString];
-        } else {
-            cancelQueuedSpan(span);
-        }
-    }
-    [earlyNetworkSpans_ removeAllObjects];
 }

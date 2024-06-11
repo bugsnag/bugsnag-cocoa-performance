@@ -17,6 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,readwrite,strong) void (^onTransitionToForeground)(void);
 @property(nonatomic,readwrite,strong) void (^onTransitionToBackground)(void);
 
+@property(nonatomic,readwrite,strong) void (^onAppFinishedLaunching)(void);
+
 @end
 
 NS_ASSUME_NONNULL_END

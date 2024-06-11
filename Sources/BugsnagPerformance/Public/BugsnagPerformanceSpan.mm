@@ -10,13 +10,11 @@
 
 using namespace bugsnag;
 
-@implementation BugsnagPerformanceSpan {
-    std::unique_ptr<Span> _span;
-}
+@implementation BugsnagPerformanceSpan
 
-- (instancetype)initWithSpan:(std::unique_ptr<Span>)span {
+- (instancetype)initWithSpan:(std::shared_ptr<Span>)span {
     if ((self = [super init])) {
-        _span = std::move(span);
+        self.span = span;
     }
     return self;
 }
@@ -27,75 +25,80 @@ using namespace bugsnag;
     }
 }
 
-// We want direct ivar access to avoid accessors copying unique_ptrs
-#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+- (void)abortIfOpen {
+    self.span->abortIfOpen();
+}
 
-- (void)abort {
-    _span->abort();
+- (void)abortUnconditionally {
+    self.span->abortUnconditionally();
 }
 
 - (void)end {
-    _span->end(CFABSOLUTETIME_INVALID);
+    self.span->end(CFABSOLUTETIME_INVALID);
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
-    _span->end(dateToAbsoluteTime(endTime));
+    self.span->end(dateToAbsoluteTime(endTime));
 }
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime {
-    _span->end(endTime);
+    self.span->end(endTime);
+}
+
+- (void)endOnDestroy {
+    self.span->spanDestroyAction = EndOnSpanDestroy;
 }
 
 - (TraceId)traceId {
-    return _span->traceId();
+    return self.span->traceId();
 }
 
 - (SpanId)spanId {
-    return _span->spanId();
+    return self.span->spanId();
 }
 
 - (SpanId)parentId {
-    return _span->parentId();
+    return self.span->parentId();
 }
 
 - (NSString *)name {
-    return _span->name();
+    return self.span->name();
 }
 
 - (NSDate *)startTime {
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->startTime()];
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.span->startTime()];
 }
 
 - (NSDate *)endTime {
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:_span->endTime()];
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.span->endTime()];
 }
 
 - (void)updateStartTime:(NSDate *)startTime {
-    _span->updateStartTime(dateToAbsoluteTime(startTime));
+    self.span->updateStartTime(dateToAbsoluteTime(startTime));
 }
 
 - (void)updateName:(NSString *)name {
-    _span->updateName(name);
+    self.span->updateName(name);
 }
 
 - (BOOL)isValid {
-    return !_span->isEnded();
+    return !self.span->isEnded();
 }
 
 - (void)addAttribute:(NSString *)attributeName withValue:(id)value {
-    _span->addAttribute(attributeName, value);
+    self.span->addAttribute(attributeName, value);
 }
 
 - (void)addAttributes:(NSDictionary *)attributes {
-    _span->addAttributes(attributes);
+    self.span->addAttributes(attributes);
 }
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value {
-    return _span->hasAttribute(attributeName, value);
+    return self.span->hasAttribute(attributeName, value);
 }
 
 - (id)getAttribute:(NSString *)attributeName {
-    return _span->getAttribute(attributeName);
+    return self.span->getAttribute(attributeName);
 }
 
 @end

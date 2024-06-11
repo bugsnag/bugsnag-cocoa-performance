@@ -54,10 +54,18 @@ public:
         }
     }
 
-    void abortAll() noexcept {
+    void abortAllUnconditionally() noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
         for (BSGWeakSpanPointer *ptr in spans_) {
-            [ptr.span abort];
+            [ptr.span abortUnconditionally];
+        }
+        [spans_ removeAllObjects];
+    }
+
+    void abortAllOpen() noexcept {
+        std::lock_guard<std::mutex> guard(mutex_);
+        for (BSGWeakSpanPointer *ptr in spans_) {
+            [ptr.span abortIfOpen];
         }
         [spans_ removeAllObjects];
     }

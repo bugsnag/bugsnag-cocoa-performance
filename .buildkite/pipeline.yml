@@ -57,7 +57,7 @@ steps:
     steps:
       - label: "iOS 17 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.0.1 DEVICE="iPhone 14"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.2 DEVICE="iPhone 14"
         plugins:
           artifacts#v1.5.0:
             upload:
@@ -314,7 +314,6 @@ steps:
   #
   # BrowserStack
   # TODO - To be moved to BitBar once they provide iOS 17.
-  #
   - label: ":browserstack: iOS 17 E2E Tests"
     depends_on:
       - ios_fixture

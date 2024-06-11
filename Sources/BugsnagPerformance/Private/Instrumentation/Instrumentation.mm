@@ -33,3 +33,7 @@ void Instrumentation::start() noexcept {
     viewLoadInstrumentation_->start();
     networkInstrumentation_->start();
 }
+
+void Instrumentation::abortAppStartupSpans() noexcept {
+    appStartupInstrumentation_->abortAllSpans();
+}

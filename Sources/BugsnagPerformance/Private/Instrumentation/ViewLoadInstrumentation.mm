@@ -112,6 +112,30 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     endEarlySpanPhase();
 }
 
+BugsnagPerformanceSpan *ViewLoadInstrumentation::getOverallSpan(UIViewController *viewController) noexcept {
+    if (viewController != nil) {
+        return objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
+    }
+    return nil;
+}
+
+void ViewLoadInstrumentation::setOverallSpan(UIViewController *viewController, BugsnagPerformanceSpan *span) noexcept {
+    objc_setAssociatedObject(viewController, &kAssociatedViewLoadSpan, span,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+void ViewLoadInstrumentation::endOverallSpan(UIViewController *viewController) noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+
+    BugsnagPerformanceSpan *span = getOverallSpan(viewController);
+    // Prevent calling -[BugsnagPerformanceSpan end] more than once.
+    setOverallSpan(viewController, nil);
+
+    [span end];
+}
+
 void
 ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     if (!canCreateSpans(viewController)) {
@@ -130,8 +154,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     auto instrumentationState = [ViewLoadInstrumentationState new];
     instrumentationState.loadViewPhaseSpanCreated = YES;
 
-    objc_setAssociatedObject(viewController, &kAssociatedViewLoadSpan, span,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    setOverallSpan(viewController, span);
     objc_setAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState, instrumentationState,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -142,29 +165,16 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
         return;
     }
 
-    endViewLoadSpan(viewController);
+    endOverallSpan(viewController);
 }
 
-void ViewLoadInstrumentation::endViewLoadSpan(UIViewController *viewController) noexcept {
-    if (!isEnabled_) {
-        return;
-    }
-
-    BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
-    [span end];
-
-    // Prevent calling -[BugsnagPerformanceSpan end] more than once.
-    objc_setAssociatedObject(viewController, &kAssociatedViewLoadSpan, nil,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-void ViewLoadInstrumentation::endViewAppearingSpan(UIViewController *viewController) noexcept {
+void ViewLoadInstrumentation::endViewAppearingSpan(UIViewController *viewController, CFAbsoluteTime atTime) noexcept {
     if (!isEnabled_) {
         return;
     }
 
     BugsnagPerformanceSpan *span = objc_getAssociatedObject(viewController, &kAssociatedViewAppearingSpan);
-    [span end];
+    [span endWithAbsoluteTime:atTime];
 
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     objc_setAssociatedObject(viewController, &kAssociatedViewAppearingSpan, nil,
@@ -311,8 +321,7 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
         return nullptr;
     }
     auto name = nameForViewController(viewController);
-    BugsnagPerformanceSpan *parentViewLoadSpan = objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
-    auto span = tracer_->startViewLoadPhaseSpan(name, phase, parentViewLoadSpan);
+    auto span = tracer_->startViewLoadPhaseSpan(name, phase, getOverallSpan(viewController));
     [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 
     if (isEarlySpanPhase_) {
@@ -358,7 +367,7 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewDidLoad = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidLoadPhaseSpanCreated) {
+        if (getOverallSpan(self) == nil || !(*isEnabled) || instrumentationState.viewDidLoadPhaseSpanCreated) {
             if (viewDidLoad) {
                 reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
             }
@@ -382,8 +391,8 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewWillAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        BugsnagPerformanceSpan *viewLoadSpan = objc_getAssociatedObject(self, &kAssociatedViewLoadSpan);
-        if (viewLoadSpan == nil || !(*isEnabled) || instrumentationState.viewWillAppearPhaseSpanCreated) {
+        BugsnagPerformanceSpan *overallSpan = getOverallSpan(self);
+        if (overallSpan == nil || !(*isEnabled) || instrumentationState.viewWillAppearPhaseSpanCreated) {
             if (viewWillAppear) {
                 reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
             }
@@ -396,7 +405,7 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
-        adjustSpanIfPreloaded(viewLoadSpan, instrumentationState, [span startTime], self);
+        adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -409,13 +418,13 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewDidAppear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidAppearPhaseSpanCreated) {
+        if (getOverallSpan(self) == nil || !(*isEnabled) || instrumentationState.viewDidAppearPhaseSpanCreated) {
             if (viewDidAppear) {
                 reinterpret_cast<void (*)(id, SEL, BOOL)>(viewDidAppear)(self, selector, animated);
             }
             return;
         }
-        endViewAppearingSpan(self);
+        endViewAppearingSpan(self, CFAbsoluteTimeGetCurrent());
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidAppear");
         instrumentationState.viewDidAppearPhaseSpanCreated = YES;
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
@@ -433,7 +442,7 @@ ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewWillLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewWillLayoutSubviewsPhaseSpanCreated) {
+        if (getOverallSpan(self) == nil || !(*isEnabled) || instrumentationState.viewWillLayoutSubviewsPhaseSpanCreated) {
             if (viewWillLayoutSubviews) {
                 reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
             }
@@ -458,7 +467,7 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
     __block bool const * const isEnabled = &isEnabled_;
     __block IMP viewDidLayoutSubviews = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self) {
         ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(self, &kAssociatedViewLoadInstrumentationState);
-        if (objc_getAssociatedObject(self, &kAssociatedViewLoadSpan) == nil || !(*isEnabled) || instrumentationState.viewDidLayoutSubviewsPhaseSpanCreated) {
+        if (getOverallSpan(self) == nil || !(*isEnabled) || instrumentationState.viewDidLayoutSubviewsPhaseSpanCreated) {
             if (viewDidLayoutSubviews) {
                 reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
             }
@@ -472,6 +481,16 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
         }
         [span end];
+        auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
+        __block UIViewController *blockSelf = self;
+        // If the overall span still hasn't ended after 10 seconds, use the time from viewDidLayoutSubviews
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            auto overallSpan = getOverallSpan(blockSelf);
+            if (overallSpan.isValid) {
+                [overallSpan endWithAbsoluteTime:subviewsDidLayoutAtTime];
+            }
+            endViewAppearingSpan(self, subviewsDidLayoutAtTime);
+        });
     });
 }
 

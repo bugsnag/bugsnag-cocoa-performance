@@ -36,19 +36,24 @@
 - (void)testNoTasks {
     auto workerTester = [WorkerTester workerWithInitialTaskCount:0
                                               recurringTaskCount:0];
-    
+
     auto worker = workerTester.worker;
-    
+
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
-    
+
     [worker start];
-    
+
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
-    
+
     [worker wake];
-    
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+
+    [worker wake];
+
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
 }
@@ -63,6 +68,12 @@
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
     
     [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+
+    [worker wake];
     [NSThread sleepForTimeInterval:0.1];
     
     XCTAssertEqual(workerTester.initialTaskCounter, 1);
@@ -86,6 +97,12 @@
     
     [worker start];
     [NSThread sleepForTimeInterval:0.1];
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
     
     XCTAssertEqual(workerTester.initialTaskCounter, 0);
     XCTAssertEqual(workerTester.recurringTaskCounter, 1);
@@ -108,6 +125,12 @@
     
     [worker start];
     [NSThread sleepForTimeInterval:0.1];
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+
+    [worker wake];
+    [NSThread sleepForTimeInterval:0.1];
     
     XCTAssertEqual(workerTester.initialTaskCounter, 1);
     XCTAssertEqual(workerTester.recurringTaskCounter, 1);
@@ -129,6 +152,12 @@
     XCTAssertEqual(workerTester.recurringTaskCounter, 0);
     
     [worker start];
+    [NSThread sleepForTimeInterval:0.1];
+
+    XCTAssertEqual(workerTester.initialTaskCounter, 0);
+    XCTAssertEqual(workerTester.recurringTaskCounter, 0);
+
+    [worker wake];
     [NSThread sleepForTimeInterval:0.1];
     
     XCTAssertEqual(workerTester.initialTaskCounter, 2);

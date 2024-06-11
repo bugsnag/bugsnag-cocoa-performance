@@ -14,11 +14,15 @@ public:
     SpanAttributesProvider() noexcept;
     ~SpanAttributesProvider() {};
     
-    NSDictionary *networkSpanAttributes(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
+    NSDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
+    NSDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
+                                        NSError *encounteredError) noexcept;
     NSDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
+
+    static NSString *httpUrlAttributeKey();
 };
 }

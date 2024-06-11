@@ -15,6 +15,7 @@
 #define BSG_LOGLEVEL_WARN 20
 #define BSG_LOGLEVEL_INFO 30
 #define BSG_LOGLEVEL_DEBUG 40
+#define BSG_LOGLEVEL_TRACE 50
 
 #ifndef BSG_LOG_LEVEL
 #define BSG_LOG_LEVEL BSG_LOGLEVEL_INFO
@@ -44,6 +45,12 @@
 #define BSGLogDebug(...)    NSLog(@ BSG_LOG_PREFIX " [DEBUG] " __VA_ARGS__)
 #else
 #define BSGLogDebug(format, ...)
+#endif
+
+#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_TRACE
+#define BSGLogTrace(...)    NSLog(@ BSG_LOG_PREFIX " [TRACE] " __VA_ARGS__)
+#else
+#define BSGLogTrace(format, ...)
 #endif
 
 namespace bugsnag {
@@ -100,5 +107,78 @@ static inline dispatch_time_t absoluteTimeToNanoseconds(CFAbsoluteTime time) {
 static inline dispatch_time_t intervalToNanoseconds(NSTimeInterval interval) {
     return (dispatch_time_t) (interval * NSEC_PER_SEC);
 }
+
+/**
+ * Try to fetch the original request from a task. Fills out error if the task throws an exception and we can't get the request.
+ *
+ * This function is necessary because Apple deliberately breaks their own public API by throwing an exception
+ * to signal that something isn't supported by a particular subclass (and also doesn't document this).
+ */
+static inline NSURLRequest *getTaskOriginalRequest(NSURLSessionTask *task, NSError **error) {
+    NSURLRequest *req = nil;
+
+    try {
+        req = task.originalRequest;
+        BSGLogTrace(@"Fetched originalRequest %@ from task %@", req, task);
+    } catch(NSException *e) {
+        if (error != nil) {
+            NSString *errorDesc = [NSString stringWithFormat:
+                                   @"%@ threw exception %@ while accessing originalRequest",
+                                   e,
+                                   task.class];
+            *error = [NSError errorWithDomain:@"com.bugsnag.bugsnag-cocoa-performance"
+                                         code:100
+                                     userInfo:@{NSLocalizedDescriptionKey:errorDesc}];
+            BSGLogTrace(@"Failed to fetch originalRequest from task %@: %@", task, *error);
+        }
+    }
+
+    return req;
+}
+
+/**
+ * Try to fetch the current request from a task. Fills out error
+ * if the task throws an exception and we can't get the request.
+ *
+ * This function is necessary because Apple deliberately breaks their own public API by throwing an exception
+ * to signal that something isn't supported by a particular subclass (and also doesn't document this).
+ */
+static inline NSURLRequest *getTaskCurrentRequest(NSURLSessionTask *task, NSError **error) {
+    NSURLRequest *req = nil;
+
+    try {
+        req = task.currentRequest;
+        BSGLogTrace(@"Fetched currentRequest %@ from task %@", req, task);
+    } catch(NSException *e) {
+        if (error != nil) {
+            NSString *errorDesc = [NSString stringWithFormat:
+                                   @"%@ threw exception %@ while accessing currentRequest",
+                                   e,
+                                   task.class];
+            *error = [NSError errorWithDomain:@"com.bugsnag.bugsnag-cocoa-performance"
+                                         code:100
+                                     userInfo:@{NSLocalizedDescriptionKey:errorDesc}];
+            BSGLogTrace(@"Failed to fetch currentRequest from task %@: %@", task, *error);
+        }
+    }
+
+    return req;
+}
+
+/**
+ * Try to fetch the original request from a task, falling back to the current request. Fills out error
+ * if the task throws an exception and we can't get the request.
+ *
+ * This function is necessary because Apple deliberately breaks their own public API by throwing an exception
+ * to signal that something isn't supported by a particular subclass (and also doesn't document this).
+ */
+static inline NSURLRequest *getTaskRequest(NSURLSessionTask *task, NSError **error) {
+    NSURLRequest *req = getTaskOriginalRequest(task, error);
+    if (req != nil) {
+        return req;
+    }
+    return getTaskCurrentRequest(task, error);
+}
+
 
 }
