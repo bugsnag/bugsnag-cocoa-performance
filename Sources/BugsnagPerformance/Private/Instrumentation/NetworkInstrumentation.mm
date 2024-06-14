@@ -75,17 +75,21 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     NSError *errorFromGetRequest = nil;
     auto request = getTaskRequest(task, &errorFromGetRequest);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
+    BSGLogDebug(@"BSGURLSessionPerformanceDelegate.URLSession:didFinishCollectingMetrics for URL %@", request.URL);
 
     if (task.error != nil || task.response == nil || httpResponse.statusCode == 0) {
+        BSGLogDebug(@"BSGURLSessionPerformanceDelegate.URLSession:didFinishCollectingMetrics: error %@, response %@, statusCode %ld", task.error, task.response, (long)httpResponse.statusCode);
         return;
     }
 
     if (self.baseEndpointStr.length > 0 && [request.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
+        BSGLogDebug(@"BSGURLSessionPerformanceDelegate.URLSession:didFinishCollectingMetrics: endpoint %@ has base %@", request.URL.absoluteString, self.baseEndpointStr);
         return;
     }
 
     auto span = (BugsnagPerformanceSpan *)objc_getAssociatedObject(task, associatedNetworkSpanKey);
     if (!span) {
+        BSGLogDebug(@"BSGURLSessionPerformanceDelegate.URLSession:didFinishCollectingMetrics: Failed to create span");
         return;
     }
 
