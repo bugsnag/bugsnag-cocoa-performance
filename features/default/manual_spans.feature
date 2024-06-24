@@ -137,8 +137,8 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
-  Scenario: Manually start a network span without setting callback
-    Given I run "ManualNetworkSpanCallbackNotSetScenario"
+  Scenario: Manually start a network span with callback set to nil
+    Given I run "ManualNetworkSpanCallbackSetToNilScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header is present

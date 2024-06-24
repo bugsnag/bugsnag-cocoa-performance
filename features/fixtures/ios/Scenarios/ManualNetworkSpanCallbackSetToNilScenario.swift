@@ -1,5 +1,5 @@
 //
-//  ManualNetworkSpanCallbackNotSetScenario.swift
+//  ManualNetworkSpanCallbackSetToNilScenario.swift
 //  Fixture
 //
 //  Created by Robert B on 21/06/2024.
@@ -8,8 +8,8 @@
 import BugsnagPerformance
 import os
 
-class MyCallbackNotSetNetworkDelegate: NSObject {
-    static let shared = MyCallbackNotSetNetworkDelegate()
+class MyCallbackSetToNilNetworkDelegate: NSObject {
+    static let shared = MyCallbackSetToNilNetworkDelegate()
     public let urlConfiguration = URLSessionConfiguration.default
     public var urlSession: URLSession!
  
@@ -19,18 +19,18 @@ class MyCallbackNotSetNetworkDelegate: NSObject {
     }
 }
 
-extension MyCallbackNotSetNetworkDelegate : URLSessionDataDelegate {
+extension MyCallbackSetToNilNetworkDelegate : URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didFinishCollecting metrics: URLSessionTaskMetrics) {
         BugsnagPerformance.reportNetworkRequestSpan(task: task, metrics: metrics)
     }
 }
 
 @objcMembers
-class ManualNetworkSpanCallbackNotSetScenario: Scenario {
+class ManualNetworkSpanCallbackSetToNilScenario: Scenario {
 
     func query(string: String) {
         let url = URL(string: string, relativeTo: fixtureConfig.reflectURL)!
-        MyCallbackNotSetNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
+        MyCallbackSetToNilNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
     }
     
     override func configure() {
