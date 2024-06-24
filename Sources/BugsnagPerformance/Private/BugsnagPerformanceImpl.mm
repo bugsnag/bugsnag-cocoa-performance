@@ -108,7 +108,11 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
-    networkRequestCallback_ = config.networkRequestCallback;
+    
+    auto networkRequestCallback = config.networkRequestCallback;
+    if (networkRequestCallback != nullptr) {
+        networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
+    }
 
     configuration_ = config;
     persistentState_->configure(config);

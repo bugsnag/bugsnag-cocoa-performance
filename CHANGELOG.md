@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.6.1 (2024-06-24)
+
+### Bug fixes
+
+* Fixed a crash on reportNetworkRequestSpan when networkRequestCallback is not set in the configuration. [277](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/277)
+
 ## 1.6.0 (2024-06-11)
 
 ### Enhancements
