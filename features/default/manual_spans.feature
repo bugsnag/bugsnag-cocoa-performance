@@ -137,6 +137,28 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
+  Scenario: Manually start a network span with callback set to nil
+    Given I run "ManualNetworkSpanCallbackSetToNilScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header is present
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * a span field "name" equals "[HTTP/GET]"
+    * a span string attribute "http.flavor" exists
+    * a span string attribute "http.method" equals "GET"
+    * a span integer attribute "http.status_code" is greater than 0
+    * a span integer attribute "http.response_content_length" is greater than 0
+    * a span string attribute "net.host.connection.type" equals "wifi"
+    * a span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * a span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * a span field "kind" equals 1
+    * a span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" does not exist
+
   Scenario: Manually start and end a span field "with" batching
     Given I run "BatchingScenario"
     And I wait for 2 spans
