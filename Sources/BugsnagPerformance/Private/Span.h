@@ -51,11 +51,11 @@ public:
     ~Span() {
         switch(spanDestroyAction) {
             case AbortOnSpanDestroy:
-                BSGLogDebug(@"Span::~Span(): for span %@. Action = Abort", data_->name);
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = Abort (span is currently %@)", data_->name, isEnded_ ? @"ended" : @"open");
                 abortIfOpen();
                 break;
             case EndOnSpanDestroy:
-                BSGLogDebug(@"Span::~Span(): for span %@. Action = End", data_->name);
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = End (span is currently %@)", data_->name, isEnded_ ? @"ended" : @"open");
                 end(CFAbsoluteTimeGetCurrent());
                 break;
         }
@@ -105,7 +105,7 @@ public:
     }
 
     void end(CFAbsoluteTime time) noexcept {
-        BSGLogDebug(@"Span::end(%f)", time);
+        BSGLogDebug(@"Span::end(%f): %@", time, data_->name);
         bool expected = false;
         if (!isEnded_.compare_exchange_strong(expected, true)) {
             // compare_exchange_strong() returns true only if isEnded_ was exchanged (from false to true).
