@@ -1,14 +1,23 @@
 env:
   LANG: "en_GB.UTF-8"
-  XCODE_VERSION: "15.2.0"
+  XCODE_VERSION: "15.3.0"
 
 agents:
-  queue: macos-13-arm
+  queue: macos-14
 
 steps:
 
   - group: ":hammer: Builds"
     steps:
+      - label: "XCFramework"
+        timeout_in_minutes: 20
+        commands:
+          - make build_xcframework
+        plugins:
+          - artifacts#v1.9.3:
+              upload: "build/xcframeworks/products/BugsnagPerformance.xcframework"
+              compressed: xcframework.zip
+
       - label: "Carthage"
         commands:
           - bundle install
@@ -59,14 +68,14 @@ steps:
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.2 DEVICE="iPhone 14"
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             upload:
               - "logs/*"
       - label: "iOS 13 Unit Tests"
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             upload:
               - "logs/*"
         agents:
@@ -86,7 +95,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -115,7 +124,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -144,7 +153,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -173,7 +182,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -204,7 +213,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -232,7 +241,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -262,7 +271,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -290,7 +299,7 @@ steps:
         agents:
           queue: opensource
         plugins:
-          artifacts#v1.5.0:
+          artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -321,7 +330,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.5.0:
+      artifacts#v1.9.3:
         download: "features/fixtures/ios/output/bs_ipa_url.txt"
         upload:
           - "maze_output/failed/**/*"
