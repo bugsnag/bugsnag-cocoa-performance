@@ -37,7 +37,11 @@ void NetworkHeaderInjector::injectHeaders(NSURLSessionTask *task, BugsnagPerform
         return;
     }
 
-    NSURLRequest *request = task.currentRequest;
+    NSURLRequest *request = getTaskCurrentRequest(task, nil);
+    if (request == nil) {
+        return;
+    }
+
     if ([request isKindOfClass:NSMutableURLRequest.class]) {
         NSMutableURLRequest *mutableRequest = (NSMutableURLRequest *)request;
         [mutableRequest setValue:headerValue forHTTPHeaderField:headerName];
@@ -64,7 +68,7 @@ BOOL NetworkHeaderInjector::shouldAddTracePropagationHeaders(NSURL *url) noexcep
 }
 
 void NetworkHeaderInjector::injectTraceParentIfMatches(NSURLSessionTask *task, BugsnagPerformanceSpan * _Nullable span) {
-    if (shouldAddTracePropagationHeaders(task.originalRequest.URL)) {
+    if (shouldAddTracePropagationHeaders(getTaskRequest(task, nil).URL)) {
         injectHeaders(task, span);
     }
 }

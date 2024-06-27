@@ -37,6 +37,7 @@ private:
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpansPhase() noexcept;
     void NSURLSessionTask_resume(NSURLSessionTask *task) noexcept;
+    bool canTraceTask(NSURLSessionTask *task) noexcept;
 
     bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;

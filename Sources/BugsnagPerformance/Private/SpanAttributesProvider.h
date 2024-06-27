@@ -14,8 +14,9 @@ public:
     SpanAttributesProvider() noexcept;
     ~SpanAttributesProvider() {};
     
-    NSDictionary *networkSpanUrlAttributes(NSURL *url) noexcept;
-    NSDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
+    NSDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
+    NSDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
+                                        NSError *encounteredError) noexcept;
     NSDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;

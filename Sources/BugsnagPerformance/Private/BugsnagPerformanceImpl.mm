@@ -14,6 +14,7 @@
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceCrossTalkAPI.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -107,7 +108,11 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
-    networkRequestCallback_ = config.networkRequestCallback;
+    
+    auto networkRequestCallback = config.networkRequestCallback;
+    if (networkRequestCallback != nullptr) {
+        networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
+    }
 
     configuration_ = config;
     persistentState_->configure(config);
@@ -221,6 +226,7 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
     auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
@@ -232,6 +238,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sendRetriesTask()");
     retryQueue_->sweep();
 
     auto retries = retryQueue_->list();
@@ -251,6 +258,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 }
 
 bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::sweepTracerTask()");
     tracer_->sweep();
     // Never auto-repeat this task, even if work was done; it can wait.
     return false;
@@ -263,6 +271,7 @@ void BugsnagPerformanceImpl::onFilesystemError() noexcept {
 }
 
 void BugsnagPerformanceImpl::onBatchFull() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onBatchFull()");
     wakeWorker();
 }
 
@@ -293,6 +302,7 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
+    BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
     batch_->allowDrain();
     wakeWorker();
 }
@@ -333,6 +343,7 @@ void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
 #pragma mark Utility
 
 void BugsnagPerformanceImpl::wakeWorker() noexcept {
+    BSGLogTrace(@"BugsnagPerformanceImpl::wakeWorker()");
     [worker_ wake];
 }
 
@@ -358,10 +369,13 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::uploadPackage(package, isRetry:%s)", isRetry ? "yes" : "no");
     if (!configuration_.shouldSendReports) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: !configuration_.shouldSendReports");
         return;
     }
     if (package == nullptr) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: package == nullptr");
         return;
     }
 
@@ -403,23 +417,15 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-void BugsnagPerformanceImpl::possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options) {
-    if (options.makeCurrentContext) {
-        spanStackingHandler_->push(span);
-    }
-}
-
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
     SpanOptions options;
     auto span = tracer_->startCustomSpan(name, options);
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startCustomSpan(name, options);
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -427,7 +433,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -435,7 +440,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
     return span;
 }
 
@@ -445,7 +449,6 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
     [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
-    possiblyMakeSpanCurrent(span, options);
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
@@ -480,17 +483,24 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     BugsnagPerformanceSpan *span = nil;
 
+    NSError *errorFromGetRequest = nil;
+    NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
+
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
-    info.url = task.originalRequest.URL;
-    info = networkRequestCallback_(info);
+    info.url = req.URL;
+    bool userVetoedTracing = false;
     if (info.url != nil) {
+        info = networkRequestCallback_(info);
+        userVetoedTracing = info.url == nil;
+    }
+    if (!userVetoedTracing) {
         auto interval = metrics.taskInterval;
-        auto name = task.originalRequest.HTTPMethod;
+        auto name = req.HTTPMethod;
         SpanOptions options;
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
-        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics)];
+        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }
 }

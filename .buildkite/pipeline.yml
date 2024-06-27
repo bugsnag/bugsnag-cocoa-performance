@@ -314,7 +314,6 @@ steps:
   #
   # BrowserStack
   # TODO - To be moved to BitBar once they provide iOS 17.
-  #
   - label: ":browserstack: iOS 17 E2E Tests"
     depends_on:
       - ios_fixture

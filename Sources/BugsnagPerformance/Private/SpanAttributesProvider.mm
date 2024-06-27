@@ -103,15 +103,21 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
 NSDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
-                                              NSURLSessionTaskMetrics *metrics) noexcept {
+                                              NSURLSessionTaskMetrics *metrics,
+                                              NSError *encounteredError) noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::networkSpanAttributes(%@, task, metrics, error)", url);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span.category"] = @"network";
     if (url != nil) {
         attributes[@"http.url"] = url.absoluteString;
     }
+    if (encounteredError != nil) {
+        BSGLogTrace(@"SpanAttributesProvider::networkSpanAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
+        attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
+    }
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
-    attributes[@"http.method"] = task.originalRequest.HTTPMethod;
+    attributes[@"http.method"] = getTaskRequest(task, nil).HTTPMethod;
     attributes[@"http.status_code"] = httpResponse ? @(httpResponse.statusCode) : @0;
     attributes[@"net.host.connection.type"] = getConnectionType(task, metrics);
     attributes[@"net.host.connection.subtype"] = getConnectionSubtype(attributes[@"net.host.connection.type"]);
@@ -121,12 +127,18 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
 }
 
 NSDictionary *
-SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url) noexcept {
+SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::networkSpanUrlAttributes(%@)", url);
+    NSMutableDictionary *attributes = [NSMutableDictionary new];
     NSString *urlString = url.absoluteString;
-    if (urlString == nil) {
-        return @{};
+    if (urlString != nil) {
+        attributes[@"http.url"] = urlString;
     }
-    return @{@"http.url": (NSString * _Nonnull)urlString};
+    if (encounteredError != nil) {
+        BSGLogTrace(@"SpanAttributesProvider::networkSpanUrlAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
+        attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
+    }
+    return attributes;
 }
 
 NSDictionary *

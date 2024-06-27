@@ -34,6 +34,7 @@
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
+		099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */; };
 		09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */; };
 		09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
@@ -45,6 +46,7 @@
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
 		967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */; };
+		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
 		CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */; };
@@ -95,6 +97,7 @@
 		096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIDeferredScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
+		099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAVAssetScenario.swift; sourceTree = "<group>"; };
 		09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
@@ -107,6 +110,7 @@
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
 		967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStageNotEnabledScenario.swift; sourceTree = "<group>"; };
+		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
 		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
@@ -204,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
+				099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */,
 				CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */,
 				960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */,
 				9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */,
@@ -230,6 +235,7 @@
 				CBC90C4229C466BD00280884 /* ForceUBSan.m */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
+				96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
 				09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
@@ -358,8 +364,10 @@
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
+				96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */,
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
 				CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */,
+				099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
@@ -553,7 +561,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.PerformanceFixture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.cocoaperformance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";
@@ -585,7 +593,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.PerformanceFixture;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.fixtures.cocoaperformance;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Fixture/Fixture-Bridging-Header.h";

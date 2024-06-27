@@ -7,6 +7,7 @@
 //
 
 #import "OtlpUploader.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -28,6 +29,7 @@ typedef NS_ENUM(NSInteger, HTTPStatusCode) {
 };
 
 void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) noexcept {
+    BSGLogDebug(@"OtlpUploader::upload(package, callback)");
     auto urlRequest = [NSMutableURLRequest requestWithURL:(NSURL *)endpoint_];
     [urlRequest setValue:apiKey_ forHTTPHeaderField:@"Bugsnag-Api-Key"];
 
@@ -54,11 +56,14 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
     [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest completionHandler:
       ^(__unused NSData *responseData, NSURLResponse *response, __unused NSError *taskError) {
         if (callback) {
-            callback(getUploadResult(response));
+            auto uploadResult = getUploadResult(response);
+            BSGLogDebug(@"OtlpUploader::upload: callback(%d)", uploadResult);
+            callback(uploadResult);
         }
         if (newProbabilityCallback_) {
             auto newProbability = getNewProbability(response);
             if (newProbability >= 0 && newProbability <= 1) {
+                BSGLogTrace(@"OtlpUploader::upload: newProbabilityCallback_(%f)", newProbability);
                 newProbabilityCallback_(newProbability);
             }
         }

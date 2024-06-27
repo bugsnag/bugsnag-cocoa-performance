@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime;
 
+- (void)endOnDestroy;
+
 - (SpanId)parentId;
 - (NSString *)name;
 - (void)updateName:(NSString *)name;
