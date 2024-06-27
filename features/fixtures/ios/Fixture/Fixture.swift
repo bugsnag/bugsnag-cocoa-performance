@@ -72,6 +72,10 @@ class Fixture: NSObject, CommandReceiver {
                                         args: command.args["arguments"] as! [String])
                 self.readyToReceiveCommand = true
                 break
+            case "background":
+                self.scenario?.enterBackground(forSeconds: Int(command.args["duration"] as! String)!)
+                self.readyToReceiveCommand = true
+                break
             case "noop":
                 self.readyToReceiveCommand = true
                 break

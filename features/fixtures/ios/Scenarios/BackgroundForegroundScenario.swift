@@ -13,16 +13,12 @@ class BackgroundForegroundScenario: Scenario {
 
     override func configure() {
         super.configure()
-        config.internal.autoTriggerExportOnBatchSize = 100
-        config.internal.performWorkInterval = 1000
+        config.internal.autoTriggerExportOnBatchSize = 1
     }
     
-    func onBackgrounded() {
-        BugsnagPerformance.startSpan(name: "BackgroundForegroundScenario").end()
-    }
-
     override func run() {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { _ in
+            logInfo("### Scenario: didEnterBackgroundNotification: Starting and ending 'BackgroundForegroundScenario' span")
             BugsnagPerformance.startSpan(name: "BackgroundForegroundScenario").end()
         }
     }
