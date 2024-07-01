@@ -14,7 +14,7 @@ namespace bugsnag {
 
 class SpanOptions {
 public:
-    SpanOptions(BugsnagPerformanceSpan *parentContext,
+    SpanOptions(BugsnagPerformanceSpanContext *parentContext,
                 CFAbsoluteTime startTime,
                 bool makeCurrentContext,
                 BSGFirstClass firstClass)
@@ -39,7 +39,7 @@ public:
                   BSGFirstClassUnset)
     {}
     
-    BugsnagPerformanceSpan *parentContext{nil};
+    BugsnagPerformanceSpanContext *parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeCurrentContext{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};

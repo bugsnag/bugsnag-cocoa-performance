@@ -61,6 +61,8 @@
 		096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
 		09856B9E2B9606A500620907 /* BugsnagPerformanceSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */; };
 		0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */; };
+		0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0987F2782C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm */; };
 		09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B473052B23087D0024CF11 /* WeakSpansList.h */; };
 		09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09B473092B2313570024CF11 /* WeakSpansListTests.mm */; };
 		09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */; };
@@ -294,6 +296,8 @@
 		09509B742ADFE9A900A358EC /* TracerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracerTests.mm; sourceTree = "<group>"; };
 		096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUIInstrumentation.swift; sourceTree = "<group>"; };
 		0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansList.mm; sourceTree = "<group>"; };
+		0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
+		0987F2782C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanContext.mm; sourceTree = "<group>"; };
 		09B473052B23087D0024CF11 /* WeakSpansList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeakSpansList.h; sourceTree = "<group>"; };
 		09B473092B2313570024CF11 /* WeakSpansListTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansListTests.mm; sourceTree = "<group>"; };
 		09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkHeaderInjector.h; sourceTree = "<group>"; };
@@ -496,9 +500,10 @@
 				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
 				0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */,
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
+				0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */,
 				CB7FD92F299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h */,
-				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
 				960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */,
+				0122C21829019770002D243C /* BugsnagPerformanceViewType.h */,
 			);
 			path = BugsnagPerformance;
 			sourceTree = "<group>";
@@ -511,6 +516,7 @@
 				CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */,
 				0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */,
 				0122C21E29019770002D243C /* BugsnagPerformanceSpan.mm */,
+				0987F2782C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm */,
 				CB7FD931299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m */,
 			);
 			path = Public;
@@ -807,6 +813,7 @@
 				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
 				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
+				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
@@ -1181,6 +1188,7 @@
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
+				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
