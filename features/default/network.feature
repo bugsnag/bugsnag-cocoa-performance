@@ -16,8 +16,10 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentNullNetworkCallbackScenario
     Given I run "AutoInstrumentNullNetworkCallbackScenario"
-    # Wait for our request plus the mazerunner requests
-    And I wait for 3 spans
+    # Wait for a long time because there can be a LOT of maze-runner related URL requests before the scenario starts.
+    And I wait for 20 seconds
+    # There will actually be any number of requests by this point since we're not filtering at all.
+    And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[HTTP/GET]"
