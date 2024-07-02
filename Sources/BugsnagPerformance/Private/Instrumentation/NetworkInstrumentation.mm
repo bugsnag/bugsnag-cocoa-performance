@@ -109,11 +109,6 @@ NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
                                               spanAttributesProvider:spanAttributesProvider_])
 , checkIsEnabled_(^() { return isEnabled_; })
 , onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
-, networkRequestCallback_(
-    ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
-        return info;
-    }
-)
 {}
 
 void NetworkInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
@@ -162,6 +157,12 @@ void NetworkInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcep
     [earlySpans_ addObject:span];
 }
 
+static bool didVetoTracing(NSURL * _Nullable originalUrl,
+                           BugsnagPerformanceNetworkRequestInfo * _Nullable info) noexcept {
+    // A user changing the request URL to nil signals a veto
+    return originalUrl != nil && info.url == nil;
+}
+
 void NetworkInstrumentation::endEarlySpansPhase() noexcept {
     std::lock_guard<std::mutex> guard(earlySpansMutex_);
     isEarlySpansPhase_ = false;
@@ -170,13 +171,22 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
     for (BugsnagPerformanceSpan *span: spans) {
         auto info = [BugsnagPerformanceNetworkRequestInfo new];
         NSString *urlString = [span getAttribute:spanAttributesProvider_->httpUrlAttributeKey()];
-        info.url = [NSURL URLWithString:urlString];
-        // We have to check again because the real callback might not have been set initially.
-        info = networkRequestCallback_(info);
-        if (info.url != nil) {
-            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
-        } else {
+        NSURL *originalUrl = [NSURL URLWithString:urlString];
+        info.url = originalUrl;
+        bool userVetoedTracing = false;
+        if (networkRequestCallback_) {
+            // We have to check again because the real callback might not have been set initially.
+            info = networkRequestCallback_(info);
+            userVetoedTracing = didVetoTracing(originalUrl, info);
+        }
+        if (userVetoedTracing) {
             tracer_->cancelQueuedSpan(span);
+        } else if (info.url == nil) {
+            // We couldn't get the request URL, so the metrics phase won't happen either.
+            // As a fallback, make it end the span when it gets dropped and destroyed.
+            [span endOnDestroy];
+        } else {
+            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
         }
     }
 }
@@ -219,16 +229,14 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
     info.url = req.URL;
     BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Got request from task %@ with req %@, URL %@ and error %@", task.class, req, info.url, errorFromGetRequest);
     bool userVetoedTracing = false;
-    if (info.url != nil) {
+    if (networkRequestCallback_) {
         info = networkRequestCallback_(info);
-        userVetoedTracing = info.url == nil;
         BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: URL after callback is %@", info.url);
+        userVetoedTracing = didVetoTracing(req.URL, info);
     }
 
     BugsnagPerformanceSpan *span = nil;
 
-    // Nonnull url signals that we must trace this request.
-    // Or if we had an error and couldn't get the url, we trace this request.
     if (!userVetoedTracing) {
         BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Tracing task %@, url %@", task.class, info.url);
         SpanOptions options;
@@ -238,8 +246,9 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             // We couldn't get the request URL, so the metrics phase won't happen either.
             // As a fallback, make it end the span when it gets dropped and destroyed.
             [span endOnDestroy];
+        } else {
+            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }
-        [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         if (span != nil) {
             objc_setAssociatedObject(task, associatedNetworkSpanKey, span,
                                      OBJC_ASSOCIATION_RETAIN_NONATOMIC);

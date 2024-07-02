@@ -3,6 +3,10 @@ Changelog
 
 ## TBD
 
+### Bug fixes
+
+* Handle case where the user manually sets the network callback to nil. [281](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/281)
+
 ### Enhancements
 
 * Span parentage APIs now require a BugsnagPerformanceSpanContext, which BugsnagPerformanceSpan is now a subclass of. You no longer need to assign a Bugsnag span as a parent. [280](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/280)
