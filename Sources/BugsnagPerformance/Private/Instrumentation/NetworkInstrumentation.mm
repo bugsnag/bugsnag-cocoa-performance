@@ -15,12 +15,6 @@
 
 #import <objc/runtime.h>
 
-#if 0
-#define Trace NSLog
-#else
-#define Trace(...)
-#endif
-
 using namespace bugsnag;
 
 static const int associatedSpan = 0;
@@ -148,7 +142,7 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
 }
 
 void NetworkInstrumentation::start() noexcept {
-    Trace(@"NetworkInstrumentation::start()");
+    BSGLogTrace(@"NetworkInstrumentation::start()");
     [delegate_ start];
 }
 
@@ -160,7 +154,12 @@ void NetworkInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcep
 static bool didVetoTracing(NSURL * _Nullable originalUrl,
                            BugsnagPerformanceNetworkRequestInfo * _Nullable info) noexcept {
     // A user changing the request URL to nil signals a veto
-    return originalUrl != nil && info.url == nil;
+    bool userVetoedTracing = originalUrl != nil && info.url == nil;
+    if (userVetoedTracing) {
+        BSGLogDebug(@"User vetoed tracing on %@", originalUrl);
+        return true;
+    }
+    return false;
 }
 
 void NetworkInstrumentation::endEarlySpansPhase() noexcept {
@@ -184,6 +183,7 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
         } else if (info.url == nil) {
             // We couldn't get the request URL, so the metrics phase won't happen either.
             // As a fallback, make it end the span when it gets dropped and destroyed.
+            BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
             [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
@@ -194,18 +194,18 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
 bool NetworkInstrumentation::canTraceTask(NSURLSessionTask *task) noexcept {
     NSURLRequest *req = getTaskCurrentRequest(task, nil);
     if (req == nil) {
-        // We still want to trace the task and report an error.
+        BSGLogTrace(@"Task %@ has nil request but we still want to trace it and report an error", task.class);
         return true;
     }
 
     NSURL *url = req.URL;
     if (url == nil) {
-        // We still want to trace the task and report an error.
+        BSGLogTrace(@"Task %@ request has nil URL but we still want to trace it and report an error", task.class);
         return true;
     }
 
     if ([url.scheme isEqualToString:@"file"]) {
-        BSGLogTrace(@"Task %@ has forbidden file scheme in URL %@", task.class, url);
+        BSGLogTrace(@"Task %@ has forbidden file scheme in URL %@, so we won't trace it", task.class, url);
         // Don't track local activity.
         return false;
     }
@@ -219,7 +219,6 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
     }
 
     if (!canTraceTask(task)) {
-        BSGLogDebug(@"We cannot trace task %@", task.class);
         return;
     }
 
@@ -245,6 +244,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
         if (info.url == nil) {
             // We couldn't get the request URL, so the metrics phase won't happen either.
             // As a fallback, make it end the span when it gets dropped and destroyed.
+            BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
             [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
