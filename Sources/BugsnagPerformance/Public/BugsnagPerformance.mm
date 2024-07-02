@@ -44,7 +44,7 @@ using namespace bugsnag;
 
 + (BugsnagPerformanceSpan *)startViewLoadPhaseSpanWithName:(NSString *)name
                                                      phase:(NSString *)phase
-                                             parentContext:(BugsnagPerformanceSpan *)parentContext {
+                                             parentContext:(BugsnagPerformanceSpanContext *)parentContext {
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startViewLoadPhaseSpan(name, phase, parentContext);
 }
 

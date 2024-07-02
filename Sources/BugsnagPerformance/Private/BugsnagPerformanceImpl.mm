@@ -455,7 +455,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
-                                                                       BugsnagPerformanceSpan *parentContext) noexcept {
+                                                                       BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
     [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;

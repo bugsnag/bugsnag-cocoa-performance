@@ -214,6 +214,24 @@ Feature: Manual creation of spans
     # Note: The child span ends up first in the list of spans.
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
 
+  Scenario: Manually start and end child span with a manually defined parent
+    Given I run "ManualParentSpanScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * a span field "name" equals "SpanChild"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" equals "123456789abcdef0fedcba9876543210"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    # Note: The child span ends up first in the list of spans.
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" equals "23456789abcdef01"
+
   Scenario: Manually start and end first-class = yes span
     Given I run "FirstClassYesScenario"
     And I wait for 1 span
