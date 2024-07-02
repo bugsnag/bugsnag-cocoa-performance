@@ -70,18 +70,31 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     auto request = getTaskRequest(task, &errorFromGetRequest);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
-    if (task.error != nil || task.response == nil || httpResponse.statusCode == 0) {
+    if (task.error != nil) {
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task error [%@] so not recording span", request.URL, task.error);
+        return;
+    }
+    if (task.response == nil) {
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task response is nil so not recording span", request.URL);
+        return;
+    }
+    if (httpResponse.statusCode == 0) {
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task response status code is 0 so not recording span", request.URL);
         return;
     }
 
     if (self.baseEndpointStr.length > 0 && [request.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Has base endpoint %@ so not recording span", request.URL, self.baseEndpointStr);
         return;
     }
 
     auto span = (BugsnagPerformanceSpan *)objc_getAssociatedObject(task, associatedNetworkSpanKey);
     if (!span) {
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: No associated task found", request.URL);
         return;
     }
+
+    BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Ending span with time %@", request.URL, metrics.taskInterval.endDate);
 
     objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
