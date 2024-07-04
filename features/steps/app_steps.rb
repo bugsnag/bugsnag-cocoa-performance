@@ -56,6 +56,14 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
   run_command("invoke_method", { method:method_name, arguments:[arg1] })
 end
 
+When('I switch to the web browser for {int} second(s)') do |duration|
+  run_command("background", { duration:duration.to_s })
+end
+
+When('I switch to the web browser') do
+  run_command("background", { duration: "-1" })
+end
+
 def run_command(action, args)
   Maze::Server.commands.add({ action: action, args: args })
 end

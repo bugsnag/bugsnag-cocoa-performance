@@ -7,12 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 
 @interface BugsnagPerformanceSpanOptions()
 @property(nonatomic,strong) NSDate *startTime_;
-@property(nonatomic,strong) BugsnagPerformanceSpan *parentContext_;
+@property(nonatomic,strong) BugsnagPerformanceSpanContext *parentContext_;
 @property(nonatomic) BOOL makeCurrentContext_;
 @property(nonatomic) BSGFirstClass firstClass_;
 @end
@@ -33,7 +33,7 @@
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
-                    parentContext:(BugsnagPerformanceSpan *)parentContext
+                    parentContext:(BugsnagPerformanceSpanContext *)parentContext
                makeCurrentContext:(BOOL)makeCurrentContext
                        firstClass:(BSGFirstClass)firstClass {
     if ((self = [super init])) {
@@ -50,7 +50,7 @@
     return _startTime;
 }
 
-- (BugsnagPerformanceSpan *)parentContext {
+- (BugsnagPerformanceSpanContext *)parentContext {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     return _parentContext;
 }
@@ -71,7 +71,7 @@
     return self;
 }
 
-- (instancetype)setParentContext:(BugsnagPerformanceSpan *)parentContext {
+- (instancetype)setParentContext:(BugsnagPerformanceSpanContext *)parentContext {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     _parentContext = parentContext;
     return self;

@@ -50,7 +50,7 @@ private:
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
     NSSet<NSRegularExpression *> * _Nullable propagateTraceParentToUrlsMatching_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
-    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
 };
 }
 

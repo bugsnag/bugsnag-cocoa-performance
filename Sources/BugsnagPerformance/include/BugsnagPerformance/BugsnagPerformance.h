@@ -8,6 +8,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
@@ -53,7 +54,7 @@ OBJC_EXPORT
 
 + (BugsnagPerformanceSpan *)startViewLoadPhaseSpanWithName:(NSString *)name
                                                      phase:(NSString *)phase
-                                             parentContext:(BugsnagPerformanceSpan *)parentContext
+                                             parentContext:(BugsnagPerformanceSpanContext *)parentContext
   NS_SWIFT_NAME(startViewLoadPhaseSpan(name:phase:parentContext:));
 
 @end

@@ -104,6 +104,22 @@ class Scenario: NSObject {
         return false
     }
 
+    func enterBackground(forSeconds seconds: Int) {
+#if canImport(UIKit)
+        var documentName = "background_forever.html"
+        if (seconds >= 0) {
+            documentName = "background_for_\(seconds)_sec.html"
+        }
+        let url = self.fixtureConfig.docsURL.appendingPathComponent(documentName)
+        logInfo("Backgrounding the app using \(documentName)")
+        UIApplication.shared.open(url, options: [:]) { success in
+            logInfo("Opened \(url) \(success ? "successfully" : "unsuccessfully")");
+        }
+#else
+        fatalError("This e2e test requires UIApplication, which is not available on this platform.")
+#endif
+    }
+
     func reportMeasurements() {
         pendingMeasurements.forEach { measurement in
             report(metrics: measurement.metrics, name: measurement.name)
