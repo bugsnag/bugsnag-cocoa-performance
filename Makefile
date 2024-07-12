@@ -189,6 +189,7 @@ endif
 	@open 'https://github.com/bugsnag/bugsnag-cocoa-performance/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformanceSwift.podspec.json
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformanceSwiftUI.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
@@ -199,8 +200,11 @@ endif
 	@echo $(VERSION) > VERSION
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformance.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformance.podspec.json
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceSwiftUI.podspec.json
+	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceSwiftUI.podspec.json
+	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceSwiftUI.podspec.json
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" .jazzy.yaml

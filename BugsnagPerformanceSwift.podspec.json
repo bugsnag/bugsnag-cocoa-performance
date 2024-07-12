@@ -1,6 +1,6 @@
 {
   "name": "BugsnagPerformanceSwift",
-  "version": "1.5.0",
+  "version": "1.6.2",
   "summary": "The Bugsnag performance monitoring framework for Swift-only functionality in iOS.",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
   "license": {
@@ -13,7 +13,7 @@
   "swift_version": "4.2",
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa-performance.git",
-    "tag": "v1.5.0"
+    "tag": "v1.6.2"
   },
   "platforms": {
     "ios": "13.0"
@@ -24,6 +24,6 @@
     "SwiftUI"
   ],
   "dependencies": {
-    "BugsnagPerformance": "1.5.0"
+    "BugsnagPerformance": "1.6.2"
   }
 }
