@@ -7,6 +7,7 @@
 //
 
 #import "Filesystem.h"
+#import "Utils.h"
 
 @implementation Filesystem
 
@@ -14,6 +15,9 @@
     NSError *error = nil;
     NSFileManager *fm = [NSFileManager defaultManager];
     [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+    if(error != nil) {
+        BSGLogWarning(@"Failed to create path %@: %@", path, error);
+    }
     return error;
 }
 
@@ -23,6 +27,7 @@
     if ([fm fileExistsAtPath:path]) {
         [fm removeItemAtPath:path error:&error];
         if (error != nil) {
+            BSGLogWarning(@"Filesystem.rebuildPath(): removeItemAtPath failed: %@", error);
             return error;
         }
     }

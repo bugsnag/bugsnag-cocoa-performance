@@ -21,6 +21,10 @@
         _appWasLaunchedPreWarmed = [NSProcessInfo.processInfo.environment[@"ActivePrewarm"] isEqualToString:@"1"];
     }
 
+    BSGLogDebug(@"BSGEarlyConfiguration.enableSwizzling = %d", self.enableSwizzling);
+    BSGLogDebug(@"BSGEarlyConfiguration.swizzleViewLoadPreMain = %d", self.swizzleViewLoadPreMain);
+    BSGLogDebug(@"BSGEarlyConfiguration.appWasLaunchedPreWarmed = %d", self.appWasLaunchedPreWarmed);
+
     return self;
 }
 

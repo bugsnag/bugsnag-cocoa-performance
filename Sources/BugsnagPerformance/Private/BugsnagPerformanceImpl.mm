@@ -228,8 +228,13 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
+#ifndef __clang_analyzer__
+    #pragma clang diagnostic ignored "-Wunused-variable"
+    size_t origSpansSize = origSpans->size();
+#endif
     auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
         return false;
     }
 
@@ -243,6 +248,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 
     auto retries = retryQueue_->list();
     if (retries.size() == 0) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendRetriesTask(): No retries to send");
         return false;
     }
 
@@ -276,6 +282,7 @@ void BugsnagPerformanceImpl::onBatchFull() noexcept {
 }
 
 void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity connectivity) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onConnectivityChanged(): new reachability = %d", connectivity);
     switch (connectivity) {
         case Reachability::Cellular: case Reachability::Wifi:
             wakeWorker();
@@ -287,6 +294,7 @@ void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity co
 }
 
 void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onProbabilityChanged(): new probability = %f, expiring after %f seconds", newProbability, probabilityValueExpiresAfterSeconds_);
     probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
@@ -308,12 +316,14 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
 }
 
 void BugsnagPerformanceImpl::onAppFinishedLaunching() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppFinishedLaunching()");
     // We run this without checking isStarted (in case there's notification
     // timing jank and we get the notification before we've started).
     checkAppStartDuration();
 }
 
 void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredBackground()");
     // We run this BEFORE checking isStarted (in case there's notification
     // timing jank and we get the notification before we've started).
     if (instrumentation_->timeSinceAppFirstBecameActive() < minTimeToBackgrounding) {
@@ -333,8 +343,10 @@ void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     if (!isStarted_) {
+        BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredForeground(), but not started yet");
         return;
     }
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredForeground()");
 
     batch_->allowDrain();
     wakeWorker();
@@ -485,6 +497,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
 
     NSError *errorFromGetRequest = nil;
     NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
+    BSGLogDebug(@"BugsnagPerformanceImpl::reportNetworkSpan() for %@", req.URL);
 
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = req.URL;
