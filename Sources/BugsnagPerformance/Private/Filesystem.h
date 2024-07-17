@@ -15,12 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Builds all necessary intervening directories to make the given directory path exist.
  */
-+ (NSError *)ensurePathExists:(NSString *)path;
++ ( NSError * _Nullable )ensurePathExists:(NSString *)path;
 
 /**
  * Deletes the given path and recreates it (as a directory).
  */
-+ (NSError *)rebuildPath:(NSString *)path;
++ ( NSError * _Nullable )rebuildPath:(NSString *)path;
 
 @end
 

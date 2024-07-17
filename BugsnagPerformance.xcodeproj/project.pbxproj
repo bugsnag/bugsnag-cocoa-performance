@@ -145,7 +145,7 @@
 		CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */; };
 		CBEC51CE296EEF52009C0CE3 /* PersistenceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */; };
 		CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51D42976BCAD009C0CE3 /* Filesystem.h */; };
-		CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.m */; };
+		CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */; };
 		CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */; };
 		CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */; };
 		CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */; };
@@ -388,7 +388,7 @@
 		CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileBasedTest.m; sourceTree = "<group>"; };
 		CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistenceTests.mm; sourceTree = "<group>"; };
 		CBEC51D42976BCAD009C0CE3 /* Filesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Filesystem.h; sourceTree = "<group>"; };
-		CBEC51D52976BCAD009C0CE3 /* Filesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Filesystem.m; sourceTree = "<group>"; };
+		CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Filesystem.mm; sourceTree = "<group>"; };
 		CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilesystemTests.m; sourceTree = "<group>"; };
 		CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetryQueue.h; sourceTree = "<group>"; };
 		CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueue.mm; sourceTree = "<group>"; };
@@ -541,7 +541,7 @@
 				CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */,
 				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
-				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
+				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
 				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
 				0122C22229019770002D243C /* IdGenerator.h */,
@@ -1181,7 +1181,7 @@
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
-				CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */,
+				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
