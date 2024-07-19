@@ -28,6 +28,8 @@ OBJC_EXPORT
 
 - (void)endWithEndTime:(NSDate *)endTime NS_SWIFT_NAME(end(endTime:));
 
+- (void)setAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
+
 @end
 
 NS_ASSUME_NONNULL_END

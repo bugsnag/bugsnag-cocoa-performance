@@ -26,6 +26,7 @@
 		0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */; };
 		09301DC12B63A65A000A7C12 /* ComplexViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */; };
 		093EE63D2C32E5B900632B30 /* ManualParentSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 093EE63C2C32E5B900632B30 /* ManualParentSpanScenario.swift */; };
+		094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */; };
 		09637A3C2B0607F300F4F776 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3B2B0607F300F4F776 /* Logging.swift */; };
 		09637A3F2B06082200F4F776 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 09637A3E2B06082200F4F776 /* Logging.m */; };
 		09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09637A402B060E7C00F4F776 /* CommandReaderThread.swift */; };
@@ -91,6 +92,7 @@
 		0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplexViewScenario.swift; sourceTree = "<group>"; };
 		093EE63C2C32E5B900632B30 /* ManualParentSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualParentSpanScenario.swift; sourceTree = "<group>"; };
+		094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetAttributesScenario.swift; sourceTree = "<group>"; };
 		09637A3B2B0607F300F4F776 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		09637A3D2B06082200F4F776 /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		09637A3E2B06082200F4F776 /* Logging.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
+				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
 			);
 			path = Scenarios;
@@ -398,6 +401,7 @@
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
+				094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */,
 				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
