@@ -11,20 +11,21 @@
 #import "SpanOptions.h"
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "IdGenerator.h"
 #import <memory>
 
 using namespace bugsnag;
 
 static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> handler) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(@"test",
-                                                                                                                 IdGenerator::generateTraceId(),
-                                                                                                                 IdGenerator::generateSpanId(),
-                                                                                                                 IdGenerator::generateSpanId(),
-                                                                                                                 SpanOptions().startTime,
-                                                                                                                 BSGFirstClassNo,
-                                                                                                                 ^void(std::shared_ptr<SpanData> spanData) {
-        handler->didEnd(spanData->spanId);
-           })];
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                traceId:IdGenerator::generateTraceId()
+                                                 spanId:IdGenerator::generateSpanId()
+                                               parentId:(SpanId)IdGenerator::generateSpanId()
+                                              startTime:SpanOptions().startTime
+                                             firstClass:BSGFirstClassNo
+                                                  onEnd:^(BugsnagPerformanceSpan * _Nonnull span) {
+        handler->didEnd(span.spanId);
+    }];
 }
 
 @interface SpanStackingHandlerTests : XCTestCase

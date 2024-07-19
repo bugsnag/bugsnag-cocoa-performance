@@ -10,6 +10,7 @@
 #import "WeakSpansList.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import "SpanOptions.h"
+#import "IdGenerator.h"
 
 using namespace bugsnag;
 
@@ -19,14 +20,13 @@ using namespace bugsnag;
 
 static BugsnagPerformanceSpan *createSpan() {
     return [[BugsnagPerformanceSpan alloc]
-            initWithSpan:std::make_unique<Span>(@"test",
-                                                IdGenerator::generateTraceId(),
-                                                IdGenerator::generateSpanId(),
-                                                IdGenerator::generateSpanId(),
-                                                SpanOptions().startTime,
-                                                BSGFirstClassNo,
-                                                ^void(std::shared_ptr<SpanData>) {
-                                                })];
+            initWithName:@"test"
+            traceId:IdGenerator::generateTraceId()
+            spanId:IdGenerator::generateSpanId()
+            parentId:IdGenerator::generateSpanId()
+            startTime:SpanOptions().startTime
+            firstClass:BSGFirstClassNo
+            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 @implementation WeakSpansListTests

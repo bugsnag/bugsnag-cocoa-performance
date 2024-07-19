@@ -10,7 +10,7 @@
 
 using namespace bugsnag;
 
-bool Sampler::sampled(SpanData &span) noexcept {
+bool Sampler::sampled(BugsnagPerformanceSpan *span) noexcept {
     auto p = getProbability();
     uint64_t idUpperBound;
     if (p <= 0.0) {
@@ -22,19 +22,19 @@ bool Sampler::sampled(SpanData &span) noexcept {
     }
     bool isSampled = span.traceId.hi <= idUpperBound;
     if (isSampled) {
-        span.updateSamplingProbability(p);
+        [span updateSamplingProbability:p];
     }
 
     return isSampled;
 
 }
 
-std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
-Sampler::sampled(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept {
-    auto sampledSpans = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
-    for (size_t i = 0; i < spans->size(); i++) {
-        if (sampled(*(*spans)[i])) {
-            sampledSpans->push_back((*spans)[i]);
+NSArray<BugsnagPerformanceSpan *> *
+Sampler::sampled(NSArray<BugsnagPerformanceSpan *> *spans) noexcept {
+    NSMutableArray<BugsnagPerformanceSpan *> *sampledSpans = [NSMutableArray arrayWithCapacity:spans.count];
+    for(BugsnagPerformanceSpan *span: spans) {
+        if (sampled(span)) {
+            [sampledSpans addObject:span];
         }
     }
     return sampledSpans;

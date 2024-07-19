@@ -197,7 +197,7 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
             // We couldn't get the request URL, so the metrics phase won't happen either.
             // As a fallback, make it end the span when it gets dropped and destroyed.
             BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
-            [span endOnDestroy];
+            span.spanDestroyAction = EndOnSpanDestroy;
         } else {
             [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
         }
@@ -258,7 +258,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             // We couldn't get the request URL, so the metrics phase won't happen either.
             // As a fallback, make it end the span when it gets dropped and destroyed.
             BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
-            [span endOnDestroy];
+            span.spanDestroyAction = EndOnSpanDestroy;
         } else {
             [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }

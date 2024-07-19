@@ -40,8 +40,8 @@ Tracer::start() noexcept {
     // Now that the sampler has been configured, re-sample everything.
     auto unsampledBatch = batch_->drain(true);
     BSGLogTrace(@"Tracer::start: initial unsampled batch with %zu items", unsampledBatch->size());
-    for (auto spanData: *unsampledBatch) {
-        trySampleAndAddSpanToBatch(spanData);
+    for (BugsnagPerformanceSpan *span: unsampledBatch) {
+        trySampleAndAddSpanToBatch(span);
     }
 }
 
@@ -80,17 +80,17 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
-                                                              traceId,
-                                                              spanId,
-                                                              parentSpan.spanId,
-                                                              options.startTime,
-                                                              firstClass,
-                                       ^void(std::shared_ptr<SpanData> spanData) {
+    auto span = [[BugsnagPerformanceSpan alloc] initWithName:name
+                                                     traceId:traceId
+                                                      spanId:spanId
+                                                    parentId:parentSpan.spanId
+                                                   startTime:options.startTime
+                                                  firstClass:firstClass
+                                                       onEnd:^(BugsnagPerformanceSpan *endingSpan) {
         BSGLogDebug(@"Tracer::startSpan: callback for span %@", spanData->name);
-        blockThis->spanStackingHandler_->didEnd(spanData->spanId);
-        blockThis->trySampleAndAddSpanToBatch(spanData);
-    })];
+        blockThis->spanStackingHandler_->didEnd(endingSpan.spanId);
+        blockThis->trySampleAndAddSpanToBatch(endingSpan);
+    }];
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
@@ -101,11 +101,11 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     return span;
 }
 
-void Tracer::trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
-    BSGLogDebug(@"Tracer::trySampleAndAddSpanToBatch(%@)", spanData->name);
-    if (sampler_->sampled(*spanData)) {
+void Tracer::trySampleAndAddSpanToBatch(BugsnagPerformanceSpan *span) {
+    BSGLogDebug(@"Tracer::trySampleAndAddSpanToBatch(%@)", span.name);
+    if (sampler_->sampled(span)) {
         BSGLogTrace(@"Tracer::trySampleAndAddSpanToBatch: Sampled successfully. Adding to batch.");
-        batch_->add(spanData);
+        batch_->add(span);
     }
 }
 

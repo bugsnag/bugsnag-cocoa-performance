@@ -228,17 +228,13 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
-#ifndef __clang_analyzer__
-    #pragma clang diagnostic ignored "-Wunused-variable"
-    size_t origSpansSize = origSpans->size();
-#endif
-    auto spans = sampler_->sampled(std::move(origSpans));
-    if (spans->size() == 0) {
-        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
+    auto sampledSpans = sampler_->sampled(origSpans);
+    if (sampledSpans.count == 0) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpans.count);
         return false;
     }
 
-    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get()), false);
+    uploadPackage(OtlpTraceEncoding::buildUploadPackage(sampledSpans, resourceAttributes_->get()), false);
     return true;
 }
 

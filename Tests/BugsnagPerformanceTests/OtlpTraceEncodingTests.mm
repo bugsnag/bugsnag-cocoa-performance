@@ -8,6 +8,7 @@
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/OtlpTraceEncoding.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 #define XCTAssertIsKindOfClass(EXPR, CLASS) ({ \
     id obj = EXPR; \
@@ -67,9 +68,15 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassYes {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    NSMutableArray<BugsnagPerformanceSpan *> *spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassYes));
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:CFAbsoluteTimeGetCurrent()
+                                                       firstClass:BSGFirstClassYes
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -87,9 +94,15 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassNo {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    NSMutableArray<BugsnagPerformanceSpan *> *spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassNo));
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:CFAbsoluteTimeGetCurrent()
+                                                       firstClass:BSGFirstClassNo
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -107,9 +120,15 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassUnset {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    NSMutableArray<BugsnagPerformanceSpan *> *spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"", tid, 1, 0, CFAbsoluteTimeGetCurrent(), BSGFirstClassUnset));
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:CFAbsoluteTimeGetCurrent()
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
     auto json = OtlpTraceEncoding::encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -133,7 +152,13 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
         .hi=0xfedcba9876543210,
         .lo=0x0123456789abcdef
     };
-    SpanData span(@"My span", tid, 0xface, 0, startTime, BSGFirstClassUnset);
+    auto span = [[BugsnagPerformanceSpan alloc] initWithName:@"My span"
+                                                     traceId:tid
+                                                      spanId:0xface
+                                                    parentId:0
+                                                   startTime:startTime
+                                                  firstClass:BSGFirstClassUnset
+                                                       onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}];
     span.endTime = startTime + 15;
     
     auto json = OtlpTraceEncoding::encode(span);
@@ -163,7 +188,13 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
         .hi=0xfedcba9876543210,
         .lo=0x0123456789abcdef
     };
-    SpanData span(@"My span", tid, 0xface, 0xcafe, startTime, BSGFirstClassUnset);
+    auto span = [[BugsnagPerformanceSpan alloc] initWithName:@"My span"
+                                                     traceId:tid
+                                                      spanId:0xface
+                                                    parentId:0xcafe
+                                                   startTime:startTime
+                                                  firstClass:BSGFirstClassUnset
+                                                       onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}];
     span.endTime = startTime + 15;
     
     auto json = OtlpTraceEncoding::encode(span);
@@ -204,9 +235,15 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testBuildUploadPackage {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset));
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
 
@@ -221,10 +258,16 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram1 {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.3);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.3];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
@@ -234,12 +277,24 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram2 {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.3);
-    spans[1]->updateSamplingProbability(0.1);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
+                                                          traceId:tid
+                                                           spanId:2
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.3];
+    [spans[1] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
@@ -249,12 +304,24 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram2Same {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.5);
-    spans[1]->updateSamplingProbability(0.5);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
+                                                          traceId:tid
+                                                           spanId:2
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.5];
+    [spans[1] updateSamplingProbability:0.5];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
@@ -264,18 +331,48 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram5 {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 3, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 4, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 5, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.3);
-    spans[1]->updateSamplingProbability(0.1);
-    spans[2]->updateSamplingProbability(0.3);
-    spans[3]->updateSamplingProbability(0.5);
-    spans[4]->updateSamplingProbability(0.1);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
+                                                          traceId:tid
+                                                           spanId:2
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
+                                                          traceId:tid
+                                                           spanId:3
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
+                                                          traceId:tid
+                                                           spanId:4
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
+                                                          traceId:tid
+                                                           spanId:5
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.3];
+    [spans[1] updateSamplingProbability:0.1];
+    [spans[2] updateSamplingProbability:0.3];
+    [spans[3] updateSamplingProbability:0.5];
+    [spans[4] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
@@ -285,30 +382,96 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram11 {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    auto spans = [NSMutableArray array];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test0", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 2, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 3, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 4, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 5, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 6, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test6", tid, 7, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test7", tid, 8, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test8", tid, 9, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test9", tid, 10, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test10", tid, 11, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.0);
-    spans[1]->updateSamplingProbability(0.1);
-    spans[2]->updateSamplingProbability(0.2);
-    spans[3]->updateSamplingProbability(0.3);
-    spans[4]->updateSamplingProbability(0.4);
-    spans[5]->updateSamplingProbability(0.5);
-    spans[6]->updateSamplingProbability(0.6);
-    spans[7]->updateSamplingProbability(0.7);
-    spans[8]->updateSamplingProbability(0.8);
-    spans[9]->updateSamplingProbability(0.9);
-    spans[10]->updateSamplingProbability(1);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test0"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:2
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
+                                                          traceId:tid
+                                                           spanId:3
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
+                                                          traceId:tid
+                                                           spanId:4
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
+                                                          traceId:tid
+                                                           spanId:5
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
+                                                          traceId:tid
+                                                           spanId:6
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test6"
+                                                          traceId:tid
+                                                           spanId:7
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test7"
+                                                          traceId:tid
+                                                           spanId:8
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test8"
+                                                          traceId:tid
+                                                           spanId:9
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test9"
+                                                          traceId:tid
+                                                           spanId:10
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test10"
+                                                          traceId:tid
+                                                           spanId:11
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                            onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.0];
+    [spans[1] updateSamplingProbability:0.1];
+    [spans[2] updateSamplingProbability:0.2];
+    [spans[3] updateSamplingProbability:0.3];
+    [spans[4] updateSamplingProbability:0.4];
+    [spans[5] updateSamplingProbability:0.5];
+    [spans[6] updateSamplingProbability:0.6];
+    [spans[7] updateSamplingProbability:0.7];
+    [spans[8] updateSamplingProbability:0.8];
+    [spans[9] updateSamplingProbability:0.9];
+    [spans[10] updateSamplingProbability:1];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);

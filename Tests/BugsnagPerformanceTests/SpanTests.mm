@@ -7,8 +7,8 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "Span.h"
-#import "SpanData.h"
+#import "BugsnagPerformanceSpan+Private.h"
+#import "Utils.h"
 
 using namespace bugsnag;
 
@@ -18,139 +18,132 @@ using namespace bugsnag;
 
 @implementation SpanTests
 
-static std::shared_ptr<Span> spanWithStartTime(CFAbsoluteTime startTime, OnSpanEnd onEnd) {
+static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpanEnd onEnd) {
     TraceId tid = {.value = 1};
-    return std::make_shared<Span>(@"test", tid, 1, 0, startTime, BSGFirstClassUnset, onEnd);
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                traceId:tid
+                                                 spanId:1
+                                               parentId:0
+                                              startTime:startTime
+                                             firstClass:BSGFirstClassUnset
+                                                  onEnd:onEnd];
 }
 
 - (void)testStartEndUnset {
     CFAbsoluteTime startTime = CFABSOLUTETIME_INVALID;
     CFAbsoluteTime endTime = startTime;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, CFAbsoluteTimeGetCurrent(), 0.001);
 }
 
 - (void)testStartNearPastEndUnset {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 0.0005;
     CFAbsoluteTime endTime = CFABSOLUTETIME_INVALID;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, CFAbsoluteTimeGetCurrent(), 0.001);
 }
 
 - (void)testStartUnsetEndNearPast {
     CFAbsoluteTime startTime = CFABSOLUTETIME_INVALID;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() - 0.0005;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, endTime, 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, endTime, 0.001);
 }
 
 - (void)testStartUnsetEndNearFuture {
     CFAbsoluteTime startTime = CFABSOLUTETIME_INVALID;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 0.0005;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, endTime, 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, endTime, 0.001);
 }
 
 - (void)testStartNearPastEndNearFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 0.0005;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 0.0005;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, endTime, 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, endTime, 0.001);
 }
 
 - (void)testStartFarPastEndUnset {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 1.0;
     CFAbsoluteTime endTime = CFABSOLUTETIME_INVALID;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqualWithAccuracy(spanData->endTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqualWithAccuracy(span.endTime, CFAbsoluteTimeGetCurrent(), 0.001);
 }
 
 - (void)testStartFarPastEndNearPast {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 1.0;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() - 0.0005;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartFarPastEndNearFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 1.0;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 0.0005;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartNowEndFarFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 1.0;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartFarPastEndFarFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 1.0;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 1.0;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartNearPastEndFarFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() - 0.0001;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 1.0;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartNearFutureEndFarFuture {
     CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent() + 0.0001;
     CFAbsoluteTime endTime = CFAbsoluteTimeGetCurrent() + 1.0;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testStartEndDistantPast {
     CFAbsoluteTime startTime = 0;
     CFAbsoluteTime endTime = 0;
-    __block std::shared_ptr<SpanData> spanData = nullptr;
-    auto span = spanWithStartTime(startTime, ^(std::shared_ptr<SpanData> data) {spanData = data;});
-    span->end(endTime);
-    XCTAssertEqual(spanData->endTime, endTime);
+    auto span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan * _Nonnull) {});
+    [span endWithAbsoluteTime:endTime];
+    XCTAssertEqual(span.endTime, endTime);
 }
 
 - (void)testMultithreadedAttributesAccess {
-    auto span = spanWithStartTime(0, ^(std::shared_ptr<SpanData>) {});
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan * _Nonnull) {});
 
     [NSThread detachNewThreadWithBlock:^{
         for (int i = 0; i < 10000000; i++) {
-            span->addAttributes(@{@"a": @(i)});
+            [span addAttributes:@{@"a": @(i)}];
         }
     }];
 
     for(int i = 0; i < 1000000; i++) {
-        span->hasAttribute(@"a", @1);
+        [span hasAttribute:@"a" withValue:@1];
     }
 }
 

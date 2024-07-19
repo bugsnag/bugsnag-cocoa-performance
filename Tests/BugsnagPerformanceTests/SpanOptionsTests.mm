@@ -42,13 +42,13 @@ using namespace bugsnag;
 }
 
 - (void)testConversion {
-    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(@"test",
-                                                                                                          IdGenerator::generateTraceId(),
-                                                                                                          IdGenerator::generateSpanId(),
-                                                                                                          IdGenerator::generateSpanId(),
-                                                                                                          SpanOptions().startTime,
-                                                                                                          BSGFirstClassNo,
-                                                                                                          ^void(std::shared_ptr<SpanData> __unused spanData) {})];
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                                        traceId:IdGenerator::generateTraceId()
+                                                                         spanId:IdGenerator::generateSpanId()
+                                                                       parentId:IdGenerator::generateSpanId()
+                                                                      startTime:SpanOptions().startTime
+                                                                     firstClass:BSGFirstClassNo
+                                                                          onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = span;

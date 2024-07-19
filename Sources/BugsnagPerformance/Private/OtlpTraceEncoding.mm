@@ -9,6 +9,7 @@
 #import <CommonCrypto/CommonCrypto.h>
 #import "Utils.h"
 #import "Gzip.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 
@@ -25,7 +26,7 @@ static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const SpanData &span) noexcept {
+OtlpTraceEncoding::encode(BugsnagPerformanceSpan *span) noexcept {
     NSMutableDictionary *result = [NSMutableDictionary new];
 
     // A unique identifier for a trace. All spans from the same trace share
@@ -108,13 +109,13 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+OtlpTraceEncoding::encode(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes) noexcept {
     BSGLogDebug(@"OtlpTraceEncoding::encode(%zu)", spans.size());
-    auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
-    for (const auto &span: spans) {
-        if (span->isValid()) {
+    auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.count];
+    for (BugsnagPerformanceSpan *span: spans) {
+        if (span.isValid) {
             BSGLogTrace(@"OtlpTraceEncoding::encode: span %@", span->name);
-            [encodedSpans addObject:encode(*span.get())];
+            [encodedSpans addObject:encode(span)];
         }
     }
     
@@ -209,11 +210,11 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     return result;
 }
 
-static dispatch_time_t getLatestTimestamp(const std::vector<std::shared_ptr<SpanData>> &spans) {
+static dispatch_time_t getLatestTimestamp(NSArray<BugsnagPerformanceSpan *> *spans) {
     CFAbsoluteTime endTime = 0;
-    for (auto &span: spans) {
-        if (span->endTime > endTime) {
-            endTime = span->endTime;
+    for (BugsnagPerformanceSpan *span: spans) {
+        if (span.endTime > endTime) {
+            endTime = span.endTime;
         }
     }
     return absoluteTimeToNanoseconds(endTime);
@@ -229,14 +230,14 @@ static NSString *integrityDigestForData(NSData *payload) {
                    md[15], md[16], md[17], md[18], md[19]];
 }
 
-static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanData>> &spans) {
+static NSString *pValueHistogramForSpans(NSArray<BugsnagPerformanceSpan *> *spans) {
     // Calculate P value histogram the hard way because ObjC doesn't have such conveniences.
 
-    NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.size()];
+    NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.count];
     NSMutableDictionary<NSNumber *, NSNumber *> *counts = [NSMutableDictionary new];
 
-    for (const std::shared_ptr<SpanData> &span: spans) {
-        auto probability = @(span->samplingProbability);
+    for (BugsnagPerformanceSpan *span: spans) {
+        auto probability = @(span.samplingProbability);
         auto count = counts[probability];
         if (count == nil) {
             [ordered addObject:probability];
@@ -269,7 +270,7 @@ static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanD
     return str;
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
 

@@ -32,21 +32,17 @@ public:
     double getProbability() noexcept {return probability_;};
 
     /**
-     * Samples the given span data, returning true if the span is to be kept.
+     * Samples the given span, returning true if the span is to be kept.
      * Also updates the span's sampling probability value if it is to be kept.
      */
-    bool sampled(SpanData &span) noexcept;
-
-    bool sampled(BugsnagPerformanceSpan *span) noexcept {
-        return sampled(*span.span->data());
-    }
+    bool sampled(BugsnagPerformanceSpan *span) noexcept;
 
     /**
      * Samples the given set of span data, returning those that are to be kept.
      * Also updates the sampling probability value of each kept span.
      */
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
-    sampled(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept;
+    NSArray<BugsnagPerformanceSpan *> *
+    sampled(NSArray<BugsnagPerformanceSpan *> *spans) noexcept;
 
 private:
     double probability_{1};

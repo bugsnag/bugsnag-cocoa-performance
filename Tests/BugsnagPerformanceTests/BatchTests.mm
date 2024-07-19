@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "Batch.h"
-#import "SpanData.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 
@@ -18,9 +18,15 @@ using namespace bugsnag;
 
 @implementation BatchTests
 
-static std::shared_ptr<SpanData> newSpanData() {
+static BugsnagPerformanceSpan *newSpan(uint64_t spanId) {
     TraceId tid = {.value = 1};
-    return std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset);
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                traceId:tid
+                                                 spanId:spanId
+                                               parentId:0
+                                              startTime:0
+                                             firstClass:BSGFirstClassUnset
+                                                  onEnd:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 - (void)testDrainAllow {
@@ -35,28 +41,28 @@ static std::shared_ptr<SpanData> newSpanData() {
     });
     
     // Drain not allowed until explicitly allowed
-    batch.add(newSpanData());
+    batch.add(newSpan(1));
     auto drained = batch.drain(false);
-    XCTAssertEqual(drained->size(), 0U);
+    XCTAssertEqual(drained.count, 0U);
     XCTAssertEqual(callbackCalls, 0);
 
     // Allow one drain
     batch.allowDrain();
     drained = batch.drain(false);
-    XCTAssertEqual(drained->size(), 1U);
+    XCTAssertEqual(drained.count, 1U);
     XCTAssertEqual(callbackCalls, 0);
 
     // Drain only allowed once per allow
-    batch.add(newSpanData());
+    batch.add(newSpan(2));
     drained = batch.drain(false);
-    XCTAssertEqual(drained->size(), 0U);
+    XCTAssertEqual(drained.count, 0U);
     XCTAssertEqual(callbackCalls, 0);
 
     // Allow another drain and also add another span for a total of 2
     batch.allowDrain();
-    batch.add(newSpanData());
+    batch.add(newSpan(3));
     drained = batch.drain(false);
-    XCTAssertEqual(drained->size(), 2U);
+    XCTAssertEqual(drained.count, 2U);
     XCTAssertEqual(callbackCalls, 0);
 }
 
@@ -72,9 +78,9 @@ static std::shared_ptr<SpanData> newSpanData() {
     });
     
     // Auto triggers at size 1
-    batch->add(newSpanData());
+    batch->add(newSpan(1));
     auto drained = batch->drain(false);
-    XCTAssertEqual(drained->size(), 1U);
+    XCTAssertEqual(drained.count, 1U);
     XCTAssertEqual(callbackCalls, 1);
     
     batch = std::make_shared<Batch>();
@@ -86,28 +92,28 @@ static std::shared_ptr<SpanData> newSpanData() {
     batch->configure(config);
 
     // Doesn't trigger after 1 entry, and drain not explicitly allowed
-    batch->add(newSpanData());
+    batch->add(newSpan(2));
     drained = batch->drain(false);
-    XCTAssertEqual(drained->size(), 0U);
+    XCTAssertEqual(drained.count, 0U);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 2nd entry
-    batch->add(newSpanData());
+    batch->add(newSpan(3));
     drained = batch->drain(false);
-    XCTAssertEqual(drained->size(), 2U);
+    XCTAssertEqual(drained.count, 2U);
     XCTAssertEqual(callbackCalls, 1);
     
     // Doesn't trigger after 3rd entry (1st entry after draining)
     callbackCalls = 0;
-    batch->add(newSpanData());
+    batch->add(newSpan(4));
     drained = batch->drain(false);
-    XCTAssertEqual(drained->size(), 0U);
+    XCTAssertEqual(drained.count, 0U);
     XCTAssertEqual(callbackCalls, 0);
     
     // Does trigger after 4th entry (2nd entry after draining)
-    batch->add(newSpanData());
+    batch->add(newSpan(5));
     drained = batch->drain(false);
-    XCTAssertEqual(drained->size(), 2U);
+    XCTAssertEqual(drained.count, 2U);
     XCTAssertEqual(callbackCalls, 1);
     
 }
@@ -126,7 +132,7 @@ static std::shared_ptr<SpanData> newSpanData() {
     }];
 
     for(int i = 0; i < 500000; i++) {
-        batch->add(newSpanData());
+        batch->add(newSpan((uint64_t)i));
     }
     
     stopThread = true;

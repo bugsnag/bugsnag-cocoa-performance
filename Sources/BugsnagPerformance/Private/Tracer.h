@@ -84,7 +84,7 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
+    void trySampleAndAddSpanToBatch(BugsnagPerformanceSpan *span);
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
 };
 }

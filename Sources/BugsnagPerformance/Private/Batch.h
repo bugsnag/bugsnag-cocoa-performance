@@ -10,6 +10,7 @@
 
 #import "PhasedStartup.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
+#import "BugsnagPerformanceSpan+Private.h"
 #import "SpanData.h"
 #import "PhasedStartup.h"
 #import "Utils.h"
@@ -20,13 +21,15 @@
 
 namespace bugsnag {
 
+#define INITIAL_BATCH_CAPACITY 100
+
 /**
  * Holds the next batch of spans that will be sent together to the backend.
  */
 class Batch: public PhasedStartup {
 public:
     Batch() noexcept
-    : spans_(std::make_unique<std::vector<std::shared_ptr<SpanData>>>())
+    : spans_([NSMutableDictionary dictionaryWithCapacity:INITIAL_BATCH_CAPACITY])
     , onBatchFull(^(){})
     {}
 
@@ -40,13 +43,13 @@ public:
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
-    void add(std::shared_ptr<SpanData> span) noexcept {
-        BSGLogDebug(@"Batch:add(%@)", span->name);
+    void add(BugsnagPerformanceSpan *span) noexcept {
+        BSGLogDebug(@"Batch:add(%@)", span.name);
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
-            spans_->push_back(span);
-            isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
+            spans_[makeSpanKey(span.traceId, span.spanId)] = span;
+            isFull = spans_.count >= autoTriggerExportOnBatchSize_;
             if (isFull) {
                 drainIsAllowed_ = true;
             }
@@ -60,24 +63,11 @@ public:
     void removeSpan(TraceId traceId, SpanId spanId) noexcept {
         BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx)", traceId.hi, traceId.lo, spanId);
         std::lock_guard<std::mutex> guard(mutex_);
+        [spans_ removeObjectForKey:makeSpanKey(traceId, spanId)];
 
-        if (spans_->empty()) {
-            return;
-        }
-        auto found = std::find_if(spans_->begin(),
-                     spans_->end(),
-                     [&spanId, &traceId](const std::shared_ptr<SpanData> &o) {
-            return o->spanId == spanId && o->traceId.value == traceId.value;
-        });
-        if (found == spans_->end()) {
-            return;
-        }
-
-        spans_->erase(found);
-
-        for (auto span: *spans_) {
-            if (span->parentId == spanId && span->traceId.value == traceId.value) {
-                span->parentId = 0;
+        for (BugsnagPerformanceSpan *span: [spans_ allValues]) {
+            if (span.parentId == spanId && span.traceId.value == traceId.value) {
+                span.parentId = 0;
             }
         }
     }
@@ -86,18 +76,21 @@ public:
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain(bool force) noexcept {
+    NSArray *drain(bool force) noexcept {
         BSGLogDebug(@"Batch:drain(force:%s)", force ? "yes" : "no");
         std::lock_guard<std::mutex> guard(mutex_);
         if (!drainIsAllowed_ && !force) {
             BSGLogDebug(@"Batch:drain: not currently allowed");
-            return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
+            return nil;
         }
         drainIsAllowed_ = false;
 
-        auto batch = std::move(spans_);
-        spans_ = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
-        BSGLogDebug(@"Batch:drain: draining %zu spans", batch->size());
+        NSMutableArray *batch = [NSMutableArray arrayWithCapacity:spans_.count];
+        for(BugsnagPerformanceSpan *span: [spans_ allValues]) {
+            [batch addObject:span];
+        }
+        [spans_ removeAllObjects];
+        BSGLogDebug(@"Batch:drain: drained %zu spans", batch.count);
         return batch;
     }
 
@@ -115,7 +108,7 @@ public:
     }
 
     size_t count() noexcept {
-        return spans_->size();
+        return spans_.count;
     }
 
 private:
@@ -123,6 +116,11 @@ private:
     bool drainIsAllowed_{false};
     uint64_t autoTriggerExportOnBatchSize_{0};
     std::mutex mutex_;
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans_;
+    NSMutableDictionary *spans_;
+    
+    static NSString *makeSpanKey(TraceId traceId, SpanId spanId) {
+        // Go from least significant to most significant since spanId will have higher variability.
+        return [NSString stringWithFormat:@"%llu.%llu.%llu", spanId, traceId.lo, traceId.hi];
+    }
 };
 }

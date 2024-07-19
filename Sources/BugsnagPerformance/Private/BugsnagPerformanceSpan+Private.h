@@ -8,12 +8,21 @@
 #pragma once
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 
 #import "Span.h"
+#import "SpanKind.h"
 
 #import <memory>
 
 using namespace bugsnag;
+
+typedef enum {
+    AbortOnSpanDestroy,
+    EndOnSpanDestroy
+} SpanDestroyAction;
+
+typedef void (^OnSpanEnd)(BugsnagPerformanceSpan * _Nonnull span);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,9 +30,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, copy) void (^onDumped)(BugsnagPerformanceSpan *);
 
-@property(nonatomic) std::shared_ptr<Span> span;
+@property(nonatomic) NSString *name;
+@property(nonatomic) SpanId parentId;
+@property(nonatomic) CFAbsoluteTime startTime;
+@property(nonatomic) NSDate *startNSDate;
+@property(nonatomic) CFAbsoluteTime endTime;
+@property(nonatomic) NSDate *endNSDate;
+@property(nonatomic) BSGFirstClass firstClass;
+@property(nonatomic) OnSpanEnd onEnd;
+@property(nonatomic) uint64_t startClock;
+@property(nonatomic) SpanDestroyAction spanDestroyAction;
+@property(nonatomic) BOOL isEnded;
+@property(nonatomic) NSMutableDictionary *attributes;
+@property(nonatomic) double samplingProbability;
+@property(nonatomic) SpanKind kind;
+@property(nonatomic,readwrite) BOOL isValid;
 
-- (instancetype)initWithSpan:(std::shared_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
+- (instancetype) initWithName:(NSString *)name
+                      traceId:(TraceId)traceId
+                       spanId:(SpanId)spanId
+                     parentId:(SpanId)parentId
+                    startTime:(CFAbsoluteTime)startTime
+                   firstClass:(BSGFirstClass)firstClass
+                        onEnd:(OnSpanEnd)onEnd NS_DESIGNATED_INITIALIZER;
 
 - (void)addAttribute:(NSString *)attributeName withValue:(id)value;
 
@@ -31,18 +60,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value;
 
-- (id)getAttribute:(NSString *)attributeName;
+- (_Nullable id)getAttribute:(NSString *)attributeName;
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime;
 
-- (void)endOnDestroy;
-
-- (SpanId)parentId;
-- (NSString *)name;
-- (void)updateName:(NSString *)name;
-- (NSDate *_Nullable)startTime;
-- (NSDate *_Nullable)endTime;
-- (void)updateStartTime:(NSDate *)startTime;
+- (void)updateSamplingProbability:(double)newSamplingProbability;
 
 @end
 

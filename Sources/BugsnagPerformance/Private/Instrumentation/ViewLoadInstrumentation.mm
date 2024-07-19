@@ -219,8 +219,8 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
     if (isPreloaded) {
         auto viewType = BugsnagPerformanceViewTypeUIKit;
         auto className = NSStringFromClass([viewController class]);
-        [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
-        [span updateStartTime: viewWillAppearStartTime];
+        span.name = [NSString stringWithFormat:@"%@ (pre-loaded)", span.name];
+        span.startNSDate = viewWillAppearStartTime;
         [span addAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
     }
@@ -381,7 +381,7 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
         }
         [span end];
-        instrumentationState.viewDidLoadEndTime = span.endTime;
+        instrumentationState.viewDidLoadEndTime = span.endNSDate;
     });
 }
 
@@ -405,7 +405,7 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
-        adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
+        adjustSpanIfPreloaded(overallSpan, instrumentationState, span.startNSDate, self);
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);
