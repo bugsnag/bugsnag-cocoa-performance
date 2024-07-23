@@ -304,4 +304,9 @@ Feature: Manual creation of spans
     * a span field "name" equals "MySpan"
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
-    * every span bool attribute "x" does not exist
+    * every span bool attribute "d" does not exist
+    * a span array attribute "x" is empty
+    * a span array attribute "c" contains the string value "array_0" at index 0
+    * a span array attribute "c" contains the integer value 1 at index 1
+    * a span array attribute "c" contains the value true at index 2
+    * a span array attribute "c" contains the float value 1.5 at index 3
