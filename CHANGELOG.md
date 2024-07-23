@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Rename propagateTraceParentToUrlsMatching to the intended tracePropagationUrls in BugsnagPerformanceConfiguration.
+  [287](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/287)
+
 ## 1.6.2 (2024-07-04)
 
 ### Bug fixes

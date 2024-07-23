@@ -150,7 +150,7 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
     if (networkRequestCallback != nullptr) {
         networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
     }
-    propagateTraceParentToUrlsMatching_ = config.propagateTraceParentToUrlsMatching;
+    propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;
     endEarlySpansPhase();
 }
 

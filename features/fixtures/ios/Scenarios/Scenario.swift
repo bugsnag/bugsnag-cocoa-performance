@@ -71,7 +71,7 @@ class Scenario: NSObject {
             for reStr in splitArgs(args: value) {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
-            config.propagateTraceParentToUrlsMatching = regexes
+            config.tracePropagationUrls = regexes
             break
         default:
             fatalError("\(path): Unknown configuration path")
