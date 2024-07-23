@@ -95,7 +95,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
-    [span addAttributes:SpanAttributes::get()];
+    [span setAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
     onSpanStarted_();
     return span;

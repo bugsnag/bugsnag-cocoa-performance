@@ -295,3 +295,13 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "10.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+
+  Scenario: Set attributes in a span
+    Given I run "SetAttributesScenario"
+    And I wait for 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "MySpan"
+    * a span string attribute "a" equals "xyz"
+    * every span bool attribute "b" does not exist
+    * every span bool attribute "x" does not exist

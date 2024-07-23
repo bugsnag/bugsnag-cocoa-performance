@@ -444,14 +444,14 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, Bugsna
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
@@ -460,7 +460,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto viewType = BugsnagPerformanceViewTypeUIKit;
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
@@ -469,7 +469,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
-    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    [span setAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }
 
@@ -513,7 +513,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
-        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
+        [span setAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }
 }

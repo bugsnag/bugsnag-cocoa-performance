@@ -97,7 +97,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Ending span with time %@", request.URL, metrics.taskInterval.endDate);
 
     objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
+    [span setAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
     [span endWithEndTime:metrics.taskInterval.endDate];
 }
 
@@ -199,7 +199,7 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
             BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
         }
     }
 }
@@ -260,7 +260,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
+            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }
         if (span != nil) {
             objc_setAssociatedObject(task, associatedNetworkSpanKey, span,

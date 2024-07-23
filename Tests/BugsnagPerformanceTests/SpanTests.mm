@@ -140,12 +140,42 @@ static std::shared_ptr<Span> spanWithStartTime(CFAbsoluteTime startTime, OnSpanE
     XCTAssertEqual(spanData->endTime, endTime);
 }
 
+- (void)testAddRemoveAttributes {
+    auto span = spanWithStartTime(0, ^(std::shared_ptr<SpanData>) {});
+
+    XCTAssertNil(span->getAttribute(@"a"));
+    span->setAttribute(@"a", @(1));
+    XCTAssertEqualObjects(@(1), span->getAttribute(@"a"));
+
+    XCTAssertNil(span->getAttribute(@"b"));
+    span->setAttribute(@"b", @(2));
+    XCTAssertEqualObjects(@(1), span->getAttribute(@"a"));
+    XCTAssertEqualObjects(@(2), span->getAttribute(@"b"));
+
+    span->setAttribute(@"a", @(2));
+    XCTAssertEqualObjects(@(2), span->getAttribute(@"a"));
+    XCTAssertEqualObjects(@(2), span->getAttribute(@"b"));
+
+    span->setAttribute(@"a", nil);
+    XCTAssertNil(span->getAttribute(@"a"));
+    XCTAssertEqualObjects(@(2), span->getAttribute(@"b"));
+
+    span->setAttribute(@"a", @(100));
+    XCTAssertEqualObjects(@(100), span->getAttribute(@"a"));
+    XCTAssertEqualObjects(@(2), span->getAttribute(@"b"));
+
+    span->setAttribute(@"a", nil);
+    span->setAttribute(@"b", nil);
+    XCTAssertNil(span->getAttribute(@"a"));
+    XCTAssertNil(span->getAttribute(@"b"));
+}
+
 - (void)testMultithreadedAttributesAccess {
     auto span = spanWithStartTime(0, ^(std::shared_ptr<SpanData>) {});
 
     [NSThread detachNewThreadWithBlock:^{
         for (int i = 0; i < 10000000; i++) {
-            span->addAttributes(@{@"a": @(i)});
+            span->setAttributes(@{@"a": @(i)});
         }
     }];
 

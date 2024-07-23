@@ -61,16 +61,16 @@ public:
         }
     }
 
-    void addAttribute(NSString *attributeName, id value) noexcept {
-        data_->addAttribute(attributeName, value);
+    void setAttribute(NSString *attributeName, id value) noexcept {
+        data_->setAttribute(attributeName, value);
     }
 
-    void addAttributes(NSDictionary *attributes) noexcept {
+    void setAttributes(NSDictionary *attributes) noexcept {
         // This doesn't have to be thread safe because this method is never called
         // after the span is started.
         auto data = data_;
         if (!isEnded_ && data != nullptr) {
-            data->addAttributes(attributes);
+            data->setAttributes(attributes);
         }
     }
 

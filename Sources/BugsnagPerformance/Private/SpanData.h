@@ -29,9 +29,9 @@ public:
     
     SpanData(const SpanData&) = delete;
 
-    void addAttribute(NSString *attributeName, id value) noexcept;
+    void setAttribute(NSString *attributeName, id value) noexcept;
 
-    void addAttributes(NSDictionary *attributes) noexcept;
+    void setAttributes(NSDictionary *attributes) noexcept;
 
     bool hasAttribute(NSString *attributeName, id value) noexcept;
 

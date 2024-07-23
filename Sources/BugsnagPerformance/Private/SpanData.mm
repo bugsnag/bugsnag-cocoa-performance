@@ -31,13 +31,17 @@ SpanData::SpanData(NSString *name,
 }
 
 void
-SpanData::addAttribute(NSString *attributeName, id value) noexcept {
+SpanData::setAttribute(NSString *attributeName, id value) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    this->attributes[attributeName] = value;
+    if(value == nil) {
+        [this->attributes removeObjectForKey:attributeName];
+    } else {
+        this->attributes[attributeName] = value;
+    }
 }
 
 void
-SpanData::addAttributes(NSDictionary *dictionary) noexcept {
+SpanData::setAttributes(NSDictionary *dictionary) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     [this->attributes addEntriesFromDictionary:dictionary];
 }
