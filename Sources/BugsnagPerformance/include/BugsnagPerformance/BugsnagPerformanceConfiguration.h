@@ -70,7 +70,7 @@ OBJC_EXPORT
 /**
  * Any network request URLs that match one of these regular expressions will have the "traceparent" header injected.
  */
-@property (copy, nullable, nonatomic) NSSet<NSRegularExpression *> *propagateTraceParentToUrlsMatching;
+@property (copy, nullable, nonatomic) NSSet<NSRegularExpression *> *tracePropagationUrls;
 
 @end
 
