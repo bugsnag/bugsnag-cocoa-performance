@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic,readwrite) BSGInternalConfiguration *internal;
 
+@property (nonatomic) NSMutableArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks;
+
 @end
 
 NS_ASSUME_NONNULL_END

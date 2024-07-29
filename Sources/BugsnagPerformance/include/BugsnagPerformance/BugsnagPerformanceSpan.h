@@ -14,6 +14,10 @@ OBJC_EXPORT
 
 @property(nonatomic,readonly) BOOL isValid;
 
+@property (nonatomic,readonly) NSString *name;
+@property (nonatomic,readonly) NSDate *_Nullable startTime;
+@property (nonatomic,readonly) NSDate *_Nullable endTime;
+
 - (instancetype)init NS_UNAVAILABLE;
 
 - (instancetype) initWithTraceId:(TraceId)traceId spanId:(SpanId)spanId NS_UNAVAILABLE;

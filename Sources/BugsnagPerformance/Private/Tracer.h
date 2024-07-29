@@ -36,7 +36,9 @@ public:
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
-    void configure(BugsnagPerformanceConfiguration *) noexcept {};
+    void configure(BugsnagPerformanceConfiguration *config) noexcept {
+        onSpanEndCallbacks_ = config.onSpanEndCallbacks;
+    };
     void start() noexcept;
 
     void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
@@ -74,6 +76,7 @@ private:
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
+    NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
     // but span abort/end are idempotent so it doesn't matter.

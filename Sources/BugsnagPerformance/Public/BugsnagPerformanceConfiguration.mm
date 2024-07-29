@@ -24,6 +24,7 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
+        _onSpanEndCallbacks = [NSMutableArray array];
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -126,6 +127,10 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 - (BOOL)shouldSendReports {
     return self.enabledReleaseStages.count == 0 ||
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
+}
+
+- (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback {
+    [self.onSpanEndCallbacks addObject:callback];
 }
 
 @end
