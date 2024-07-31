@@ -46,7 +46,7 @@ void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: bundleVersion = %@", config.bundleVersion);
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: releaseStage = %@", config.releaseStage);
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: enabledReleaseStages = %@", config.enabledReleaseStages);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: propagateTraceParentToUrlsMatching = %@", config.propagateTraceParentToUrlsMatching);
+    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: tracePropagationUrls = %@", config.tracePropagationUrls);
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: clearPersistenceOnStart = %d", config.internal.clearPersistenceOnStart);
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoTriggerExportOnBatchSize = %llu", config.internal.autoTriggerExportOnBatchSize);
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: performWorkInterval = %f", config.internal.performWorkInterval);

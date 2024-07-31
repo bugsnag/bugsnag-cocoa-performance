@@ -63,6 +63,7 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 }
 
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::earlyConfigure()");
     persistentState_->earlyConfigure(config);
     tracer_->earlyConfigure(config);
     deviceID_->earlyConfigure(config);
@@ -90,6 +91,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::earlySetup()");
     persistentState_->earlySetup();
     tracer_->earlySetup();
     deviceID_->earlySetup();
@@ -104,6 +106,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 }
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
     performWorkInterval_ = config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
@@ -127,6 +130,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::start()");
     bool expected = false;
     if (!isStarted_.compare_exchange_strong(expected, true)) {
         // compare_exchange_strong() returns true only if isStarted_ was exchanged (from false to true).

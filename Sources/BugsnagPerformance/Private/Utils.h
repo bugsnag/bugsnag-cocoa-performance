@@ -123,9 +123,8 @@ static inline NSURLRequest *getTaskOriginalRequest(NSURLSessionTask *task, NSErr
     } catch(NSException *e) {
         if (error != nil) {
             NSString *errorDesc = [NSString stringWithFormat:
-                                   @"%@ threw exception %@ while accessing originalRequest",
-                                   e,
-                                   task.class];
+                                   @"%@ threw exception while accessing originalRequest: %@",
+                                   task.class, e];
             *error = [NSError errorWithDomain:@"com.bugsnag.bugsnag-cocoa-performance"
                                          code:100
                                      userInfo:@{NSLocalizedDescriptionKey:errorDesc}];
@@ -152,9 +151,8 @@ static inline NSURLRequest *getTaskCurrentRequest(NSURLSessionTask *task, NSErro
     } catch(NSException *e) {
         if (error != nil) {
             NSString *errorDesc = [NSString stringWithFormat:
-                                   @"%@ threw exception %@ while accessing currentRequest",
-                                   e,
-                                   task.class];
+                                   @"%@ threw exception while accessing currentRequest: %@",
+                                   task.class, e];
             *error = [NSError errorWithDomain:@"com.bugsnag.bugsnag-cocoa-performance"
                                          code:100
                                      userInfo:@{NSLocalizedDescriptionKey:errorDesc}];
