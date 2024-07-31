@@ -20,6 +20,10 @@ Before('@skip_ios_15_and_above') do |_scenario|
   skip_above('ios', 14.99)
 end
 
+Before('@skip') do |_scenario|
+  skip_this_scenario("Skipping scenario")
+end
+
 Then('I discard every {request_type}') do |request_type|
   until Maze::Server.list_for(request_type).current.nil?
     Maze::Server.list_for(request_type).next

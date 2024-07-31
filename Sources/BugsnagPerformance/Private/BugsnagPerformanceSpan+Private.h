@@ -36,10 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)endOnDestroy;
 
 - (SpanId)parentId;
-- (NSString *)name;
 - (void)updateName:(NSString *)name;
-- (NSDate *_Nullable)startTime;
-- (NSDate *_Nullable)endTime;
 - (void)updateStartTime:(NSDate *)startTime;
 
 @end

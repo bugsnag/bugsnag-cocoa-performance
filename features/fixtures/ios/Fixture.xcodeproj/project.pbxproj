@@ -37,6 +37,9 @@
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
+		098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */; };
+		098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */; };
+		098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */; };
 		099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */; };
 		09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */; };
 		09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */; };
@@ -103,6 +106,10 @@
 		097FFC0A2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNullNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
+		098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnEndCallbackScenario.swift; sourceTree = "<group>"; };
+		098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorGenerator.h; sourceTree = "<group>"; };
+		098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ErrorGenerator.m; sourceTree = "<group>"; };
+		098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftErrorGenerator.swift; sourceTree = "<group>"; };
 		099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAVAssetScenario.swift; sourceTree = "<group>"; };
 		09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
@@ -191,6 +198,9 @@
 				01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */,
 				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
 				09637A442B0B883B00F4F776 /* FixtureConfig.swift */,
+				098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */,
+				098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */,
+				098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */,
 			);
 			path = Fixture;
 			sourceTree = "<group>";
@@ -254,6 +264,7 @@
 				CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */,
 				09F025052BA08804007D9F73 /* ObjCURLSession.h */,
 				09F025062BA08804007D9F73 /* ObjCURLSession.m */,
+				098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */,
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
@@ -387,6 +398,7 @@
 				09637A3F2B06082200F4F776 /* Logging.m in Sources */,
 				CB3477182901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift in Sources */,
 				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
+				098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */,
 				098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */,
@@ -399,6 +411,7 @@
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,
 				09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
+				098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
 				094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */,
@@ -409,6 +422,7 @@
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
 				09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */,
 				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
+				098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,

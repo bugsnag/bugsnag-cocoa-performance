@@ -305,8 +305,17 @@ Feature: Manual creation of spans
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
     * every span bool attribute "d" does not exist
+    * a span array attribute "e" is empty
+    * a span array attribute "f" is empty
     * a span array attribute "x" is empty
     * a span array attribute "c" contains the string value "array_0" at index 0
     * a span array attribute "c" contains the integer value 1 at index 1
     * a span array attribute "c" contains the value true at index 2
     * a span array attribute "c" contains the float value 1.5 at index 3
+
+  Scenario: Set OnEnd
+    Given I run "OnEndCallbackScenario"
+    And I wait for exactly 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "MySpan"

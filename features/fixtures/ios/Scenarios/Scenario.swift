@@ -11,6 +11,7 @@ import Foundation
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
 class Scenario: NSObject {
+    let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []

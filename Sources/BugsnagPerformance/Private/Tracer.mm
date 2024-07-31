@@ -80,16 +80,40 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    auto span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
+    __block BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
                                                               traceId,
                                                               spanId,
                                                               parentSpan.spanId,
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
-        BSGLogDebug(@"Tracer::startSpan: callback for span %@", spanData->name);
+        BSGLogTrace(@"Tracer::startSpan: OnEnd callback: for span %@", spanData->name);
         blockThis->spanStackingHandler_->didEnd(spanData->spanId);
-        blockThis->trySampleAndAddSpanToBatch(spanData);
+        if (!blockThis->sampler_->sampled(*spanData)) {
+            BSGLogTrace(@"Tracer::startSpan: OnEnd callback: span %@ sampling returned false. Dropping...", spanData->name);
+            [span abortUnconditionally];
+            return;
+        }
+        CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
+        for (BugsnagPerformanceSpanEndCallback callback: blockThis->onSpanEndCallbacks_) {
+            BOOL shouldDiscardSpan = false;
+            @try {
+                shouldDiscardSpan = !callback(span);
+            } @catch(NSException *e) {
+                BSGLogError(@"Span OnEnd callback threw exception %@", e);
+                // We don't know whether they wanted to discard the span or not, so keep it.
+                shouldDiscardSpan = false;
+            }
+            if(shouldDiscardSpan) {
+                BSGLogDebug(@"Tracer::startSpan: span %@ OnEnd callback returned false. Dropping...", spanData->name);
+                [span abortUnconditionally];
+                return;
+            }
+        }
+        CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
+        BSGLogDebug(@"Tracer::startSpan: OnEnd callback: Adding span %@ to batch", spanData->name);
+        [span setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
+        blockThis->batch_->add(spanData);
     })];
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
