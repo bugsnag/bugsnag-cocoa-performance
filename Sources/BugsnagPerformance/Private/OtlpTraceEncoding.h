@@ -31,5 +31,7 @@ public: // Public for testing only
     static NSDictionary * encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept;
     
     static NSArray<NSDictionary *> * encode(NSDictionary *attributes) noexcept;
+
+    static NSArray<NSDictionary *> * encode(NSArray *arrayAttribute) noexcept;
 };
 }

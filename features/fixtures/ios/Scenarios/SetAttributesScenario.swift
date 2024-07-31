@@ -15,6 +15,8 @@ class SetAttributesScenario: Scenario {
         span.setAttribute("a", withValue: "xyz")
         span.setAttribute("b", withValue: "abc")
         span.setAttribute("b", withValue: nil)
+        span.setAttribute("c", withValue: ["array_0", 1, true, 1.5])
+        span.setAttribute("d", withValue: URL(string: "https://bugsnag.com"))
         span.setAttribute("x", withValue: [])
         span.end()
     }
