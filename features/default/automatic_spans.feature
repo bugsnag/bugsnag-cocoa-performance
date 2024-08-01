@@ -601,7 +601,6 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
-  @skip # Skip Pending PLAT-12526
   Scenario: Automatically start a network span triggered by AVAssetDownloadURLSession (must not crash)
     Given I run "AutoInstrumentAVAssetScenario"
     And I wait for 2 seconds

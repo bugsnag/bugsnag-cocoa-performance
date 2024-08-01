@@ -80,7 +80,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    __block BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
+    __block __weak BugsnagPerformanceSpan *blockSpan = nil;
+    BugsnagPerformanceSpan *span = nil;
+    blockSpan = span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
                                                               traceId,
                                                               spanId,
                                                               parentSpan.spanId,
@@ -88,17 +90,18 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
         BSGLogTrace(@"Tracer::startSpan: OnEnd callback: for span %@", spanData->name);
+        BugsnagPerformanceSpan *localSpan = blockSpan;
         blockThis->spanStackingHandler_->didEnd(spanData->spanId);
         if (!blockThis->sampler_->sampled(*spanData)) {
             BSGLogTrace(@"Tracer::startSpan: OnEnd callback: span %@ sampling returned false. Dropping...", spanData->name);
-            [span abortUnconditionally];
+            [localSpan abortUnconditionally];
             return;
         }
         CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
         for (BugsnagPerformanceSpanEndCallback callback: blockThis->onSpanEndCallbacks_) {
             BOOL shouldDiscardSpan = false;
             @try {
-                shouldDiscardSpan = !callback(span);
+                shouldDiscardSpan = !callback(localSpan);
             } @catch(NSException *e) {
                 BSGLogError(@"Span OnEnd callback threw exception %@", e);
                 // We don't know whether they wanted to discard the span or not, so keep it.
@@ -106,13 +109,13 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
             }
             if(shouldDiscardSpan) {
                 BSGLogDebug(@"Tracer::startSpan: span %@ OnEnd callback returned false. Dropping...", spanData->name);
-                [span abortUnconditionally];
+                [localSpan abortUnconditionally];
                 return;
             }
         }
         CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
         BSGLogDebug(@"Tracer::startSpan: OnEnd callback: Adding span %@ to batch", spanData->name);
-        [span setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
+        [localSpan setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
         blockThis->batch_->add(spanData);
     })];
     if (options.makeCurrentContext) {
