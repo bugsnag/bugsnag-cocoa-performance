@@ -22,7 +22,6 @@ class AutoInstrumentNetworkCallbackScenario: Scenario {
             }
 
             let url = testUrl!
-            let urlString = url.absoluteString
 
             if url.absoluteString == "https://google.com" {
                 info.url = nil

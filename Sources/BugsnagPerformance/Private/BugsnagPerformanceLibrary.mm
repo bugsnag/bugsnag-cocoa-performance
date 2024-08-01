@@ -24,49 +24,57 @@ BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept 
 }
 
 void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
-    BSGLogDebug(@"BugsnagPerformanceLibrary::calledAsEarlyAsPossible");
-    auto instance = sharedInstance();
-    auto config = [BSGEarlyConfiguration new];
-    instance.earlyConfigure(config);
-    instance.earlySetup();
+    @autoreleasepool {
+        BSGLogDebug(@"BugsnagPerformanceLibrary::calledAsEarlyAsPossible");
+        auto instance = sharedInstance();
+        auto config = [BSGEarlyConfiguration new];
+        instance.earlyConfigure(config);
+        instance.earlySetup();
+    }
 }
 
 void BugsnagPerformanceLibrary::calledRightBeforeMain() noexcept {
-    BSGLogDebug(@"BugsnagPerformanceLibrary::calledRightBeforeMain");
-    sharedInstance().bugsnagPerformanceImpl_->willCallMainFunction();
+    @autoreleasepool {
+        BSGLogDebug(@"BugsnagPerformanceLibrary::calledRightBeforeMain");
+        sharedInstance().bugsnagPerformanceImpl_->willCallMainFunction();
+    }
 }
 
 void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration *config) noexcept {
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: apiKey = %@", config.apiKey);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: endpoint = %@", config.endpoint);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentAppStarts = %d", config.autoInstrumentAppStarts);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentViewControllers = %d", config.autoInstrumentViewControllers);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentNetworkRequests = %d", config.autoInstrumentNetworkRequests);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: appVersion = %@", config.appVersion);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: bundleVersion = %@", config.bundleVersion);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: releaseStage = %@", config.releaseStage);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: enabledReleaseStages = %@", config.enabledReleaseStages);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: tracePropagationUrls = %@", config.tracePropagationUrls);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: clearPersistenceOnStart = %d", config.internal.clearPersistenceOnStart);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoTriggerExportOnBatchSize = %llu", config.internal.autoTriggerExportOnBatchSize);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: performWorkInterval = %f", config.internal.performWorkInterval);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: maxRetryAge = %f", config.internal.maxRetryAge);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: probabilityValueExpiresAfterSeconds = %f", config.internal.probabilityValueExpiresAfterSeconds);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: probabilityRequestsPauseForSeconds = %f", config.internal.probabilityRequestsPauseForSeconds);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: initialSamplingProbability = %f", config.internal.initialSamplingProbability);
-    BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: maxPackageContentLength = %llu", config.internal.maxPackageContentLength);
+    @autoreleasepool {
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: apiKey = %@", config.apiKey);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: endpoint = %@", config.endpoint);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentAppStarts = %d", config.autoInstrumentAppStarts);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentViewControllers = %d", config.autoInstrumentViewControllers);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentNetworkRequests = %d", config.autoInstrumentNetworkRequests);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: appVersion = %@", config.appVersion);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: bundleVersion = %@", config.bundleVersion);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: releaseStage = %@", config.releaseStage);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: enabledReleaseStages = %@", config.enabledReleaseStages);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: tracePropagationUrls = %@", config.tracePropagationUrls);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: clearPersistenceOnStart = %d", config.internal.clearPersistenceOnStart);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoTriggerExportOnBatchSize = %llu", config.internal.autoTriggerExportOnBatchSize);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: performWorkInterval = %f", config.internal.performWorkInterval);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: maxRetryAge = %f", config.internal.maxRetryAge);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: probabilityValueExpiresAfterSeconds = %f", config.internal.probabilityValueExpiresAfterSeconds);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: probabilityRequestsPauseForSeconds = %f", config.internal.probabilityRequestsPauseForSeconds);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: initialSamplingProbability = %f", config.internal.initialSamplingProbability);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: maxPackageContentLength = %llu", config.internal.maxPackageContentLength);
 
-    NSError *__autoreleasing error = nil;
-    if (![config validate:&error]) {
-        BSGLogError(@"Configuration validation failed with error: %@", error);
+        NSError *__autoreleasing error = nil;
+        if (![config validate:&error]) {
+            BSGLogError(@"Configuration validation failed with error: %@", error);
+        }
+
+        sharedInstance().configure(config);
     }
-
-    sharedInstance().configure(config);
 }
 
 void BugsnagPerformanceLibrary::startLibrary() noexcept {
-    BSGLogDebug(@"BugsnagPerformanceLibrary::startLibrary");
-    sharedInstance().start();
+    @autoreleasepool {
+        BSGLogDebug(@"BugsnagPerformanceLibrary::startLibrary");
+        sharedInstance().start();
+    }
 }
 
 BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()

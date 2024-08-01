@@ -56,30 +56,32 @@
 }
 
 - (void) run {
-    // Start off asleep
-    [self sleep];
-    if (self.shouldEnd) {
-        return;
-    }
+    @autoreleasepool {
+        // Start off asleep
+        [self sleep];
+        if (self.shouldEnd) {
+            return;
+        }
 
-    [self performInitialWork];
+        [self performInitialWork];
 
-    if (self.initialRecurringWorkDelay > 0) {
-        [NSThread sleepForTimeInterval:self.initialRecurringWorkDelay];
-    }
+        if (self.initialRecurringWorkDelay > 0) {
+            [NSThread sleepForTimeInterval:self.initialRecurringWorkDelay];
+        }
 
-    for (;;) {
-        @autoreleasepool {
-            if (self.shouldEnd) {
-                break;
+        for (;;) {
+            @autoreleasepool {
+                if (self.shouldEnd) {
+                    break;
+                }
+
+                while ([self performRecurringWork]) {
+                    // Keep working until no work gets done
+                }
+
+                // Once there's no work getting done, go to sleep.
+                [self sleep];
             }
-
-            while ([self performRecurringWork]) {
-                // Keep working until no work gets done
-            }
-
-            // Once there's no work getting done, go to sleep.
-            [self sleep];
         }
     }
 }
