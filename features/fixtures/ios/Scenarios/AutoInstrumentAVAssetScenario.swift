@@ -14,17 +14,6 @@ class AutoInstrumentAVAssetScenario: Scenario, AVAssetDownloadDelegate {
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = true
-        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
-            super.ignoreInternalRequests(info: info)
-            let testUrl = info.url
-            if (testUrl == nil) {
-                return info
-            }
-            if (self.isMazeRunnerAdministrationURL(url: testUrl!)) {
-                info.url = nil
-            }
-            return info
-        }
     }
 
     func query(string: String) {
