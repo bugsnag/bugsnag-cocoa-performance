@@ -111,6 +111,7 @@ void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     if (isEnabled_) {
         isEnabled_ = false;
+        BSGLogDebug(@"AppStartupInstrumentation::disable(): Canceling app start spans");
         tracer_->cancelQueuedSpan(preMainSpan_);
         tracer_->cancelQueuedSpan(postMainSpan_);
         tracer_->cancelQueuedSpan(uiInitSpan_);

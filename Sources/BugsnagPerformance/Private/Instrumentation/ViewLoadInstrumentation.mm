@@ -200,6 +200,7 @@ void ViewLoadInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexce
 }
 
 void ViewLoadInstrumentation::endEarlySpanPhase() noexcept {
+    BSGLogDebug(@"ViewLoadInstrumentation::endEarlySpansPhase");
     std::lock_guard<std::recursive_mutex> guard(earlySpansMutex_);
     if (!isEnabled_) {
         for (BugsnagPerformanceSpan *span: earlySpans_) {

@@ -20,6 +20,7 @@ using namespace bugsnag;
 }
 
 - (void)dealloc {
+    BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
     if (self.isValid && self.onDumped) {
         self.onDumped(self);
     }

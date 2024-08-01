@@ -102,7 +102,7 @@
 		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
 		CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */; };
 		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
-		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
+		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
 		CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB572EA829BB783200FD7A2A /* AppStateTracker.h */; };
@@ -340,7 +340,7 @@
 		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
 		CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanTests.mm; sourceTree = "<group>"; };
 		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
-		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
+		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGURLSessionPerformanceProxy.mm; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
 		CB572EA829BB783200FD7A2A /* AppStateTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStateTracker.h; sourceTree = "<group>"; };
@@ -759,7 +759,7 @@
 			isa = PBXGroup;
 			children = (
 				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
-				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */,
+				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
 				CBA22C982A03EA300066A2C1 /* NetworkCommon.h */,
 				CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */,
 				CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */,
@@ -1211,7 +1211,7 @@
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
-				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
+				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */,
 				09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,
