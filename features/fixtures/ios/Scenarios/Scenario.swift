@@ -11,6 +11,7 @@ import Foundation
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
 class Scenario: NSObject {
+    let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
@@ -32,23 +33,39 @@ class Scenario: NSObject {
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
         config.endpoint = fixtureConfig.tracesURL
-        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
-            self.ignoreInternalRequests(info: info)
+        config.networkRequestCallback = filterAdminMazeRunnerNetRequests
+    }
 
+    func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {
+        for prefix in prefixes {
+            if url.absoluteString.hasPrefix(prefix.absoluteString) {
+                return true
+            }
+        }
+        return false
+    }
+
+    func filterNetRequestsContainingPrefixes(info: BugsnagPerformanceNetworkRequestInfo,
+                                             prefixes: [URL]) -> BugsnagPerformanceNetworkRequestInfo {
+        if info.url == nil {
             return info
-        }
+         }
+
+        if urlHasAnyPrefixIn(url: info.url!, prefixes: prefixes) {
+             info.url = nil
+         }
+        return info
     }
-    
-    func ignoreInternalRequests(info: BugsnagPerformanceNetworkRequestInfo) {
-        if (info.url == nil) {
-            return
-        }
-        let urlString = info.url!.absoluteString
-        if (urlString.hasSuffix("/metrics") || urlString.contains("/command")) {
-            info.url = nil
-        }
+
+    func filterAllMazeRunnerNetRequests(info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo {
+        return filterNetRequestsContainingPrefixes(info: info, prefixes: fixtureConfig.allMazeRunnerURLs)
     }
-    
+
+    func filterAdminMazeRunnerNetRequests(info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo {
+        // Everything except reflectURL
+        return filterNetRequestsContainingPrefixes(info: info, prefixes: fixtureConfig.adminMazeRunnerURLs)
+    }
+
     func clearPersistentData() {
         logDebug("Scenario.clearPersistentData()")
         UserDefaults.standard.removePersistentDomain(
@@ -71,7 +88,7 @@ class Scenario: NSObject {
             for reStr in splitArgs(args: value) {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
-            config.propagateTraceParentToUrlsMatching = regexes
+            config.tracePropagationUrls = regexes
             break
         default:
             fatalError("\(path): Unknown configuration path")
@@ -88,20 +105,6 @@ class Scenario: NSObject {
     func run() {
         logError("Scenario.run() has not been overridden!")
         fatalError("To be implemented by subclass")
-    }
-    
-    func isMazeRunnerAdministrationURL(url: URL) -> Bool {
-        if url.absoluteString.hasPrefix(fixtureConfig.tracesURL.absoluteString) ||
-            url.absoluteString.hasPrefix(fixtureConfig.commandURL.absoluteString) ||
-            url.absoluteString.hasPrefix(fixtureConfig.metricsURL.absoluteString) {
-            return true
-        }
-
-        if url.absoluteString.hasPrefix(fixtureConfig.reflectURL.absoluteString) {
-            return false // reflectURL is fair game!
-        }
-
-        return false
     }
 
     func enterBackground(forSeconds seconds: Int) {

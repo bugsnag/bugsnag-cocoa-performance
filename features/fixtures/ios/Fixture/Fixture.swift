@@ -188,3 +188,16 @@ class Fixture: NSObject, CommandReceiver {
         var maze_address: String
     }
 }
+
+class PresetFixture: Fixture {
+    let scenarioName: String
+    init(scenarioName: String) {
+        self.scenarioName = scenarioName
+    }
+
+    override func start() {
+        receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "load_scenario", args: ["scenario": scenarioName], message: ""))
+        receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "start_bugsnag", args: [:], message: ""))
+        receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "run_loaded_scenario", args: [:], message: ""))
+    }
+}

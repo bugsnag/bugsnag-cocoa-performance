@@ -15,11 +15,6 @@ class AutoInstrumentAppStartsScenario: Scenario {
         config.autoInstrumentAppStarts = true
     }
 
-    override func startBugsnag() {
-        BugsnagPerformance.startViewLoadSpan(name: "AutoInstrumentAppStartsScenarioView", viewType: .uiKit)
-        super.startBugsnag()
-    }
-
     override func run() {
     }
 }

@@ -51,26 +51,29 @@ public:
     ~Span() {
         switch(spanDestroyAction) {
             case AbortOnSpanDestroy:
-                BSGLogDebug(@"Span::~Span(): for span %@. Action = Abort", data_->name);
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = Abort", name());
                 abortIfOpen();
                 break;
             case EndOnSpanDestroy:
-                BSGLogDebug(@"Span::~Span(): for span %@. Action = End", data_->name);
+                BSGLogDebug(@"Span::~Span(): for span %@. Action = End", name());
                 end(CFAbsoluteTimeGetCurrent());
+                break;
+            default:
+                BSGLogError(@"Span::~Span(): for span %@. Unknown action type %d", name(), spanDestroyAction);
                 break;
         }
     }
 
-    void addAttribute(NSString *attributeName, id value) noexcept {
-        data_->addAttribute(attributeName, value);
+    void setAttribute(NSString *attributeName, id value) noexcept {
+        data_->setAttribute(attributeName, value);
     }
 
-    void addAttributes(NSDictionary *attributes) noexcept {
+    void setAttributes(NSDictionary *attributes) noexcept {
         // This doesn't have to be thread safe because this method is never called
         // after the span is started.
         auto data = data_;
         if (!isEnded_ && data != nullptr) {
-            data->addAttributes(attributes);
+            data->setAttributes(attributes);
         }
     }
 
@@ -91,7 +94,7 @@ public:
     }
 
     void abortIfOpen() noexcept {
-        BSGLogDebug(@"Span::abortIfOpen(): isEnded_ = %s", isEnded_ ? "true" : "false");
+        BSGLogDebug(@"Span::abortIfOpen(): %@, isEnded_ = %s", name(), isEnded_ ? "true" : "false");
         if (!isEnded_) {
             data_->markInvalid();
             isEnded_ = true;
@@ -99,13 +102,13 @@ public:
     }
 
     void abortUnconditionally() noexcept {
-        BSGLogDebug(@"Span::abortUnconditionally()");
+        BSGLogDebug(@"Span::abortUnconditionally(): %@", name());
         data_->markInvalid();
         isEnded_ = true;
     }
 
     void end(CFAbsoluteTime time) noexcept {
-        BSGLogDebug(@"Span::end(%f)", time);
+        BSGLogDebug(@"Span::end(): %@ at time %f", name(), time);
         bool expected = false;
         if (!isEnded_.compare_exchange_strong(expected, true)) {
             // compare_exchange_strong() returns true only if isEnded_ was exchanged (from false to true).

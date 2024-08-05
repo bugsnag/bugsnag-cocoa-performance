@@ -102,7 +102,7 @@
 		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
 		CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */; };
 		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
-		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */; };
+		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
 		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
 		CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB572EA829BB783200FD7A2A /* AppStateTracker.h */; };
@@ -145,7 +145,7 @@
 		CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */; };
 		CBEC51CE296EEF52009C0CE3 /* PersistenceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */; };
 		CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51D42976BCAD009C0CE3 /* Filesystem.h */; };
-		CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.m */; };
+		CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */; };
 		CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */; };
 		CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */; };
 		CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */; };
@@ -340,7 +340,7 @@
 		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
 		CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanTests.mm; sourceTree = "<group>"; };
 		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
-		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSGURLSessionPerformanceProxy.m; sourceTree = "<group>"; };
+		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGURLSessionPerformanceProxy.mm; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
 		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
 		CB572EA829BB783200FD7A2A /* AppStateTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStateTracker.h; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 		CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FileBasedTest.m; sourceTree = "<group>"; };
 		CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistenceTests.mm; sourceTree = "<group>"; };
 		CBEC51D42976BCAD009C0CE3 /* Filesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Filesystem.h; sourceTree = "<group>"; };
-		CBEC51D52976BCAD009C0CE3 /* Filesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Filesystem.m; sourceTree = "<group>"; };
+		CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Filesystem.mm; sourceTree = "<group>"; };
 		CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilesystemTests.m; sourceTree = "<group>"; };
 		CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetryQueue.h; sourceTree = "<group>"; };
 		CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueue.mm; sourceTree = "<group>"; };
@@ -541,7 +541,7 @@
 				CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */,
 				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
-				CBEC51D52976BCAD009C0CE3 /* Filesystem.m */,
+				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
 				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
 				0122C22229019770002D243C /* IdGenerator.h */,
@@ -759,7 +759,7 @@
 			isa = PBXGroup;
 			children = (
 				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
-				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.m */,
+				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
 				CBA22C982A03EA300066A2C1 /* NetworkCommon.h */,
 				CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */,
 				CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */,
@@ -1181,7 +1181,7 @@
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
-				CBEC51D72976BCAD009C0CE3 /* Filesystem.m in Sources */,
+				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
@@ -1211,7 +1211,7 @@
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
-				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.m in Sources */,
+				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */,
 				09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,

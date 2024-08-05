@@ -25,9 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithSpan:(std::shared_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
 
-- (void)addAttribute:(NSString *)attributeName withValue:(id)value;
-
-- (void)addAttributes:(NSDictionary *)attributes;
+- (void)setAttributes:(NSDictionary *)attributes;
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value;
 
@@ -38,10 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)endOnDestroy;
 
 - (SpanId)parentId;
-- (NSString *)name;
 - (void)updateName:(NSString *)name;
-- (NSDate *_Nullable)startTime;
-- (NSDate *_Nullable)endTime;
 - (void)updateStartTime:(NSDate *)startTime;
 
 @end

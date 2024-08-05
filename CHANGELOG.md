@@ -1,6 +1,30 @@
 Changelog
 =========
 
+## 1.7.0 (2024-08-05)
+
+### Enhancements
+
+* Span attributes can now be set by the user.
+  [286](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/286)
+
+* Array-of-primitives span attributes are now supported.
+  [288](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/288)
+
+* OnEnd span callbacks can now be registered in the configuration. These callbacks are called on all sampled spans.
+  [289](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/289)
+
+### Bug fixes
+
+* Added more autoreleasepools to catch potential memory leaks, and fixed a retain loop in BugsnagPerformanceSpan.
+  [293](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/293)
+
+* Rename propagateTraceParentToUrlsMatching to the intended tracePropagationUrls in BugsnagPerformanceConfiguration.
+  [287](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/287)
+
+* Workaround for Swift namespacing issue that caused conflicts when BugsnagPerformanceSwift was built as an xcframework.
+  [284](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/284)
+
 ## 1.6.2 (2024-07-04)
 
 ### Bug fixes

@@ -63,6 +63,7 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 }
 
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::earlyConfigure()");
     persistentState_->earlyConfigure(config);
     tracer_->earlyConfigure(config);
     deviceID_->earlyConfigure(config);
@@ -90,6 +91,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::earlySetup()");
     persistentState_->earlySetup();
     tracer_->earlySetup();
     deviceID_->earlySetup();
@@ -104,6 +106,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 }
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
     performWorkInterval_ = config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
@@ -127,6 +130,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 }
 
 void BugsnagPerformanceImpl::start() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::start()");
     bool expected = false;
     if (!isStarted_.compare_exchange_strong(expected, true)) {
         // compare_exchange_strong() returns true only if isStarted_ was exchanged (from false to true).
@@ -228,8 +232,13 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
+#ifndef __clang_analyzer__
+    #pragma clang diagnostic ignored "-Wunused-variable"
+    size_t origSpansSize = origSpans->size();
+#endif
     auto spans = sampler_->sampled(std::move(origSpans));
     if (spans->size() == 0) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
         return false;
     }
 
@@ -243,6 +252,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 
     auto retries = retryQueue_->list();
     if (retries.size() == 0) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendRetriesTask(): No retries to send");
         return false;
     }
 
@@ -276,6 +286,7 @@ void BugsnagPerformanceImpl::onBatchFull() noexcept {
 }
 
 void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity connectivity) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onConnectivityChanged(): new reachability = %d", connectivity);
     switch (connectivity) {
         case Reachability::Cellular: case Reachability::Wifi:
             wakeWorker();
@@ -287,6 +298,7 @@ void BugsnagPerformanceImpl::onConnectivityChanged(Reachability::Connectivity co
 }
 
 void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onProbabilityChanged(): new probability = %f, expiring after %f seconds", newProbability, probabilityValueExpiresAfterSeconds_);
     probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
     sampler_->setProbability(newProbability);
     persistentState_->setProbability(newProbability);
@@ -308,12 +320,14 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
 }
 
 void BugsnagPerformanceImpl::onAppFinishedLaunching() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppFinishedLaunching()");
     // We run this without checking isStarted (in case there's notification
     // timing jank and we get the notification before we've started).
     checkAppStartDuration();
 }
 
 void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredBackground()");
     // We run this BEFORE checking isStarted (in case there's notification
     // timing jank and we get the notification before we've started).
     if (instrumentation_->timeSinceAppFirstBecameActive() < minTimeToBackgrounding) {
@@ -333,8 +347,10 @@ void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
     if (!isStarted_) {
+        BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredForeground(), but not started yet");
         return;
     }
+    BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredForeground()");
 
     batch_->allowDrain();
     wakeWorker();
@@ -432,14 +448,14 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, Bugsna
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
@@ -448,7 +464,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto viewType = BugsnagPerformanceViewTypeUIKit;
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span addAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
@@ -457,7 +473,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
-    [span addAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    [span setAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }
 
@@ -485,6 +501,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
 
     NSError *errorFromGetRequest = nil;
     NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
+    BSGLogDebug(@"BugsnagPerformanceImpl::reportNetworkSpan() for %@", req.URL);
 
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = req.URL;
@@ -500,7 +517,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
-        [span addAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
+        [span setAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }
 }

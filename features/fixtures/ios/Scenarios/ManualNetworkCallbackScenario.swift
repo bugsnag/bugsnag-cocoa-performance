@@ -20,8 +20,8 @@ class ManualNetworkCallbackScenario: Scenario {
     override func configure() {
         super.configure()
         config.autoInstrumentNetworkRequests = false
-        config.networkRequestCallback = { (info: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
-            super.ignoreInternalRequests(info: info)
+        config.networkRequestCallback = { (origInfo: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+            let info = self.filterAdminMazeRunnerNetRequests(info: origInfo)
 
             let testUrl = info.url
             if (testUrl == nil) {
@@ -29,12 +29,8 @@ class ManualNetworkCallbackScenario: Scenario {
             }
 
             let url = testUrl!
-            let urlString = url.absoluteString
 
-            if (urlString.starts(with:"http://bs-local.com")) {
-                info.url = nil
-            }
-            else if url.absoluteString == "https://google.com" {
+            if url.absoluteString == "https://google.com" {
                 info.url = nil
             } else if url.lastPathComponent == "changeme" {
                 info.url = URL(string:"changed", relativeTo:url.deletingLastPathComponent())

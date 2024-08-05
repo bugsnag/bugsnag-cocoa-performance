@@ -71,33 +71,33 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     if (task.error != nil) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task error [%@] so not recording span", request.URL, task.error);
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task error [%@] so not recording span", session.class, task.class, request.URL, task.error);
         return;
     }
     if (task.response == nil) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task response is nil so not recording span", request.URL);
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task response is nil so not recording span", session.class, task.class, request.URL);
         return;
     }
     if (httpResponse.statusCode == 0) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Task response status code is 0 so not recording span", request.URL);
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task response status code is 0 so not recording span", session.class, task.class, request.URL);
         return;
     }
 
     if (self.baseEndpointStr.length > 0 && [request.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Has base endpoint %@ so not recording span", request.URL, self.baseEndpointStr);
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Has base endpoint %@ so not recording span", session.class, task.class, request.URL, self.baseEndpointStr);
         return;
     }
 
     auto span = (BugsnagPerformanceSpan *)objc_getAssociatedObject(task, associatedNetworkSpanKey);
     if (!span) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: No associated task found", request.URL);
+        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: No associated task found", session.class, task.class, request.URL);
         return;
     }
 
-    BSGLogTrace(@"NetworkInstrumentation.URLSession:task:didFinishCollectingMetrics for %@: Ending span with time %@", request.URL, metrics.taskInterval.endDate);
+    BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Ending span with time %@", session.class, task.class, request.URL, metrics.taskInterval.endDate);
 
     objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [span addAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
+    [span setAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
     [span endWithEndTime:metrics.taskInterval.endDate];
 }
 
@@ -150,7 +150,7 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
     if (networkRequestCallback != nullptr) {
         networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
     }
-    propagateTraceParentToUrlsMatching_ = config.propagateTraceParentToUrlsMatching;
+    propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;
     endEarlySpansPhase();
 }
 
@@ -160,6 +160,7 @@ void NetworkInstrumentation::start() noexcept {
 }
 
 void NetworkInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcept {
+    BSGLogTrace(@"NetworkInstrumentation::markEarlySpan() for %@", span.name);
     std::lock_guard<std::mutex> guard(earlySpansMutex_);
     [earlySpans_ addObject:span];
 }
@@ -172,10 +173,12 @@ static bool didVetoTracing(NSURL * _Nullable originalUrl,
         BSGLogDebug(@"User vetoed tracing on %@", originalUrl);
         return true;
     }
+    BSGLogTrace(@"User did not veto tracing on %@", originalUrl);
     return false;
 }
 
 void NetworkInstrumentation::endEarlySpansPhase() noexcept {
+    BSGLogDebug(@"NetworkInstrumentation::endEarlySpansPhase");
     std::lock_guard<std::mutex> guard(earlySpansMutex_);
     isEarlySpansPhase_ = false;
     auto spans = earlySpans_;
@@ -199,7 +202,7 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
             BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
         }
     }
 }
@@ -228,10 +231,12 @@ bool NetworkInstrumentation::canTraceTask(NSURLSessionTask *task) noexcept {
 
 void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noexcept {
     if (!isEnabled_) {
+        BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Not enabled (task was %@)", task.class);
         return;
     }
 
     if (!canTraceTask(task)) {
+        BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Task %@ not traceable", task.class);
         return;
     }
 
@@ -260,7 +265,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span addAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
+            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }
         if (span != nil) {
             objc_setAssociatedObject(task, associatedNetworkSpanKey, span,

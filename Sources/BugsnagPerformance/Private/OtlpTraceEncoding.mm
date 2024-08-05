@@ -158,6 +158,58 @@ OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, N
     };
 }
 
+NSArray<NSDictionary *> * OtlpTraceEncoding::encode(NSArray *arrayAttribute) noexcept {
+    auto result = [NSMutableArray array];
+    for(id value in arrayAttribute) {
+        if ([value isKindOfClass:[NSString class]]) {
+            [result addObject:@{@"stringValue": value}];
+            continue;
+        }
+        if ([value isKindOfClass:[NSNumber class]]) {
+            auto typeId = CFGetTypeID((__bridge CFTypeRef)value);
+            if (typeId == CFBooleanGetTypeID()) {
+                [result addObject:@{@"boolValue": value}];
+                continue;
+            }
+            if (typeId == CFNumberGetTypeID()) {
+                auto type = CFNumberGetType((__bridge CFNumberRef)value);
+                switch (type) {
+                    case kCFNumberSInt8Type:
+                    case kCFNumberSInt16Type:
+                    case kCFNumberSInt32Type:
+                    case kCFNumberCharType:
+                    case kCFNumberShortType:
+                    case kCFNumberIntType:
+                        [result addObject:@{@"intValue": [value stringValue]}];
+                        continue;
+
+                    case kCFNumberLongType:
+                    case kCFNumberCFIndexType:
+                    case kCFNumberNSIntegerType:
+                    case kCFNumberSInt64Type:
+                    case kCFNumberLongLongType:
+                        // "JSON value will be a decimal string. Either numbers or strings are accepted."
+                        // https://developers.google.com/protocol-buffers/docs/proto3#json
+                        [result addObject:@{@"intValue": [value stringValue]}];
+                        continue;
+
+                    case kCFNumberFloat32Type:
+                    case kCFNumberFloat64Type:
+                    case kCFNumberFloatType:
+                    case kCFNumberDoubleType:
+                    case kCFNumberCGFloatType:
+                        [result addObject:@{@"doubleValue": value}];
+                        continue;
+
+                    default: break;
+                }
+            }
+        }
+        BSGLogError(@"Could not encode an array attribute element because it is of an unknown type %@", NSStringFromClass([value class]));
+    }
+    return result;
+}
+
 NSArray<NSDictionary *> *
 OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     auto result = [NSMutableArray array];
@@ -165,13 +217,19 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
         id value = attributes[key];
         if ([value isKindOfClass:[NSString class]]) {
             [result addObject:@{@"key": key, @"value": @{@"stringValue": value}}];
+            continue;
+        }
+        if ([value isKindOfClass:[NSArray class]]) {
+            [result addObject:@{@"key": key, @"value": @{@"arrayValue": @{@"values": encode((NSArray *)value)}}}];
+            continue;
         }
         if ([value isKindOfClass:[NSNumber class]]) {
             auto typeId = CFGetTypeID((__bridge CFTypeRef)value);
             if (typeId == CFBooleanGetTypeID()) {
                 [result addObject:@{@"key": key, @"value": @{@"boolValue": value}}];
+                continue;
             }
-            else if (typeId == CFNumberGetTypeID()) {
+            if (typeId == CFNumberGetTypeID()) {
                 auto type = CFNumberGetType((__bridge CFNumberRef)value);
                 switch (type) {
                     case kCFNumberSInt8Type:
@@ -181,7 +239,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberShortType:
                     case kCFNumberIntType:
                         [result addObject:@{@"key": key, @"value": @{@"intValue": [value stringValue]}}];
-                        break;
+                        continue;
                         
                     case kCFNumberLongType:
                     case kCFNumberCFIndexType:
@@ -191,7 +249,7 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                         // "JSON value will be a decimal string. Either numbers or strings are accepted."
                         // https://developers.google.com/protocol-buffers/docs/proto3#json
                         [result addObject:@{@"key": key, @"value": @{@"intValue": [value stringValue]}}];
-                        break;
+                        continue;
                         
                     case kCFNumberFloat32Type:
                     case kCFNumberFloat64Type:
@@ -199,12 +257,13 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
                     case kCFNumberDoubleType:
                     case kCFNumberCGFloatType:
                         [result addObject:@{@"key": key, @"value": @{@"doubleValue": value}}];
-                        break;
+                        continue;
                         
                     default: break;
                 }
             }
         }
+        BSGLogError(@"Could not encode attribute %@ because it is of an unknown type %@", key, NSStringFromClass([value class]));
     }
     return result;
 }

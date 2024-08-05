@@ -111,6 +111,7 @@ void AppStartupInstrumentation::disable() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     if (isEnabled_) {
         isEnabled_ = false;
+        BSGLogDebug(@"AppStartupInstrumentation::disable(): Canceling app start spans");
         tracer_->cancelQueuedSpan(preMainSpan_);
         tracer_->cancelQueuedSpan(postMainSpan_);
         tracer_->cancelQueuedSpan(uiInitSpan_);
@@ -194,7 +195,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = tracer_->startAppStartSpan(name, options);
-    [appStartSpan_ addAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+    [appStartSpan_ setAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
 void
@@ -211,7 +212,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     options.startTime = didStartProcessAtTime_;
     options.parentContext = appStartSpan_;
     preMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [preMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
+    [preMainSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
 void
@@ -228,7 +229,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     options.startTime = didCallMainFunctionAtTime_;
     options.parentContext = appStartSpan_;
     postMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [postMainSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
+    [postMainSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
 void
@@ -245,7 +246,7 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
-    [uiInitSpan_ addAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+    [uiInitSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 
 #pragma mark -

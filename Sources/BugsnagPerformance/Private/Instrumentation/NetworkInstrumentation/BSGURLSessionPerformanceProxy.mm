@@ -7,7 +7,7 @@
 
 #import "BSGURLSessionPerformanceProxy.h"
 #import <objc/runtime.h>
-
+#import "../../Utils.h"
 
 @interface BSGURLSessionPerformanceProxy ()
 
@@ -51,6 +51,7 @@
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
 API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
+    BSGLogTrace("BSGURLSessionPerformanceProxy:URLSession:%@ task:%@ didFinishCollectingMetrics", session.class, task.class);
     [self.taskDelegate URLSession:session task:task didFinishCollectingMetrics:metrics];
 
     if ([self.sessionDelegate respondsToSelector:METRICS_SELECTOR]) {

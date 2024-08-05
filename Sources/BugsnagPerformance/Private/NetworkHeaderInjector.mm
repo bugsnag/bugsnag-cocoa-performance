@@ -9,7 +9,7 @@
 #import "NetworkHeaderInjector.h"
 
 void NetworkHeaderInjector::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    propagateTraceParentToUrlsMatching_ = config.propagateTraceParentToUrlsMatching;
+    propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;
 }
 
 NSString *NetworkHeaderInjector::generateTraceParent(BugsnagPerformanceSpan *span) noexcept {

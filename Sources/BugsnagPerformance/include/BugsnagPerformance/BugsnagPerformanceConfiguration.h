@@ -7,12 +7,15 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
+
+typedef BOOL (^ BugsnagPerformanceSpanEndCallback)(BugsnagPerformanceSpan *span);
 
 OBJC_EXPORT
 @interface BugsnagPerformanceConfiguration : NSObject
@@ -24,6 +27,12 @@ OBJC_EXPORT
 + (instancetype)loadConfig;
 
 - (BOOL) validate:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(validate());
+
+/**
+ * Add a callback that get called whenever a span ends.
+ * If any of the registered callbacks returns false, the span is discarded.
+ */
+- (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback;
 
 @property (nonatomic) NSString *apiKey;
 
@@ -70,7 +79,7 @@ OBJC_EXPORT
 /**
  * Any network request URLs that match one of these regular expressions will have the "traceparent" header injected.
  */
-@property (copy, nullable, nonatomic) NSSet<NSRegularExpression *> *propagateTraceParentToUrlsMatching;
+@property (copy, nullable, nonatomic) NSSet<NSRegularExpression *> *tracePropagationUrls;
 
 @end
 
