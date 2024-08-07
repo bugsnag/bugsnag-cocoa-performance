@@ -68,6 +68,8 @@ public:
     // Sweep must be called periodically to avoid a buildup of dead pointers.
     void sweep() noexcept;
 
+    void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span);
+
 private:
     Tracer() = delete;
     std::shared_ptr<Sampler> sampler_;
@@ -89,5 +91,6 @@ private:
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
+    void onSpanEnd(BugsnagPerformanceSpan *span, std::shared_ptr<SpanData> spanData);
 };
 }
