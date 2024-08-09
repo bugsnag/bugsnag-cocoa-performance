@@ -21,7 +21,7 @@ using namespace bugsnag;
 
 - (void)dealloc {
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
-    if (self.isValid && self.onDumped) {
+    if (self.state == SpanStateOpen && self.onDumped) {
         self.onDumped(self);
     }
 }
@@ -83,7 +83,11 @@ using namespace bugsnag;
 }
 
 - (BOOL)isValid {
-    return !self.span->isEnded();
+    return self.span->getState() == SpanStateOpen;
+}
+
+- (SpanState)getState {
+    return self.span->getState();
 }
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {

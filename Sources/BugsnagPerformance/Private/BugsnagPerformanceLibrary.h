@@ -41,6 +41,7 @@ private:
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void preStartSetup() noexcept;
     void start() noexcept;
 
     BugsnagPerformanceLibrary();

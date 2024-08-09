@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic) std::shared_ptr<Span> span;
 
+@property(nonatomic) SpanState state;
+
 - (instancetype)initWithSpan:(std::shared_ptr<bugsnag::Span>)span NS_DESIGNATED_INITIALIZER;
 
 - (void)setAttributes:(NSDictionary *)attributes;
