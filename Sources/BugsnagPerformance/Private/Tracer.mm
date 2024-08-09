@@ -89,34 +89,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                               options.startTime,
                                                               firstClass,
                                        ^void(std::shared_ptr<SpanData> spanData) {
-        BSGLogTrace(@"Tracer::startSpan: OnEnd callback: for span %@", spanData->name);
-        BugsnagPerformanceSpan *localSpan = blockSpan;
-        blockThis->spanStackingHandler_->didEnd(spanData->spanId);
-        if (!blockThis->sampler_->sampled(*spanData)) {
-            BSGLogTrace(@"Tracer::startSpan: OnEnd callback: span %@ sampling returned false. Dropping...", spanData->name);
-            [localSpan abortUnconditionally];
-            return;
-        }
-        CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-        for (BugsnagPerformanceSpanEndCallback callback: blockThis->onSpanEndCallbacks_) {
-            BOOL shouldDiscardSpan = false;
-            @try {
-                shouldDiscardSpan = !callback(localSpan);
-            } @catch(NSException *e) {
-                BSGLogError(@"Span OnEnd callback threw exception %@", e);
-                // We don't know whether they wanted to discard the span or not, so keep it.
-                shouldDiscardSpan = false;
-            }
-            if(shouldDiscardSpan) {
-                BSGLogDebug(@"Tracer::startSpan: span %@ OnEnd callback returned false. Dropping...", spanData->name);
-                [localSpan abortUnconditionally];
-                return;
-            }
-        }
-        CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
-        BSGLogDebug(@"Tracer::startSpan: OnEnd callback: Adding span %@ to batch", spanData->name);
-        [localSpan setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
-        blockThis->batch_->add(spanData);
+        blockThis->onSpanEnd(blockSpan, spanData);
     })];
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
@@ -126,6 +99,48 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     potentiallyOpenSpans_->add(span);
     onSpanStarted_();
     return span;
+}
+
+void Tracer::onSpanEnd(BugsnagPerformanceSpan *span, std::shared_ptr<SpanData> spanData) {
+    BSGLogTrace(@"Tracer::onSpanEnd: for span %@", spanData->name);
+    if(span == nil) {
+        return;
+    }
+
+    spanStackingHandler_->didEnd(span.spanId);
+    if (!sampler_->sampled(*spanData)) {
+        BSGLogTrace(@"Tracer::onSpanEnd: span %@ sampling returned false. Dropping...", spanData->name);
+        [span abortUnconditionally];
+        return;
+    }
+    callOnSpanEndCallbacks(span);
+    batch_->add(spanData);
+}
+
+void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
+    if(span == nil) {
+        return;
+    }
+
+    CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
+    for (BugsnagPerformanceSpanEndCallback callback: onSpanEndCallbacks_) {
+        BOOL shouldDiscardSpan = false;
+        @try {
+            shouldDiscardSpan = !callback(span);
+        } @catch(NSException *e) {
+            BSGLogError(@"Tracer::callOnSpanEndCallbacks: span OnEnd callback threw exception %@", e);
+            // We don't know whether they wanted to discard the span or not, so keep it.
+            shouldDiscardSpan = false;
+        }
+        if(shouldDiscardSpan) {
+            BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ OnEnd callback returned false. Dropping...", spanData->name);
+            [span abortUnconditionally];
+            return;
+        }
+    }
+    CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
+    BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: Adding span %@ to batch", spanData->name);
+    [span setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
 }
 
 void Tracer::trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
