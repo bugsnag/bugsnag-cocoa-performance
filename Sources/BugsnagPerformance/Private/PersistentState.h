@@ -27,7 +27,8 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *) noexcept;
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     void setProbability(double probability) noexcept;
     double probability(void) noexcept {return probability_;};
