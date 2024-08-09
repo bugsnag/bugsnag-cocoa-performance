@@ -72,14 +72,14 @@ public:
         // This doesn't have to be thread safe because this method is never called
         // after the span is started.
         auto data = data_;
-        if (!isEnded_ && data != nullptr) {
+        if (data->getState() == SpanStateOpen && data != nullptr) {
             data->setAttributes(attributes);
         }
     }
 
     bool hasAttribute(NSString *attributeName, id value) noexcept {
         auto data = data_;
-        if (!isEnded_ && data != nullptr) {
+        if (data->getState() == SpanStateOpen && data != nullptr) {
             return data->hasAttribute(attributeName, value);
         }
         return false;
@@ -89,31 +89,22 @@ public:
         return data_->attributes[attributeName];
     }
 
-    bool isEnded(void) {
-        return isEnded_;
+    SpanState getState(void) {
+        return data_->getState();
     }
 
     void abortIfOpen() noexcept {
-        BSGLogDebug(@"Span::abortIfOpen(): %@, isEnded_ = %s", name(), isEnded_ ? "true" : "false");
-        if (!isEnded_) {
-            data_->markInvalid();
-            isEnded_ = true;
-        }
+        data_->abortSpanIfOpen();
     }
 
     void abortUnconditionally() noexcept {
-        BSGLogDebug(@"Span::abortUnconditionally(): %@", name());
-        data_->markInvalid();
-        isEnded_ = true;
+        data_->abortSpan();
     }
 
     void end(CFAbsoluteTime time) noexcept {
         BSGLogDebug(@"Span::end(): %@ at time %f", name(), time);
-        bool expected = false;
-        if (!isEnded_.compare_exchange_strong(expected, true)) {
-            // compare_exchange_strong() returns true only if isEnded_ was exchanged (from false to true).
-            // Therefore, a return of false means that no exchange occurred because
-            // isEnded_ was already true (i.e. we've already ended).
+        if (!data_->endSpan()) {
+            // The span has already been closed.
             return;
         }
 
@@ -151,7 +142,7 @@ public:
 private:
     std::shared_ptr<SpanData> data_;
     OnSpanEnd onEnd_{nil};
-    std::atomic<bool> isEnded_{false};
+    std::atomic<SpanState> spanState_{SpanStateOpen};
     uint64_t startClock_{MONOTONIC_CLOCK_INVALID};
 
     static const uint64_t MONOTONIC_CLOCK_INVALID = 0;

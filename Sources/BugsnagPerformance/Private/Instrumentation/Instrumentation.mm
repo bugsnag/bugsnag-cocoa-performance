@@ -28,6 +28,12 @@ void Instrumentation::configure(BugsnagPerformanceConfiguration *config) noexcep
     networkInstrumentation_->configure(config);
 }
 
+void Instrumentation::preStartSetup() noexcept {
+    appStartupInstrumentation_->preStartSetup();
+    viewLoadInstrumentation_->preStartSetup();
+    networkInstrumentation_->preStartSetup();
+}
+
 void Instrumentation::start() noexcept {
     appStartupInstrumentation_->start();
     viewLoadInstrumentation_->start();

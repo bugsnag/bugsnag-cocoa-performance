@@ -56,6 +56,10 @@ static const void *associatedNetworkSpanKey = &associatedSpan;
     self.baseEndpointStr = config.endpoint.absoluteString;
 }
 
+- (void)preStartSetup {
+
+}
+
 - (void)start {
 
 }
@@ -135,7 +139,6 @@ void NetworkInstrumentation::earlySetup() noexcept {
     bsg_installNSURLSessionTaskPerformance(onSessionTaskResume_);
 }
 
-
 void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
     [delegate_ configure:config];
 
@@ -152,6 +155,16 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
     }
     propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;
     endEarlySpansPhase();
+}
+
+void NetworkInstrumentation::preStartSetup() noexcept {
+    [delegate_ preStartSetup];
+
+    if (!isEnabled_) {
+        return;
+    }
+
+    // TODO
 }
 
 void NetworkInstrumentation::start() noexcept {

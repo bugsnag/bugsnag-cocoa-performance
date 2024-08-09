@@ -12,9 +12,6 @@ class SamplingProbabilityZeroScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentAppStarts = true
-        config.autoInstrumentNetworkRequests = true
-        config.autoInstrumentViewControllers = true
         config.internal.initialSamplingProbability = 0
     }
     

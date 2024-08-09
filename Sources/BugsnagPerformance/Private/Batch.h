@@ -35,16 +35,17 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         autoTriggerExportOnBatchSize_ = config.internal.autoTriggerExportOnBatchSize;
     }
+    void preStartSetup() noexcept {}
     void start() noexcept {}
 
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
     void add(std::shared_ptr<SpanData> span) noexcept {
-        BSGLogDebug(@"Batch:add(%@)", span->name);
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
+            BSGLogDebug(@"Batch:add(%@): Batch size will be %zu", span->name, spans_->size()+1);
             spans_->push_back(span);
             isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
             if (isFull) {
@@ -62,6 +63,7 @@ public:
         std::lock_guard<std::mutex> guard(mutex_);
 
         if (spans_->empty()) {
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Batch is empty", traceId.hi, traceId.lo, spanId);
             return;
         }
         auto found = std::find_if(spans_->begin(),
@@ -70,6 +72,7 @@ public:
             return o->spanId == spanId && o->traceId.value == traceId.value;
         });
         if (found == spans_->end()) {
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span not found", traceId.hi, traceId.lo, spanId);
             return;
         }
 
@@ -80,6 +83,8 @@ public:
                 span->parentId = 0;
             }
         }
+        BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span %@ removed. Batch size is now %zu",
+                    traceId.hi, traceId.lo, spanId, (*found)->name, spans_->size());
     }
 
     /**

@@ -24,7 +24,8 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *) noexcept {};
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     NSString *external() noexcept { return externalDeviceID_; };
 

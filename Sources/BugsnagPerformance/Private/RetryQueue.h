@@ -27,7 +27,8 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     /**
      * Sweep the retry queue, deleting any non-retry files and retries that are older than 24 hours.

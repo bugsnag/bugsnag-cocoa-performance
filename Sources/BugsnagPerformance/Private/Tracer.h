@@ -39,7 +39,8 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         onSpanEndCallbacks_ = config.onSpanEndCallbacks;
     };
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
@@ -89,7 +90,6 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanEnd(BugsnagPerformanceSpan *span, std::shared_ptr<SpanData> spanData);
 };

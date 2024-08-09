@@ -112,6 +112,13 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     endEarlySpanPhase();
 }
 
+void ViewLoadInstrumentation::preStartSetup() noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+    // TODO
+}
+
 BugsnagPerformanceSpan *ViewLoadInstrumentation::getOverallSpan(UIViewController *viewController) noexcept {
     if (viewController != nil) {
         return objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
@@ -487,7 +494,7 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
         // If the overall span still hasn't ended after 10 seconds, use the time from viewDidLayoutSubviews
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             auto overallSpan = getOverallSpan(blockSelf);
-            if (overallSpan.isValid) {
+            if (overallSpan.state == SpanStateOpen) {
                 [overallSpan endWithAbsoluteTime:subviewsDidLayoutAtTime];
             }
             endViewAppearingSpan(self, subviewsDidLayoutAtTime);

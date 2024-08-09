@@ -112,7 +112,7 @@ OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, N
     BSGLogDebug(@"OtlpTraceEncoding::encode(%zu)", spans.size());
     auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
     for (const auto &span: spans) {
-        if (span->isValid()) {
+        if (span->getState() != SpanStateAborted) {
             BSGLogTrace(@"OtlpTraceEncoding::encode: span %@", span->name);
             [encodedSpans addObject:encode(*span.get())];
         }

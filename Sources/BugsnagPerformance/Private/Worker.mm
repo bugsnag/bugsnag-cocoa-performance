@@ -98,6 +98,10 @@
     self.initialRecurringWorkDelay = config.internal.initialRecurringWorkDelay;
 }
 
+- (void)preStartSetup {
+
+}
+
 - (void) start {
     self.isStarted = true;
     self.shouldEnd = false;

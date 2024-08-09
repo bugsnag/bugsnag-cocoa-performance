@@ -41,13 +41,6 @@ public:
         return sampled(*span.span->data());
     }
 
-    /**
-     * Samples the given set of span data, returning those that are to be kept.
-     * Also updates the sampling probability value of each kept span.
-     */
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
-    sampled(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept;
-
 private:
     double probability_{1};
 };

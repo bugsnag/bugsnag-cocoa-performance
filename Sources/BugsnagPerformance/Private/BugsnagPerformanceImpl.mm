@@ -129,6 +129,19 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     [worker_ configure:config];
 }
 
+void BugsnagPerformanceImpl::preStartSetup() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceImpl::preStartSetup()");
+    persistentState_->preStartSetup();
+    tracer_->preStartSetup();
+    deviceID_->preStartSetup();
+    resourceAttributes_->preStartSetup();
+    networkHeaderInjector_->preStartSetup();
+    retryQueue_->preStartSetup();
+    batch_->preStartSetup();
+    instrumentation_->preStartSetup();
+    [worker_ preStartSetup];
+}
+
 void BugsnagPerformanceImpl::start() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::start()");
     bool expected = false;
@@ -229,6 +242,17 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     ];
 }
 
+std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
+BugsnagPerformanceImpl::sendableSpans(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept {
+    auto sendableSpans = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
+    for (std::shared_ptr<SpanData> spanData: *spans) {
+        if (spanData->getState() != SpanStateAborted && sampler_->sampled(*spanData)) {
+            sendableSpans->push_back(spanData);
+        }
+    }
+    return sendableSpans;
+}
+
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
@@ -236,12 +260,13 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     #pragma clang diagnostic ignored "-Wunused-variable"
     size_t origSpansSize = origSpans->size();
 #endif
-    auto spans = sampler_->sampled(std::move(origSpans));
+    auto spans = sendableSpans(std::move(origSpans));
     if (spans->size() == 0) {
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
         return false;
     }
 
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans->size());
     uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get()), false);
     return true;
 }

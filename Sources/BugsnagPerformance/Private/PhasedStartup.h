@@ -31,6 +31,7 @@ public:
     virtual void earlyConfigure(BSGEarlyConfiguration *config) noexcept = 0;
     virtual void earlySetup() noexcept = 0;
     virtual void configure(BugsnagPerformanceConfiguration *config) noexcept = 0;
+    virtual void preStartSetup() noexcept = 0;
     virtual void start() noexcept = 0;
     virtual ~PhasedStartup() {}
 };
@@ -44,6 +45,8 @@ public:
 - (void)earlySetup;
 
 - (void)configure:(BugsnagPerformanceConfiguration *)config;
+
+- (void)preStartSetup;
 
 - (void)start;
 

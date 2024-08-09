@@ -38,6 +38,7 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration * config) noexcept;
+    void preStartSetup() noexcept;
     void start() noexcept;
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
@@ -123,6 +124,8 @@ private:
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
     void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
+    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
+      sendableSpans(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

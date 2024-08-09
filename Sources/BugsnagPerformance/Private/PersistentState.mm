@@ -41,7 +41,7 @@ void PersistentState::configure(BugsnagPerformanceConfiguration *config) noexcep
     probability_ = config.internal.initialSamplingProbability;
 };
 
-void PersistentState::start() noexcept {
+void PersistentState::preStartSetup() noexcept {
     persistentStateDir_ = persistence_->bugsnagPerformanceDir();
     jsonFilePath_ = [persistentStateDir_ stringByAppendingPathComponent:@"persistent-state.json"];
 

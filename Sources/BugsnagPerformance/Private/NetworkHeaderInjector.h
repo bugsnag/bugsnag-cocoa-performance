@@ -32,6 +32,7 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {};
     void earlySetup() noexcept {};
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void preStartSetup() noexcept {};
     void start() noexcept {};
 
     void injectTraceParentIfMatches(NSURLSessionTask *task, BugsnagPerformanceSpan * _Nullable span);
