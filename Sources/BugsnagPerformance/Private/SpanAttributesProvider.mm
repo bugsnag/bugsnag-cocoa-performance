@@ -100,7 +100,7 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
     }
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
                                               NSURLSessionTaskMetrics *metrics,
@@ -126,7 +126,7 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
     return attributes;
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept {
     BSGLogTrace(@"SpanAttributesProvider::networkSpanUrlAttributes(%@)", url);
     NSMutableDictionary *attributes = [NSMutableDictionary new];
@@ -141,15 +141,15 @@ SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encountere
     return attributes;
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::appStartPhaseSpanAttributes(NSString *phase) noexcept {
     return @{
         @"bugsnag.span.category": @"app_start_phase",
         @"bugsnag.phase": phase,
-    };
+    }.mutableCopy;
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept {
     NSMutableDictionary *attributes = @{
         @"bugsnag.span.category": @"app_start",
@@ -162,29 +162,29 @@ SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isC
 }
 
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": className,
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
-    };
+    }.mutableCopy;
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load",
         @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (pre-loaded)", className],
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
-    };
+    }.mutableCopy;
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributesProvider::viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load_phase",
         @"bugsnag.view.name": className,
         @"bugsnag.phase": phase,
-    };
+    }.mutableCopy;
 }

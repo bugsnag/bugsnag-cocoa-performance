@@ -62,7 +62,7 @@ SpanStackingHandler::currentSpan() {
 }
 
 void
-SpanStackingHandler::didEnd(SpanId spanId) {
+SpanStackingHandler::onSpanClosed(SpanId spanId) {
     std::lock_guard<std::mutex> guard(mutex_);
     removeSpan(spanId);
 }

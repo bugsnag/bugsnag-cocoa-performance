@@ -8,7 +8,6 @@
 #pragma once
 
 #import "IdGenerator.h"
-#import "SpanData.h"
 #import "BugsnagPerformanceSpan+Private.h"
 
 #import <Foundation/Foundation.h>
@@ -35,11 +34,7 @@ public:
      * Samples the given span data, returning true if the span is to be kept.
      * Also updates the span's sampling probability value if it is to be kept.
      */
-    bool sampled(SpanData &span) noexcept;
-
-    bool sampled(BugsnagPerformanceSpan *span) noexcept {
-        return sampled(*span.span->data());
-    }
+    bool sampled(BugsnagPerformanceSpan *span) noexcept;
 
 private:
     double probability_{1};

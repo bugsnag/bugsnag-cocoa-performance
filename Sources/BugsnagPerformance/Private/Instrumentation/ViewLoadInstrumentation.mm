@@ -9,7 +9,6 @@
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
 #import "../BugsnagPerformanceSpan+Private.h"
-#import "../Span.h"
 #import "../Tracer.h"
 #import "../Swizzle.h"
 #import "../Utils.h"
@@ -153,7 +152,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     auto name = nameForViewController(viewController);
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, name, options);
-    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
@@ -229,7 +228,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         auto className = NSStringFromClass([viewController class]);
         [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
         [span updateStartTime: viewWillAppearStartTime];
-        [span setAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
+        [span setMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
     }
 }
@@ -330,7 +329,7 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
     }
     auto name = nameForViewController(viewController);
     auto span = tracer_->startViewLoadPhaseSpan(name, phase, getOverallSpan(viewController));
-    [span setAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
