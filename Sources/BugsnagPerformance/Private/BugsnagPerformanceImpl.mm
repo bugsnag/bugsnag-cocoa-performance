@@ -250,12 +250,12 @@ NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {
     ];
 }
 
-std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
-BugsnagPerformanceImpl::sendableSpans(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept {
-    auto sendableSpans = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
-    for (std::shared_ptr<SpanData> spanData: *spans) {
-        if (spanData->getState() != SpanStateAborted && sampler_->sampled(*spanData)) {
-            sendableSpans->push_back(spanData);
+NSMutableArray<BugsnagPerformanceSpan *> *
+BugsnagPerformanceImpl::sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept {
+    NSMutableArray<BugsnagPerformanceSpan *> *sendableSpans = [NSMutableArray arrayWithCapacity:spans.count];
+    for (BugsnagPerformanceSpan *span in spans) {
+        if (span.state != SpanStateAborted && sampler_->sampled(span)) {
+            [sendableSpans addObject:span];
         }
     }
     return sendableSpans;
@@ -266,17 +266,21 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     auto origSpans = batch_->drain(false);
 #ifndef __clang_analyzer__
     #pragma clang diagnostic ignored "-Wunused-variable"
-    size_t origSpansSize = origSpans->size();
+    size_t origSpansSize = origSpans.count;
 #endif
-    auto spans = sendableSpans(std::move(origSpans));
-    if (spans->size() == 0) {
+    auto spans = sendableSpans(origSpans);
+    if (spans.count == 0) {
+#ifndef __clang_analyzer__
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
+#endif
         return false;
     }
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
-    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans->size());
-    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get(), includeSamplingHeader), false);
+#ifndef __clang_analyzer__
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
+#endif
+    uploadPackage(OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     return true;
 }
 
@@ -482,14 +486,14 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, Bugsna
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
 
@@ -498,7 +502,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto viewType = BugsnagPerformanceViewTypeUIKit;
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
     [viewControllersToSpans_ setObject:span forKey:controller];
@@ -507,7 +511,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
-    [span setAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }
 
@@ -551,7 +555,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
-        [span setAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
+        [span setMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }
 }

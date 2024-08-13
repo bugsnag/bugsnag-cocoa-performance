@@ -10,7 +10,6 @@
 #import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
 
 #import "../BugsnagPerformanceSpan+Private.h"
-#import "../Span.h"
 #import "../SpanAttributesProvider.h"
 
 #import <objc/runtime.h>
@@ -101,7 +100,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
     BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Ending span with time %@", session.class, task.class, request.URL, metrics.taskInterval.endDate);
 
     objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    [span setAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
+    [span setMultipleAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
     [span endWithEndTime:metrics.taskInterval.endDate];
 }
 
@@ -215,7 +214,7 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
             BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+            [span setMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
         }
     }
 }
@@ -257,6 +256,13 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
     auto req = getTaskRequest(task, &errorFromGetRequest);
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = req.URL;
+    if (info.url == nil) {
+        BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Not fully tracing task with null URL");
+        SpanOptions options;
+        options.makeCurrentContext = false;
+        [tracer_->startNetworkSpan(req.HTTPMethod, options) end];
+        return;
+    }
     BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Got request from task %@ with req %@, URL %@ and error %@", task.class, req, info.url, errorFromGetRequest);
     bool userVetoedTracing = false;
     if (networkRequestCallback_) {
@@ -278,7 +284,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span setAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
+            [span setMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }
         if (span != nil) {
             objc_setAssociatedObject(task, associatedNetworkSpanKey, span,

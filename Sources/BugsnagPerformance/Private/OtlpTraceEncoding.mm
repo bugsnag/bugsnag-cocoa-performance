@@ -5,6 +5,7 @@
 //  Created by Nick Dowell on 27/09/2022.
 //
 
+#import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpTraceEncoding.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import "Utils.h"
@@ -25,7 +26,7 @@ static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const SpanData &span) noexcept {
+OtlpTraceEncoding::encode(BugsnagPerformanceSpan *span) noexcept {
     NSMutableDictionary *result = [NSMutableDictionary new];
 
     // A unique identifier for a trace. All spans from the same trace share
@@ -86,7 +87,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
     // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
     //
     // This field is semantically required and it is expected that end_time >= start_time.
-    result[@"startTimeUnixNano"] = EncodeCFAbsoluteTime(span.startTime);
+    result[@"startTimeUnixNano"] = EncodeCFAbsoluteTime(span.startAbsTime);
 
     // end_time_unix_nano is the end time of the span. On the client side, this is the time
     // kept by the local machine where the span execution ends. On the server side, this
@@ -94,7 +95,7 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
     // Value is UNIX Epoch time in nanoseconds since 00:00:00 UTC on 1 January 1970.
     //
     // This field is semantically required and it is expected that end_time >= start_time.
-    result[@"endTimeUnixNano"] = EncodeCFAbsoluteTime(span.endTime);
+    result[@"endTimeUnixNano"] = EncodeCFAbsoluteTime(span.endAbsTime);
 
     // attributes is a collection of key/value pairs. Note, global attributes
     // like server name can be set using the resource API.
@@ -108,13 +109,13 @@ OtlpTraceEncoding::encode(const SpanData &span) noexcept {
 }
 
 NSDictionary *
-OtlpTraceEncoding::encode(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
-    BSGLogDebug(@"OtlpTraceEncoding::encode(%zu)", spans.size());
-    auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.size()];
-    for (const auto &span: spans) {
-        if (span->getState() != SpanStateAborted) {
-            BSGLogTrace(@"OtlpTraceEncoding::encode: span %@", span->name);
-            [encodedSpans addObject:encode(*span.get())];
+OtlpTraceEncoding::encode(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes) noexcept {
+    BSGLogDebug(@"OtlpTraceEncoding::encode(%zu)", spans.count);
+    auto encodedSpans = [NSMutableArray arrayWithCapacity:spans.count];
+    for (BugsnagPerformanceSpan *span: spans) {
+        if (span.state != SpanStateAborted) {
+            BSGLogTrace(@"OtlpTraceEncoding::encode: span %@", span.name);
+            [encodedSpans addObject:encode(span)];
         }
     }
     
@@ -268,11 +269,11 @@ OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     return result;
 }
 
-static dispatch_time_t getLatestTimestamp(const std::vector<std::shared_ptr<SpanData>> &spans) {
+static dispatch_time_t getLatestTimestamp(NSArray<BugsnagPerformanceSpan *> *spans) {
     CFAbsoluteTime endTime = 0;
-    for (auto &span: spans) {
-        if (span->endTime > endTime) {
-            endTime = span->endTime;
+    for (BugsnagPerformanceSpan *span: spans) {
+        if (span.endAbsTime > endTime) {
+            endTime = span.endAbsTime;
         }
     }
     return absoluteTimeToNanoseconds(endTime);
@@ -288,14 +289,14 @@ static NSString *integrityDigestForData(NSData *payload) {
                    md[15], md[16], md[17], md[18], md[19]];
 }
 
-static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanData>> &spans) {
+static NSString *pValueHistogramForSpans(NSArray<BugsnagPerformanceSpan *> *spans) {
     // Calculate P value histogram the hard way because ObjC doesn't have such conveniences.
 
-    NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.size()];
+    NSMutableArray<NSNumber *> *ordered = [[NSMutableArray alloc] initWithCapacity:spans.count];
     NSMutableDictionary<NSNumber *, NSNumber *> *counts = [NSMutableDictionary new];
 
-    for (const std::shared_ptr<SpanData> &span: spans) {
-        auto probability = @(span->samplingProbability);
+    for (BugsnagPerformanceSpan *span: spans) {
+        auto probability = @(span.samplingProbability);
         auto count = counts[probability];
         if (count == nil) {
             [ordered addObject:probability];
@@ -328,7 +329,7 @@ static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanD
     return str;
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept {
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
 

@@ -45,6 +45,8 @@ using namespace bugsnag;
     attributes->earlySetup();
     deviceID->configure(config);
     attributes->configure(config);
+    deviceID->preStartSetup();
+    attributes->preStartSetup();
     persistence->start();
     deviceID->start();
     attributes->start();

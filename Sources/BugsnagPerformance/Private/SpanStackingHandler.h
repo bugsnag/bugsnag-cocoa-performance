@@ -20,7 +20,7 @@ public:
     
     void push(BugsnagPerformanceSpan *span);
     BugsnagPerformanceSpan *currentSpan();
-    void didEnd(SpanId spanId);
+    void onSpanClosed(SpanId spanId);
 
     bool hasSpanWithAttribute(NSString *attribute, NSString *value);
     

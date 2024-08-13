@@ -124,8 +124,8 @@ private:
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
     void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>>
-      sendableSpans(std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans) noexcept;
+    NSMutableArray<BugsnagPerformanceSpan *> *
+      sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

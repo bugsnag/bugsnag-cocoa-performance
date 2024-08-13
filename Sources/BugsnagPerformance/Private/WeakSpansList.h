@@ -38,7 +38,8 @@ public:
         std::lock_guard<std::mutex> guard(mutex_);
         bool canCompact = false;
         for (BSGWeakSpanPointer *ptr in spans_) {
-            if (ptr.span.state != SpanStateOpen) {
+            BugsnagPerformanceSpan *span = ptr.span;
+            if (span == nil || span.state != SpanStateOpen) {
                 canCompact = true;
                 break;
             }
@@ -46,7 +47,8 @@ public:
         if (canCompact) {
             auto newSpans = [NSMutableArray arrayWithCapacity:spans_.count];
             for (BSGWeakSpanPointer *ptr in spans_) {
-                if (ptr.span.state == SpanStateOpen) {
+                BugsnagPerformanceSpan *span = ptr.span;
+                if (span != nil && span.state == SpanStateOpen) {
                     [newSpans addObject:ptr];
                 }
             }
