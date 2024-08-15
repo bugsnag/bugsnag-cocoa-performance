@@ -480,18 +480,48 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueWithoutHistogram {
-    std::vector<std::shared_ptr<SpanData>> spans;
+    NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 3, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 4, 0, 0, BSGFirstClassUnset));
-    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 5, 0, 0, BSGFirstClassUnset));
-    spans[0]->updateSamplingProbability(0.3);
-    spans[1]->updateSamplingProbability(0.1);
-    spans[2]->updateSamplingProbability(0.3);
-    spans[3]->updateSamplingProbability(0.5);
-    spans[4]->updateSamplingProbability(0.1);
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
+                                                          traceId:tid
+                                                           spanId:1
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
+                                                          traceId:tid
+                                                           spanId:2
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
+                                                          traceId:tid
+                                                           spanId:3
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
+                                                          traceId:tid
+                                                           spanId:4
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
+                                                          traceId:tid
+                                                           spanId:5
+                                                         parentId:0
+                                                        startTime:0
+                                                       firstClass:BSGFirstClassUnset
+                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans[0] updateSamplingProbability:0.3];
+    [spans[1] updateSamplingProbability:0.1];
+    [spans[2] updateSamplingProbability:0.3];
+    [spans[3] updateSamplingProbability:0.5];
+    [spans[4] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
     auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, false);
