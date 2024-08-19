@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* `service.name` can now be set in the configuration.
+  [299](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/299)
+
 ## 1.7.0 (2024-08-05)
 
 ### Enhancements

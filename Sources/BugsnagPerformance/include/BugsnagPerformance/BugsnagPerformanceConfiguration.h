@@ -54,6 +54,11 @@ OBJC_EXPORT
  */
 @property (copy, nullable, nonatomic) NSString *bundleVersion;
 
+/**
+ *  The app's serviceName
+ */
+@property (copy, nullable, nonatomic) NSString *serviceName;
+
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 
 @end
