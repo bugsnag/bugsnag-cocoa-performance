@@ -173,10 +173,18 @@ void BugsnagPerformanceImpl::start() noexcept {
     uploader_ = std::make_shared<OtlpUploader>(configuration_.endpoint,
                                                configuration_.apiKey,
                                                    ^(double newProbability) {
+        if (configuration_.samplingProbability != nil) {
+            BSGLogTrace(@"BugsnagPerformanceImpl::newProbabilityCallback: configuration_.samplingProbability != nil");
+            return;
+        }
         blockThis->onProbabilityChanged(newProbability);
     });
-
-    sampler_->setProbability(persistentState_->probability());
+    
+    double samplingProbability = persistentState_->probability();
+    if (configuration_.samplingProbability != nil) {
+        samplingProbability = [configuration_.samplingProbability doubleValue];
+    }
+    sampler_->setProbability(samplingProbability);
 
     resourceAttributes_->start();
     networkHeaderInjector_->start();
@@ -241,8 +249,9 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
         return false;
     }
+    bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
-    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get()), false);
+    uploadPackage(OtlpTraceEncoding::buildUploadPackage(*spans, resourceAttributes_->get(), includeSamplingHeader), false);
     return true;
 }
 
@@ -373,7 +382,7 @@ void BugsnagPerformanceImpl::checkAppStartDuration() noexcept {
 }
 
 void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
-    if (!configuration_.shouldSendReports) {
+    if (!configuration_.shouldSendReports || configuration_.samplingProbability != nil) {
         return;
     }
     auto currentTime = CFAbsoluteTimeGetCurrent();
