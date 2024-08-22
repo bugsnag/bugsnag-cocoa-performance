@@ -55,7 +55,7 @@ OBJC_EXPORT
 @property (copy, nullable, nonatomic) NSString *bundleVersion;
 
 /**
- *  The app's serviceName
+ *  The app's name
  */
 @property (copy, nullable, nonatomic) NSString *serviceName;
 
