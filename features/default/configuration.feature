@@ -29,7 +29,7 @@ Feature: Configuration overrides
   Scenario: Setting fixed sampling probability of 1 with dynamic probability of 0 should send all spans
     Given I set the sampling probability for the next traces to "0"
     And I enter unmanaged traces mode
-    And I run "FixedSamplingProbabilityScenario"
+    And I run "FixedSamplingProbabilityOneScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
@@ -53,3 +53,9 @@ Feature: Configuration overrides
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+
+  Scenario: Setting fixed sampling probability of 0 with dynamic probability of 1 should send no spans
+    Given I set the sampling probability for the next traces to "0"
+    And I enter unmanaged traces mode
+    And I run "FixedSamplingProbabilityZeroScenario"
+    And I should receive no traces

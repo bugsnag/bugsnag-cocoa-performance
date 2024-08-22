@@ -8,7 +8,7 @@
 import BugsnagPerformance
 
 @objcMembers
-class FixedSamplingProbabilityScenario: Scenario {
+class FixedSamplingProbabilityOneScenario: Scenario {
     
     override func configure() {
         super.configure()
