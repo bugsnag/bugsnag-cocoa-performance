@@ -31,6 +31,7 @@ private:
     std::shared_ptr<PersistentDeviceID> deviceID_;
     NSString *releaseStage_{nil};
     NSString *bundleVersion_{nil};
+    NSString *serviceName_{nil};
     NSString *serviceVersion_{nil};
     NSDictionary *cachedAttributes_{nil};
 };

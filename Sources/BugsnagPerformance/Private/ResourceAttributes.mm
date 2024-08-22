@@ -65,6 +65,7 @@ static NSString *osVersion() noexcept {
 void ResourceAttributes::configure(BugsnagPerformanceConfiguration *config) noexcept {
     auto infoDictionary = NSBundle.mainBundle.infoDictionary;
     bundleVersion_ = (id)config.bundleVersion ?: infoDictionary[@"CFBundleVersion"] ?: [NSNull null];
+    serviceName_ = (id)config.serviceName ?: NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName;
     serviceVersion_ = (id)config.appVersion ?: infoDictionary[@"CFBundleShortVersionString"] ?: [NSNull null];
     releaseStage_ = config.releaseStage;
 }
@@ -90,7 +91,7 @@ void ResourceAttributes::start() noexcept {
         @"os.version": osVersion() ?: [NSNull null],
 
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#service
-        @"service.name": NSBundle.mainBundle.bundleIdentifier ?: NSProcessInfo.processInfo.processName,
+        @"service.name": serviceName_ ?: [NSNull null],
         @"service.version": serviceVersion_,
 
         // https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/#telemetry-sdk
