@@ -26,7 +26,7 @@ Feature: Configuration overrides
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
 
-  Scenario: Fixed sampling probability
+  Scenario: Setting fixed sampling probability of 1 with dynamic probability of 0 should send all spans
     Given I set the sampling probability for the next traces to "0"
     And I enter unmanaged traces mode
     And I run "FixedSamplingProbabilityScenario"
