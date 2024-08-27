@@ -135,6 +135,8 @@ build_frameworks() {
         pushd "${PRODUCTS_DIR}"
         zip --symlinks -rq "${framework}.xcframework.zip" "${framework}.xcframework"
         cp -r "${framework}.xcframework" "${PROJECT_DIR}/${framework}.xcframework}"
+        echo "HERE"
+        ls .
         popd
     done
 }
