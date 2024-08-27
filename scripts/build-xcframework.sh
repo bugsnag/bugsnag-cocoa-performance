@@ -135,8 +135,6 @@ build_frameworks() {
         pushd "${PRODUCTS_DIR}"
         zip --symlinks -rq "${framework}.xcframework.zip" "${framework}.xcframework"
         cp -r "${framework}.xcframework" "${PROJECT_DIR}/${framework}.xcframework}"
-        echo "HERE"
-        ls .
         popd
     done
 }
@@ -149,3 +147,7 @@ build_frameworks
 
 echo
 echo "** build-frameworks.sh: script completed successfully **"
+
+echo "ROOT"
+pwd
+ls $PROJECT_DIR
