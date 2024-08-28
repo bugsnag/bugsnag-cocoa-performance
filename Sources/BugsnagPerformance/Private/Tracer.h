@@ -9,7 +9,6 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import "Span.h"
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
@@ -91,6 +90,6 @@ private:
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
-    void onSpanEnd(BugsnagPerformanceSpan *span, std::shared_ptr<SpanData> spanData);
+    void onSpanClosed(BugsnagPerformanceSpan *span);
 };
 }

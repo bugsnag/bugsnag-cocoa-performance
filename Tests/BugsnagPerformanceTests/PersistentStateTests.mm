@@ -25,8 +25,7 @@ using namespace bugsnag;
     persistentState->earlyConfigure([BSGEarlyConfiguration new]);
     persistentState->earlySetup();
     persistentState->configure(config);
-    persistence->start();
-    // Don't start persistentState yet...
+    // Don't do preStartSetup or start yet...
     return persistentState;
 }
 
@@ -45,38 +44,43 @@ using namespace bugsnag;
     // Default BugsnagPerformanceConfiguration probability is 1
     XCTAssertEqual(1, state->probability());
 
-    // File gets created on start()
+    // File gets created at preStartSetup()
     XCTAssertFalse([fm fileExistsAtPath:expectedPath]);
-    state->start();
+    state->preStartSetup();
     XCTAssertTrue([fm fileExistsAtPath:expectedPath]);
     XCTAssertEqual(1, state->probability());
+    state->start();
 
     config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
     // pre-start probability uses config
     XCTAssertEqual(0.1, state->probability());
-    // start() loads persisted data, which overrides config probability
-    state->start();
+    // preStartSetup() loads persisted data, which overrides config probability
+    state->preStartSetup();
     XCTAssertEqual(1, state->probability());
+    state->start();
 
     // Corrupt or missing file reverts to the config probability
     [fm removeItemAtPath:expectedPath error:nil];
     config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
-    state->start();
+    state->preStartSetup();
     XCTAssertEqual(0.1, state->probability());
+    state->start();
 
     // Multiple changes are properly reflected
     state->setProbability(0.5);
     XCTAssertEqual(0.5, state->probability());
     state->setProbability(0.6);
     XCTAssertEqual(0.6, state->probability());
+    state->start();
 
     // ... even after reload
     config.internal.initialSamplingProbability = 0.1;
     state = [self persistentStateWithConfig:config];
-    state->start();
+    state->preStartSetup();
     XCTAssertEqual(0.6, state->probability());
+    state->start();
 }
 
 @end
