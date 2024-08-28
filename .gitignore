@@ -103,3 +103,5 @@ logs/*
 .DS_Store
 features/fixtures/ios/Fixture/Info.plist
 maze-runner.log
+Gemfile.lock
+.idea/
