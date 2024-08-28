@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* OnEnd span callbacks are now called on early spans (spans that ended before library start) once the library is started.
+  [298](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/298)
+
 ## 1.7.0 (2024-08-05)
 
 ### Enhancements

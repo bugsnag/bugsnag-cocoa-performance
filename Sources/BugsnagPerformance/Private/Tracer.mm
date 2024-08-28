@@ -36,15 +36,29 @@ Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
 void
 Tracer::preStartSetup() noexcept {
     BSGLogDebug(@"Tracer::preStartSetup()");
-    // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
-    // Now that the sampler has been configured, force-drain all early spans and re-sample everything.
-    auto unsampledBatch = batch_->drain(true);
-    BSGLogTrace(@"Tracer::preStartSetup: initial unsampled batch with %zu items", unsampledBatch.count);
-    for (BugsnagPerformanceSpan *span in unsampledBatch) {
+    // Up until now nothing was configured, so all early spans have been kept.
+    // Now that configuration is complete, force-drain all early spans and re-process them.
+    auto toReprocess = batch_->drain(true);
+    BSGLogDebug(@"Tracer::preStartSetup: initial unsampled batch with %zu items", unsampledBatch.count);
+    for (BugsnagPerformanceSpan *span in toReprocess) {
         BSGLogDebug(@"Tracer::preStartSetup: Try to re-add span (%@) to batch", span.name);
-        if (span.state != SpanStateAborted && sampler_->sampled(span)) {
-            batch_->add(span);
+        if (span.state != SpanStateEnded) {
+            BSGLogDebug(@"Tracer::preStartSetup: span %@ has state %d, so ignoring", span.name, span.state);
+            continue;
         }
+        if (!sampler_->sampled(span)) {
+            BSGLogDebug(@"Tracer::preStartSetup: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
+            [span abortUnconditionally];
+            continue;
+        }
+        callOnSpanEndCallbacks(span);
+        if (span.state == SpanStateAborted) {
+            BSGLogDebug(@"Tracer::preStartSetup: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
+            [span abortUnconditionally];
+            continue;
+        }
+
+        batch_->add(span);
     }
 }
 
@@ -108,12 +122,12 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     spanStackingHandler_->onSpanClosed(span.spanId);
 
     if(span.state == SpanStateAborted) {
-        BSGLogTrace(@"Tracer::onSpanClosed: span %@ has been aborted. Dropping...", span.name);
+        BSGLogTrace(@"Tracer::onSpanClosed: span %@ has been aborted, so ignoring", span.name);
         return;
     }
 
     if (!sampler_->sampled(span)) {
-        BSGLogTrace(@"Tracer::onSpanClosed: span %@ sampling returned false. Dropping...", span.name);
+        BSGLogTrace(@"Tracer::onSpanClosed: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
         [span abortUnconditionally];
         return;
     }
@@ -121,7 +135,7 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);
         if (span.state == SpanStateAborted) {
-            BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks and has been dropped", span.name);
+            BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             return;
         }
     }
