@@ -21,7 +21,7 @@ public:
     /**
      * Build a package suitable for upload to the backend server.
      */
-    static std::unique_ptr<OtlpPackage> buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept;
+    static std::unique_ptr<OtlpPackage> buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept;
 
     static std::unique_ptr<OtlpPackage> buildPValueRequestPackage() noexcept;
 

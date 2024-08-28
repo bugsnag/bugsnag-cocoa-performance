@@ -328,7 +328,7 @@ static NSString *pValueHistogramForSpans(const std::vector<std::shared_ptr<SpanD
     return str;
 }
 
-std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes) noexcept {
+std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::vector<std::shared_ptr<SpanData>> &spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept {
     // Anything smaller won't compress
     static const int MIN_SIZE_FOR_GZIP = 128;
 
@@ -341,12 +341,15 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
         return nullptr;
     }
 
-    auto headers = @{
+    NSMutableDictionary *headers = [@{
         @"Content-Type": @"application/json",
         @"Bugsnag-Integrity": integrityDigestForData(payload),
         @"Bugsnag-Uncompressed-Content-Length": [NSString stringWithFormat:@"%ld", payload.length],
-        @"Bugsnag-Span-Sampling": pValueHistogramForSpans(spans),
-    };
+    } mutableCopy];
+    
+    if (includeSamplingHeader) {
+        headers[@"Bugsnag-Span-Sampling"] = pValueHistogramForSpans(spans);
+    }
 
     if (payload.length > MIN_SIZE_FOR_GZIP) {
         payload = [Gzip gzipped:(NSData * _Nonnull)payload error:&error];
@@ -354,12 +357,10 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(const std::ve
             BSGLogError(@"error compressing payload: %@", error);
             return nullptr;
         }
-        NSMutableDictionary *newHeaders = [headers mutableCopy];
-        newHeaders[@"Content-Encoding"] = @"gzip";
-        headers = newHeaders;
+        headers[@"Content-Encoding"] = @"gzip";
     }
 
-    return std::make_unique<OtlpPackage>(getLatestTimestamp(spans), payload, headers);
+    return std::make_unique<OtlpPackage>(getLatestTimestamp(spans), payload, (NSDictionary *)headers);
 }
 
 std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildPValueRequestPackage() noexcept {

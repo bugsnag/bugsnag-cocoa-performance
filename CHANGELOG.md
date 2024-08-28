@@ -7,6 +7,9 @@ Changelog
 
 * `service.name` can now be set in the configuration.
   [299](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/299)
+  
+* A fixed `samplingProbability` can now be set in the configuration.
+  [300](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/300)
 
 ## 1.7.0 (2024-08-05)
 

@@ -208,7 +208,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     TraceId tid = {.value=1};
     spans.push_back(std::make_unique<SpanData>(@"test", tid, 1, 0, 0, BSGFirstClassUnset));
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     XCTAssertGreaterThan(package->timestamp, 0U);
     XCTAssertNotNil(package->getPayloadForUnitTest());
@@ -227,7 +227,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     spans[0]->updateSamplingProbability(0.3);
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.3:1", headers[@"Bugsnag-Span-Sampling"]);
@@ -242,7 +242,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     spans[1]->updateSamplingProbability(0.1);
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.1:1;0.3:1", headers[@"Bugsnag-Span-Sampling"]);
@@ -257,7 +257,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     spans[1]->updateSamplingProbability(0.5);
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.5:2", headers[@"Bugsnag-Span-Sampling"]);
@@ -278,7 +278,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     spans[4]->updateSamplingProbability(0.1);
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.1:2;0.3:2;0.5:1", headers[@"Bugsnag-Span-Sampling"]);
@@ -311,10 +311,31 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     spans[10]->updateSamplingProbability(1);
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes);
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0:1;0.1:1;0.2:1;0.3:1;0.4:1;0.5:1;0.6:1;0.7:1;0.8:1;0.9:1;1:1", headers[@"Bugsnag-Span-Sampling"]);
+}
+
+- (void)testPValueWithoutHistogram {
+    std::vector<std::shared_ptr<SpanData>> spans;
+    TraceId tid = {.value=1};
+    spans.push_back(std::make_unique<SpanData>(@"test1", tid, 1, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test2", tid, 2, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test3", tid, 3, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test4", tid, 4, 0, 0, BSGFirstClassUnset));
+    spans.push_back(std::make_unique<SpanData>(@"test5", tid, 5, 0, 0, BSGFirstClassUnset));
+    spans[0]->updateSamplingProbability(0.3);
+    spans[1]->updateSamplingProbability(0.1);
+    spans[2]->updateSamplingProbability(0.3);
+    spans[3]->updateSamplingProbability(0.5);
+    spans[4]->updateSamplingProbability(0.1);
+
+    auto resourceAttributes = @{};
+    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, false);
+
+    auto headers = package->getHeadersForUnitTest();
+    XCTAssertNil(headers[@"Bugsnag-Span-Sampling"]);
 }
 
 @end
