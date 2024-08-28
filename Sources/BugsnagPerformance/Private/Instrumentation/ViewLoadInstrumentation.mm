@@ -9,7 +9,6 @@
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
 #import "../BugsnagPerformanceSpan+Private.h"
-#import "../Span.h"
 #import "../Tracer.h"
 #import "../Swizzle.h"
 #import "../Utils.h"
@@ -112,6 +111,13 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     endEarlySpanPhase();
 }
 
+void ViewLoadInstrumentation::preStartSetup() noexcept {
+    if (!isEnabled_) {
+        return;
+    }
+    // TODO
+}
+
 BugsnagPerformanceSpan *ViewLoadInstrumentation::getOverallSpan(UIViewController *viewController) noexcept {
     if (viewController != nil) {
         return objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);
@@ -146,7 +152,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     auto name = nameForViewController(viewController);
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, name, options);
-    [span setAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
@@ -222,7 +228,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         auto className = NSStringFromClass([viewController class]);
         [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
         [span updateStartTime: viewWillAppearStartTime];
-        [span setAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
+        [span setMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
     }
 }
@@ -323,7 +329,7 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
     }
     auto name = nameForViewController(viewController);
     auto span = tracer_->startViewLoadPhaseSpan(name, phase, getOverallSpan(viewController));
-    [span setAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
+    [span setMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
@@ -487,7 +493,7 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
         // If the overall span still hasn't ended after 10 seconds, use the time from viewDidLayoutSubviews
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             auto overallSpan = getOverallSpan(blockSelf);
-            if (overallSpan.isValid) {
+            if (overallSpan.state == SpanStateOpen) {
                 [overallSpan endWithAbsoluteTime:subviewsDidLayoutAtTime];
             }
             endViewAppearingSpan(self, subviewsDidLayoutAtTime);

@@ -73,6 +73,7 @@ void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration
 void BugsnagPerformanceLibrary::startLibrary() noexcept {
     @autoreleasepool {
         BSGLogDebug(@"BugsnagPerformanceLibrary::startLibrary");
+        sharedInstance().preStartSetup();
         sharedInstance().start();
     }
 }
@@ -100,6 +101,11 @@ void BugsnagPerformanceLibrary::earlySetup() noexcept {
 void BugsnagPerformanceLibrary::configure(BugsnagPerformanceConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceLibrary::configure");
     bugsnagPerformanceImpl_->configure(config);
+}
+
+void BugsnagPerformanceLibrary::preStartSetup() noexcept {
+    BSGLogDebug(@"BugsnagPerformanceLibrary::preStartSetup");
+    bugsnagPerformanceImpl_->preStartSetup();
 }
 
 void BugsnagPerformanceLibrary::start() noexcept {

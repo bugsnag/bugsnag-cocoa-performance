@@ -23,7 +23,8 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     NSDictionary *get() noexcept { return cachedAttributes_; };
     

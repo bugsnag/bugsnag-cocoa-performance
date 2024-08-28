@@ -40,7 +40,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     [span end];
     tracer->onPrewarmPhaseEnded();
     auto spans = batch->drain(true);
-    XCTAssertEqual(spans->size(), 1UL);
+    XCTAssertEqual(spans.count, 1UL);
 }
 
 - (void)testPrewarmEndAfter {
@@ -62,7 +62,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     tracer->onPrewarmPhaseEnded();
     [span end];
     auto spans = batch->drain(true);
-    XCTAssertEqual(spans->size(), 0UL);
+    XCTAssertEqual(spans.count, 0UL);
 }
 
 - (void)testNoPrewarmEndBefore {
@@ -84,7 +84,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     [span end];
     tracer->onPrewarmPhaseEnded();
     auto spans = batch->drain(true);
-    XCTAssertEqual(spans->size(), 1UL);
+    XCTAssertEqual(spans.count, 1UL);
 }
 
 - (void)testNoPrewarmEndAfter {
@@ -106,7 +106,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     tracer->onPrewarmPhaseEnded();
     [span end];
     auto spans = batch->drain(true);
-    XCTAssertEqual(spans->size(), 1UL);
+    XCTAssertEqual(spans.count, 1UL);
 }
 
 @end

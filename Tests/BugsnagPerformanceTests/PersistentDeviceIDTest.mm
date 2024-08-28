@@ -25,6 +25,7 @@ using namespace bugsnag;
     deviceID->earlyConfigure([BSGEarlyConfiguration new]);
     deviceID->earlySetup();
     deviceID->configure(config);
+    deviceID->preStartSetup();
     deviceID->start();
     return deviceID;
 }
@@ -38,6 +39,7 @@ using namespace bugsnag;
     deviceID->earlyConfigure([BSGEarlyConfiguration new]);
     deviceID->earlySetup();
     deviceID->configure(config);
+    deviceID->preStartSetup();
     deviceID->start();
 
     // Save path must be <caches-dir>/bugsnag-shared-<bundle-id>/device-id.json

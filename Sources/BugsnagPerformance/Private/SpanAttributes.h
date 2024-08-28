@@ -13,6 +13,6 @@
 namespace bugsnag {
 class SpanAttributes {
 public:
-    static NSDictionary *get() noexcept;
+    static NSMutableDictionary *get() noexcept;
 };
 }
