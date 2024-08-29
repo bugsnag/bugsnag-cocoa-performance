@@ -15,8 +15,7 @@ steps:
           - make build_xcframework
         plugins:
           - artifacts#v1.9.3:
-              upload: "BugsnagPerformance.xcframework"
-              compressed: xcframework.zip
+              upload: "BugsnagPerformance.xcframework.zip"
 
       - label: "Carthage"
         commands:
