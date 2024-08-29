@@ -158,12 +158,6 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
 
 void NetworkInstrumentation::preStartSetup() noexcept {
     [delegate_ preStartSetup];
-
-    if (!isEnabled_) {
-        return;
-    }
-
-    // TODO
 }
 
 void NetworkInstrumentation::start() noexcept {

@@ -36,24 +36,31 @@ Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
 void
 Tracer::preStartSetup() noexcept {
     BSGLogDebug(@"Tracer::preStartSetup()");
+    reprocessEarlySpans();
+}
+
+void Tracer::reprocessEarlySpans(void) {
+    BSGLogDebug(@"Tracer::reprocessEarlySpans()");
     // Up until now nothing was configured, so all early spans have been kept.
     // Now that configuration is complete, force-drain all early spans and re-process them.
     auto toReprocess = batch_->drain(true);
-    BSGLogDebug(@"Tracer::preStartSetup: initial unsampled batch with %zu items", unsampledBatch.count);
+    BSGLogDebug(@"Tracer::reprocessEarlySpans: Reprocessing %zu early spans", toReprocess.count);
     for (BugsnagPerformanceSpan *span in toReprocess) {
-        BSGLogDebug(@"Tracer::preStartSetup: Try to re-add span (%@) to batch", span.name);
+        BSGLogDebug(@"Tracer::reprocessEarlySpans: Try to re-add span (%@) to batch", span.name);
         if (span.state != SpanStateEnded) {
-            BSGLogDebug(@"Tracer::preStartSetup: span %@ has state %d, so ignoring", span.name, span.state);
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ has state %d, so ignoring", span.name, span.state);
             continue;
         }
         if (!sampler_->sampled(span)) {
-            BSGLogDebug(@"Tracer::preStartSetup: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
             [span abortUnconditionally];
             continue;
         }
+        span.isMutable = true;
         callOnSpanEndCallbacks(span);
+        span.isMutable = false;
         if (span.state == SpanStateAborted) {
-            BSGLogDebug(@"Tracer::preStartSetup: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             [span abortUnconditionally];
             continue;
         }
@@ -146,6 +153,10 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
 
 void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     if(span == nil) {
+        return;
+    }
+    if (span.state != SpanStateEnded) {
+        BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ has state %d, so ignoring", span.name, span.state);
         return;
     }
 

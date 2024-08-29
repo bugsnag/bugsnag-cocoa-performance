@@ -44,6 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) double samplingProbability;
 @property (nonatomic) BSGFirstClass firstClass;
 @property (nonatomic) SpanKind kind;
+@property (nonatomic,readwrite) BOOL isMutable;
 
 
 

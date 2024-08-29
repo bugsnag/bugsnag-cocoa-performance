@@ -78,10 +78,6 @@ void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *confi
     }
 }
 
-void AppStartupInstrumentation::preStartSetup() noexcept {
-    // TODO
-}
-
 void AppStartupInstrumentation::willCallMainFunction() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     if (!isEnabled_) {

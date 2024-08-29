@@ -111,13 +111,6 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     endEarlySpanPhase();
 }
 
-void ViewLoadInstrumentation::preStartSetup() noexcept {
-    if (!isEnabled_) {
-        return;
-    }
-    // TODO
-}
-
 BugsnagPerformanceSpan *ViewLoadInstrumentation::getOverallSpan(UIViewController *viewController) noexcept {
     if (viewController != nil) {
         return objc_getAssociatedObject(viewController, &kAssociatedViewLoadSpan);

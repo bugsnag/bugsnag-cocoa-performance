@@ -91,5 +91,6 @@ private:
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanClosed(BugsnagPerformanceSpan *span);
+    void reprocessEarlySpans(void);
 };
 }
