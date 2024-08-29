@@ -46,6 +46,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _samplingProbability = 1;
         _state = SpanStateOpen;
         _attributes = [[NSMutableDictionary alloc] init];
+        _isMutable = true;
         if (firstClass != BSGFirstClassUnset) {
             _attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
         }
@@ -84,6 +85,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         self.state = SpanStateAborted;
     }
     [self callOnSpanClosed];
+    self.isMutable = false;
 }
 
 - (void)abortUnconditionally {
@@ -96,6 +98,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     if (wasOpen) {
         [self callOnSpanClosed];
     }
+    self.isMutable = false;
 }
 
 - (void)end {
@@ -128,6 +131,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         self.state = SpanStateEnded;
     }
     [self callOnSpanClosed];
+    self.isMutable = false;
 }
 
 - (void)callOnSpanClosed {
@@ -150,11 +154,19 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)updateStartTime:(NSDate *)startTime {
+    if (!self.isMutable) {
+        BSGLogError(@"Called updateStartTime, but span %llu (%@) is immutable", self.spanId, self.name);
+        return;
+    }
     self.startAbsTime = dateToAbsoluteTime(startTime);
     self.startClock = currentMonotonicClockNsecIfUnset(self.startAbsTime);
 }
 
 - (void)updateName:(NSString *)name {
+    if (!self.isMutable) {
+        BSGLogError(@"Called updateName, but span %llu (%@) is immutable", self.spanId, self.name);
+        return;
+    }
     self.name = name;
 }
 
@@ -164,6 +176,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {
     @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called setAttribute, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
         if(value == nil) {
             [self.attributes removeObjectForKey:attributeName];
         } else {
@@ -174,6 +190,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)setMultipleAttributes:(NSDictionary *)attributes {
     @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
         [self.attributes addEntriesFromDictionary:attributes];
     }
 }
@@ -192,6 +212,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)updateSamplingProbability:(double) value {
     @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called updateSamplingProbability, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
         if (self.samplingProbability > value) {
             self.samplingProbability = value;
             self.attributes[@"bugsnag.sampling.p"] = @(value);

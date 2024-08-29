@@ -176,6 +176,64 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpa
     XCTAssertNil([span getAttribute:@"b"]);
 }
 
+- (void)testMutability {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {});
+
+    XCTAssertNil([span getAttribute:@"a"]);
+    [span setAttribute:@"a" withValue:@(1)];
+    XCTAssertEqualObjects(@(1), [span getAttribute:@"a"]);
+    [span setAttribute:@"a" withValue:@(2)];
+    XCTAssertEqualObjects(@(2), [span getAttribute:@"a"]);
+
+    [span setMultipleAttributes:@{@"b": @(3), @"c": @(4)}];
+    XCTAssertEqualObjects(@(3), [span getAttribute:@"b"]);
+    XCTAssertEqualObjects(@(4), [span getAttribute:@"c"]);
+
+    NSDate *now = [NSDate date];
+    [span updateName:@"X"];
+    XCTAssertEqualObjects(@"X", span.name);
+    [span updateStartTime:now];
+    XCTAssertEqualObjects(now, span.startTime);
+    [span updateSamplingProbability:0.5];
+    XCTAssertEqual(0.5, span.samplingProbability);
+
+    [span end];
+
+    [span setAttribute:@"a" withValue:@(3)];
+    XCTAssertEqualObjects(@(2), [span getAttribute:@"a"]);
+
+    XCTAssertNil([span getAttribute:@"x"]);
+    [span setAttribute:@"x" withValue:@(2)];
+    XCTAssertNil([span getAttribute:@"x"]);
+
+    [span setMultipleAttributes:@{@"b": @(10), @"c": @(11)}];
+    XCTAssertEqualObjects(@(3), [span getAttribute:@"b"]);
+    XCTAssertEqualObjects(@(4), [span getAttribute:@"c"]);
+
+    [span setMultipleAttributes:@{@"d": @(3), @"e": @(4)}];
+    XCTAssertNil([span getAttribute:@"d"]);
+    XCTAssertNil([span getAttribute:@"e"]);
+
+    NSDate *previousNow = now;
+    now = [NSDate date];
+    [span updateName:@"Y"];
+    XCTAssertEqualObjects(@"X", span.name);
+    [span updateStartTime:now];
+    XCTAssertEqualObjects(previousNow, span.startTime);
+    [span updateSamplingProbability:0.1];
+    XCTAssertEqual(0.5, span.samplingProbability);
+
+    span.isMutable = true;
+
+    [span setAttribute:@"a" withValue:@(3)];
+    XCTAssertEqualObjects(@(3), [span getAttribute:@"a"]);
+
+    span.isMutable = false;
+
+    [span setAttribute:@"a" withValue:@(4)];
+    XCTAssertEqualObjects(@(3), [span getAttribute:@"a"]);
+}
+
 - (void)testMultithreadedAttributesAccess {
     auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {});
 

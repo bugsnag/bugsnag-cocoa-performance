@@ -25,7 +25,7 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void preStartSetup() noexcept;
+    void preStartSetup() noexcept {}
     void start() noexcept {}
 
     void didStartViewLoadSpan(NSString *name) noexcept;
