@@ -34,14 +34,38 @@ Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
 }
 
 void
-Tracer::start() noexcept {
-    BSGLogDebug(@"Tracer::start()");
-    // Up until now the sampler was unconfigured and sampling at 1.0 (keep everything).
-    // Now that the sampler has been configured, re-sample everything.
-    auto unsampledBatch = batch_->drain(true);
-    BSGLogTrace(@"Tracer::start: initial unsampled batch with %zu items", unsampledBatch->size());
-    for (auto spanData: *unsampledBatch) {
-        trySampleAndAddSpanToBatch(spanData);
+Tracer::preStartSetup() noexcept {
+    BSGLogDebug(@"Tracer::preStartSetup()");
+    reprocessEarlySpans();
+}
+
+void Tracer::reprocessEarlySpans(void) {
+    BSGLogDebug(@"Tracer::reprocessEarlySpans()");
+    // Up until now nothing was configured, so all early spans have been kept.
+    // Now that configuration is complete, force-drain all early spans and re-process them.
+    auto toReprocess = batch_->drain(true);
+    BSGLogDebug(@"Tracer::reprocessEarlySpans: Reprocessing %zu early spans", toReprocess.count);
+    for (BugsnagPerformanceSpan *span in toReprocess) {
+        BSGLogDebug(@"Tracer::reprocessEarlySpans: Try to re-add span (%@) to batch", span.name);
+        if (span.state != SpanStateEnded) {
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ has state %d, so ignoring", span.name, span.state);
+            continue;
+        }
+        if (!sampler_->sampled(span)) {
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
+            [span abortUnconditionally];
+            continue;
+        }
+        span.isMutable = true;
+        callOnSpanEndCallbacks(span);
+        span.isMutable = false;
+        if (span.state == SpanStateAborted) {
+            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
+            [span abortUnconditionally];
+            continue;
+        }
+
+        batch_->add(span);
     }
 }
 
@@ -80,60 +104,81 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
-    __block __weak BugsnagPerformanceSpan *blockSpan = nil;
-    BugsnagPerformanceSpan *span = nil;
-    blockSpan = span = [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(name,
-                                                              traceId,
-                                                              spanId,
-                                                              parentSpan.spanId,
-                                                              options.startTime,
-                                                              firstClass,
-                                       ^void(std::shared_ptr<SpanData> spanData) {
-        BSGLogTrace(@"Tracer::startSpan: OnEnd callback: for span %@", spanData->name);
-        BugsnagPerformanceSpan *localSpan = blockSpan;
-        blockThis->spanStackingHandler_->didEnd(spanData->spanId);
-        if (!blockThis->sampler_->sampled(*spanData)) {
-            BSGLogTrace(@"Tracer::startSpan: OnEnd callback: span %@ sampling returned false. Dropping...", spanData->name);
-            [localSpan abortUnconditionally];
-            return;
-        }
-        CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-        for (BugsnagPerformanceSpanEndCallback callback: blockThis->onSpanEndCallbacks_) {
-            BOOL shouldDiscardSpan = false;
-            @try {
-                shouldDiscardSpan = !callback(localSpan);
-            } @catch(NSException *e) {
-                BSGLogError(@"Span OnEnd callback threw exception %@", e);
-                // We don't know whether they wanted to discard the span or not, so keep it.
-                shouldDiscardSpan = false;
-            }
-            if(shouldDiscardSpan) {
-                BSGLogDebug(@"Tracer::startSpan: span %@ OnEnd callback returned false. Dropping...", spanData->name);
-                [localSpan abortUnconditionally];
-                return;
-            }
-        }
-        CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
-        BSGLogDebug(@"Tracer::startSpan: OnEnd callback: Adding span %@ to batch", spanData->name);
-        [localSpan setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
-        blockThis->batch_->add(spanData);
-    })];
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
+                                                                        traceId:traceId
+                                                                         spanId:spanId
+                                                                       parentId:parentSpan.spanId
+                                                                      startTime:options.startTime
+                                                                     firstClass:firstClass
+                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+        blockThis->onSpanClosed(endedSpan);
+    }];
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
-    [span setAttributes:SpanAttributes::get()];
+    [span setMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
     onSpanStarted_();
     return span;
 }
 
-void Tracer::trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData) {
-    BSGLogDebug(@"Tracer::trySampleAndAddSpanToBatch(%@)", spanData->name);
-    if (sampler_->sampled(*spanData)) {
-        BSGLogTrace(@"Tracer::trySampleAndAddSpanToBatch: Sampled successfully. Adding to batch.");
-        batch_->add(spanData);
+void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
+    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
+
+    spanStackingHandler_->onSpanClosed(span.spanId);
+
+    if(span.state == SpanStateAborted) {
+        BSGLogTrace(@"Tracer::onSpanClosed: span %@ has been aborted, so ignoring", span.name);
+        return;
     }
+
+    if (!sampler_->sampled(span)) {
+        BSGLogTrace(@"Tracer::onSpanClosed: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
+        [span abortUnconditionally];
+        return;
+    }
+
+    if (span != nil && span.state == SpanStateEnded) {
+        callOnSpanEndCallbacks(span);
+        if (span.state == SpanStateAborted) {
+            BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
+            return;
+        }
+    }
+
+    BSGLogTrace(@"Tracer::onSpanClosed: Adding span %@ to batch", span.name);
+    batch_->add(span);
+}
+
+void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
+    if(span == nil) {
+        return;
+    }
+    if (span.state != SpanStateEnded) {
+        BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ has state %d, so ignoring", span.name, span.state);
+        return;
+    }
+
+    CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
+    for (BugsnagPerformanceSpanEndCallback callback: onSpanEndCallbacks_) {
+        BOOL shouldDiscardSpan = false;
+        @try {
+            shouldDiscardSpan = !callback(span);
+        } @catch(NSException *e) {
+            BSGLogError(@"Tracer::callOnSpanEndCallbacks: span OnEnd callback threw exception: %@", e);
+            // We don't know whether they wanted to discard the span or not, so keep it.
+            shouldDiscardSpan = false;
+        }
+        if(shouldDiscardSpan) {
+            BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ OnEnd callback returned false. Dropping...", span.name);
+            [span abortUnconditionally];
+            return;
+        }
+    }
+    CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
+    BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: Adding span %@ to batch", span.name);
+    [span setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
 }
 
 BugsnagPerformanceSpan *
@@ -210,7 +255,7 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
     willDiscardPrewarmSpans_ = false;
     for (BugsnagPerformanceSpan *span: prewarmSpans_) {
         // Only cancel unfinished prewarm spans
-        if (span.isValid) {
+        if (span.state == SpanStateOpen) {
             cancelQueuedSpan(span);
         }
     }

@@ -89,9 +89,10 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     XCTAssertFalse([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
 
-    queue.start();
+    queue.preStartSetup();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
+    queue.start();
 }
 
 - (void)testSweep {
@@ -100,9 +101,10 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
     RetryQueue queue(self.filePath);
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
-    queue.start();
+    queue.preStartSetup();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
+    queue.start();
     __block int callCount = 0;
     queue.setOnFilesystemError(^{
         callCount++;
@@ -138,9 +140,10 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
     RetryQueue queue(self.filePath);
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
-    queue.start();
+    queue.preStartSetup();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
+    queue.start();
 }
 
 - (void)testFilesystemErrorCallback {
@@ -154,9 +157,10 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
     RetryQueue queue(self.filePath);
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
-    queue.start();
+    queue.preStartSetup();
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertFalse(isDir);
+    queue.start();
 
     __block int callCount = 0;
     queue.setOnFilesystemError(^{

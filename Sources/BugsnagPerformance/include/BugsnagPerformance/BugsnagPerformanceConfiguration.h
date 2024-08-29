@@ -54,6 +54,16 @@ OBJC_EXPORT
  */
 @property (copy, nullable, nonatomic) NSString *bundleVersion;
 
+/**
+ *  The app's name
+ */
+@property (copy, nullable, nonatomic) NSString *serviceName;
+
+/**
+ *  Fixed sampling probability
+ */
+@property (nonatomic, nullable) NSNumber *samplingProbability;
+
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 
 @end

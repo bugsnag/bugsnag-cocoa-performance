@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
+#import "IdGenerator.h"
 #import "SpanOptions.h"
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceSpan+Private.h"
@@ -16,15 +17,15 @@
 using namespace bugsnag;
 
 static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> handler) {
-    return [[BugsnagPerformanceSpan alloc] initWithSpan:std::make_unique<Span>(@"test",
-                                                                                                                 IdGenerator::generateTraceId(),
-                                                                                                                 IdGenerator::generateSpanId(),
-                                                                                                                 IdGenerator::generateSpanId(),
-                                                                                                                 SpanOptions().startTime,
-                                                                                                                 BSGFirstClassNo,
-                                                                                                                 ^void(std::shared_ptr<SpanData> spanData) {
-        handler->didEnd(spanData->spanId);
-           })];
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                traceId:IdGenerator::generateTraceId()
+                                                 spanId:IdGenerator::generateSpanId()
+                                               parentId:IdGenerator::generateSpanId()
+                                              startTime:SpanOptions().startTime
+                                             firstClass:BSGFirstClassNo
+                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
+        handler->onSpanClosed(span.spanId);
+    }];
 }
 
 @interface SpanStackingHandlerTests : XCTestCase
@@ -211,7 +212,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
 - (void)testHasSpanWithAttributeShouldReturnTrueWhenThereIsOneSpanWithTheAttribute {
     auto handler = std::make_shared<SpanStackingHandler>();
     BugsnagPerformanceSpan *span = createSpan(handler);
-    [span setAttributes:@{@"testAttribute": @"testValue"}];
+    [span setMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span);
     XCTAssertTrue(handler->hasSpanWithAttribute(@"testAttribute", @"testValue"));
     
@@ -222,7 +223,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setAttributes:@{@"testAttribute": @"testValue"}];
+    [span2 setMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -234,7 +235,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setAttributes:@{@"otherTestAttribute": @"testValue"}];
+    [span2 setMultipleAttributes:@{@"otherTestAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -246,7 +247,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setAttributes:@{@"testAttribute": @"otherTestValue"}];
+    [span2 setMultipleAttributes:@{@"testAttribute": @"otherTestValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -258,7 +259,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setAttributes:@{@"testAttribute": @"testValue"}];
+    [span2 setMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);

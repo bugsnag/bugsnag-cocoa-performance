@@ -23,7 +23,8 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *configuration) noexcept;
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     NSDictionary *get() noexcept { return cachedAttributes_; };
     
@@ -31,6 +32,7 @@ private:
     std::shared_ptr<PersistentDeviceID> deviceID_;
     NSString *releaseStage_{nil};
     NSString *bundleVersion_{nil};
+    NSString *serviceName_{nil};
     NSString *serviceVersion_{nil};
     NSDictionary *cachedAttributes_{nil};
 };

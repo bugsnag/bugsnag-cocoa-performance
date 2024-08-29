@@ -195,7 +195,7 @@ NSError *PersistentDeviceID::save() {
     });
 }
 
-void PersistentDeviceID::start() noexcept {
+void PersistentDeviceID::preStartSetup() noexcept {
     persistenceDir_ = persistence_->bugsnagSharedDir();
     load();
 

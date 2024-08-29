@@ -43,7 +43,7 @@ void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
     maxRetryAge_ = intervalToNanoseconds(config.internal.maxRetryAge);
 }
 
-void RetryQueue::start() noexcept {
+void RetryQueue::preStartSetup() noexcept {
     [Filesystem ensurePathExists:baseDir_];
 }
 

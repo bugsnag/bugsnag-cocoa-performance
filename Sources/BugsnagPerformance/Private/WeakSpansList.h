@@ -6,7 +6,7 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
-#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import "BugsnagPerformanceSpan+Private.h"
 #import <mutex>
 
 @interface BSGWeakSpanPointer: NSObject
@@ -38,7 +38,8 @@ public:
         std::lock_guard<std::mutex> guard(mutex_);
         bool canCompact = false;
         for (BSGWeakSpanPointer *ptr in spans_) {
-            if (!ptr.span.isValid) {
+            BugsnagPerformanceSpan *span = ptr.span;
+            if (span == nil || span.state != SpanStateOpen) {
                 canCompact = true;
                 break;
             }
@@ -46,7 +47,8 @@ public:
         if (canCompact) {
             auto newSpans = [NSMutableArray arrayWithCapacity:spans_.count];
             for (BSGWeakSpanPointer *ptr in spans_) {
-                if (ptr.span.isValid) {
+                BugsnagPerformanceSpan *span = ptr.span;
+                if (span != nil && span.state == SpanStateOpen) {
                     [newSpans addObject:ptr];
                 }
             }

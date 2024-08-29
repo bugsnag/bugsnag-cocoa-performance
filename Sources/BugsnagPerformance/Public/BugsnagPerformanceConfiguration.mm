@@ -53,10 +53,12 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     auto releaseStage = getSharedConfigValue(@"releaseStage");
     auto enabledReleaseStages = getSharedConfigArray(@"enabledReleaseStages");
     
+    auto serviceName = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"service.name"]);
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
     if (appVersion) {
         configuration.appVersion = appVersion;
@@ -68,6 +70,9 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
         configuration.releaseStage = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    if (serviceName) {
+        configuration.serviceName = serviceName;
+    }
     if (endpoint) {
         configuration.endpoint = [[NSURL alloc] initWithString: endpoint];
     }
@@ -79,6 +84,9 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     }
     if (autoInstrumentNetworkRequests != nil) {
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
+    }
+    if (samplingProbability != nil) {
+        configuration.samplingProbability = samplingProbability;
     }
     return configuration;
 }
