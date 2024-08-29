@@ -1,10 +1,13 @@
 Changelog
 =========
 
-## TBD
+## 1.7.1 (2024-08-29)
 
 ### Enhancements
 
+* Span immutability is now enforced after a span is ended or aborted. Calling a mutator function while immutable will now emit an error message and no-op.
+  [304](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/304)
+  
 * `service.name` can now be set in the configuration.
   [299](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/299)
   
