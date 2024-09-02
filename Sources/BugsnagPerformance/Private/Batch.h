@@ -10,7 +10,7 @@
 
 #import "PhasedStartup.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
-#import "SpanData.h"
+#import "BugsnagPerformanceSpan+Private.h"
 #import "PhasedStartup.h"
 #import "Utils.h"
 
@@ -20,13 +20,15 @@
 
 namespace bugsnag {
 
+const int normalBatchSize = 100;
+
 /**
  * Holds the next batch of spans that will be sent together to the backend.
  */
 class Batch: public PhasedStartup {
 public:
     Batch() noexcept
-    : spans_(std::make_unique<std::vector<std::shared_ptr<SpanData>>>())
+    : spans_([NSMutableArray arrayWithCapacity:normalBatchSize])
     , onBatchFull(^(){})
     {}
 
@@ -35,18 +37,19 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         autoTriggerExportOnBatchSize_ = config.internal.autoTriggerExportOnBatchSize;
     }
+    void preStartSetup() noexcept {}
     void start() noexcept {}
 
     /**
      * Add a span to this batch. If the batch size exceeds the maximum, call the "batch full" callback.
      **/
-    void add(std::shared_ptr<SpanData> span) noexcept {
-        BSGLogDebug(@"Batch:add(%@)", span->name);
+    void add(BugsnagPerformanceSpan *span) noexcept {
         bool isFull = false;
         {
             std::lock_guard<std::mutex> guard(mutex_);
-            spans_->push_back(span);
-            isFull = spans_->size() >= autoTriggerExportOnBatchSize_;
+            BSGLogDebug(@"Batch:add(%@): Batch size will be %zu", span.name, spans_.count+1);
+            [spans_ addObject:span];
+            isFull = spans_.count >= autoTriggerExportOnBatchSize_;
             if (isFull) {
                 drainIsAllowed_ = true;
             }
@@ -61,43 +64,53 @@ public:
         BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx)", traceId.hi, traceId.lo, spanId);
         std::lock_guard<std::mutex> guard(mutex_);
 
-        if (spans_->empty()) {
-            return;
-        }
-        auto found = std::find_if(spans_->begin(),
-                     spans_->end(),
-                     [&spanId, &traceId](const std::shared_ptr<SpanData> &o) {
-            return o->spanId == spanId && o->traceId.value == traceId.value;
-        });
-        if (found == spans_->end()) {
+        if (spans_.count == 0) {
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Batch is empty", traceId.hi, traceId.lo, spanId);
             return;
         }
 
-        spans_->erase(found);
-
-        for (auto span: *spans_) {
-            if (span->parentId == spanId && span->traceId.value == traceId.value) {
-                span->parentId = 0;
+        BugsnagPerformanceSpan *found = nil;
+        size_t index = 0;
+        for(; index < spans_.count; index++) {
+            BugsnagPerformanceSpan *potential = spans_[index];
+            if (potential.spanId == spanId && potential.traceId.value == traceId.value) {
+                found = potential;
             }
         }
+
+        if (found == nil) {
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span not found", traceId.hi, traceId.lo, spanId);
+            return;
+        }
+
+        [spans_ removeObject:found];
+//        [spans_ removeObjectAtIndex:index];
+
+        for (BugsnagPerformanceSpan *span in spans_) {
+            if (span.parentId == spanId && span.traceId.value == traceId.value) {
+                span.parentId = 0;
+            }
+        }
+        BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span %@ removed. Batch size is now %zu",
+                    traceId.hi, traceId.lo, spanId, found.name, spans_.count);
     }
 
     /**
      * Drain this batch of all of its spans, if draining is allowed.
      * Returns the drained spans, or an empty vector if draining is not allowed.
      */
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> drain(bool force) noexcept {
+    NSMutableArray<BugsnagPerformanceSpan *> *drain(bool force) noexcept {
         BSGLogDebug(@"Batch:drain(force:%s)", force ? "yes" : "no");
         std::lock_guard<std::mutex> guard(mutex_);
         if (!drainIsAllowed_ && !force) {
             BSGLogDebug(@"Batch:drain: not currently allowed");
-            return std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
+            return [NSMutableArray array];
         }
         drainIsAllowed_ = false;
 
-        auto batch = std::move(spans_);
-        spans_ = std::make_unique<std::vector<std::shared_ptr<SpanData>>>();
-        BSGLogDebug(@"Batch:drain: draining %zu spans", batch->size());
+        auto batch = spans_;
+        spans_ = [NSMutableArray arrayWithCapacity:normalBatchSize];
+        BSGLogDebug(@"Batch:drain: draining %zu spans", batch.count);
         return batch;
     }
 
@@ -115,7 +128,7 @@ public:
     }
 
     size_t count() noexcept {
-        return spans_->size();
+        return spans_.count;
     }
 
 private:
@@ -123,6 +136,6 @@ private:
     bool drainIsAllowed_{false};
     uint64_t autoTriggerExportOnBatchSize_{0};
     std::mutex mutex_;
-    std::unique_ptr<std::vector<std::shared_ptr<SpanData>>> spans_;
+    NSMutableArray<BugsnagPerformanceSpan *> *spans_;
 };
 }

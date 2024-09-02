@@ -10,96 +10,217 @@
 
 using namespace bugsnag;
 
+static const uint64_t MONOTONIC_CLOCK_INVALID = 0;
+
+static bool isMonotonicClockValid(uint64_t clock) {
+    return clock != MONOTONIC_CLOCK_INVALID;
+}
+
+static uint64_t currentMonotonicClockNsecIfUnset(CFAbsoluteTime time) {
+    return isCFAbsoluteTimeValid(time) ? MONOTONIC_CLOCK_INVALID : clock_gettime_nsec_np(CLOCK_MONOTONIC);
+}
+
+static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
+    return isCFAbsoluteTimeValid(time) ? time : CFAbsoluteTimeGetCurrent();
+}
+
 @implementation BugsnagPerformanceSpan
 
-- (instancetype)initWithSpan:(std::shared_ptr<Span>)span {
-    if ((self = [super init])) {
-        self.span = span;
+- (instancetype)initWithName:(NSString *)name
+                     traceId:(TraceId) traceId
+                      spanId:(SpanId) spanId
+                    parentId:(SpanId) parentId
+                   startTime:(CFAbsoluteTime) startAbsTime
+                  firstClass:(BSGFirstClass) firstClass
+                 onSpanClosed:(OnSpanClosed) onSpanClosed {
+    if ((self = [super initWithTraceId:traceId spanId:spanId])) {
+        _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
+        _name = name;
+        _parentId = parentId;
+        _startAbsTime = currentTimeIfUnset(startAbsTime);
+        _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
+        _firstClass = firstClass;
+        _onSpanDestroyAction = OnSpanDestroyAbort;
+        _onSpanClosed = onSpanClosed;
+        _kind = SPAN_KIND_INTERNAL;
+        _samplingProbability = 1;
+        _state = SpanStateOpen;
+        _attributes = [[NSMutableDictionary alloc] init];
+        _isMutable = true;
+        if (firstClass != BSGFirstClassUnset) {
+            _attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
+        }
+        _attributes[@"bugsnag.sampling.p"] = @(1.0);
     }
     return self;
 }
 
 - (void)dealloc {
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
-    if (self.isValid && self.onDumped) {
+    if (self.state == SpanStateOpen && self.onDumped) {
         self.onDumped(self);
+    }
+    switch(self.onSpanDestroyAction) {
+        case OnSpanDestroyAbort:
+            BSGLogDebug(@"BugsnagPerformanceSpan.dealloc: for span %@. Action = Abort", self.name);
+            [self abortIfOpen];
+            break;
+        case OnSpanDestroyEnd:
+            BSGLogDebug(@"BugsnagPerformanceSpan.dealloc: for span %@. Action = End", self.name);
+            [self end];
+            break;
+        default:
+            BSGLogError(@"BugsnagPerformanceSpan.dealloc: for span %@. Unknown action type %d", self.name, self.onSpanDestroyAction);
+            break;
     }
 }
 
 - (void)abortIfOpen {
-    self.span->abortIfOpen();
+    @synchronized (self) {
+        BSGLogDebug(@"Span.abortIfOpen: %@: Was open: %d", self.name, self.state == SpanStateOpen);
+        if (self.state != SpanStateOpen) {
+            // The span has already been closed or aborted.
+            return;
+        }
+        self.state = SpanStateAborted;
+    }
+    [self callOnSpanClosed];
+    self.isMutable = false;
 }
 
 - (void)abortUnconditionally {
-    self.span->abortUnconditionally();
+    bool wasOpen = false;
+    @synchronized (self) {
+        BSGLogDebug(@"Span.abortUnconditionally: %@: Was open: %d", self.name, self.state == SpanStateOpen);
+        wasOpen = self.state == SpanStateOpen;
+        self.state = SpanStateAborted;
+    }
+    if (wasOpen) {
+        [self callOnSpanClosed];
+    }
+    self.isMutable = false;
 }
 
 - (void)end {
-    self.span->end(CFABSOLUTETIME_INVALID);
+    [self endWithAbsoluteTime:CFABSOLUTETIME_INVALID];
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
-    self.span->end(dateToAbsoluteTime(endTime));
+    [self endWithAbsoluteTime:(dateToAbsoluteTime(endTime))];
 }
 
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime {
-    self.span->end(endTime);
+    @synchronized (self) {
+        BSGLogDebug(@"Span.endWithAbsoluteTime(%f): %@: Was open: %d", endTime, self.name, self.state == SpanStateOpen);
+        if (self.state != SpanStateOpen) {
+            // The span has already been closed or aborted.
+            return;
+        }
+
+        // If our start and end times were both "unset", then it's on us to counter any
+        // clock skew using the monotonic clock.
+        if (isMonotonicClockValid(self.startClock)) {
+            auto endClock = currentMonotonicClockNsecIfUnset(endTime);
+            if (isMonotonicClockValid(endClock)) {
+                // Calculate using signed int so that an end time < start time doesn't overflow.
+                endTime = self.startAbsTime + ((double)((int64_t)endClock - (int64_t)self.startClock)) / NSEC_PER_SEC;
+            }
+        }
+
+        self.endAbsTime = currentTimeIfUnset(endTime);
+        self.state = SpanStateEnded;
+    }
+    [self callOnSpanClosed];
+    self.isMutable = false;
+}
+
+- (void)callOnSpanClosed {
+    auto onSpanClosed = self.onSpanClosed;
+    if(onSpanClosed != nil) {
+        onSpanClosed(self);
+    }
 }
 
 - (void)endOnDestroy {
-    self.span->spanDestroyAction = EndOnSpanDestroy;
-}
-
-- (TraceId)traceId {
-    return self.span->traceId();
-}
-
-- (SpanId)spanId {
-    return self.span->spanId();
-}
-
-- (SpanId)parentId {
-    return self.span->parentId();
-}
-
-- (NSString *)name {
-    return self.span->name();
+    self.onSpanDestroyAction = OnSpanDestroyEnd;
 }
 
 - (NSDate *)startTime {
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.span->startTime()];
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.startAbsTime];
 }
 
 - (NSDate *)endTime {
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.span->endTime()];
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:self.endAbsTime];
 }
 
 - (void)updateStartTime:(NSDate *)startTime {
-    self.span->updateStartTime(dateToAbsoluteTime(startTime));
+    if (!self.isMutable) {
+        BSGLogError(@"Called updateStartTime, but span %llu (%@) is immutable", self.spanId, self.name);
+        return;
+    }
+    self.startAbsTime = dateToAbsoluteTime(startTime);
+    self.startClock = currentMonotonicClockNsecIfUnset(self.startAbsTime);
 }
 
 - (void)updateName:(NSString *)name {
-    self.span->updateName(name);
+    if (!self.isMutable) {
+        BSGLogError(@"Called updateName, but span %llu (%@) is immutable", self.spanId, self.name);
+        return;
+    }
+    self.name = name;
 }
 
 - (BOOL)isValid {
-    return !self.span->isEnded();
+    return self.state == SpanStateOpen;
 }
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {
-    self.span->setAttribute(attributeName, value);
+    @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called setAttribute, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
+        if(value == nil) {
+            [self.attributes removeObjectForKey:attributeName];
+        } else {
+            self.attributes[attributeName] = value;
+        }
+    }
 }
 
-- (void)setAttributes:(NSDictionary *)attributes {
-    self.span->setAttributes(attributes);
+- (void)setMultipleAttributes:(NSDictionary *)attributes {
+    @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
+        [self.attributes addEntriesFromDictionary:attributes];
+    }
 }
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value {
-    return self.span->hasAttribute(attributeName, value);
+    @synchronized (self) {
+        return [self.attributes[attributeName] isEqual:value];
+    }
 }
 
 - (id)getAttribute:(NSString *)attributeName {
-    return self.span->getAttribute(attributeName);
+    @synchronized (self) {
+        return self.attributes[attributeName];
+    }
+}
+
+- (void)updateSamplingProbability:(double) value {
+    @synchronized (self) {
+        if (!self.isMutable) {
+            BSGLogError(@"Called updateSamplingProbability, but span %llu (%@) is immutable", self.spanId, self.name);
+            return;
+        }
+        if (self.samplingProbability > value) {
+            self.samplingProbability = value;
+            self.attributes[@"bugsnag.sampling.p"] = @(value);
+        }
+    }
 }
 
 @end

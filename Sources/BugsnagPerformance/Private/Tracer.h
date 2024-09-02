@@ -9,7 +9,6 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import "Span.h"
 #import "Sampler.h"
 #import "Batch.h"
 #import "SpanOptions.h"
@@ -39,7 +38,8 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         onSpanEndCallbacks_ = config.onSpanEndCallbacks;
     };
-    void start() noexcept;
+    void preStartSetup() noexcept;
+    void start() noexcept {}
 
     void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
@@ -68,6 +68,8 @@ public:
     // Sweep must be called periodically to avoid a buildup of dead pointers.
     void sweep() noexcept;
 
+    void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span);
+
 private:
     Tracer() = delete;
     std::shared_ptr<Sampler> sampler_;
@@ -87,7 +89,8 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    void trySampleAndAddSpanToBatch(std::shared_ptr<SpanData> spanData);
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
+    void onSpanClosed(BugsnagPerformanceSpan *span);
+    void reprocessEarlySpans(void);
 };
 }

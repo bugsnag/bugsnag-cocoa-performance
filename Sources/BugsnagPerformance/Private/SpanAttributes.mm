@@ -22,12 +22,12 @@ static NSString *hostConnectionType() noexcept {
     }
 }
 
-NSDictionary *
+NSMutableDictionary *
 SpanAttributes::get() noexcept {
     return @{
         @"bugsnag.app.in_foreground": @(BugsnagPerformanceLibrary::getAppStateTracker().isInForeground),
         
         // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/#network-transport-attributes
         @"net.host.connection.type": hostConnectionType(),
-    };
+    }.mutableCopy;
 }

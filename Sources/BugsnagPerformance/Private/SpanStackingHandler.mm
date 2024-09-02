@@ -55,14 +55,14 @@ SpanStackingHandler::currentSpan() {
     if (state == nullptr) {
         return nullptr;
     }
-    if (!(state->span.isValid)) {
+    if (!(state->span.state == SpanStateOpen)) {
         return nullptr;
     }
     return state->span;
 }
 
 void
-SpanStackingHandler::didEnd(SpanId spanId) {
+SpanStackingHandler::onSpanClosed(SpanId spanId) {
     std::lock_guard<std::mutex> guard(mutex_);
     removeSpan(spanId);
 }
@@ -72,7 +72,7 @@ SpanStackingHandler::hasSpanWithAttribute(NSString *attribute, NSString *value) 
     std::lock_guard<std::mutex> guard(mutex_);
     std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
     while (state != nullptr) {
-        if (state->span.isValid) {
+        if (state->span.state == SpanStateOpen) {
             if ([state->span hasAttribute:attribute withValue:value]) {
                 return true;
             }
@@ -86,7 +86,7 @@ void
 SpanStackingHandler::sweep(SpanId spanId) {
     std::shared_ptr<SpanActivityState> state = spanStateForSpan(spanId);
     while (state != nullptr) {
-        if ((state->span != nullptr && state->span.isValid && !(state->isDumped))) {
+        if ((state->span != nullptr && state->span.state == SpanStateOpen && !(state->isDumped))) {
             return;
         }
         if (currentActivityId() == state->activityId) {

@@ -7,7 +7,6 @@
 
 #import "AppStartupInstrumentation.h"
 
-#import "../Span.h"
 #import "../Tracer.h"
 #import "../Utils.h"
 #import "../BugsnagPerformanceSpan+Private.h"
@@ -195,7 +194,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = tracer_->startAppStartSpan(name, options);
-    [appStartSpan_ setAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+    [appStartSpan_ setMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
 void
@@ -212,7 +211,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     options.startTime = didStartProcessAtTime_;
     options.parentContext = appStartSpan_;
     preMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [preMainSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
+    [preMainSpan_ setMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
 void
@@ -229,7 +228,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     options.startTime = didCallMainFunctionAtTime_;
     options.parentContext = appStartSpan_;
     postMainSpan_ = tracer_->startAppStartSpan(name, options);
-    [postMainSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
+    [postMainSpan_ setMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
 void
@@ -246,7 +245,7 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
-    [uiInitSpan_ setAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+    [uiInitSpan_ setMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 
 #pragma mark -

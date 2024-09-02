@@ -70,7 +70,7 @@ void ResourceAttributes::configure(BugsnagPerformanceConfiguration *config) noex
     releaseStage_ = config.releaseStage;
 }
 
-void ResourceAttributes::start() noexcept {
+void ResourceAttributes::preStartSetup() noexcept {
     cachedAttributes_ = @{
         @"bugsnag.app.bundle_version": bundleVersion_,
 

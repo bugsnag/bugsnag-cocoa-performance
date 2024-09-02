@@ -18,7 +18,7 @@
 }
 
 + (instancetype) pointerWithSpan:(BugsnagPerformanceSpan *)span {
-    return [[self alloc] initWithSpan:span];
+    return [[BSGWeakSpanPointer alloc] initWithSpan:span];
 }
 
 @end
