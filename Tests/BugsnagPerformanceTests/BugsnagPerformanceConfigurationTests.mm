@@ -180,4 +180,9 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
 }
 
+- (void)testShouldSetIncludeApiKeyInTheDefaultEndpoint {
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqualObjects(config.endpoint.absoluteString, @"https://0123456789abcdef0123456789abcdef.otlp.bugsnag.com/v1/traces");
+}
+
 @end

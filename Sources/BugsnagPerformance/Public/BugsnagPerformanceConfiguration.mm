@@ -12,15 +12,13 @@
 
 using namespace bugsnag;
 
-static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
-
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
         _internal = [BSGInternalConfiguration new];
         _apiKey = [apiKey copy];
-        _endpoint = nsurlWithString(defaultEndpoint, nil);
+        _endpoint = nsurlWithString([NSString stringWithFormat: @"https://%@.otlp.bugsnag.com/v1/traces", apiKey], nil);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
