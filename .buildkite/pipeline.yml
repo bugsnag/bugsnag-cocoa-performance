@@ -10,6 +10,7 @@ steps:
   - group: ":hammer: Builds"
     steps:
       - label: "XCFramework"
+        key: xcframework
         timeout_in_minutes: 20
         commands:
           - make build_xcframework
@@ -60,6 +61,20 @@ steps:
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_premain.txt
+
+      - label: "Fixture XcFramework"
+        key: ios_fixture_xcframework
+        depends_on:
+          - xcframework
+        commands:
+          - ./features/fixtures/ios/build.sh
+          - bundle install
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_ipa_url.txt
+        plugins:
+          - artifacts#v1.9.3:
+              download: "BugsnagPerformance.xcframework.zip"
+        artifact_paths:
+          - features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
 
   - group: ":xcode_simulator: Unit Tests"
     steps:

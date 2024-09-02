@@ -29,6 +29,8 @@ do
     fi
 done;
 
+unzip BugsnagPerformance.xcframework.zip
+
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
 sed -i '' -e 's|DISABLE_SWIZZLING_KEY|'$disable_swizzling_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
@@ -44,4 +46,4 @@ xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exp
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
-#rm ./Fixture/Info.plist
+rm ./Fixture/Info.plist
