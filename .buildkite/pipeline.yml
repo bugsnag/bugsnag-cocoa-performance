@@ -69,7 +69,7 @@ steps:
         commands:
           - ./features/fixtures/iosXcFramework/build.sh
           - bundle install
-          - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_ipa_url.txt
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
         plugins:
           - artifacts#v1.9.3:
               download: "BugsnagPerformance.xcframework.zip"
