@@ -67,7 +67,7 @@ steps:
         depends_on:
           - xcframework
         commands:
-          - ./features/fixtures/ios/build.sh
+          - ./features/fixtures/iosXcFramework/build.sh
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_ipa_url.txt
         plugins:
