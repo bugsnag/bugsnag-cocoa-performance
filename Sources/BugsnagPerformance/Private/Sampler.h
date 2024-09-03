@@ -32,9 +32,23 @@ public:
 
     /**
      * Samples the given span data, returning true if the span is to be kept.
-     * Also updates the span's sampling probability value if it is to be kept.
      */
-    bool sampled(BugsnagPerformanceSpan *span) noexcept;
+    bool sampled(BugsnagPerformanceSpan *span) noexcept {
+        if (span == nil) {
+            return false;
+        }
+
+        auto p = getProbability();
+        uint64_t idUpperBound;
+        if (p <= 0.0) {
+            idUpperBound = 0;
+        } else if (p >= 1.0) {
+            idUpperBound = UINT64_MAX;
+        } else {
+            idUpperBound = uint64_t(p * double(UINT64_MAX));
+        }
+        return span.traceId.hi <= idUpperBound;
+    }
 
 private:
     double probability_{1};

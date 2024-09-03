@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## 1.8.1 (2024-09-03)
+
+### Bug fixes
+
+* Stop podspec from trying to compile xcprivacy files (which generates warnings).
+  [311](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/311)
+
+* Early spans (ended before Bugsnag starts) now get their sampling probability value properly updated.
+  [310](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/310)
+
+* Release process now updates BugsnagPerformanceSwift podspec rather than BugsnagPerformanceSwiftUI (which has been deprecated)
+  [308](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/308)
+
+* Use API key subdomain as default Performance endpoint
+  [313](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/313)
+
 ## 1.8.0 (2024-08-29)
 
 ### Enhancements

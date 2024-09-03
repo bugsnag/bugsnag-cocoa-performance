@@ -1,6 +1,6 @@
 {
   "name": "BugsnagPerformance",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "summary": "The Bugsnag performance monitoring framework for iOS.",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
   "license": {
@@ -12,13 +12,13 @@
   },
   "source": {
     "git": "https://github.com/bugsnag/bugsnag-cocoa-performance.git",
-    "tag": "v1.8.0"
+    "tag": "v1.8.1"
   },
   "platforms": {
     "ios": "13.0"
   },
   "requires_arc": true,
-  "source_files": "Sources/BugsnagPerformance/**/*",
+  "source_files": "Sources/BugsnagPerformance/{**/,}*.{m,h,mm,c,swift}",
   "resource_bundles": {
       "BugsnagPerformance": ["Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy"]
   },
