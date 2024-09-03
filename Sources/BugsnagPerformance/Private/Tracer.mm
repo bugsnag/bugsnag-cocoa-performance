@@ -57,6 +57,7 @@ void Tracer::reprocessEarlySpans(void) {
             continue;
         }
         span.isMutable = true;
+        [span updateSamplingProbability:sampler_->getProbability()];
         callOnSpanEndCallbacks(span);
         span.isMutable = false;
         if (span.state == SpanStateAborted) {
@@ -138,6 +139,8 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
         [span abortUnconditionally];
         return;
     }
+
+    [span updateSamplingProbability:sampler_->getProbability()];
 
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);

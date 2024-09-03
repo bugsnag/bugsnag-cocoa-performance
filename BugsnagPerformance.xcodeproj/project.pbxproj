@@ -41,7 +41,6 @@
 		01A414D22913C238003152A4 /* Reachability.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A414D02913C238003152A4 /* Reachability.mm */; };
 		01A414D42913CAE7003152A4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01A414D32913CAE7003152A4 /* SystemConfiguration.framework */; };
 		01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 01A58C0C29092D25006E4DF7 /* Sampler.h */; };
-		01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C0D29092D25006E4DF7 /* Sampler.mm */; };
 		01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 01A58C10290931A5006E4DF7 /* SamplerTests.mm */; };
 		01EAF980291AAF19007AC627 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 01EAF97F291AAF19007AC627 /* Utils.h */; };
 		0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -276,7 +275,6 @@
 		01A414D02913C238003152A4 /* Reachability.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Reachability.mm; sourceTree = "<group>"; };
 		01A414D32913CAE7003152A4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		01A58C0C29092D25006E4DF7 /* Sampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sampler.h; sourceTree = "<group>"; };
-		01A58C0D29092D25006E4DF7 /* Sampler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Sampler.mm; sourceTree = "<group>"; };
 		01A58C10290931A5006E4DF7 /* SamplerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SamplerTests.mm; sourceTree = "<group>"; };
 		01EAF97F291AAF19007AC627 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		01EF4A3E29067786003CC5A5 /* BugsnagPerformance.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = BugsnagPerformance.xcconfig; sourceTree = "<group>"; };
@@ -568,7 +566,6 @@
 				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
 				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
-				01A58C0D29092D25006E4DF7 /* Sampler.mm */,
 				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
@@ -1187,7 +1184,6 @@
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
-				01A58C0F29092D25006E4DF7 /* Sampler.mm in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,
 				09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
