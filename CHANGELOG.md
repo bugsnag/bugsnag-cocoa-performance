@@ -15,7 +15,7 @@ Changelog
   [308](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/308)
 
 * Use API key subdomain as default Performance endpoint
-  [129](https://github.com/bugsnag/bugsnag-unity-performance/pull/129)
+  [313](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/313)
 
 ## 1.8.0 (2024-08-29)
 
