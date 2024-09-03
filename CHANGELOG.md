@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Stop podspec from trying to compile xcprivacy files (which generates warnings).
+  [311](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/311)
+
 * Early spans (ended before Bugsnag starts) now get their sampling probability value properly updated.
   [310](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/310)
 
