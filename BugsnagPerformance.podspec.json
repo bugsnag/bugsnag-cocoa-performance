@@ -18,7 +18,7 @@
     "ios": "13.0"
   },
   "requires_arc": true,
-  "source_files": "Sources/BugsnagPerformance/**/*",
+  "source_files": "Sources/BugsnagPerformance/{**/,}*.{m,h,mm,c,swift}",
   "resource_bundles": {
       "BugsnagPerformance": ["Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy"]
   },
