@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Release process now updates BugsnagPerformanceSwift podspec rather than BugsnagPerformanceSwiftUI (which has been deprecated)
+  [308](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/308)
+
 ## 1.8.0 (2024-08-29)
 
 ### Enhancements
