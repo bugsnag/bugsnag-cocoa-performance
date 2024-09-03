@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Early spans (ended before Bugsnag starts) now get their sampling probability value properly updated.
+  [310](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/310)
+
 * Release process now updates BugsnagPerformanceSwift podspec rather than BugsnagPerformanceSwiftUI (which has been deprecated)
   [308](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/308)
 
