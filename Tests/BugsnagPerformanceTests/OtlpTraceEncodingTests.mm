@@ -42,31 +42,144 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 
 @implementation OtlpTraceEncodingTests
 
+- (std::shared_ptr<OtlpTraceEncoding>)newEncoderWithConfig:(BugsnagPerformanceConfiguration *)config {
+    BSGEarlyConfiguration *earlyConfig = [[BSGEarlyConfiguration alloc] initWithBundleDictionary:@{}];
+    auto encoder = std::make_shared<OtlpTraceEncoding>();
+    encoder->earlyConfigure(earlyConfig);
+    encoder->earlySetup();
+    encoder->configure(config);
+    encoder->preStartSetup();
+    encoder->start();
+    return encoder;
+}
+
+- (std::shared_ptr<OtlpTraceEncoding>)newEncoder {
+    return [self newEncoderWithConfig:[[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"DUMMY_API_KEY"]];
+}
+
 - (void)testEncodeBoolValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @NO}), (@[@{@"key": @"key", @"value": @{@"boolValue": @NO}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @YES}), (@[@{@"key": @"key", @"value": @{@"boolValue": @YES}}]));
+    auto encoder = [self newEncoder];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @NO}), (@[@{@"key": @"key", @"value": @{@"boolValue": @NO}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @YES}), (@[@{@"key": @"key", @"value": @{@"boolValue": @YES}}]));
 }
 
 - (void)testEncodeDoubleValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.0}}]));
+    auto encoder = [self newEncoder];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @1.23}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.23}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @1.f}), (@[@{@"key": @"key", @"value": @{@"doubleValue": @1.0}}]));
 }
 
 - (void)testEncodeInt32Value {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @"0"}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @"1"}}]));
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @"2147483647"}}]));
+    auto encoder = [self newEncoder];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @0}), (@[@{@"key": @"key", @"value": @{@"intValue": @"0"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @1}), (@[@{@"key": @"key", @"value": @{@"intValue": @"1"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @2147483647}), (@[@{@"key": @"key", @"value": @{@"intValue": @"2147483647"}}]));
 }
 
 - (void)testEncodeInt64Value {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @18446744073709551615ULL}), (@[@{@"key": @"key", @"value": @{@"intValue": @"18446744073709551615"}}]));
+    auto encoder = [self newEncoder];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @18446744073709551615ULL}), (@[@{@"key": @"key", @"value": @{@"intValue": @"18446744073709551615"}}]));
 }
 
 - (void)testEncodeStringValue {
-    XCTAssertEqualObjects(OtlpTraceEncoding::encode(@{@"key": @"Hello"}), (@[@{@"key": @"key", @"value": @{@"stringValue": @"Hello"}}]));
+    // Default configuration
+    BugsnagPerformanceConfiguration *config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"XYZ"];
+    auto encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"Hello"}), (@[@{@"key": @"key", @"value": @{@"stringValue": @"Hello"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @""}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @""}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"123456789012345678901234567890"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"123456789012345678901234567890"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1234567890123456789012345678901"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901234567890"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1234567890123456789012345678901234567890"}}]));
+
+    // Low limit
+    config.attributeStringValueLimit = 30;
+    encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @""}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @""}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"123456789012345678901234567890"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"123456789012345678901234567890"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"123456789012345678901234567890*** 1 CHARS TRUNCATED"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901234567890"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"123456789012345678901234567890*** 10 CHARS TRUNCATED"}}]));
+
+    // Ridiculously low limit
+    config.attributeStringValueLimit = 1;
+    encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @""}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @""}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1*** 30 CHARS TRUNCATED"}}]));
+
+    // Zero limit, which resets to default
+    config.attributeStringValueLimit = 0;
+    encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @""}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @""}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1"}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"key": @"1234567890123456789012345678901"}),
+                          (@[@{@"key": @"key", @"value": @{@"stringValue": @"1234567890123456789012345678901"}}]));
+}
+
+- (void)testEncodeArrayValue {
+    // Default configuration
+    BugsnagPerformanceConfiguration *config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"XYZ"];
+
+    auto encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@1,@2,@3]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"intValue": @"1"},
+                                                      @{@"intValue": @"2"},
+                                                      @{@"intValue": @"3"}]}}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@1.5,@2.5,@3.5]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"doubleValue": @1.5},
+                                                      @{@"doubleValue": @2.5},
+                                                      @{@"doubleValue": @3.5}]}}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@"a",@"b",@"c"]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"stringValue": @"a"},
+                                                      @{@"stringValue": @"b"},
+                                                      @{@"stringValue": @"c"}]}}}]));
+
+    config.attributeArrayLengthLimit = 2;
+    encoder = [self newEncoderWithConfig:config];
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@1,@2]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"intValue": @"1"},
+                                                      @{@"intValue": @"2"}]}}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@1.5,@2.5]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"doubleValue": @1.5},
+                                                      @{@"doubleValue": @2.5}]}}}]));
+    XCTAssertEqualObjects(encoder->encode(@{@"mykey": @[@"a",@"b"]}), (@[@{@"key": @"mykey", @"value": @{@"arrayValue":
+                                            @{@"values":
+                                                  @[
+                                                      @{@"stringValue": @"a"},
+                                                      @{@"stringValue": @"b"}]}}}]));
+}
+
+- (void)testEncodeKeyTooLong {
+    auto encoder = [self newEncoder];
+    XCTAssertEqualObjects(encoder->encode(@{@"12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+                                            @"123456789012345678901234567890123456789012345678901234567890": @"Hello"}),
+                          (@[]));
 }
 
 - (void)testEncodeRequestFirstClassYes {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
@@ -76,7 +189,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                         startTime:CFAbsoluteTimeGetCurrent()
                                                        firstClass:BSGFirstClassYes
                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    auto json = OtlpTraceEncoding::encode(spans, @{});
+    auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
@@ -93,6 +206,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassNo {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
@@ -102,7 +216,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                         startTime:CFAbsoluteTimeGetCurrent()
                                                        firstClass:BSGFirstClassNo
                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    auto json = OtlpTraceEncoding::encode(spans, @{});
+    auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
@@ -119,6 +233,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeRequestFirstClassUnset {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
@@ -128,7 +243,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                         startTime:CFAbsoluteTimeGetCurrent()
                                                        firstClass:BSGFirstClassUnset
                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    auto json = OtlpTraceEncoding::encode(spans, @{});
+    auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
     XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
@@ -145,6 +260,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeSpan {
+    auto encoder = [self newEncoder];
     CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
     TraceId tid = {
@@ -160,7 +276,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                                     onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
     [span setEndAbsTime:startTime + 15];
     
-    auto json = OtlpTraceEncoding::encode(span);
+    auto json = encoder->encode(span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);
@@ -181,6 +297,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testEncodeSpanWithParent {
+    auto encoder = [self newEncoder];
     CFAbsoluteTime startTime = [NSDate dateWithTimeIntervalSince1970:1664352000].timeIntervalSinceReferenceDate;
     
     TraceId tid = {
@@ -196,7 +313,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                                     onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
     [span setEndAbsTime:startTime + 15];
     
-    auto json = OtlpTraceEncoding::encode(span);
+    auto json = encoder->encode(span);
     
     NSString *traceId = json[@"traceId"];
     XCTAssert([traceId isKindOfClass:[NSString class]]);
@@ -219,7 +336,8 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testBuildPValueRequestPackage {
-    auto package = OtlpTraceEncoding::buildPValueRequestPackage();
+    auto encoder = [self newEncoder];
+    auto package = encoder->buildPValueRequestPackage();
     XCTAssertEqual(0U, package->timestamp);
     NSError *error = nil;
     NSDictionary *deserialized = [NSJSONSerialization JSONObjectWithData:(NSData * _Nonnull)package->getPayloadForUnitTest()
@@ -234,6 +352,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testBuildUploadPackage {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test"
@@ -244,7 +363,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                        firstClass:BSGFirstClassUnset
                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     XCTAssertGreaterThan(package->timestamp, 0U);
     XCTAssertNotNil(package->getPayloadForUnitTest());
@@ -257,6 +376,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 }
 
 - (void)testPValueHistogram1 {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
@@ -269,13 +389,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[0] updateSamplingProbability:0.3];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.3:1", headers[@"Bugsnag-Span-Sampling"]);
 }
 
 - (void)testPValueHistogram2 {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
@@ -296,13 +417,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[1] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.1:1;0.3:1", headers[@"Bugsnag-Span-Sampling"]);
 }
 
 - (void)testPValueHistogram2Same {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
@@ -323,13 +445,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[1] updateSamplingProbability:0.5];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.5:2", headers[@"Bugsnag-Span-Sampling"]);
 }
 
 - (void)testPValueHistogram5 {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
@@ -374,13 +497,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[4] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0.1:2;0.3:2;0.5:1", headers[@"Bugsnag-Span-Sampling"]);
 }
 
 - (void)testPValueHistogram11 {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test0"
@@ -473,13 +597,14 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[10] updateSamplingProbability:1];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, true);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertEqualObjects(@"0:1;0.1:1;0.2:1;0.3:1;0.4:1;0.5:1;0.6:1;0.7:1;0.8:1;0.9:1;1:1", headers[@"Bugsnag-Span-Sampling"]);
 }
 
 - (void)testPValueWithoutHistogram {
+    auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
     [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
@@ -524,7 +649,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     [spans[4] updateSamplingProbability:0.1];
 
     auto resourceAttributes = @{};
-    auto package = OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes, false);
+    auto package = encoder->buildUploadPackage(spans, resourceAttributes, false);
 
     auto headers = package->getHeadersForUnitTest();
     XCTAssertNil(headers[@"Bugsnag-Span-Sampling"]);

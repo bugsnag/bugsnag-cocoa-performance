@@ -45,6 +45,7 @@
 		09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */; };
 		09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */; };
 		09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */; };
+		09E0455F2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */; };
 		09E9BDAF2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E9BDAE2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift */; };
 		09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F025062BA08804007D9F73 /* ObjCURLSession.m */; };
 		09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */; };
@@ -120,6 +121,7 @@
 		09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarlySpanOnEndScenario.swift; sourceTree = "<group>"; };
+		09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetAttributesWithLimitsScenario.swift; sourceTree = "<group>"; };
 		09E9BDAE2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModifyEarlySpansScenario.swift; sourceTree = "<group>"; };
 		09F025052BA08804007D9F73 /* ObjCURLSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCURLSession.h; sourceTree = "<group>"; };
 		09F025062BA08804007D9F73 /* ObjCURLSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjCURLSession.m; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
 				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
+				09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
 			);
 			path = Scenarios;
@@ -401,6 +404,7 @@
 				09637A3C2B0607F300F4F776 /* Logging.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
+				09E0455F2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */,
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,

@@ -65,6 +65,7 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::earlyConfigure()");
     persistentState_->earlyConfigure(config);
+    traceEncoding_.earlyConfigure(config);
     tracer_->earlyConfigure(config);
     deviceID_->earlyConfigure(config);
     resourceAttributes_->earlyConfigure(config);
@@ -93,6 +94,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 void BugsnagPerformanceImpl::earlySetup() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::earlySetup()");
     persistentState_->earlySetup();
+    traceEncoding_.earlySetup();
     tracer_->earlySetup();
     deviceID_->earlySetup();
     resourceAttributes_->earlySetup();
@@ -119,6 +121,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 
     configuration_ = config;
     persistentState_->configure(config);
+    traceEncoding_.configure(config);
     deviceID_->configure(config);
     resourceAttributes_->configure(config);
     tracer_->configure(config);
@@ -132,6 +135,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 void BugsnagPerformanceImpl::preStartSetup() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::preStartSetup()");
     persistentState_->preStartSetup();
+    traceEncoding_.preStartSetup();
     tracer_->preStartSetup();
     deviceID_->preStartSetup();
     resourceAttributes_->preStartSetup();
@@ -177,6 +181,7 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     persistentState_->start();
     deviceID_->start();
+    traceEncoding_.start();
 
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
@@ -280,7 +285,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 #ifndef __clang_analyzer__
     BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
 #endif
-    uploadPackage(OtlpTraceEncoding::buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
+    uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     return true;
 }
 
@@ -418,7 +423,7 @@ void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
     if (currentTime > pausePValueRequestsUntil_) {
         // Pause P-value requests so that we don't flood the server on every span start
         pausePValueRequestsUntil_ = currentTime + probabilityRequestsPauseForSeconds_;
-        uploader_->upload(*OtlpTraceEncoding::buildPValueRequestPackage(), nil);
+        uploader_->upload(*traceEncoding_.buildPValueRequestPackage(), nil);
     }
 }
 
