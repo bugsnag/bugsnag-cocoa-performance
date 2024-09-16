@@ -171,24 +171,32 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                       @{@"stringValue": @"b"}]}}}]));
 }
 
-- (void)testEncodeKeyTooLong {
-    auto encoder = [self newEncoder];
-    XCTAssertEqualObjects(encoder->encode(@{@"12345678901234567890123456789012345678901234567890123456789012345678901234567890"
-                                            @"123456789012345678901234567890123456789012345678901234567890": @"Hello"}),
-                          (@[]));
+- (BugsnagPerformanceSpan *)spanWithName:(NSString *)name
+                                 traceId:(TraceId) traceId
+                                  spanId:(SpanId) spanId
+                                parentId:(SpanId) parentId
+                               startTime:(CFAbsoluteTime) startAbsTime
+                              firstClass:(BSGFirstClass) firstClass {
+    return [[BugsnagPerformanceSpan alloc] initWithName:name
+                                                traceId:traceId
+                                                 spanId:spanId
+                                               parentId:parentId
+                                              startTime:startAbsTime
+                                             firstClass:firstClass
+                                    attributeCountLimit:128
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 - (void)testEncodeRequestFirstClassYes {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:CFAbsoluteTimeGetCurrent()
-                                                       firstClass:BSGFirstClassYes
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@""
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:CFAbsoluteTimeGetCurrent()
+                             firstClass:BSGFirstClassYes]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -209,13 +217,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:CFAbsoluteTimeGetCurrent()
-                                                       firstClass:BSGFirstClassNo
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@""
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:CFAbsoluteTimeGetCurrent()
+                             firstClass:BSGFirstClassNo]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -236,13 +243,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@""
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:CFAbsoluteTimeGetCurrent()
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@""
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:CFAbsoluteTimeGetCurrent()
+                             firstClass:BSGFirstClassUnset]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -267,13 +273,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
         .hi=0xfedcba9876543210,
         .lo=0x0123456789abcdef
     };
-    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"My span"
-                                                                        traceId:tid
-                                                                         spanId:0xface
-                                                                       parentId:0
-                                                                      startTime:startTime
-                                                                     firstClass:BSGFirstClassUnset
-                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
+    BugsnagPerformanceSpan *span = [self spanWithName:@"My span"
+                                              traceId:tid
+                                               spanId:0xface
+                                             parentId:0
+                                            startTime:startTime
+                                           firstClass:BSGFirstClassUnset];
     [span setEndAbsTime:startTime + 15];
     
     auto json = encoder->encode(span);
@@ -304,13 +309,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
         .hi=0xfedcba9876543210,
         .lo=0x0123456789abcdef
     };
-    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"My span"
-                                                                        traceId:tid
-                                                                         spanId:0xface
-                                                                       parentId:0xcafe
-                                                                      startTime:startTime
-                                                                     firstClass:BSGFirstClassUnset
-                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
+    BugsnagPerformanceSpan *span = [self spanWithName:@"My span"
+                                              traceId:tid
+                                               spanId:0xface
+                                             parentId:0xcafe
+                                            startTime:startTime
+                                           firstClass:BSGFirstClassUnset];
     [span setEndAbsTime:startTime + 15];
     
     auto json = encoder->encode(span);
@@ -355,13 +359,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     auto resourceAttributes = @{};
     auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
@@ -379,13 +382,12 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.3];
 
     auto resourceAttributes = @{};
@@ -399,20 +401,18 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
-                                                          traceId:tid
-                                                           spanId:2
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test2"
+                                traceId:tid
+                                 spanId:2
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
 
@@ -427,20 +427,18 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
-                                                          traceId:tid
-                                                           spanId:2
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test2"
+                                traceId:tid
+                                 spanId:2
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.5];
     [spans[1] updateSamplingProbability:0.5];
 
@@ -455,41 +453,36 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
-                                                          traceId:tid
-                                                           spanId:2
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
-                                                          traceId:tid
-                                                           spanId:3
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
-                                                          traceId:tid
-                                                           spanId:4
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
-                                                          traceId:tid
-                                                           spanId:5
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test2"
+                                traceId:tid
+                                 spanId:2
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test3"
+                                traceId:tid
+                                 spanId:3
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test4"
+                                traceId:tid
+                                 spanId:4
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test5"
+                                traceId:tid
+                                 spanId:5
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.3];
@@ -507,83 +500,72 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test0"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:2
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
-                                                          traceId:tid
-                                                           spanId:3
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
-                                                          traceId:tid
-                                                           spanId:4
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
-                                                          traceId:tid
-                                                           spanId:5
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
-                                                          traceId:tid
-                                                           spanId:6
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test6"
-                                                          traceId:tid
-                                                           spanId:7
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test7"
-                                                          traceId:tid
-                                                           spanId:8
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test8"
-                                                          traceId:tid
-                                                           spanId:9
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test9"
-                                                          traceId:tid
-                                                           spanId:10
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test10"
-                                                          traceId:tid
-                                                           spanId:11
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test0"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:2
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test2"
+                                traceId:tid
+                                 spanId:3
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test3"
+                                traceId:tid
+                                 spanId:4
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test4"
+                                traceId:tid
+                                 spanId:5
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test5"
+                                traceId:tid
+                                 spanId:6
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test6"
+                                traceId:tid
+                                 spanId:7
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test7"
+                                traceId:tid
+                                 spanId:8
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test8"
+                                traceId:tid
+                                 spanId:9
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test9"
+                                traceId:tid
+                                 spanId:10
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test10"
+                                traceId:tid
+                                 spanId:11
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.0];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.2];
@@ -607,41 +589,36 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     auto encoder = [self newEncoder];
     NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
     TraceId tid = {.value=1};
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test1"
-                                                          traceId:tid
-                                                           spanId:1
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test2"
-                                                          traceId:tid
-                                                           spanId:2
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test3"
-                                                          traceId:tid
-                                                           spanId:3
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test4"
-                                                          traceId:tid
-                                                           spanId:4
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
-    [spans addObject:[[BugsnagPerformanceSpan alloc] initWithName:@"test5"
-                                                          traceId:tid
-                                                           spanId:5
-                                                         parentId:0
-                                                        startTime:0
-                                                       firstClass:BSGFirstClassUnset
-                                                      onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}]];
+    [spans addObject:[self spanWithName:@"test1"
+                                traceId:tid
+                                 spanId:1
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test2"
+                                traceId:tid
+                                 spanId:2
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test3"
+                                traceId:tid
+                                 spanId:3
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test4"
+                                traceId:tid
+                                 spanId:4
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
+    [spans addObject:[self spanWithName:@"test5"
+                                traceId:tid
+                                 spanId:5
+                               parentId:0
+                              startTime:0
+                             firstClass:BSGFirstClassUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.3];

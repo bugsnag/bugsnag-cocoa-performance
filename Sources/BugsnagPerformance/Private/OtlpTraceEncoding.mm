@@ -11,8 +11,6 @@
 #import "Utils.h"
 #import "Gzip.h"
 
-static const NSUInteger maxAttributeKeyLength = 128;
-
 using namespace bugsnag;
 
 static NSString * EncodeSpanId(SpanId const &spanId) {
@@ -272,10 +270,6 @@ NSArray<NSDictionary *> *
 OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     auto result = [NSMutableArray array];
     for (NSString *key in attributes) {
-        if (key.length > maxAttributeKeyLength) {
-            BSGLogError(@"Could not encode attribute %@ because the key is too long", key);
-            continue;
-        }
         id value = attributes[key];
         if ([value isKindOfClass:[NSString class]]) {
             encodeStringAttribute(result, key, value);

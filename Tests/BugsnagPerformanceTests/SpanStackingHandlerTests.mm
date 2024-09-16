@@ -23,7 +23,8 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime
                                              firstClass:BSGFirstClassNo
-                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
+                                    attributeCountLimit:128
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);
     }];
 }
@@ -212,7 +213,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
 - (void)testHasSpanWithAttributeShouldReturnTrueWhenThereIsOneSpanWithTheAttribute {
     auto handler = std::make_shared<SpanStackingHandler>();
     BugsnagPerformanceSpan *span = createSpan(handler);
-    [span setMultipleAttributes:@{@"testAttribute": @"testValue"}];
+    [span internalSetMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span);
     XCTAssertTrue(handler->hasSpanWithAttribute(@"testAttribute", @"testValue"));
     
@@ -223,7 +224,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setMultipleAttributes:@{@"testAttribute": @"testValue"}];
+    [span2 internalSetMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -235,7 +236,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setMultipleAttributes:@{@"otherTestAttribute": @"testValue"}];
+    [span2 internalSetMultipleAttributes:@{@"otherTestAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -247,7 +248,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setMultipleAttributes:@{@"testAttribute": @"otherTestValue"}];
+    [span2 internalSetMultipleAttributes:@{@"testAttribute": @"otherTestValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);
@@ -259,7 +260,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     BugsnagPerformanceSpan *span1 = createSpan(handler);
     BugsnagPerformanceSpan *span2 = createSpan(handler);
     BugsnagPerformanceSpan *span3 = createSpan(handler);
-    [span2 setMultipleAttributes:@{@"testAttribute": @"testValue"}];
+    [span2 internalSetMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span1);
     handler->push(span2);
     handler->push(span3);

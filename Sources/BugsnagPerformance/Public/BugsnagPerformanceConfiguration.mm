@@ -20,6 +20,10 @@ using namespace bugsnag;
 #define MAX_ATTRIBUTE_STRING_VALUE_LIMIT 10000
 #define DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT 1024
 
+#define MIN_ATTRIBUTE_COUNT_LIMIT 1
+#define MAX_ATTRIBUTE_COUNT_LIMIT 1000
+#define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
@@ -33,6 +37,7 @@ using namespace bugsnag;
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
+        _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -64,6 +69,13 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
                                                MIN_ATTRIBUTE_STRING_VALUE_LIMIT,
                                                MAX_ATTRIBUTE_STRING_VALUE_LIMIT,
                                                DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
+}
+
+- (void) setAttributeCountLimit:(NSUInteger)limit {
+    _attributeCountLimit = minMaxDefault(limit,
+                                         MIN_ATTRIBUTE_COUNT_LIMIT,
+                                         MAX_ATTRIBUTE_COUNT_LIMIT,
+                                         DEFAULT_ATTRIBUTE_COUNT_LIMIT);
 }
 
 + (instancetype)loadConfig {

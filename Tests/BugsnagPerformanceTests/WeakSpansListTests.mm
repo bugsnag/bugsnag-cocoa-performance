@@ -25,7 +25,8 @@ static BugsnagPerformanceSpan *createSpan() {
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime 
                                              firstClass:BSGFirstClassNo
-                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
+                                    attributeCountLimit:128
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
     }];
 }
 
