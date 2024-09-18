@@ -12,6 +12,14 @@
 
 using namespace bugsnag;
 
+#define MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1
+#define MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1000
+
+#define MIN_ATTRIBUTE_STRING_VALUE_LIMIT 1
+#define MAX_ATTRIBUTE_STRING_VALUE_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT 1024
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
@@ -23,6 +31,8 @@ using namespace bugsnag;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _onSpanEndCallbacks = [NSMutableArray array];
+        _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
+        _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -30,6 +40,30 @@ using namespace bugsnag;
 #endif
     }
     return self;
+}
+
+static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInteger max, NSUInteger def) {
+    if(value < min) {
+        return def;
+    }
+    if(value > max) {
+        return max;
+    }
+    return value;
+}
+
+- (void) setAttributeArrayLengthLimit:(NSUInteger)limit {
+    _attributeArrayLengthLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+}
+
+- (void) setAttributeStringValueLimit:(NSUInteger)limit {
+    _attributeStringValueLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               MAX_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
 }
 
 + (instancetype)loadConfig {

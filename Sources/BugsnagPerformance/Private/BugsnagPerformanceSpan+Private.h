@@ -46,10 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
 
-
-
 @property(nonatomic) uint64_t startClock;
-
 
 @property(atomic) SpanState state;
 

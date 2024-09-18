@@ -185,4 +185,32 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertEqualObjects(config.endpoint.absoluteString, @"https://0123456789abcdef0123456789abcdef.otlp.bugsnag.com/v1/traces");
 }
 
+- (void)testLimits {
+#define MIN_ATTRIBUTE_COUNT_LIMIT (uint64_t)1
+#define MAX_ATTRIBUTE_COUNT_LIMIT (uint64_t)500
+#define DEFAULT_ATTRIBUTE_COUNT_LIMIT (uint64_t)100
+
+#define MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT (uint64_t)1
+#define MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT (uint64_t)10000
+#define DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT (uint64_t)1000
+
+#define MIN_ATTRIBUTE_STRING_VALUE_LIMIT (uint64_t)1
+#define MAX_ATTRIBUTE_STRING_VALUE_LIMIT (uint64_t)10000
+#define DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT (uint64_t)1024
+
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqual(config.attributeArrayLengthLimit, DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+    XCTAssertEqual(config.attributeStringValueLimit, DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
+
+    config.attributeArrayLengthLimit = MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT + 1;
+    config.attributeStringValueLimit = MAX_ATTRIBUTE_STRING_VALUE_LIMIT + 1;
+    XCTAssertEqual(config.attributeArrayLengthLimit, MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+    XCTAssertEqual(config.attributeStringValueLimit, MAX_ATTRIBUTE_STRING_VALUE_LIMIT);
+
+    config.attributeArrayLengthLimit = 0;
+    config.attributeStringValueLimit = 0;
+    XCTAssertEqual(config.attributeArrayLengthLimit, DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+    XCTAssertEqual(config.attributeStringValueLimit, DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
+}
+
 @end

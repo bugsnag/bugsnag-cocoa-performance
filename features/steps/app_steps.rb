@@ -198,6 +198,11 @@ Then('a span array attribute {string} contains the value false at index {int}') 
   Maze.check.true(value == false)
 end
 
+Then('a span array attribute {string} contains no value at index {int}') do |attribute, index|
+  array = get_array_attribute_contents(attribute)
+  Maze.check.true(array.length() <= index)
+end
+
 def get_array_value_at_index(attribute, index, type)
   array = get_array_attribute_contents(attribute)
   Maze.check.true(array.length() > index)

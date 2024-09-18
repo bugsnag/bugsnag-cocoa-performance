@@ -313,6 +313,18 @@ Feature: Manual creation of spans
     * a span array attribute "c" contains the value true at index 2
     * a span array attribute "c" contains the float value 1.5 at index 3
 
+  Scenario: Set attributes in a span with limits set
+    Given I run "SetAttributesWithLimitsScenario"
+    And I wait for 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "MySpan"
+    * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
+    * a span array attribute "b" contains the integer value 1 at index 0
+    * a span array attribute "b" contains the integer value 2 at index 1
+    * a span array attribute "b" contains the integer value 3 at index 2
+    * a span array attribute "b" contains no value at index 3
+
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
     And I wait for exactly 1 span

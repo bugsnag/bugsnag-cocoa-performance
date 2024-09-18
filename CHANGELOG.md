@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added configurable span attribute limits for string and array types.
+  [314](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/314)
+
 ## 1.8.1 (2024-09-03)
 
 ### Bug fixes
