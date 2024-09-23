@@ -11,6 +11,7 @@
 using namespace bugsnag;
 
 static const uint64_t MONOTONIC_CLOCK_INVALID = 0;
+static const NSUInteger MAX_ATTRIBUTE_KEY_LENGTH = 128;
 
 static bool isMonotonicClockValid(uint64_t clock) {
     return clock != MONOTONIC_CLOCK_INVALID;
@@ -32,7 +33,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startAbsTime
                   firstClass:(BSGFirstClass) firstClass
-                 onSpanClosed:(OnSpanClosed) onSpanClosed {
+         attributeCountLimit:(NSUInteger)attributeCountLimit
+                onSpanClosed:(OnSpanClosed) onSpanClosed {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _name = name;
@@ -45,6 +47,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = 1;
         _state = SpanStateOpen;
+        _attributeCountLimit = attributeCountLimit;
         _attributes = [[NSMutableDictionary alloc] init];
         _isMutable = true;
         if (firstClass != BSGFirstClassUnset) {
@@ -176,6 +179,22 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {
     @synchronized (self) {
+        if(value != nil &&
+           self.attributes[attributeName] == nil &&
+           self.attributes.count >= self.attributeCountLimit) {
+            BSGLogError(@"Span attribute \"%@\" in span %llu (%@) was dropped as the number of attributes exceeds the %lu attribute limit set by AttributeCountLimit.", attributeName, self.spanId, self.name, (unsigned long)self.attributeCountLimit);
+            return;
+        }
+        if(attributeName.length > MAX_ATTRIBUTE_KEY_LENGTH) {
+            BSGLogError(@"Span attribute \"%@\" in span %llu (%@) was dropped as the key exceeds the %lu character fixed limit.", attributeName, self.spanId, self.name, MAX_ATTRIBUTE_KEY_LENGTH);
+            return;
+        }
+        [self internalSetAttribute:attributeName withValue:value];
+    }
+}
+
+- (void)internalSetAttribute:(NSString *)attributeName withValue:(id)value {
+    @synchronized (self) {
         if (!self.isMutable) {
             BSGLogError(@"Called setAttribute, but span %llu (%@) is immutable", self.spanId, self.name);
             return;
@@ -188,7 +207,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     }
 }
 
-- (void)setMultipleAttributes:(NSDictionary *)attributes {
+- (void)internalSetMultipleAttributes:(NSDictionary *)attributes {
     @synchronized (self) {
         if (!self.isMutable) {
             BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable", self.spanId, self.name);

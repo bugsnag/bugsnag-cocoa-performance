@@ -325,6 +325,14 @@ Feature: Manual creation of spans
     * a span array attribute "b" contains the integer value 3 at index 2
     * a span array attribute "b" contains no value at index 3
 
+  Scenario: Set attributes in a span with an attribute count limit set
+    Given I run "SetAttributeCountLimitScenario"
+    And I wait for 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "MySpan"
+    * every span string attribute "a" does not exist
+
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
     And I wait for exactly 1 span

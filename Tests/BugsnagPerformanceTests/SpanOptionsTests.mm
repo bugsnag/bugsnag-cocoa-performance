@@ -43,11 +43,12 @@ using namespace bugsnag;
 - (void)testConversion {
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"test" 
                                                                         traceId:IdGenerator::generateTraceId()
-                                                                        spanId:IdGenerator::generateSpanId()
+                                                                         spanId:IdGenerator::generateSpanId()
                                                                        parentId:IdGenerator::generateSpanId()
                                                                       startTime:SpanOptions().startTime 
                                                                      firstClass:BSGFirstClassNo
-                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
+                                                            attributeCountLimit:128
+                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
     }];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];

@@ -37,6 +37,7 @@ public:
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         onSpanEndCallbacks_ = config.onSpanEndCallbacks;
+        attributeCountLimit_ = config.attributeCountLimit;
     };
     void preStartSetup() noexcept;
     void start() noexcept {}
@@ -79,6 +80,7 @@ private:
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
+    NSUInteger attributeCountLimit_{128};
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
     // but span abort/end are idempotent so it doesn't matter.

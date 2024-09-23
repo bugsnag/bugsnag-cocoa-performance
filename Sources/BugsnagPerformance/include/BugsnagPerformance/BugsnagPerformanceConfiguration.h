@@ -83,6 +83,14 @@ OBJC_EXPORT
  */
 @property (nonatomic) NSUInteger attributeArrayLengthLimit;
 
+/**
+ * Maximum number of attributes allowed in a single span.
+ *
+ * Default: 128
+ * Range: 1 - 1000
+ */
+@property (nonatomic) NSUInteger attributeCountLimit;
+
 @end
 
 @interface BugsnagPerformanceConfiguration (/* App metadata */)

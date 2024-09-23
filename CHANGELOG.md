@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Added configurable limit to number of span attributes per span.
+  [315](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/315)
+
 * Added configurable span attribute limits for string and array types.
   [314](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/314)
 
