@@ -12,7 +12,17 @@
 
 using namespace bugsnag;
 
-static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
+#define MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1
+#define MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1000
+
+#define MIN_ATTRIBUTE_STRING_VALUE_LIMIT 1
+#define MAX_ATTRIBUTE_STRING_VALUE_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT 1024
+
+#define MIN_ATTRIBUTE_COUNT_LIMIT 1
+#define MAX_ATTRIBUTE_COUNT_LIMIT 1000
+#define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
 
 @implementation BugsnagPerformanceConfiguration
 
@@ -20,11 +30,14 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
     if ((self = [super init])) {
         _internal = [BSGInternalConfiguration new];
         _apiKey = [apiKey copy];
-        _endpoint = nsurlWithString(defaultEndpoint, nil);
+        _endpoint = nsurlWithString([NSString stringWithFormat: @"https://%@.otlp.bugsnag.com/v1/traces", apiKey], nil);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _onSpanEndCallbacks = [NSMutableArray array];
+        _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
+        _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
+        _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -32,6 +45,37 @@ static NSString *defaultEndpoint = @"https://otlp.bugsnag.com/v1/traces";
 #endif
     }
     return self;
+}
+
+static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInteger max, NSUInteger def) {
+    if(value < min) {
+        return def;
+    }
+    if(value > max) {
+        return max;
+    }
+    return value;
+}
+
+- (void) setAttributeArrayLengthLimit:(NSUInteger)limit {
+    _attributeArrayLengthLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+}
+
+- (void) setAttributeStringValueLimit:(NSUInteger)limit {
+    _attributeStringValueLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               MAX_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
+}
+
+- (void) setAttributeCountLimit:(NSUInteger)limit {
+    _attributeCountLimit = minMaxDefault(limit,
+                                         MIN_ATTRIBUTE_COUNT_LIMIT,
+                                         MAX_ATTRIBUTE_COUNT_LIMIT,
+                                         DEFAULT_ATTRIBUTE_COUNT_LIMIT);
 }
 
 + (instancetype)loadConfig {

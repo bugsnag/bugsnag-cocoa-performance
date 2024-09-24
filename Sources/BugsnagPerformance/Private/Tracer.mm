@@ -57,6 +57,7 @@ void Tracer::reprocessEarlySpans(void) {
             continue;
         }
         span.isMutable = true;
+        [span updateSamplingProbability:sampler_->getProbability()];
         callOnSpanEndCallbacks(span);
         span.isMutable = false;
         if (span.state == SpanStateAborted) {
@@ -110,14 +111,15 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                        parentId:parentSpan.spanId
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
-                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+                                                            attributeCountLimit:attributeCountLimit_
+                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
         blockThis->onSpanClosed(endedSpan);
     }];
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
-    [span setMultipleAttributes:SpanAttributes::get()];
+    [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
     onSpanStarted_();
     return span;
@@ -138,6 +140,8 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
         [span abortUnconditionally];
         return;
     }
+
+    [span updateSamplingProbability:sampler_->getProbability()];
 
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);
@@ -178,7 +182,7 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     }
     CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
     BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: Adding span %@ to batch", span.name);
-    [span setAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
+    [span internalSetAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
 }
 
 BugsnagPerformanceSpan *

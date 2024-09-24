@@ -65,7 +65,8 @@ using namespace bugsnag;
                                                                            parentId:0
                                                                           startTime:0
                                                                          firstClass:BSGFirstClassUnset
-                                                                        onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
+                                                                attributeCountLimit:128
+                                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
         }];
         if (sampler.sampled(span)) {
             count++;

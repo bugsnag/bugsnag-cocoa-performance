@@ -11,27 +11,47 @@
 
 #import "OtlpPackage.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "PhasedStartup.h"
 
 #import <vector>
 
 namespace bugsnag {
-class OtlpTraceEncoding {
+class OtlpTraceEncoding: public PhasedStartup {
 
 public:
     /**
      * Build a package suitable for upload to the backend server.
      */
-    static std::unique_ptr<OtlpPackage> buildUploadPackage(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept;
+    std::unique_ptr<OtlpPackage> buildUploadPackage(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes, bool includeSamplingHeader) noexcept;
 
-    static std::unique_ptr<OtlpPackage> buildPValueRequestPackage() noexcept;
+    std::unique_ptr<OtlpPackage> buildPValueRequestPackage() noexcept;
+
+public: // PhasedStartup
+
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {};
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *config) noexcept {
+        attributeStringValueLimit_ = config.attributeStringValueLimit;
+        attributeArrayLengthLimit_ = config.attributeArrayLengthLimit;
+    };
+    void preStartSetup() noexcept {};
+    void start() noexcept {}
 
 public: // Public for testing only
-    static NSDictionary * encode(BugsnagPerformanceSpan *span) noexcept;
-    
-    static NSDictionary * encode(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes) noexcept;
-    
-    static NSArray<NSDictionary *> * encode(NSDictionary *attributes) noexcept;
+    NSDictionary * encode(BugsnagPerformanceSpan *span) noexcept;
 
-    static NSArray<NSDictionary *> * encode(NSArray *arrayAttribute) noexcept;
+    NSDictionary * encode(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary *resourceAttributes) noexcept;
+
+    NSArray<NSDictionary *> * encode(NSDictionary *attributes) noexcept;
+
+    NSArray<NSDictionary *> * encode(NSArray *arrayAttribute) noexcept;
+
+private:
+    uint64_t attributeStringValueLimit_{1000};
+    uint64_t attributeArrayLengthLimit_{1000};
+
+    void encodeStringAttribute(NSMutableArray *destination, NSString *key, NSString *value);
+    void encodeArrayAttribute(NSMutableArray *destination, NSString *key, NSArray *value);
+    void encodeNumberAttribute(NSMutableArray *destination, NSString *key, NSNumber *value);
 };
 }
