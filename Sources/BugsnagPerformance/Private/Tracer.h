@@ -16,6 +16,7 @@
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
 #import "WeakSpansList.h"
+#import "FrameRateMetrics/FrameMetricsCollector.h"
 
 #import <memory>
 
@@ -30,6 +31,7 @@ public:
     Tracer(std::shared_ptr<SpanStackingHandler> spanContextStack,
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
+           FrameMetricsCollector *frameMetricsCollector,
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
@@ -75,6 +77,7 @@ private:
     Tracer() = delete;
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
+    FrameMetricsCollector *frameMetricsCollector_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     std::mutex prewarmSpansMutex_;
@@ -91,8 +94,10 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
+    BugsnagPerformanceSpan *startFrozenFrameSpan(NSTimeInterval startTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanClosed(BugsnagPerformanceSpan *span);
     void reprocessEarlySpans(void);
+    void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
 };
 }

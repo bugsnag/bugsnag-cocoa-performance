@@ -109,6 +109,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
+    self.wasEndedWithEndTime = endTime != nil;
     [self endWithAbsoluteTime:(dateToAbsoluteTime(endTime))];
 }
 

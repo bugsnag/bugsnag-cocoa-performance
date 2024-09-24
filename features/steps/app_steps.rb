@@ -173,6 +173,20 @@ Then('a span integer attribute {string} is greater than {int}') do |attribute, e
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('a span integer attribute {string} equals {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['intValue'].to_i == expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+Then('a span integer attribute {string} is less than {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['intValue'].to_i < expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
 Then('a span array attribute {string} contains the string value {string} at index {int}') do |attribute, expected, index|
   value = get_array_value_at_index(attribute, index, 'stringValue')
   Maze.check.true(value == expected)
@@ -273,4 +287,15 @@ Then('a span double attribute {string} equals {float}') do |attribute, value|
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
   selected_attributes = selected_attributes.map { |a| a['value']['doubleValue'] == value }
   Maze.check.false(selected_attributes.empty?)
+end
+
+Then('the span named {string} is the parent of every span named {string}') do |span1name, span2name|
+  
+  spans = spans_from_request_list(Maze::Server.list_for("traces"))
+
+  parentSpan = spans.find_all { |span| span['name'].eql?(span1name) }.first
+
+  childSpans2 = spans.find_all { |span| span['name'].eql?(span2name) }
+
+  childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
 end

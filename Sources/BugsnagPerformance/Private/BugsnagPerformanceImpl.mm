@@ -15,6 +15,7 @@
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import "Utils.h"
+#import "FrameRateMetrics/FrameMetricsCollector.h"
 
 using namespace bugsnag;
 
@@ -40,7 +41,8 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , sampler_(std::make_shared<Sampler>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, ^{this->onSpanStarted();}))
+, frameMetricsCollector_([FrameMetricsCollector new])
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -74,6 +76,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     batch_->earlyConfigure(config);
     instrumentation_->earlyConfigure(config);
     [worker_ earlyConfigure:config];
+    [frameMetricsCollector_ earlyConfigure:config];
 
     // Configure these here because notifications may arrive
     // before Bugsnag is started.
@@ -103,6 +106,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     batch_->earlySetup();
     instrumentation_->earlySetup();
     [worker_ earlySetup];
+    [frameMetricsCollector_ earlySetup];
 
     BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = spanStackingHandler_;
 }
@@ -130,6 +134,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     batch_->configure(config);
     instrumentation_->configure(config);
     [worker_ configure:config];
+    [frameMetricsCollector_ configure:config];
 }
 
 void BugsnagPerformanceImpl::preStartSetup() noexcept {
@@ -208,6 +213,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     networkHeaderInjector_->start();
 
     [worker_ start];
+    [frameMetricsCollector_ start];
 
     workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
                                                    repeats:YES
@@ -371,6 +377,8 @@ void BugsnagPerformanceImpl::onAppFinishedLaunching() noexcept {
 
 void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredBackground()");
+    [frameMetricsCollector_ onAppEnteredBackground];
+    
     // We run this BEFORE checking isStarted (in case there's notification
     // timing jank and we get the notification before we've started).
     if (instrumentation_->timeSinceAppFirstBecameActive() < minTimeToBackgrounding) {
@@ -389,6 +397,7 @@ void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
 }
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
+    [frameMetricsCollector_ onAppEnteredForeground];
     if (!isStarted_) {
         BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredForeground(), but not started yet");
         return;

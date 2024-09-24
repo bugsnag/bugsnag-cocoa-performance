@@ -1,0 +1,20 @@
+//
+//  FrameMetricsCollector.h
+//  BugsnagPerformance
+//
+//  Created by Robert B on 23/08/2024.
+//  Copyright © 2024 Bugsnag. All rights reserved.
+//
+
+#pragma once
+#import "../PhasedStartup.h"
+#import "FrameMetricsSnapshot.h"
+
+@interface FrameMetricsCollector: NSObject<BSGPhasedStartup>
+
+- (void)onAppEnteredBackground;
+- (void)onAppEnteredForeground;
+- (FrameMetricsSnapshot *)currentSnapshot;
+
+@end
+

@@ -339,3 +339,55 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MySpan"
+
+  Scenario: Frame metrics - no slow frames
+    Given I run "FrameMetricsNoSlowFramesScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.framerate.total_frames" is greater than 0
+    * a span integer attribute "bugsnag.framerate.slow_frames" equals 0
+    * a span integer attribute "bugsnag.framerate.frozen_frames" equals 0
+
+  Scenario: Frame metrics - slow frames
+    Given I run "FrameMetricsSlowFramesScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsSlowFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.framerate.total_frames" is greater than 0
+    * a span integer attribute "bugsnag.framerate.slow_frames" equals 3
+    * a span integer attribute "bugsnag.framerate.frozen_frames" equals 0
+
+  Scenario: Frame metrics - frozen frames
+    Given I run "FrameMetricsFronzenFramesScenario"
+    And I wait for 3 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "FrameMetricsFronzenFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.framerate.total_frames" is greater than 4
+    * a span integer attribute "bugsnag.framerate.slow_frames" equals 2
+    * a span integer attribute "bugsnag.framerate.frozen_frames" equals 2
+    * the span named "FrameMetricsFronzenFramesScenario" is the parent of every span named "FrozenFrame"
