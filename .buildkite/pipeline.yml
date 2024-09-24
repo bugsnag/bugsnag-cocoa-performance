@@ -95,6 +95,10 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
+            test-collector#v1.10.2:
+              files: "reports/TEST-*.xml"
+              format: "junit"
+              branch: "^master|next$$"
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -126,6 +130,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -158,6 +166,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -190,6 +202,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -224,6 +240,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -255,6 +275,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -288,6 +312,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -319,6 +347,10 @@ steps:
         agents:
           queue: opensource
         plugins:
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -353,6 +385,10 @@ steps:
     agents:
       queue: opensource
     plugins:
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/bs_ipa_url.txt"
         upload:
