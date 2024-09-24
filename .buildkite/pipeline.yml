@@ -98,7 +98,7 @@ steps:
             test-collector#v1.10.2:
               files: "reports/TEST-*.xml"
               format: "junit"
-              branch: "^master|next$$"
+              branch: "^main|next$$"
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -112,12 +112,6 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_16"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -133,7 +127,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -169,7 +163,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -205,7 +199,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -243,7 +237,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -278,7 +272,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -315,7 +309,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -350,7 +344,7 @@ steps:
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
-            branch: "^master|next$$"
+            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -388,7 +382,7 @@ steps:
       test-collector#v1.10.2:
         files: "reports/TEST-*.xml"
         format: "junit"
-        branch: "^master|next$$"
+        branch: "^main|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/bs_ipa_url.txt"
         upload:
