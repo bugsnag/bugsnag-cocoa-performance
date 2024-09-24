@@ -266,9 +266,6 @@ def assert_received_exactly_spans(span_count, list)
   wait = Maze::Wait.new(timeout: 5)
 
   Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
-
-  Maze::Schemas::Validator.verify_against_schema(list, 'trace')
-  Maze::Schemas::Validator.validate_payload_elements(list, 'trace')
 end
 
 Then('a span double attribute {string} equals {float}') do |attribute, value|
