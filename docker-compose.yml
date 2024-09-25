@@ -15,9 +15,11 @@ x-common-environment: &common-environment
   BUILDKITE_REPO:
   BUILDKITE_RETRY_COUNT:
   BUILDKITE_STEP_KEY:
+  BUILDKITE_ANALYTICS_TOKEN:
   MAZE_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
   MAZE_ASPECTO_REPEATER_API_KEY:
+  MAZE_NO_FAIL_FAST:
 
 services:
   maze-runner-bb:
@@ -34,6 +36,7 @@ services:
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./reports/:/app/reports/
 
   maze-runner-bs:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
@@ -45,3 +48,4 @@ services:
       - ./features/fixtures/ios/output:/app/build
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
+      - ./reports/:/app/reports/

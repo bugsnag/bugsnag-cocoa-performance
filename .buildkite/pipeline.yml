@@ -109,9 +109,11 @@ steps:
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -138,9 +140,11 @@ steps:
               - "--device=IOS_15"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -167,9 +171,11 @@ steps:
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -196,9 +202,11 @@ steps:
               - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -226,9 +234,11 @@ steps:
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/swizzling_disabled"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -254,9 +264,11 @@ steps:
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/swizzling_disabled"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -284,9 +296,11 @@ steps:
               - "--device=IOS_16"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -312,9 +326,11 @@ steps:
               - "--device=IOS_14"
               - "--fail-fast"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -344,6 +360,10 @@ steps:
           - "--fail-fast"
           - "--farm=bs"
           - "features/default"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
