@@ -95,10 +95,6 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            test-collector#v1.10.2:
-              files: "reports/TEST-*.xml"
-              format: "junit"
-              branch: "^main|next$$"
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
@@ -114,6 +110,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -125,10 +125,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -145,6 +141,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -156,10 +156,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -176,6 +172,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -187,10 +187,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
@@ -207,6 +203,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -220,10 +220,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -239,6 +235,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/swizzling_disabled"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -250,10 +250,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
@@ -269,6 +265,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/swizzling_disabled"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -282,10 +282,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -301,6 +297,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -312,10 +312,6 @@ steps:
         agents:
           queue: opensource
         plugins:
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
           artifacts#v1.9.3:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
@@ -331,6 +327,10 @@ steps:
               - "--fail-fast"
               - "--farm=bb"
               - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
@@ -345,10 +345,6 @@ steps:
     agents:
       queue: opensource
     plugins:
-      test-collector#v1.10.2:
-        files: "reports/TEST-*.xml"
-        format: "junit"
-        branch: "^main|next$$"
       artifacts#v1.9.3:
         download: "features/fixtures/ios/output/bs_ipa_url.txt"
         upload:
@@ -364,6 +360,10 @@ steps:
           - "--fail-fast"
           - "--farm=bs"
           - "features/default"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     concurrency: 5
     concurrency_group: browserstack-app
     concurrency_method: eager
