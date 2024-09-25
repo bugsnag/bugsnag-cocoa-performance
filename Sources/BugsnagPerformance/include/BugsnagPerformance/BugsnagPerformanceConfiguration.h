@@ -66,6 +66,31 @@ OBJC_EXPORT
 
 @property (nullable, nonatomic) BugsnagPerformanceViewControllerInstrumentationCallback viewControllerInstrumentationCallback;
 
+/**
+ * Maximum length of attribute string values in characters. Any characters in excess of
+ * this are discarded, and a warning message will be appended to the string value.
+ *
+ * Default: 1024
+ * Range: 1 - 10000
+ */
+@property (nonatomic) NSUInteger attributeStringValueLimit;
+
+/**
+ * Maximum number of elements in an array. Any elements in excess of this are discarded.
+ *
+ * Default: 1000
+ * Range: 1 - 10000
+ */
+@property (nonatomic) NSUInteger attributeArrayLengthLimit;
+
+/**
+ * Maximum number of attributes allowed in a single span.
+ *
+ * Default: 128
+ * Range: 1 - 1000
+ */
+@property (nonatomic) NSUInteger attributeCountLimit;
+
 @end
 
 @interface BugsnagPerformanceConfiguration (/* App metadata */)

@@ -25,6 +25,7 @@
 #import "Instrumentation/Instrumentation.h"
 #import "ResourceAttributes.h"
 #import "NetworkHeaderInjector.h"
+#import "OtlpTraceEncoding.h"
 
 #import <mutex>
 
@@ -87,6 +88,7 @@ private:
     std::shared_ptr<PersistentDeviceID> deviceID_;
     std::shared_ptr<ResourceAttributes> resourceAttributes_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
+    OtlpTraceEncoding traceEncoding_;
 
     BugsnagPerformanceConfiguration *configuration_;
     std::shared_ptr<OtlpUploader> uploader_;

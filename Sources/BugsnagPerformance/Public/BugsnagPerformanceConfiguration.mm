@@ -12,6 +12,18 @@
 
 using namespace bugsnag;
 
+#define MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1
+#define MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT 1000
+
+#define MIN_ATTRIBUTE_STRING_VALUE_LIMIT 1
+#define MAX_ATTRIBUTE_STRING_VALUE_LIMIT 10000
+#define DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT 1024
+
+#define MIN_ATTRIBUTE_COUNT_LIMIT 1
+#define MAX_ATTRIBUTE_COUNT_LIMIT 1000
+#define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
@@ -23,6 +35,9 @@ using namespace bugsnag;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _onSpanEndCallbacks = [NSMutableArray array];
+        _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
+        _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
+        _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -30,6 +45,37 @@ using namespace bugsnag;
 #endif
     }
     return self;
+}
+
+static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInteger max, NSUInteger def) {
+    if(value < min) {
+        return def;
+    }
+    if(value > max) {
+        return max;
+    }
+    return value;
+}
+
+- (void) setAttributeArrayLengthLimit:(NSUInteger)limit {
+    _attributeArrayLengthLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               MAX_ATTRIBUTE_ARRAY_LENGTH_LIMIT,
+                                               DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT);
+}
+
+- (void) setAttributeStringValueLimit:(NSUInteger)limit {
+    _attributeStringValueLimit = minMaxDefault(limit,
+                                               MIN_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               MAX_ATTRIBUTE_STRING_VALUE_LIMIT,
+                                               DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT);
+}
+
+- (void) setAttributeCountLimit:(NSUInteger)limit {
+    _attributeCountLimit = minMaxDefault(limit,
+                                         MIN_ATTRIBUTE_COUNT_LIMIT,
+                                         MAX_ATTRIBUTE_COUNT_LIMIT,
+                                         DEFAULT_ATTRIBUTE_COUNT_LIMIT);
 }
 
 + (instancetype)loadConfig {
@@ -50,13 +96,17 @@ using namespace bugsnag;
     auto bundleVersion = getSharedConfigValue(@"bundleVersion");
     auto releaseStage = getSharedConfigValue(@"releaseStage");
     auto enabledReleaseStages = getSharedConfigArray(@"enabledReleaseStages");
-    
-    auto serviceName = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"service.name"]);
+
+    auto serviceName = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"serviceName"]);
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
+    auto tracePropagationUrls = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"tracePropagationUrls"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
     auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
+    auto attributeArrayLengthLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeArrayLengthLimit"]);
+    auto attributeStringValueLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeStringValueLimit"]);
+    auto attributeCountLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeCountLimit"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
     if (appVersion) {
         configuration.appVersion = appVersion;
@@ -68,6 +118,16 @@ using namespace bugsnag;
         configuration.releaseStage = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    if (tracePropagationUrls) {
+        NSMutableSet<NSRegularExpression *> *exprs = [NSMutableSet setWithCapacity:tracePropagationUrls.count];
+        for (NSString *pattern: tracePropagationUrls) {
+            NSRegularExpression *expr = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+            if (expr != nil) {
+                [exprs addObject:expr];
+            }
+        }
+        [configuration setTracePropagationUrls:exprs];
+    }
     if (serviceName) {
         configuration.serviceName = serviceName;
     }
@@ -85,6 +145,15 @@ using namespace bugsnag;
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;
+    }
+    if (attributeArrayLengthLimit != nil) {
+        configuration.attributeArrayLengthLimit = attributeArrayLengthLimit.unsignedLongValue;
+    }
+    if (attributeStringValueLimit != nil) {
+        configuration.attributeStringValueLimit = attributeStringValueLimit.unsignedLongValue;
+    }
+    if (attributeCountLimit != nil) {
+        configuration.attributeCountLimit = attributeCountLimit.unsignedLongValue;
     }
     return configuration;
 }

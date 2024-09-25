@@ -45,11 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BSGFirstClass firstClass;
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
-
-
+@property (nonatomic,readonly) NSUInteger attributeCountLimit;
 
 @property(nonatomic) uint64_t startClock;
-
 
 @property(atomic) SpanState state;
 
@@ -59,9 +57,11 @@ NS_ASSUME_NONNULL_BEGIN
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startTime
                   firstClass:(BSGFirstClass) firstClass
-                 onSpanClosed:(OnSpanClosed) onSpanEnded NS_DESIGNATED_INITIALIZER;
+         attributeCountLimit:(NSUInteger)attributeCountLimit
+                onSpanClosed:(OnSpanClosed) onSpanEnded NS_DESIGNATED_INITIALIZER;
 
-- (void)setMultipleAttributes:(NSDictionary *)attributes;
+- (void)internalSetAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
+- (void)internalSetMultipleAttributes:(NSDictionary *)attributes;
 
 - (BOOL)hasAttribute:(NSString *)attributeName withValue:(id)value;
 

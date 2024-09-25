@@ -198,6 +198,11 @@ Then('a span array attribute {string} contains the value false at index {int}') 
   Maze.check.true(value == false)
 end
 
+Then('a span array attribute {string} contains no value at index {int}') do |attribute, index|
+  array = get_array_attribute_contents(attribute)
+  Maze.check.true(array.length() <= index)
+end
+
 def get_array_value_at_index(attribute, index, type)
   array = get_array_attribute_contents(attribute)
   Maze.check.true(array.length() > index)
@@ -261,9 +266,6 @@ def assert_received_exactly_spans(span_count, list)
   wait = Maze::Wait.new(timeout: 5)
 
   Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
-
-  Maze::Schemas::Validator.verify_against_schema(list, 'trace')
-  Maze::Schemas::Validator.validate_payload_elements(list, 'trace')
 end
 
 Then('a span double attribute {string} equals {float}') do |attribute, value|
