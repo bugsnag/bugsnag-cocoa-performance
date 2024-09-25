@@ -112,6 +112,7 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_16"
               - "--fail-fast"
+              - "--farm=bb"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -142,12 +143,7 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_15"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -178,12 +174,7 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_14"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -214,12 +205,7 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_13"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -251,12 +237,7 @@ steps:
               - "--app=@build/bb_url_swizzling_disabled.txt"
               - "--device=IOS_16"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/swizzling_disabled"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -286,12 +267,7 @@ steps:
               - "--app=@build/bb_url_swizzling_disabled.txt"
               - "--device=IOS_14"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/swizzling_disabled"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -323,12 +299,7 @@ steps:
               - "--app=@build/bb_url_swizzling_premain.txt"
               - "--device=IOS_16"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -358,12 +329,7 @@ steps:
               - "--app=@build/bb_url_swizzling_premain.txt"
               - "--device=IOS_14"
               - "--fail-fast"
-              - "--format=junit"
-              - "--out=reports"
-              - "--format=pretty"
               - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
               - "features/default"
         concurrency: 25
         concurrency_group: bitbar-app
@@ -396,9 +362,6 @@ steps:
           - "--app=@build/bs_ipa_url.txt"
           - "--device=IOS_17"
           - "--fail-fast"
-          - "--format=junit"
-          - "--out=reports"
-          - "--format=pretty"
           - "--farm=bs"
           - "features/default"
     concurrency: 5
