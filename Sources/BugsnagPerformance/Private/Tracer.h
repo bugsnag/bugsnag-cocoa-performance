@@ -94,7 +94,7 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    BugsnagPerformanceSpan *startFrozenFrameSpan(NSTimeInterval startTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
+    void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanClosed(BugsnagPerformanceSpan *span);
     void reprocessEarlySpans(void);

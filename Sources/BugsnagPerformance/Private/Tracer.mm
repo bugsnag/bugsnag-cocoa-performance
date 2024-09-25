@@ -214,8 +214,7 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
     
     auto frozenFrame = mergedSnapshot.firstFrozenFrame;
     while (frozenFrame != nil) {
-        auto frozenFrameSpan = startFrozenFrameSpan(frozenFrame.startTime, span);
-        [frozenFrameSpan endWithAbsoluteTime:frozenFrame.endTime];
+        createFrozenFrameSpan(frozenFrame.startTime, frozenFrame.endTime, span);
         frozenFrame = frozenFrame != mergedSnapshot.lastFrozenFrame ? frozenFrame.next : nil;
     }
 }
@@ -287,14 +286,16 @@ void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
     }
 }
 
-BugsnagPerformanceSpan *
-Tracer::startFrozenFrameSpan(NSTimeInterval startTime, 
-                             BugsnagPerformanceSpanContext *parentContext) noexcept {
+void
+Tracer::createFrozenFrameSpan(NSTimeInterval startTime,
+                              NSTimeInterval endTime,
+                              BugsnagPerformanceSpanContext *parentContext) noexcept {
     SpanOptions options;
     options.startTime = startTime;
     options.parentContext = parentContext;
     options.makeCurrentContext = false;
-    return startSpan(@"FrozenFrame", options, BSGFirstClassNo);
+    auto span = startSpan(@"FrozenFrame", options, BSGFirstClassNo);
+    [span endWithAbsoluteTime:endTime];
 }
 
 void
