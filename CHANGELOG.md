@@ -11,6 +11,14 @@ Changelog
 * Added configurable span attribute limits for string and array types.
   [314](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/314)
 
+### Bug fixes
+
+* Make sure that no early network spans escape when automatic network span capture is disabled.
+  [317](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/317)
+
+* Add missing / misnamed fields to plist configuration.
+  [316](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/316)
+
 ## 1.8.1 (2024-09-03)
 
 ### Bug fixes

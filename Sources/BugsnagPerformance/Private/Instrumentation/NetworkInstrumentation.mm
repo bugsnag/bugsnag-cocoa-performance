@@ -189,6 +189,13 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
     isEarlySpansPhase_ = false;
     auto spans = earlySpans_;
     earlySpans_ = nil;
+
+    if (!isEnabled_) {
+        for (BugsnagPerformanceSpan *span: spans) {
+            [span abortUnconditionally];
+        }
+    }
+
     for (BugsnagPerformanceSpan *span: spans) {
         auto info = [BugsnagPerformanceNetworkRequestInfo new];
         NSString *urlString = [span getAttribute:spanAttributesProvider_->httpUrlAttributeKey()];

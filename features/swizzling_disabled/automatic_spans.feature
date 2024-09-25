@@ -28,3 +28,11 @@ Feature: Automatic instrumentation spans
   Scenario: Don't send an auto network span that failed to send with swizzling disabled
     Given I run "AutoInstrumentNetworkBadAddressScenario"
     And I should receive no traces
+
+  Scenario: Don't send early network spans with swizzling disabled
+    Given I run "AutoInstrumentNetworkPreStartScenario"
+    And I should receive no traces
+
+  Scenario: Capture automatic network span before configuration (disabled)
+    Given I run "AutoInstrumentNetworkPreStartDisabledScenario"
+    And I should receive no traces
