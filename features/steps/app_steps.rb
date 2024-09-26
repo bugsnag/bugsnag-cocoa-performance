@@ -103,6 +103,11 @@ Then('every span string attribute {string} does not exist') do |attribute|
   spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
 end
 
+Then('every span integer attribute {string} does not exist') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
+end
+
 Then('all span bool attribute {string} is true') do |attribute|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('boolValue') } }.compact

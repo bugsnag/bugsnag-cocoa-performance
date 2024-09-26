@@ -34,6 +34,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
                    startTime:(CFAbsoluteTime) startAbsTime
                   firstClass:(BSGFirstClass) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
+   shouldInstrumentRendering:(BOOL)shouldInstrumentRendering
                 onSpanClosed:(OnSpanClosed) onSpanClosed {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
@@ -54,6 +55,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
             _attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
         }
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
+        _shouldInstrumentRendering = shouldInstrumentRendering;
     }
     return self;
 }
@@ -109,7 +111,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)endWithEndTime:(NSDate *)endTime {
-    self.wasEndedWithEndTime = endTime != nil;
+    self.shouldInstrumentRendering &= endTime == nil;
     [self endWithAbsoluteTime:(dateToAbsoluteTime(endTime))];
 }
 

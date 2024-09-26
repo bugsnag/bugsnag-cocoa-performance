@@ -11,6 +11,11 @@ import BugsnagPerformance
 @objcMembers
 class FrameMetricsNoSlowFramesScenario: Scenario {
     
+    override func configure() {
+        super.configure()
+        config.autoInstrumentRendering = true
+    }
+    
     override func run() {
         let span = BugsnagPerformance.startSpan(name: "FrameMetricsNoSlowFramesScenario")
         

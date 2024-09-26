@@ -30,11 +30,15 @@ OBJC_EXPORT
 // If true, this span will be considered "first class" on the dashboard.
 @property(nonatomic, readonly) BSGFirstClass firstClass;
 
+// If false, this span will not include frame rendering metrics
+@property(nonatomic, readonly) BOOL instrumentRendering;
+
 
 - (instancetype _Nonnull)setStartTime:(NSDate * _Nullable)startTime;
 - (instancetype _Nonnull)setParentContext:(BugsnagPerformanceSpanContext * _Nullable)parentContext;
 - (instancetype _Nonnull)setMakeCurrentContext:(BOOL)makeCurrentContext;
 - (instancetype _Nonnull)setFirstClass:(BSGFirstClass)firstClass;
+- (instancetype _Nonnull)setInstrumentRendering:(BOOL)instrumentRendering;
 
 - (instancetype _Nonnull)clone;
 

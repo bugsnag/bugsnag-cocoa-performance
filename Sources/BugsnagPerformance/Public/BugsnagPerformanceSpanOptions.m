@@ -15,6 +15,7 @@
 @property(nonatomic,strong) BugsnagPerformanceSpanContext *parentContext_;
 @property(nonatomic) BOOL makeCurrentContext_;
 @property(nonatomic) BSGFirstClass firstClass_;
+@property(nonatomic) BOOL instrumentRendering_;
 @end
 
 @implementation BugsnagPerformanceSpanOptions
@@ -29,18 +30,21 @@
     return [self initWithStartTime:nil
                      parentContext:nil
                 makeCurrentContext:true
-                        firstClass:BSGFirstClassUnset];
+                        firstClass:BSGFirstClassUnset
+               instrumentRendering:true];
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
                     parentContext:(BugsnagPerformanceSpanContext *)parentContext
                makeCurrentContext:(BOOL)makeCurrentContext
-                       firstClass:(BSGFirstClass)firstClass {
+                       firstClass:(BSGFirstClass)firstClass
+              instrumentRendering:(BOOL)instrumentRendering {
     if ((self = [super init])) {
         _startTime = startTime;
         _parentContext = parentContext;
         _makeCurrentContext = makeCurrentContext;
         _firstClass = firstClass;
+        _instrumentRendering = instrumentRendering;
     }
     return self;
 }
@@ -89,12 +93,19 @@
     return self;
 }
 
+- (instancetype _Nonnull)setInstrumentRendering:(BOOL)instrumentRendering {
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    _instrumentRendering = instrumentRendering;
+    return self;
+}
+
 - (instancetype)clone {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     return [[BugsnagPerformanceSpanOptions alloc] initWithStartTime:_startTime
                                                       parentContext:_parentContext
                                                  makeCurrentContext:_makeCurrentContext
-                                                         firstClass:_firstClass];
+                                                         firstClass:_firstClass
+                                                instrumentRendering:_instrumentRendering];
 }
 
 @end

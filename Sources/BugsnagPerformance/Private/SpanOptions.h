@@ -17,18 +17,21 @@ public:
     SpanOptions(BugsnagPerformanceSpanContext *parentContext,
                 CFAbsoluteTime startTime,
                 bool makeCurrentContext,
-                BSGFirstClass firstClass)
+                BSGFirstClass firstClass,
+                bool instrumentRendering)
     : parentContext(parentContext)
     , startTime(startTime)
     , makeCurrentContext(makeCurrentContext)
     , firstClass(firstClass)
+    , instrumentRendering(instrumentRendering)
     {}
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
     : SpanOptions(options.parentContext,
                   dateToAbsoluteTime(options.startTime),
                   options.makeCurrentContext,
-                  options.firstClass)
+                  options.firstClass,
+                  options.instrumentRendering)
     {}
     
     SpanOptions()
@@ -36,13 +39,15 @@ public:
     : SpanOptions(nil,
                   CFABSOLUTETIME_INVALID,
                   true,
-                  BSGFirstClassUnset)
+                  BSGFirstClassUnset,
+                  true)
     {}
     
     BugsnagPerformanceSpanContext *parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeCurrentContext{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};
+    bool instrumentRendering{true};
 };
 
 }

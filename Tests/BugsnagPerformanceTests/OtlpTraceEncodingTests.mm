@@ -184,6 +184,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                               startTime:startAbsTime
                                              firstClass:firstClass
                                     attributeCountLimit:128
+                              shouldInstrumentRendering:NO
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 

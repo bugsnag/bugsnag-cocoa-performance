@@ -13,6 +13,7 @@ class FrameMetricsFronzenFramesScenario: Scenario {
     
     override func configure() {
         super.configure()
+        config.autoInstrumentRendering = true
         config.internal.autoTriggerExportOnBatchSize = 3
     }
     

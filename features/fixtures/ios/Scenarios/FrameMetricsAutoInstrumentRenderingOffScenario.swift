@@ -1,23 +1,23 @@
 //
-//  FrameMetricsSlowFramesScenario.swift
+//  FrameMetricsAutoInstrumentRenderingOffScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 20/09/2024.
+//  Created by Robert B on 26/09/2024.
 //
 
 import Bugsnag
 import BugsnagPerformance
 
 @objcMembers
-class FrameMetricsSlowFramesScenario: Scenario {
+class FrameMetricsAutoInstrumentRenderingOffScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentRendering = true
+        config.autoInstrumentRendering = false
     }
     
     override func run() {
-        let span = BugsnagPerformance.startSpan(name: "FrameMetricsSlowFramesScenario")
+        let span = BugsnagPerformance.startSpan(name: "FrameMetricsAutoInstrumentRenderingOffScenario")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             Thread.sleep(forTimeInterval: 0.3)

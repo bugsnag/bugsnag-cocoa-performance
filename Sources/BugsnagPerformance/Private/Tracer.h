@@ -40,6 +40,7 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         onSpanEndCallbacks_ = config.onSpanEndCallbacks;
         attributeCountLimit_ = config.attributeCountLimit;
+        autoInstrumentRendering_ = config.autoInstrumentRendering;
     };
     void preStartSetup() noexcept;
     void start() noexcept {}
@@ -80,6 +81,7 @@ private:
     FrameMetricsCollector *frameMetricsCollector_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
+    std::atomic<bool> autoInstrumentRendering_{true};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;

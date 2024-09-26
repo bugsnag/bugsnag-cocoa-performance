@@ -32,6 +32,7 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
+        config.autoInstrumentRendering = false
         config.endpoint = fixtureConfig.tracesURL
         config.networkRequestCallback = filterAdminMazeRunnerNetRequests
     }
