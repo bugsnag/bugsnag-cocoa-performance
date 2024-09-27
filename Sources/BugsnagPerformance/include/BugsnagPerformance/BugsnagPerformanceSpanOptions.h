@@ -14,6 +14,12 @@ typedef NS_ENUM(uint8_t, BSGFirstClass) {
     BSGFirstClassUnset = 2,
 };
 
+typedef NS_ENUM(uint8_t, BSGInstrumentRendering) {
+    BSGInstrumentRenderingNo = 0,
+    BSGInstrumentRenderingYes = 1,
+    BSGInstrumentRenderingUnset = 2,
+};
+
 // Span options allow the user to affect how spans are created.
 OBJC_EXPORT
 @interface BugsnagPerformanceSpanOptions: NSObject
@@ -30,15 +36,14 @@ OBJC_EXPORT
 // If true, this span will be considered "first class" on the dashboard.
 @property(nonatomic, readonly) BSGFirstClass firstClass;
 
-// If false, this span will not include frame rendering metrics
-@property(nonatomic, readonly) BOOL instrumentRendering;
-
+// If true, this span will always include frame rendering metrics
+@property(nonatomic, readonly) BSGInstrumentRendering instrumentRendering;
 
 - (instancetype _Nonnull)setStartTime:(NSDate * _Nullable)startTime;
 - (instancetype _Nonnull)setParentContext:(BugsnagPerformanceSpanContext * _Nullable)parentContext;
 - (instancetype _Nonnull)setMakeCurrentContext:(BOOL)makeCurrentContext;
 - (instancetype _Nonnull)setFirstClass:(BSGFirstClass)firstClass;
-- (instancetype _Nonnull)setInstrumentRendering:(BOOL)instrumentRendering;
+- (instancetype _Nonnull)setInstrumentRendering:(BSGInstrumentRendering)instrumentRendering;
 
 - (instancetype _Nonnull)clone;
 

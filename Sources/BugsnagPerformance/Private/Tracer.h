@@ -101,5 +101,6 @@ private:
     void onSpanClosed(BugsnagPerformanceSpan *span);
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
 };
 }

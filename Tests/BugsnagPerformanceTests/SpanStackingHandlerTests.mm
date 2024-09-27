@@ -24,7 +24,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
                                               startTime:SpanOptions().startTime
                                              firstClass:BSGFirstClassNo
                                     attributeCountLimit:128
-                              shouldInstrumentRendering:NO
+                                    instrumentRendering:BSGInstrumentRenderingNo
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);
     }];

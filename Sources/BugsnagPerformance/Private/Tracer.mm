@@ -107,9 +107,6 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         BSGLogTrace(@"Tracer::startSpan: firstClass not specified; using default of %d", defaultFirstClass);
         firstClass = defaultFirstClass;
     }
-    auto shouldInstrumentRendering = options.instrumentRendering &&
-                                        !isCFAbsoluteTimeValid(options.startTime) &&
-                                        firstClass == BSGFirstClassYes;
     auto spanId = IdGenerator::generateSpanId();
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
                                                                         traceId:traceId
@@ -118,11 +115,11 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
                                                             attributeCountLimit:attributeCountLimit_
-                                                      shouldInstrumentRendering: shouldInstrumentRendering
+                                                            instrumentRendering: options.instrumentRendering
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
         blockThis->onSpanClosed(endedSpan);
     }];
-    if (span.shouldInstrumentRendering && autoInstrumentRendering_) {
+    if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
     if (options.makeCurrentContext) {
@@ -138,7 +135,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
 void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
     
-    if (span.shouldInstrumentRendering && autoInstrumentRendering_) {
+    if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
 
@@ -165,7 +162,7 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
         }
     }
     
-    if (span.shouldInstrumentRendering && autoInstrumentRendering_) {
+    if (shouldInstrumentRendering(span)) {
         BSGLogTrace(@"Tracer::onSpanClosed: Processing framerate metrics for span %@", span.name);
         processFrameMetrics(span);
     }
@@ -207,17 +204,16 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
 void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
     auto startSnapshot = span.startFramerateSnapshot;
     auto endSnapshot = span.endFramerateSnapshot;
-    if (!span.shouldInstrumentRendering ||
-        !autoInstrumentRendering_ ||
+    if (!shouldInstrumentRendering(span) ||
         startSnapshot == nil ||
         endSnapshot == nil) {
         return;
     }
     auto mergedSnapshot = [FrameMetricsSnapshot mergeWithStart:startSnapshot
                                                            end:endSnapshot];
-    [span setAttribute:@"bugsnag.framerate.total_frames" withValue:@(mergedSnapshot.totalFrames)];
-    [span setAttribute:@"bugsnag.framerate.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
-    [span setAttribute:@"bugsnag.framerate.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
+    [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
+    [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
+    [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
     
     auto frozenFrame = mergedSnapshot.firstFrozenFrame;
     while (frozenFrame != nil) {
@@ -317,4 +313,18 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
         }
     }
     [prewarmSpans_ removeAllObjects];
+}
+
+bool 
+Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    switch (span.instrumentRendering) {
+        case BSGInstrumentRenderingYes:
+            return autoInstrumentRendering_;
+        case BSGInstrumentRenderingNo:
+            return false;
+        case BSGInstrumentRenderingUnset:
+            return autoInstrumentRendering_ &&
+            !span.wasStartOrEndTimeProvided && 
+            span.firstClass == BSGFirstClassYes;
+    }
 }

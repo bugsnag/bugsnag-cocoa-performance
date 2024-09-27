@@ -26,7 +26,7 @@ static BugsnagPerformanceSpan *newSpanData() {
                                               startTime:0
                                              firstClass:BSGFirstClassUnset
                                     attributeCountLimit:128
-                              shouldInstrumentRendering:NO
+                                    instrumentRendering:BSGInstrumentRenderingNo
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
     }];
 }

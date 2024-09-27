@@ -1,15 +1,15 @@
 //
-//  FrameMetricsSpanInstrumentRenderingOffScenario.swift
+//  FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 26/09/2024.
+//  Created by Robert B on 27/09/2024.
 //
 
 import Bugsnag
 import BugsnagPerformance
 
 @objcMembers
-class FrameMetricsSpanInstrumentRenderingOffScenario: Scenario {
+class FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario: Scenario {
     
     override func configure() {
         super.configure()
@@ -18,8 +18,9 @@ class FrameMetricsSpanInstrumentRenderingOffScenario: Scenario {
     
     override func run() {
         let options = BugsnagPerformanceSpanOptions()
-        options.setInstrumentRendering(.no)
-        let span = BugsnagPerformance.startSpan(name: "FrameMetricsSpanInstrumentRenderingOffScenario", options: options)
+        options.setInstrumentRendering(.yes)
+        options.setFirstClass(.no)
+        let span = BugsnagPerformance.startSpan(name: "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario", options: options)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             Thread.sleep(forTimeInterval: 0.3)

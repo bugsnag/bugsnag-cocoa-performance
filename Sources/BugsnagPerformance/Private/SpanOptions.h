@@ -18,7 +18,7 @@ public:
                 CFAbsoluteTime startTime,
                 bool makeCurrentContext,
                 BSGFirstClass firstClass,
-                bool instrumentRendering)
+                BSGInstrumentRendering instrumentRendering)
     : parentContext(parentContext)
     , startTime(startTime)
     , makeCurrentContext(makeCurrentContext)
@@ -40,14 +40,14 @@ public:
                   CFABSOLUTETIME_INVALID,
                   true,
                   BSGFirstClassUnset,
-                  true)
+                  BSGInstrumentRenderingUnset)
     {}
     
     BugsnagPerformanceSpanContext *parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeCurrentContext{false};
     BSGFirstClass firstClass{BSGFirstClassUnset};
-    bool instrumentRendering{true};
+    BSGInstrumentRendering instrumentRendering{BSGInstrumentRenderingUnset};
 };
 
 }

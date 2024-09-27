@@ -29,6 +29,7 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 
 @property(nonatomic, readwrite) Boolean isInForeground;
 @property(nonatomic, readwrite) Boolean justEnteredForeground;
+@property(nonatomic, readwrite) Boolean autoInstrumentRendering;
 @property(nonatomic, strong) FrozenFrameData *lastFrozenFrame;
 
 @end
@@ -46,6 +47,7 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
         _justEnteredForeground = true;
         _lastFrozenFrame = [FrozenFrameData root];
         _frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
+        _autoInstrumentRendering = true;
     }
     return self;
 }
@@ -77,9 +79,14 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 
 - (void)earlySetup {}
 
-- (void)configure:(BugsnagPerformanceConfiguration *)config {}
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.autoInstrumentRendering = config.autoInstrumentRendering;
+}
 
 - (void)start {
+    if (!self.autoInstrumentRendering) {
+        return;
+    }
     CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self
                                                              selector:@selector(didRenderFrame:)];
     [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];

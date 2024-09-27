@@ -27,7 +27,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpa
                                               startTime:startTime
                                              firstClass:BSGFirstClassUnset
                                     attributeCountLimit:128
-                              shouldInstrumentRendering:NO
+                                    instrumentRendering:BSGInstrumentRenderingNo
                                            onSpanClosed:onEnded];
 }
 
@@ -277,7 +277,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpa
                                                    startTime:0
                                                   firstClass:BSGFirstClassUnset
                                          attributeCountLimit:5
-                                   shouldInstrumentRendering:YES
+                                         instrumentRendering:BSGInstrumentRenderingNo
                                                 onSpanClosed:^(BugsnagPerformanceSpan *) {}];
 
     // Note: "bugsnag.sampling.p" is automatically added.
