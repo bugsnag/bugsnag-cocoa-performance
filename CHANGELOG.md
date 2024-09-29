@@ -1,12 +1,16 @@
 Changelog
 =========
 
-## 1.9.0 (2024-09-25)
+## TBD
 
 ### Enhancements
 
 * Added rendering metrics to first class spans.
   [319](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/319)
+
+## 1.9.0 (2024-09-25)
+
+### Enhancements
 
 * Added configurable limit to number of span attributes per span.
   [315](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/315)
