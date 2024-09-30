@@ -47,7 +47,7 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
         _justEnteredForeground = true;
         _lastFrozenFrame = [FrozenFrameData root];
         _frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
-        _autoInstrumentRendering = true;
+        _autoInstrumentRendering = false;
     }
     return self;
 }
