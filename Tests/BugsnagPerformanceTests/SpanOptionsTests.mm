@@ -48,6 +48,7 @@ using namespace bugsnag;
                                                                       startTime:SpanOptions().startTime 
                                                                      firstClass:BSGFirstClassNo
                                                             attributeCountLimit:128
+                                                            instrumentRendering:BSGInstrumentRenderingNo
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
     }];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];

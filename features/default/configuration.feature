@@ -24,7 +24,7 @@ Feature: Configuration overrides
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.AppDataOverrideScenario"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "42.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Setting fixed sampling probability of 1 with dynamic probability of 0 should send all spans
     Given I set the sampling probability for the next traces to "0"

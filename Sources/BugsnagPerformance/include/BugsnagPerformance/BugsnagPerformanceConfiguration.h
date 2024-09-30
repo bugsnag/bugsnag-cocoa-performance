@@ -44,6 +44,8 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentNetworkRequests;
 
+@property (nonatomic) BOOL autoInstrumentRendering;
+
 /**
  *  The version of the application
  */

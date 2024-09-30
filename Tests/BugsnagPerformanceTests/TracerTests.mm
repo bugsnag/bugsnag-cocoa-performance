@@ -27,9 +27,10 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto config = newConfig();
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
+    auto frameMetricsCollector = [FrameMetricsCollector new];
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, ^(){});
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -51,7 +52,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, ^(){});
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -73,7 +75,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, ^(){});
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -95,7 +98,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, ^(){});
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);

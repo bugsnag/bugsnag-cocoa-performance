@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 1.10.0 (2024-09-30)
+
+### Enhancements
+
+* Added rendering metrics to first class spans.
+  [319](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/319)
+
 ## 1.9.0 (2024-09-25)
 
 ### Enhancements

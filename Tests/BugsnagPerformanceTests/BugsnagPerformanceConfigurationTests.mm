@@ -116,6 +116,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(NO),
             }
         }
     }];
@@ -134,6 +135,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertFalse(config.autoInstrumentRendering);
 }
 
 - (void)testLoadConfigDoesntTakeValuesFromBugsnagWhenAllValuesAreInPerformanceDictionary {
@@ -159,6 +161,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(YES),
             }
         }
     }];
@@ -178,6 +181,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertTrue(config.autoInstrumentRendering);
 }
 
 - (void)testLoadConfigDoesTakeValuesFromBugsnagWhenSomeValuesAreMissingInPerformanceDictionary {
@@ -193,6 +197,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(YES),
             }
         }
     }];
@@ -207,6 +212,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertTrue(config.autoInstrumentRendering);
 }
 
 - (void)testShouldSetIncludeApiKeyInTheDefaultEndpoint {
