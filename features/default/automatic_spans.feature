@@ -6,7 +6,8 @@ Feature: Automatic instrumentation spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "[AppStart/iOSCold]"
+#    As we're not able to get a brand new device we're not able to guarantee that its a fresh device
+#    * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
     * a span field "name" equals "[AppStartPhase/App launching - post main()]"
     * a span field "name" equals "[AppStartPhase/UI init]"
@@ -726,8 +727,8 @@ Feature: Automatic instrumentation spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:5"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "[AppStart/iOSCold]"
-    * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
+#    As we're not able to get a brand new device we're not able to guarantee that its a fresh device
+#    * a span field "name" equals "[AppStart/iOSCold]"    * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
     * a span field "name" equals "[AppStartPhase/App launching - post main()]"
     * a span field "name" equals "[AppStartPhase/UI init]"
     * a span field "name" equals "[HTTP/GET]"
