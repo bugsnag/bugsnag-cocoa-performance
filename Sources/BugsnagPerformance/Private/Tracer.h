@@ -81,7 +81,7 @@ private:
     FrameMetricsCollector *frameMetricsCollector_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
-    std::atomic<bool> autoInstrumentRendering_{true};
+    std::atomic<bool> autoInstrumentRendering_{false};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
