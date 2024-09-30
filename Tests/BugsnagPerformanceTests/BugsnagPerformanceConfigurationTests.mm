@@ -22,8 +22,10 @@ static NSString *const performanceBundleVersion = @"PerformanceBundleVersion";
 static NSString *const performanceReleaseStage = @"PerformanceReleaseStage";
 static NSString *const performanceReleaseStage1 = @"PerformanceEnabledReleaseStage1";
 static NSString *const performanceReleaseStage2 = @"PerformanceEnabledReleaseStage2";
+static NSString *const performanceServiceName = @"PerformanceServiceName";
 static NSString *const performanceEndpoint = @"PerformanceEndpoint";
 static NSArray *const performanceEnabledReleaseStages = @[performanceReleaseStage1, performanceReleaseStage2];
+static NSArray *const performanceTracePropagationUrls = @[@"https://my.company.com/.*", @"https://somewhere.com/[0-9]+/abc/*"];
 
 static NSString *const bugsnagApiKey = @"PerfromanceApiKey";
 static NSString *const bugsnagAppVersion = @"PerfromanceAppVersion";
@@ -88,6 +90,14 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse([config shouldSendReports]);
 }
 
+- (void)assertConfig:(BugsnagPerformanceConfiguration *)config tracePropagationUrlsAre:(NSArray<NSString *> *) regexStrings {
+    XCTAssertEqual(config.tracePropagationUrls.count, regexStrings.count);
+    for(NSString *regexString: regexStrings) {
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexString options:0 error:nil];
+        XCTAssertTrue([config.tracePropagationUrls containsObject:regex]);
+    }
+}
+
 - (void)testLoadConfigLoadsWhenAllValuesAreInPerformanceDictionary {
     auto config = [BugsnagPerformanceConfiguration loadConfigWithInfoDictionary:@{
         @"bugsnag": @{
@@ -97,10 +107,16 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"bundleVersion": performanceBundleVersion,
                 @"releaseStage": performanceReleaseStage,
                 @"enabledReleaseStages": performanceEnabledReleaseStages,
+                @"serviceName": performanceServiceName,
                 @"endpoint": performanceEndpoint,
+                @"attributeArrayLengthLimit": @100,
+                @"attributeStringValueLimit": @200,
+                @"attributeCountLimit": @50,
+                @"tracePropagationUrls": performanceTracePropagationUrls,
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(NO),
             }
         }
     }];
@@ -112,9 +128,14 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage1]);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage2]);
     XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
+    XCTAssertEqual(config.attributeArrayLengthLimit, (NSUInteger)100);
+    XCTAssertEqual(config.attributeStringValueLimit, (NSUInteger)200);
+    XCTAssertEqual(config.attributeCountLimit, (NSUInteger)50);
+    [self assertConfig:config tracePropagationUrlsAre:performanceTracePropagationUrls];
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertFalse(config.autoInstrumentRendering);
 }
 
 - (void)testLoadConfigDoesntTakeValuesFromBugsnagWhenAllValuesAreInPerformanceDictionary {
@@ -131,10 +152,16 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"bundleVersion": performanceBundleVersion,
                 @"releaseStage": performanceReleaseStage,
                 @"enabledReleaseStages": performanceEnabledReleaseStages,
+                @"serviceName": performanceServiceName,
                 @"endpoint": performanceEndpoint,
+                @"attributeArrayLengthLimit": @100,
+                @"attributeStringValueLimit": @200,
+                @"attributeCountLimit": @50,
+                @"tracePropagationUrls": performanceTracePropagationUrls,
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(YES),
             }
         }
     }];
@@ -145,10 +172,16 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertEqual(config.enabledReleaseStages.count, performanceEnabledReleaseStages.count);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage1]);
     XCTAssertTrue([config.enabledReleaseStages containsObject:performanceReleaseStage2]);
+    XCTAssertEqualObjects(config.serviceName, performanceServiceName);
     XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
+    XCTAssertEqual(config.attributeArrayLengthLimit, (NSUInteger)100);
+    XCTAssertEqual(config.attributeStringValueLimit, (NSUInteger)200);
+    XCTAssertEqual(config.attributeCountLimit, (NSUInteger)50);
+    [self assertConfig:config tracePropagationUrlsAre:performanceTracePropagationUrls];
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertTrue(config.autoInstrumentRendering);
 }
 
 - (void)testLoadConfigDoesTakeValuesFromBugsnagWhenSomeValuesAreMissingInPerformanceDictionary {
@@ -164,6 +197,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"autoInstrumentAppStarts": @(NO),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
+                @"autoInstrumentRendering": @(YES),
             }
         }
     }];
@@ -178,6 +212,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
+    XCTAssertTrue(config.autoInstrumentRendering);
 }
 
 - (void)testShouldSetIncludeApiKeyInTheDefaultEndpoint {

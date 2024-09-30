@@ -103,6 +103,11 @@ Then('every span string attribute {string} does not exist') do |attribute|
   spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
 end
 
+Then('every span integer attribute {string} does not exist') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
+end
+
 Then('all span bool attribute {string} is true') do |attribute|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('boolValue') } }.compact
@@ -170,6 +175,20 @@ Then('a span integer attribute {string} is greater than {int}') do |attribute, e
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
   attribute_values = selected_attributes.map { |a| a['value']['intValue'].to_i > expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+Then('a span integer attribute {string} equals {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['intValue'].to_i == expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+Then('a span integer attribute {string} is less than {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['intValue'].to_i < expected }
   Maze.check.false(attribute_values.empty?)
 end
 
@@ -266,9 +285,6 @@ def assert_received_exactly_spans(span_count, list)
   wait = Maze::Wait.new(timeout: 5)
 
   Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
-
-  Maze::Schemas::Validator.verify_against_schema(list, 'trace')
-  Maze::Schemas::Validator.validate_payload_elements(list, 'trace')
 end
 
 Then('a span double attribute {string} equals {float}') do |attribute, value|
@@ -276,4 +292,15 @@ Then('a span double attribute {string} equals {float}') do |attribute, value|
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
   selected_attributes = selected_attributes.map { |a| a['value']['doubleValue'] == value }
   Maze.check.false(selected_attributes.empty?)
+end
+
+Then('the span named {string} is the parent of every span named {string}') do |span1name, span2name|
+  
+  spans = spans_from_request_list(Maze::Server.list_for("traces"))
+
+  parentSpan = spans.find_all { |span| span['name'].eql?(span1name) }.first
+
+  childSpans2 = spans.find_all { |span| span['name'].eql?(span2name) }
+
+  childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
 end

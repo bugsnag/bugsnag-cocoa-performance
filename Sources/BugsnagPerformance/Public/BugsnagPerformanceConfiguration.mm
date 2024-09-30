@@ -34,6 +34,7 @@ using namespace bugsnag;
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
+        _autoInstrumentRendering = YES;
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
@@ -96,13 +97,18 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     auto bundleVersion = getSharedConfigValue(@"bundleVersion");
     auto releaseStage = getSharedConfigValue(@"releaseStage");
     auto enabledReleaseStages = getSharedConfigArray(@"enabledReleaseStages");
-    
-    auto serviceName = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"service.name"]);
+
+    auto serviceName = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"serviceName"]);
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
+    auto tracePropagationUrls = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"tracePropagationUrls"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto autoInstrumentRendering = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentRendering"]);
     auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
+    auto attributeArrayLengthLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeArrayLengthLimit"]);
+    auto attributeStringValueLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeStringValueLimit"]);
+    auto attributeCountLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeCountLimit"]);
     auto configuration = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:apiKey];
     if (appVersion) {
         configuration.appVersion = appVersion;
@@ -114,6 +120,16 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
         configuration.releaseStage = releaseStage;
     }
     configuration.enabledReleaseStages = [NSSet setWithArray: enabledReleaseStages ?: @[]];
+    if (tracePropagationUrls) {
+        NSMutableSet<NSRegularExpression *> *exprs = [NSMutableSet setWithCapacity:tracePropagationUrls.count];
+        for (NSString *pattern: tracePropagationUrls) {
+            NSRegularExpression *expr = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
+            if (expr != nil) {
+                [exprs addObject:expr];
+            }
+        }
+        [configuration setTracePropagationUrls:exprs];
+    }
     if (serviceName) {
         configuration.serviceName = serviceName;
     }
@@ -129,8 +145,20 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     if (autoInstrumentNetworkRequests != nil) {
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
     }
+    if (autoInstrumentRendering != nil) {
+        configuration.autoInstrumentRendering = [autoInstrumentRendering boolValue];
+    }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;
+    }
+    if (attributeArrayLengthLimit != nil) {
+        configuration.attributeArrayLengthLimit = attributeArrayLengthLimit.unsignedLongValue;
+    }
+    if (attributeStringValueLimit != nil) {
+        configuration.attributeStringValueLimit = attributeStringValueLimit.unsignedLongValue;
+    }
+    if (attributeCountLimit != nil) {
+        configuration.attributeCountLimit = attributeCountLimit.unsignedLongValue;
     }
     return configuration;
 }
