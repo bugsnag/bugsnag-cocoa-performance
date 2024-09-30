@@ -34,6 +34,7 @@ using namespace bugsnag;
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
+        _autoInstrumentRendering = YES;
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
@@ -103,6 +104,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto autoInstrumentRendering = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentRendering"]);
     auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
     auto attributeArrayLengthLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeArrayLengthLimit"]);
     auto attributeStringValueLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeStringValueLimit"]);
@@ -142,6 +144,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     }
     if (autoInstrumentNetworkRequests != nil) {
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
+    }
+    if (autoInstrumentRendering != nil) {
+        configuration.autoInstrumentRendering = [autoInstrumentRendering boolValue];
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;

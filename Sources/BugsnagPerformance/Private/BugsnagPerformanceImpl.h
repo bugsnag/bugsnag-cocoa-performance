@@ -26,6 +26,7 @@
 #import "ResourceAttributes.h"
 #import "NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
+#import "FrameRateMetrics/FrameMetricsCollector.h"
 
 #import <mutex>
 
@@ -79,6 +80,7 @@ private:
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
+    FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;

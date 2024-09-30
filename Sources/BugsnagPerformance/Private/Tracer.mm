@@ -13,18 +13,21 @@
 #import "Instrumentation/NetworkInstrumentation.h"
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
+#import "FrameRateMetrics/FrameMetricsCollector.h"
 
 using namespace bugsnag;
 
 Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Sampler> sampler,
                std::shared_ptr<Batch> batch,
+               FrameMetricsCollector *frameMetricsCollector,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
 , prewarmSpans_([NSMutableArray new])
 , potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
 , batch_(batch)
+, frameMetricsCollector_(frameMetricsCollector)
 , onSpanStarted_(onSpanStarted)
 {}
 
@@ -112,9 +115,13 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
                                                             attributeCountLimit:attributeCountLimit_
+                                                            instrumentRendering: options.instrumentRendering
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
         blockThis->onSpanClosed(endedSpan);
     }];
+    if (shouldInstrumentRendering(span)) {
+        span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
+    }
     if (options.makeCurrentContext) {
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
@@ -127,6 +134,10 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
 
 void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
+    
+    if (shouldInstrumentRendering(span)) {
+        span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
+    }
 
     spanStackingHandler_->onSpanClosed(span.spanId);
 
@@ -149,6 +160,11 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
             BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             return;
         }
+    }
+    
+    if (shouldInstrumentRendering(span)) {
+        BSGLogTrace(@"Tracer::onSpanClosed: Processing framerate metrics for span %@", span.name);
+        processFrameMetrics(span);
     }
 
     BSGLogTrace(@"Tracer::onSpanClosed: Adding span %@ to batch", span.name);
@@ -183,6 +199,27 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
     BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: Adding span %@ to batch", span.name);
     [span internalSetAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
+}
+
+void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
+    auto startSnapshot = span.startFramerateSnapshot;
+    auto endSnapshot = span.endFramerateSnapshot;
+    if (!shouldInstrumentRendering(span) ||
+        startSnapshot == nil ||
+        endSnapshot == nil) {
+        return;
+    }
+    auto mergedSnapshot = [FrameMetricsSnapshot mergeWithStart:startSnapshot
+                                                           end:endSnapshot];
+    [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
+    [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
+    [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
+    
+    auto frozenFrame = mergedSnapshot.firstFrozenFrame;
+    while (frozenFrame != nil) {
+        createFrozenFrameSpan(frozenFrame.startTime, frozenFrame.endTime, span);
+        frozenFrame = frozenFrame != mergedSnapshot.lastFrozenFrame ? frozenFrame.next : nil;
+    }
 }
 
 BugsnagPerformanceSpan *
@@ -253,6 +290,18 @@ void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
 }
 
 void
+Tracer::createFrozenFrameSpan(NSTimeInterval startTime,
+                              NSTimeInterval endTime,
+                              BugsnagPerformanceSpanContext *parentContext) noexcept {
+    SpanOptions options;
+    options.startTime = startTime;
+    options.parentContext = parentContext;
+    options.makeCurrentContext = false;
+    auto span = startSpan(@"FrozenFrame", options, BSGFirstClassNo);
+    [span endWithAbsoluteTime:endTime];
+}
+
+void
 Tracer::onPrewarmPhaseEnded(void) noexcept {
     BSGLogDebug(@"Tracer::onPrewarmPhaseEnded()");
     std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
@@ -264,4 +313,18 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
         }
     }
     [prewarmSpans_ removeAllObjects];
+}
+
+bool 
+Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    switch (span.instrumentRendering) {
+        case BSGInstrumentRenderingYes:
+            return autoInstrumentRendering_;
+        case BSGInstrumentRenderingNo:
+            return false;
+        case BSGInstrumentRenderingUnset:
+            return autoInstrumentRendering_ &&
+            !span.wasStartOrEndTimeProvided && 
+            span.firstClass == BSGFirstClassYes;
+    }
 }

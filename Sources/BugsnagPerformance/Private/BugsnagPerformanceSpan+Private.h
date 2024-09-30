@@ -10,6 +10,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import "BugsnagPerformanceSpanContext+Private.h"
 #import "SpanKind.h"
+#import "FrameRateMetrics/FrameMetricsSnapshot.h"
 
 #import <memory>
 
@@ -46,6 +47,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
+@property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
+@property (nonatomic) BSGInstrumentRendering instrumentRendering;
+@property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
+@property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;
+
+
 
 @property(nonatomic) uint64_t startClock;
 
@@ -58,6 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
                    startTime:(CFAbsoluteTime) startTime
                   firstClass:(BSGFirstClass) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
+         instrumentRendering:(BSGInstrumentRendering)instrumentRendering
                 onSpanClosed:(OnSpanClosed) onSpanEnded NS_DESIGNATED_INITIALIZER;
 
 - (void)internalSetAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
