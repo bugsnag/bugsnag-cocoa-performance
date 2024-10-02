@@ -1,5 +1,7 @@
 Feature: Automatic instrumentation spans
 
+  # Disabled until we can make this test less flaky. https://smartbear.atlassian.net/browse/PLAT-12666
+  @skip
   Scenario: AutoInstrumentAppStartsScenario
     Given I run "AutoInstrumentAppStartsScenario"
     And I wait for 4 spans
