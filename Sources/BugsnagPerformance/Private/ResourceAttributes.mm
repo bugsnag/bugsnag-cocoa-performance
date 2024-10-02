@@ -49,6 +49,8 @@ static NSString *hostArch() noexcept {
 static NSString *osName() noexcept {
 #if TARGET_OS_IOS
     return @"iOS";
+#elif TARGET_OS_VISION
+    return @"iOS";
 #else
 #error Other platforms not supported yet
 #endif
