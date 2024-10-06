@@ -1,8 +1,11 @@
 name: "Pull Request"
 on: [pull_request]
+permissions: read-all
 
 jobs:
   danger:
+    permissions:
+      pull-requests: write
     runs-on: macos-latest
     steps:
     - name: Checkout target branch
