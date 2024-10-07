@@ -5,6 +5,8 @@ permissions: read-all
 jobs:
   danger:
     permissions:
+      issues: write
+      discussions: write
       pull-requests: write
     runs-on: macos-latest
     steps:
