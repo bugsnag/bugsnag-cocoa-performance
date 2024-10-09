@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fix visionOS compilation errors. Note that visionOS is not yet officially supported.
+  [327](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/327)
+
 ## 1.10.0 (2024-09-30)
 
 ### Enhancements
