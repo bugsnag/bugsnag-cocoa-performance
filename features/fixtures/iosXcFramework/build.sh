@@ -29,7 +29,9 @@ do
     fi
 done;
 
+echo "Unzipping BugsnagPerformance.xcframework.zip and BugsnagPerformanceSwift.xcframework.zip"
 unzip BugsnagPerformance.xcframework.zip
+unzip BugsnagPerformanceSwift.xcframework.zip
 
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 

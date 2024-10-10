@@ -34,7 +34,6 @@
 		096EE5EF2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096EE5EE2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift */; };
 		097FFC0B2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 097FFC0A2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift */; };
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
-		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
 		098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */; };
 		098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */; };
@@ -48,6 +47,8 @@
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		5544C5FE2C8066D600C89EEF /* BugsnagPerformance.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5544C5FD2C8066D600C89EEF /* BugsnagPerformance.xcframework */; };
 		5544C5FF2C8066D600C89EEF /* BugsnagPerformance.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5544C5FD2C8066D600C89EEF /* BugsnagPerformance.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		5551F68F2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5551F68E2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework */; };
+		5551F6902CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5551F68E2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
@@ -83,6 +84,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				5551F6902CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework in Embed Frameworks */,
 				5544C5FF2C8066D600C89EEF /* BugsnagPerformance.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -135,6 +137,7 @@
 		09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkNullURLScenario.swift; sourceTree = "<group>"; };
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		5544C5FD2C8066D600C89EEF /* BugsnagPerformance.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformance.xcframework; path = ../../../BugsnagPerformance.xcframework; sourceTree = "<group>"; };
+		5551F68E2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -171,8 +174,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5551F68F2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework in Frameworks */,
 				01A414C82912CA18003152A4 /* Bugsnag in Frameworks */,
-				0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */,
 				5544C5FE2C8066D600C89EEF /* BugsnagPerformance.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -234,6 +237,7 @@
 		01FE4DBE28E1AEDF00D1F239 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5551F68E2CB81F3E002AC10D /* BugsnagPerformanceSwift.xcframework */,
 				5544C5FD2C8066D600C89EEF /* BugsnagPerformance.xcframework */,
 			);
 			name = Frameworks;
@@ -326,7 +330,6 @@
 			name = Fixture;
 			packageProductDependencies = (
 				01A414C72912CA18003152A4 /* Bugsnag */,
-				0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */,
 			);
 			productName = Fixture;
 			productReference = 01FE4DA528E1AEBD00D1F239 /* Fixture.app */;
@@ -688,10 +691,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 01A414C62912CA18003152A4 /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
 			productName = Bugsnag;
-		};
-		0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BugsnagPerformanceSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

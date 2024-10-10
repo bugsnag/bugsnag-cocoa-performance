@@ -16,7 +16,9 @@ steps:
           - make build_xcframework
         plugins:
           - artifacts#v1.9.3:
-              upload: "BugsnagPerformance.xcframework.zip"
+              upload:
+                - "BugsnagPerformance.xcframework.zip"
+                - "BugsnagPerformanceSwift.xcframework.zip"
 
       - label: "Carthage"
         commands:
@@ -72,7 +74,9 @@ steps:
           - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
         plugins:
           - artifacts#v1.9.3:
-              download: "BugsnagPerformance.xcframework.zip"
+              download:
+                - "BugsnagPerformance.xcframework.zip"
+                - "BugsnagPerformanceSwift.xcframework.zip"
         artifact_paths:
           - features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
 
