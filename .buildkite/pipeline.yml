@@ -426,7 +426,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-      - label: ":bitbar: iOS XcFramework E2E Tests"
+      - label: ":bitbar: iOS 14 XcFramework E2E Tests"
         depends_on:
           - ios_fixture_xcframework
         timeout_in_minutes: 30
