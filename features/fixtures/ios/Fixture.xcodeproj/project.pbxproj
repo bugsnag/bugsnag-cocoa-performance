@@ -39,6 +39,8 @@
 		0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */; };
 		0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */; };
 		098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */; };
+		0988B5372CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */; };
+		0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */; };
 		098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */; };
 		098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */; };
 		098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */; };
@@ -123,6 +125,8 @@
 		097FFC0A2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNullNetworkCallbackScenario.swift; sourceTree = "<group>"; };
 		0983A1782B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentSwiftUIScenario.swift; sourceTree = "<group>"; };
 		098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualViewLoadPhaseScenario.swift; sourceTree = "<group>"; };
+		0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraCheckNoBugsnagScenario.swift; sourceTree = "<group>"; };
+		0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfraCheckMinimalBugsnagScenario.swift; sourceTree = "<group>"; };
 		098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnEndCallbackScenario.swift; sourceTree = "<group>"; };
 		098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorGenerator.h; sourceTree = "<group>"; };
 		098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ErrorGenerator.m; sourceTree = "<group>"; };
@@ -292,6 +296,8 @@
 				966634E12C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift */,
 				966634DF2C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift */,
 				9691A9DE2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift */,
+				0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */,
+				0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
 				96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */,
@@ -467,6 +473,7 @@
 				966634E02C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift in Sources */,
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,
 				09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */,
+				0988B5372CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				091B95722CA179AC007DC8A9 /* AutoInstrumentNetworkPreStartScenario.swift in Sources */,
 				098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */,
@@ -476,6 +483,7 @@
 				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
+				0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
 				9691A9DD2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift in Sources */,

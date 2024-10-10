@@ -14,10 +14,11 @@ typedef NS_ENUM(uint8_t, BSGFirstClass) {
     BSGFirstClassUnset = 2,
 };
 
+// Affects whether or not a span should include rendering metrics
 typedef NS_ENUM(uint8_t, BSGInstrumentRendering) {
-    BSGInstrumentRenderingNo = 0,
-    BSGInstrumentRenderingYes = 1,
-    BSGInstrumentRenderingUnset = 2,
+    BSGInstrumentRenderingNo = 0, // Never include rendering metrics
+    BSGInstrumentRenderingYes = 1, // Always include rendering metrics, as long as the autoInstrumentRendering configuration option is on
+    BSGInstrumentRenderingUnset = 2, // Include rendering metrics only if the span is first class, start and end times were not set when creating/closing the span and the autoInstrumentRendering configuration option is on
 };
 
 // Span options allow the user to affect how spans are created.
@@ -36,7 +37,6 @@ OBJC_EXPORT
 // If true, this span will be considered "first class" on the dashboard.
 @property(nonatomic, readonly) BSGFirstClass firstClass;
 
-// If true, this span will always include frame rendering metrics
 @property(nonatomic, readonly) BSGInstrumentRendering instrumentRendering;
 
 - (instancetype _Nonnull)setStartTime:(NSDate * _Nullable)startTime;

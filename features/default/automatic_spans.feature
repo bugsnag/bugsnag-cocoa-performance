@@ -25,7 +25,7 @@ Feature: Automatic instrumentation spans
     * every span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario"
@@ -62,7 +62,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentGenericViewLoadScenario
     Given I run "AutoInstrumentGenericViewLoadScenario"
@@ -99,7 +99,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentSubViewLoadScenario
     Given I run "AutoInstrumentSubViewLoadScenario"
@@ -188,7 +188,7 @@ Feature: Automatic instrumentation spans
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentTabViewLoadScenario
     Given I run "AutoInstrumentTabViewLoadScenario"
@@ -236,7 +236,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentNavigationViewLoadScenario
     Given I run "AutoInstrumentNavigationViewLoadScenario"
@@ -284,7 +284,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentPreLoadedViewLoadScenario
     Given I run "AutoInstrumentPreLoadedViewLoadScenario"
@@ -321,7 +321,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: ViewDidLoadDoesntTriggerScenario
     Given I run "ViewDidLoadDoesntTriggerScenario"
@@ -357,7 +357,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentSwiftUIScenario no change
     Given I run "AutoInstrumentSwiftUIScenario"
@@ -381,7 +381,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: AutoInstrumentSwiftUIScenario with change
     Given I run "AutoInstrumentSwiftUIScenario"
@@ -404,7 +404,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     And I discard every trace
     And I invoke "switchView"
     Then I wait for 2 spans
@@ -438,7 +438,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "text1"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
     And I wait for 2 spans
@@ -470,7 +470,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "text1"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
     And I wait for 2 spans
@@ -523,7 +523,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Automatically start a network span that has no parent
     Given I run "AutoInstrumentNetworkNoParentScenario"
@@ -548,7 +548,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Auto-capture multiple network spans
     Given I run "AutoInstrumentNetworkMultiple"
@@ -569,7 +569,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Automatically start a network span that is a file:// scheme
     Given I run "AutoInstrumentFileURLRequestScenario"
@@ -600,7 +600,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Automatically start a network span triggered by AVAssetDownloadURLSession (must not crash)
     Given I run "AutoInstrumentAVAssetScenario"
@@ -620,7 +620,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Capture automatic network span before configuration
     Given I run "AutoInstrumentNetworkPreStartScenario"
@@ -643,7 +643,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: Capture automatic network span before configuration (disabled)
     Given I run "AutoInstrumentNetworkPreStartDisabledScenario"
@@ -668,7 +668,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: ComplexViewScenario
     Given I run "ComplexViewScenario"
@@ -719,7 +719,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: ModifyEarlySpansScenario
     Given I run "ModifyEarlySpansScenario"
@@ -747,4 +747,4 @@ Feature: Automatic instrumentation spans
     * every span string attribute "modifiedOnEnd" equals "yes"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
-    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]\.[0-9]\.[0-9]"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"

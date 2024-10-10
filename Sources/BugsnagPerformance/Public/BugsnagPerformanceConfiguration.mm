@@ -34,7 +34,7 @@ using namespace bugsnag;
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
-        _autoInstrumentRendering = YES;
+        _autoInstrumentRendering = NO;
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;

@@ -29,7 +29,7 @@ let package = Package(
             linkerSettings: [
                 .linkedFramework("SystemConfiguration"),
                 .linkedFramework("UIKit"),
-                .linkedFramework("CoreTelephony"),
+                .linkedFramework("CoreTelephony", .when(platforms: [.iOS])),
             ]
         ),
         .target(

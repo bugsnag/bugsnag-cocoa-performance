@@ -62,6 +62,7 @@ static NSDictionary *accessTechnologyMappingDictionary() {
     static dispatch_once_t onceT;
     dispatch_once(&onceT, ^(){
         accessTechnologyMapping = [@{
+#if TARGET_OS_IOS
             CTRadioAccessTechnologyGPRS: @"gprs",
             CTRadioAccessTechnologyEdge: @"edge",
             CTRadioAccessTechnologyWCDMA: @"wcdma",
@@ -73,11 +74,14 @@ static NSDictionary *accessTechnologyMappingDictionary() {
             CTRadioAccessTechnologyCDMAEVDORevB: @"evdo_b",
             CTRadioAccessTechnologyeHRPD: @"ehrpd",
             CTRadioAccessTechnologyLTE: @"lte",
+#endif
         } mutableCopy];
+#if TARGET_OS_IOS
         if (@available(iOS 14.1, *)) {
             accessTechnologyMapping[CTRadioAccessTechnologyNRNSA] = @"nrnsa";
             accessTechnologyMapping[CTRadioAccessTechnologyNR] = @"nr";
         }
+#endif
     });
     return accessTechnologyMapping;
 }

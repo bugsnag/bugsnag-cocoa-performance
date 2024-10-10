@@ -211,6 +211,9 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
     }
     auto mergedSnapshot = [FrameMetricsSnapshot mergeWithStart:startSnapshot
                                                            end:endSnapshot];
+    if (mergedSnapshot.totalFrames == 0) {
+        return;
+    }
     [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
     [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
     [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
