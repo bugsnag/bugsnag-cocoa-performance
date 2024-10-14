@@ -10,6 +10,7 @@ steps:
   - group: ":hammer: Builds"
     steps:
       - label: "XCFramework"
+        key: xcframework
         timeout_in_minutes: 20
         commands:
           - make build_xcframework
@@ -45,21 +46,20 @@ steps:
           - features/fixtures/ios/output/bb_ipa_url.txt
           - features/fixtures/ios/output/bs_ipa_url.txt
 
-      - label: "Fixture with XcFramework"
+      - label: "Fixture XcFramework"
         key: ios_fixture_xcframework
+        depends_on: xcframework
+        commands:
+          - ./features/fixtures/iosXcFramework/build.sh
+          - bundle install
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
         plugins:
           - artifacts#v1.9.3:
               download:
                 - "BugsnagPerformance.xcframework.zip"
                 - "BugsnagPerformanceSwift.xcframework.zip"
-        commands:
-          - ./features/fixtures/iosXcFramework/build.sh
-          - bundle install
-          - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
-          - bundle exec upload-app --farm=bs --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bs_xcframework_ipa_url.txt
         artifact_paths:
           - features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
-          - features/fixtures/iosXcFramework/output/bs_xcframework_ipa_url.txt
 
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
