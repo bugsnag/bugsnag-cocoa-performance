@@ -295,7 +295,7 @@ Then('a span double attribute {string} equals {float}') do |attribute, value|
 end
 
 Then('the span named {string} is the parent of every span named {string}') do |span1name, span2name|
-  
+
   spans = spans_from_request_list(Maze::Server.list_for("traces"))
 
   parentSpan = spans.find_all { |span| span['name'].eql?(span1name) }.first
@@ -303,4 +303,21 @@ Then('the span named {string} is the parent of every span named {string}') do |s
   childSpans2 = spans.find_all { |span| span['name'].eql?(span2name) }
 
   childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
+end
+
+And('the trace payload field {string} string attribute {string} matches the regex {string}') do |field, attribute, expected|
+  check_attribute_equal_regex field, attribute, 'stringValue', expected
+end
+
+# def get_attribute_value(field, attribute, attr_type)
+#   list = Maze::Server.list_for 'trace'
+#   attributes = Maze::Helper.read_key_path list.current[:body], "#{field}.attributes"
+#   attribute = attributes.find { |a| a['key'] == attribute }
+#   value = attribute&.dig 'value', attr_type
+#   attr_type == 'intValue' && value.is_a?(String) ? value.to_i : value
+# end
+
+def check_attribute_equal_regex(field, attribute, attr_type, expected)
+  actual = get_attribute_value field, attribute, attr_type
+  Maze.check.match(expected, actual)
 end
