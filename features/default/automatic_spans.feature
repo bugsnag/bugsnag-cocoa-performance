@@ -22,7 +22,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.span.category" equals "app_start"
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
     * every span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -59,7 +59,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -96,7 +96,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -185,7 +185,7 @@ Feature: Automatic instrumentation spans
     * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -233,7 +233,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -281,7 +281,7 @@ Feature: Automatic instrumentation spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -318,7 +318,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (pre-loaded)"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -354,7 +354,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "UIKit"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -378,7 +378,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "My Image view"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -401,7 +401,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "My Image view"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     And I discard every trace
@@ -435,7 +435,7 @@ Feature: Automatic instrumentation spans
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
@@ -467,7 +467,7 @@ Feature: Automatic instrumentation spans
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
@@ -520,7 +520,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -545,7 +545,7 @@ Feature: Automatic instrumentation spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -566,7 +566,7 @@ Feature: Automatic instrumentation spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -597,7 +597,7 @@ Feature: Automatic instrumentation spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -617,7 +617,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.instrumentation_message" matches the regex "Error.*"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -640,7 +640,7 @@ Feature: Automatic instrumentation spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -665,7 +665,7 @@ Feature: Automatic instrumentation spans
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -716,7 +716,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.phase" equals "Subview layout"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
@@ -744,6 +744,6 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
     * every span bool attribute "bugsnag.span.first_class" does not exist
     * every span string attribute "modifiedOnEnd" equals "yes"
-    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" equals "com.bugsnag.fixtures.cocoaperformance"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
