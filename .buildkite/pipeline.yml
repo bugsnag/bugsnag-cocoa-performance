@@ -58,8 +58,8 @@ steps:
           - bundle exec upload-app --farm=bb --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/iosXcFramework/output/Fixture.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bs_xcframework_ipa_url.txt
         artifact_paths:
-          - features/fixtures/ios/output/bb_xcframework_ipa_url.txt
-          - features/fixtures/ios/output/bs_xcframework_ipa_url.txt
+          - features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
+          - features/fixtures/iosXcFramework/output/bs_xcframework_ipa_url.txt
 
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
