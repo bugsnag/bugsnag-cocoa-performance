@@ -247,7 +247,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
+            download: "features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -280,7 +280,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
+            download: "features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -313,7 +313,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
+            download: "features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -346,7 +346,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
+            download: "features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
