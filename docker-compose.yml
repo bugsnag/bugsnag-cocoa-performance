@@ -52,6 +52,8 @@ services:
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./reports/:/app/reports/
+
   maze-runner-bs:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
