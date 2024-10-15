@@ -295,7 +295,7 @@ Then('a span double attribute {string} equals {float}') do |attribute, value|
 end
 
 Then('the span named {string} is the parent of every span named {string}') do |span1name, span2name|
-
+  
   spans = spans_from_request_list(Maze::Server.list_for("traces"))
 
   parentSpan = spans.find_all { |span| span['name'].eql?(span1name) }.first
