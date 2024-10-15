@@ -84,7 +84,7 @@ Feature: Automatic instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
-    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentGenecricViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
