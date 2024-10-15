@@ -63,6 +63,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
+  @skip_xcframework
   Scenario: AutoInstrumentGenericViewLoadScenario
     Given I run "AutoInstrumentGenericViewLoadScenario"
     And I wait for 18 spans

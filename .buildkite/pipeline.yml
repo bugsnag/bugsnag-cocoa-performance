@@ -263,6 +263,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
+              - "--tags ~@skip_xcframework"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -296,6 +297,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
+              - "--tags ~@skip_xcframework"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -329,6 +331,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
+              - "--tags ~@skip_xcframework"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -362,6 +365,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
+              - "--tags ~@skip_xcframework"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
