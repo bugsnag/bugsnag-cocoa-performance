@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 xcodebuild -version | awk 'NR==1{x=$0}END{print x" "$NF}'
 echo "$(sw_vers -productName) $(sw_vers -productVersion) $(sw_vers -buildVersion) $(uname -m)"
@@ -29,9 +29,6 @@ do
     fi
 done;
 
-unzip -q BugsnagPerformance.xcframework.zip
-unzip -q BugsnagPerformanceSwift.xcframework.zip
-
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
 sed -i '' -e 's|DISABLE_SWIZZLING_KEY|'$disable_swizzling_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
@@ -39,36 +36,12 @@ sed -i '' -e 's|DISABLE_SWIZZLING_VALUE|'$disable_swizzling_value'|' $(dirname "
 sed -i '' -e 's|SWIZZLING_PREMAIN_KEY|'$swizzling_premain_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
-sed -i '' -e 's|FIXTURENAME-Swift.h|FixtureXcFramework-Swift.h|' $(dirname "${BASH_SOURCE[0]}")/Fixture/ErrorGenerator.m
-
-
 cd $(dirname "${BASH_SOURCE[0]}")
 
-echo "--- FixtureXcFramework: xcodebuild archive"
+xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -scheme Fixture -project FixtureXcFramework.xcodeproj archive -allowProvisioningUpdates -quiet
 
-#
-# Using CLANG_ENABLE_MODULES=NO to surface build errors
-# https://github.com/bugsnag/bugsnag-cocoa/pull/1284
-#
+xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
 
-xcrun xcodebuild \
-  -scheme FixtureXcFramework \
-  -project FixtureXcFramework.xcodeproj \
-  -destination generic/platform=iOS \
-  -configuration Release \
-  -archivePath archive/FixtureXcFramework.xcarchive \
-  -allowProvisioningUpdates \
-  -quiet \
-  archive
+mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
-echo "--- FixtureXcFramework: xcodebuild -exportArchive"
-
-xcrun xcodebuild \
-  -exportArchive \
-  -archivePath archive/FixtureXcFramework.xcarchive \
-  -destination generic/platform=iOS \
-  -exportPath output/ \
-  -quiet \
-  -exportOptionsPlist exportOptions.plist
-
-mv ./output/FixtureXcFramework.ipa ./output/$fixture_name.ipa
+#rm ./Fixture/Info.plist

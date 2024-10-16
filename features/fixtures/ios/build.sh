@@ -36,31 +36,11 @@ sed -i '' -e 's|DISABLE_SWIZZLING_VALUE|'$disable_swizzling_value'|' $(dirname "
 sed -i '' -e 's|SWIZZLING_PREMAIN_KEY|'$swizzling_premain_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
-sed -i '' -e 's|FIXTURENAME-Swift.h|Fixture-Swift.h|' $(dirname "${BASH_SOURCE[0]}")/Fixture/ErrorGenerator.m
-
 cd $(dirname "${BASH_SOURCE[0]}")
 
-echo "--- Fixture: xcodebuild archive"
+xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture -project Fixture.xcodeproj archive -allowProvisioningUpdates -quiet
 
-xcrun xcodebuild \
-  -scheme Fixture \
-  -project Fixture.xcodeproj \
-  -destination generic/platform=iOS \
-  -configuration Release \
-  -archivePath archive/Fixture.xcarchive \
-  -allowProvisioningUpdates \
-  -quiet \
-  archive
-
-echo "--- Fixture: xcodebuild -exportArchive"
-
-xcrun xcodebuild \
-  -exportArchive \
-  -archivePath archive/Fixture.xcarchive \
-  -destination generic/platform=iOS \
-  -exportPath output/ \
-  -quiet \
-  -exportOptionsPlist exportOptions.plist
+xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
