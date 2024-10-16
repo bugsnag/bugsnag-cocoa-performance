@@ -43,6 +43,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "01FE4DA428E1AEBD00D1F239"
+            BuildableName = "FixtureXcFramework.app"
+            BlueprintName = "FixtureXcFramework"
+            ReferencedContainer = "container:FixtureXcFramework.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
       <AdditionalOptions>
          <AdditionalOption
             key = "NSZombieEnabled"
@@ -62,6 +72,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "01FE4DA428E1AEBD00D1F239"
+            BuildableName = "FixtureXcFramework.app"
+            BlueprintName = "FixtureXcFramework"
+            ReferencedContainer = "container:FixtureXcFramework.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
