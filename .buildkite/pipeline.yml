@@ -253,8 +253,8 @@ steps:
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bb-xcframework
-            run: maze-runner-bb-xcframework
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
@@ -287,8 +287,8 @@ steps:
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bb-xcframework
-            run: maze-runner-bb-xcframework
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
@@ -321,8 +321,8 @@ steps:
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bb-xcframework
-            run: maze-runner-bb-xcframework
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
@@ -355,8 +355,8 @@ steps:
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bb-xcframework
-            run: maze-runner-bb-xcframework
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"

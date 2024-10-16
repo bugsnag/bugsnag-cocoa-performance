@@ -38,22 +38,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./reports/:/app/reports/
 
-  maze-runner-bb-xcframework:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
-    environment:
-      <<: *common-environment
-      BITBAR_USERNAME:
-      BITBAR_ACCESS_KEY:
-    ports:
-      - "9000-9499:9339"
-      - "9000-9499:9340"
-    volumes:
-      - ./features/fixtures/iosXcFramework/output:/app/build
-      - ./features/:/app/features/
-      - ./maze_output:/app/maze_output
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./reports/:/app/reports/
-
   maze-runner-bs:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
