@@ -10,7 +10,7 @@ disable_swizzling_value=''
 swizzling_premain_key=''
 swizzling_premain_value=''
 
-fixture_name='Fixture'
+fixture_name='FixtureXcFramework'
 for ((i=1;i<=$#;i++));
 do
     if [ ${!i} = '--fixtureName' ]
@@ -64,3 +64,5 @@ xcrun xcodebuild \
   -exportPath output/ \
   -quiet \
   -exportOptionsPlist exportOptions.plist
+
+mv ./output/FixtureXcFramework.ipa ./output/$fixture_name.ipa

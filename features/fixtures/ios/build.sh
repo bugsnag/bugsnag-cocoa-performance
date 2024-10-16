@@ -38,9 +38,25 @@ sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "
 
 cd $(dirname "${BASH_SOURCE[0]}")
 
-xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture archive -allowProvisioningUpdates -quiet
+xcrun xcodebuild \
+  -scheme Fixture \
+  -project Fixture.xcodeproj \
+  -destination generic/platform=iOS \
+  -configuration Release \
+  -archivePath archive/FixtureXcFramework.xcarchive \
+  -allowProvisioningUpdates \
+  -quiet \
+  archive
 
-xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
+echo "--- FixtureXcFramework: xcodebuild -exportArchive"
+
+xcrun xcodebuild \
+  -exportArchive \
+  -archivePath archive/FixtureF.xcarchive \
+  -destination generic/platform=iOS \
+  -exportPath output/ \
+  -quiet \
+  -exportOptionsPlist exportOptions.plist
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
