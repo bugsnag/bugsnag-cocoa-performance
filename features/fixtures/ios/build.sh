@@ -56,7 +56,7 @@ echo "--- Fixture: xcodebuild -exportArchive"
 
 xcrun xcodebuild \
   -exportArchive \
-  -archivePath archive/FixtureF.xcarchive \
+  -archivePath archive/Fixture.xcarchive \
   -destination generic/platform=iOS \
   -exportPath output/ \
   -quiet \

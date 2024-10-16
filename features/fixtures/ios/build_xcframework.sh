@@ -29,6 +29,9 @@ do
     fi
 done;
 
+unzip -q BugsnagPerformance.xcframework.zip
+unzip -q BugsnagPerformanceSwift.xcframework.zip
+
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
 sed -i '' -e 's|DISABLE_SWIZZLING_KEY|'$disable_swizzling_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
