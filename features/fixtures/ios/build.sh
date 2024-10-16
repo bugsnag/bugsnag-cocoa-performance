@@ -47,7 +47,7 @@ xcrun xcodebuild \
   -project Fixture.xcodeproj \
   -destination generic/platform=iOS \
   -configuration Release \
-  -archivePath archive/FixtureXcFramework.xcarchive \
+  -archivePath archive/Fixture.xcarchive \
   -allowProvisioningUpdates \
   -quiet \
   archive
