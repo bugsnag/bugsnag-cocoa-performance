@@ -52,7 +52,7 @@ steps:
         commands:
           - ./features/fixtures/ios/build_xcframework.sh
           - bundle install
-          - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/iosXcFramework/output/bb_xcframework_ipa_url.txt
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bb_xcframework_ipa_url.txt
         plugins:
           - artifacts#v1.9.3:
               download:
