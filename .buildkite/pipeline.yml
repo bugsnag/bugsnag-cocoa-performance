@@ -263,7 +263,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -297,7 +296,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -331,7 +329,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -365,7 +362,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
