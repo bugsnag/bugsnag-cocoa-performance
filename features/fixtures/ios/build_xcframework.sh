@@ -36,6 +36,9 @@ sed -i '' -e 's|DISABLE_SWIZZLING_VALUE|'$disable_swizzling_value'|' $(dirname "
 sed -i '' -e 's|SWIZZLING_PREMAIN_KEY|'$swizzling_premain_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
+sed -i '' -e 's|FIXTURENAME-Swift.h|FixtureXcFramework-Swift.h|' $(dirname "${BASH_SOURCE[0]}")/Fixture/ErrorGenerator.m
+
+
 cd $(dirname "${BASH_SOURCE[0]}")
 
 echo "--- FixtureXcFramework: xcodebuild archive"

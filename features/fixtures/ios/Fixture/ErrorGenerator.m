@@ -6,7 +6,7 @@
 //
 
 #import "ErrorGenerator.h"
-#import "FixtureXcFramework-Swift.h"
+#import "FIXTURENAME-Swift.h"
 
 @interface ErrorGenerator ()
 
