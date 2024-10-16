@@ -38,6 +38,8 @@ sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "
 
 cd $(dirname "${BASH_SOURCE[0]}")
 
+echo "--- Fixture: xcodebuild archive"
+
 xcrun xcodebuild \
   -scheme Fixture \
   -project Fixture.xcodeproj \
@@ -48,7 +50,7 @@ xcrun xcodebuild \
   -quiet \
   archive
 
-echo "--- FixtureXcFramework: xcodebuild -exportArchive"
+echo "--- Fixture: xcodebuild -exportArchive"
 
 xcrun xcodebuild \
   -exportArchive \
