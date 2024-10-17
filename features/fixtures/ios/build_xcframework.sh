@@ -10,7 +10,7 @@ disable_swizzling_value=''
 swizzling_premain_key=''
 swizzling_premain_value=''
 
-fixture_name='Fixture'
+fixture_name='FixtureXcFramework'
 for ((i=1;i<=$#;i++));
 do
     if [ ${!i} = '--fixtureName' ]
@@ -29,6 +29,9 @@ do
     fi
 done;
 
+unzip BugsnagPerformance.xcframework.zip
+unzip BugsnagPerformanceSwift.xcframework.zip
+
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 
 sed -i '' -e 's|DISABLE_SWIZZLING_KEY|'$disable_swizzling_key'|' $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
@@ -38,9 +41,9 @@ sed -i '' -e 's|SWIZZLING_PREMAIN_VALUE|'$swizzling_premain_value'|' $(dirname "
 
 cd $(dirname "${BASH_SOURCE[0]}")
 
-xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -scheme Fixture -project Fixture.xcodeproj archive -allowProvisioningUpdates -quiet
+xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -scheme Fixture -project FixtureXcFramework.xcodeproj archive -allowProvisioningUpdates -quiet
 
-xcodebuild -destination generic/platform=iOS -archivePath Fixture.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
+xcodebuild -destination generic/platform=iOS -archivePath $fixture_name.xcarchive -exportArchive -exportPath output -exportOptionsPlist ExportOptions.plist -allowProvisioningUpdates -quiet
 
 mv ./output/Fixture.ipa ./output/$fixture_name.ipa
 
