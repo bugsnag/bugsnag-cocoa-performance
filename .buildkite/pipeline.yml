@@ -100,7 +100,7 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -133,7 +133,7 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -166,7 +166,7 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -199,7 +199,7 @@ steps:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -233,7 +233,7 @@ steps:
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -265,7 +265,7 @@ steps:
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -299,7 +299,7 @@ steps:
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -331,7 +331,7 @@ steps:
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-          docker-compose#v5.11.0:
+          docker-compose#v5.4.1:
             pull: maze-runner-bb
             run: maze-runner-bb
             service-ports: true
@@ -367,7 +367,7 @@ steps:
           - "maze_output/failed/**/*"
           - "maze_output/metrics.csv"
           - "maze_output/maze_output.zip"
-      docker-compose#v5.11.0:
+      docker-compose#v5.4.1:
         pull: maze-runner-bb
         run: maze-runner-bb
         command:
