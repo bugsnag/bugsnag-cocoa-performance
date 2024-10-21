@@ -239,7 +239,7 @@ steps:
 
   - group: ":bitbar: XcFramework E2E Tests"
     steps:
-      - label: ":bitbar: iOS XcFramework 16 E2E Tests"
+      - label: ":bitbar: iOS XcFramework 17 E2E Tests"
         depends_on:
           - ios_xcframework_fixture
         timeout_in_minutes: 30
@@ -258,81 +258,13 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_16"
+              - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-
-      - label: ":bitbar: iOS XcFramework 15 E2E Tests"
-        depends_on:
-          - ios_xcframework_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_15"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-
-      - label: ":bitbar: iOS XcFramework 14 E2E Tests"
-        depends_on:
-          - ios_xcframework_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
+              - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -366,7 +298,7 @@ steps:
               - "--no-tunnel"
               - "--aws-public-ip"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
+              - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
