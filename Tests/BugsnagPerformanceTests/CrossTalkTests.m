@@ -9,6 +9,8 @@
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
 
+#import <BugsnagPerformance/BugsnagPerformance.h>
+
 @interface CrossTalkAPITester: NSObject
 
 // Do NOT make implementations for any of these selectors.
@@ -18,6 +20,7 @@
 #pragma mark API Methods to Test
 
 - (NSArray *) testingGetCurrentTraceAndSpanIdV1;
+- (BugsnagPerformanceConfiguration *) testingGetConfigurationV1;
 
 @end
 
@@ -68,6 +71,11 @@ static id crossTalkRealAPI = nil;
 - (void)testGetCurrentTraceAndSpanIdV1 {
     XCTAssertNil([CrossTalkAPITester mapAPINamed:@"getCurrentTraceAndSpanIdV1" toSelector:@selector(testingGetCurrentTraceAndSpanIdV1)]);
     [CrossTalkAPITester.sharedInstance testingGetCurrentTraceAndSpanIdV1];
+}
+
+- (void)testGetConfigurationV1 {
+    XCTAssertNil([CrossTalkAPITester mapAPINamed:@"getConfigurationV1" toSelector:@selector(testingGetConfigurationV1)]);
+    [CrossTalkAPITester.sharedInstance testingGetConfigurationV1];
 }
 
 @end
