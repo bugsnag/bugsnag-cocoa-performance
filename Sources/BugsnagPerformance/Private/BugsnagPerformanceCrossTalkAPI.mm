@@ -34,6 +34,10 @@
     ];
 }
 
+- (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
+    return self.configuration;
+}
+
 #pragma mark Internal Functionality
 
 static NSString *BSGUserInfoKeyMapped = @"mapped";
@@ -54,6 +58,8 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
     // Note: ALWAYS ALWAYS ALWAYS check every single API mapping with a unit test!!!
     if ([apiName isEqualToString:@"getCurrentTraceAndSpanIdV1"]) {
         fromSelector = @selector(getCurrentTraceAndSpanIdV1);
+    } else if ([apiName isEqualToString:@"getConfigurationV1"]) {
+        fromSelector = @selector(getConfigurationV1);
     } else {
         err = [NSError errorWithDomain:@"com.bugsnag.BugsnagCocoaPerformance"
                                   code:0
