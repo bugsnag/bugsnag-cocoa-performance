@@ -135,6 +135,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     instrumentation_->configure(config);
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
+    [BugsnagPerformanceCrossTalkAPI.sharedInstance configure:config];
 }
 
 void BugsnagPerformanceImpl::preStartSetup() noexcept {
