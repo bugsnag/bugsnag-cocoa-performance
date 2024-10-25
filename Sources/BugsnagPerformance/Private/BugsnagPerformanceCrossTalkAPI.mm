@@ -11,6 +11,8 @@
 
 @implementation BugsnagPerformanceCrossTalkAPI
 
+static BugsnagPerformanceConfiguration *configuration;
+
 #pragma mark Exposed API
 
 /**
@@ -34,9 +36,26 @@
     ];
 }
 
+/**
+ * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
+ */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
-    return self.configuration;
+    return configuration;
 }
+
+#pragma mark BSGPhasedStartup
+
+- (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
+
+- (void)earlySetup {}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    configuration = config;
+}
+
+- (void)start {}
+
+- (void)preStartSetup {}
 
 #pragma mark Internal Functionality
 

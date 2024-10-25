@@ -6,7 +6,6 @@
 //
 
 #import "BugsnagPerformanceLibrary.h"
-#import "BugsnagPerformanceCrossTalkAPI.h"
 #import "Reachability.h"
 
 using namespace bugsnag;
@@ -68,7 +67,6 @@ void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration
         }
 
         sharedInstance().configure(config);
-        BugsnagPerformanceCrossTalkAPI.sharedInstance.configuration = config;
     }
 }
 

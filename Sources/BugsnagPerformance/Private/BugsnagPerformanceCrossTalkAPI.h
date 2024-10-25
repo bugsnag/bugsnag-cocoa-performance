@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "SpanStackingHandler.h"
-#import "BugsnagPerformanceImpl.h"
+#import "PhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BugsnagPerformanceCrossTalkAPI : NSObject
+@interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
 
 #pragma mark Mandatory Methods
 
@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Configuration and Internal Functions
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
-@property(nonatomic) BugsnagPerformanceConfiguration *configuration;
 
 @end
 
