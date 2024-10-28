@@ -83,9 +83,9 @@ steps:
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
-      - label: "iOS 18 Unit Tests"
+      - label: "iOS 17 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18 DEVICE="iPhone 15"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.4 DEVICE="iPhone 15"
         plugins:
           artifacts#v1.9.3:
             upload:
