@@ -9,9 +9,11 @@
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import <objc/runtime.h>
 
-@implementation BugsnagPerformanceCrossTalkAPI
+@interface BugsnagPerformanceCrossTalkAPI ()
+@property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
+@end
 
-static BugsnagPerformanceConfiguration *configuration;
+@implementation BugsnagPerformanceCrossTalkAPI
 
 #pragma mark Exposed API
 
@@ -40,7 +42,7 @@ static BugsnagPerformanceConfiguration *configuration;
  * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
-    return configuration;
+    return self.configuration;
 }
 
 #pragma mark BSGPhasedStartup
@@ -50,7 +52,7 @@ static BugsnagPerformanceConfiguration *configuration;
 - (void)earlySetup {}
 
 - (void)configure:(BugsnagPerformanceConfiguration *)config {
-    configuration = config;
+    self.configuration = config;
 }
 
 - (void)start {}
