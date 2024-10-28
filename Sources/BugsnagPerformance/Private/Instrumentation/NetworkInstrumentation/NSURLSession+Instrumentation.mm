@@ -8,6 +8,7 @@
 #import "NSURLSession+Instrumentation.h"
 #import "BSGURLSessionPerformanceProxy.h"
 #import "../../Swizzle.h"
+#import "BSGPerformanceSharedSessionProxy.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;
@@ -48,7 +49,7 @@ static void replace_NSURLSession_sharedSession(BSGIsEnabledCallback isEnbled) {
             return originalIMP(self, selector);
         }
 
-        static NSURLSession *session;
+        static BSGPerformanceSharedSessionProxy *sessionProxy;
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
             // The shared session uses the shared NSURLCache, NSHTTPCookieStorage,
@@ -56,11 +57,12 @@ static void replace_NSURLSession_sharedSession(BSGIsEnabledCallback isEnbled) {
             // protocol list (configured with registerClass: and unregisterClass:),
             // and is based on a default configuration.
             // https://developer.apple.com/documentation/foundation/nsurlsession/1409000-sharedsession
-            session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                                    delegate:nil delegateQueue:nil];
+
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:nil];
+            sessionProxy = [[BSGPerformanceSharedSessionProxy alloc] initWithSession:session];
         });
 
-        return session;
+        return (NSURLSession *)sessionProxy;
     });
 }
 

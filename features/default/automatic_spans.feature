@@ -607,6 +607,28 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
+  Scenario: Invalidate calls on shared session should be ignored
+    Given I run "AutoInstrumentNetworkSharedSessionInvalidateScenario"
+    And I wait for exactly 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "parentSpanId" does not exist
+    * a span field "name" equals "[HTTP/GET]"
+    * a span string attribute "http.flavor" exists
+    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+    * a span string attribute "http.method" equals "GET"
+    * a span integer attribute "http.status_code" is greater than 0
+    * a span integer attribute "http.response_content_length" is greater than 0
+    * a span string attribute "net.host.connection.type" equals "wifi"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
   Scenario: Capture automatic network span before configuration (disabled)
     Given I run "AutoInstrumentNetworkPreStartDisabledScenario"
     And I should receive no traces
