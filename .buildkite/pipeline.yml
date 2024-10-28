@@ -83,9 +83,9 @@ steps:
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
-      - label: "iOS 17 Unit Tests"
+      - label: "iOS 18 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.4 DEVICE="iPhone 15"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18 DEVICE="iPhone 15"
         plugins:
           artifacts#v1.9.3:
             upload:
@@ -107,7 +107,7 @@ steps:
   #
   - group: ":bitbar: E2E Tests"
     steps:
-      - label: ":browserstack: iOS 17 E2E Tests"
+      - label: ":browserstack: iOS 18 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 30
@@ -126,7 +126,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bs_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
               - "features/default"
@@ -272,7 +272,7 @@ steps:
 
   - group: ":bitbar: XcFramework E2E Tests"
     steps:
-      - label: ":browserstack: iOS XcFramework 17 E2E Tests"
+      - label: ":browserstack: iOS XcFramework 18 E2E Tests"
         depends_on:
           - ios_xcframework_fixture
         timeout_in_minutes: 30
@@ -291,7 +291,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bs_xcframework_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
