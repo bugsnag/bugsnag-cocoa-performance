@@ -105,7 +105,7 @@ steps:
   #
   # BitBar
   #
-  - group: ":bitbar: E2E Tests"
+  - group: "E2E Tests"
     steps:
       - label: ":browserstack: iOS 18 E2E Tests"
         depends_on:
