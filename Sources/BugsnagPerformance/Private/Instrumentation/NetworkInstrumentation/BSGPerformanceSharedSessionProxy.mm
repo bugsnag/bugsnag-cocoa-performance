@@ -10,6 +10,9 @@
 #import "BSGPerformanceSharedSessionProxy.h"
 #import <objc/runtime.h>
 
+#define FINISH_TASK_AND_INVALIDATE_SELECTOR @selector(finishTasksAndInvalidate)
+#define INVALIDATE_AND_CANCEL_SELECTOR @selector(invalidateAndCancel)
+
 @interface BSGPerformanceSharedSessionProxy ()
 
 @property (nonatomic, strong) NSURLSession *session;
@@ -27,8 +30,8 @@
 }
 
 + (BOOL)selectorShouldBeForwarded:(SEL)aSelector {
-    NSString *selectorString = NSStringFromSelector(aSelector);
-    return !([selectorString isEqual:@"finishTasksAndInvalidate"] || [selectorString isEqual:@"invalidateAndCancel"]);
+    return !(sel_isEqual(aSelector, FINISH_TASK_AND_INVALIDATE_SELECTOR) ||
+             sel_isEqual(aSelector, INVALIDATE_AND_CANCEL_SELECTOR));
 }
 
 - (id)initWithSession:(NSURLSession *)session {
