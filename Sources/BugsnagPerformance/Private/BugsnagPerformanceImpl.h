@@ -45,9 +45,9 @@ public:
 
     void reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept;
 
-    BugsnagPerformanceSpan *startSpan(NSString *name) noexcept;
+    BugsnagPerformanceSpan *startCustomSpan(NSString *name) noexcept;
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, BugsnagPerformanceSpanOptions *options) noexcept;
+    BugsnagPerformanceSpan *startCustomSpan(NSString *name, BugsnagPerformanceSpanOptions *options) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept;
 

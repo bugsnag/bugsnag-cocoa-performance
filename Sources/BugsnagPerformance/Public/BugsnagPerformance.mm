@@ -27,11 +27,11 @@ using namespace bugsnag;
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name {
-    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startSpan(name);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startCustomSpan(name);
 }
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options {
-    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startSpan(name, options);
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startCustomSpan(name, options);
 }
 
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
