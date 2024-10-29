@@ -29,7 +29,7 @@ steps:
         commands:
           - bundle install
           - pod lib lint BugsnagPerformance.podspec.json
-        skip: "Skipped due to an issue with cocoapods linting - https://github.com/CocoaPods/CocoaPods/issues/12664"
+        skip: "Skipped due to https://github.com/CocoaPods/CocoaPods/issues/12664"
 
       - label: "Example"
         commands:
