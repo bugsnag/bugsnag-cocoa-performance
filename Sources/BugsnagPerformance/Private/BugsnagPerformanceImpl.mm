@@ -485,15 +485,17 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 
 #pragma mark Spans
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name) noexcept {
     SpanOptions options;
     auto span = tracer_->startCustomSpan(name, options);
+    [span internalSetMultipleAttributes:spanAttributesProvider_->customSpanAttributes()];
     return span;
 }
 
-BugsnagPerformanceSpan *BugsnagPerformanceImpl::startSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startCustomSpan(name, options);
+    [span internalSetMultipleAttributes:spanAttributesProvider_->customSpanAttributes()];
     return span;
 }
 
