@@ -29,6 +29,7 @@ steps:
         commands:
           - bundle install
           - pod lib lint BugsnagPerformance.podspec.json
+        skip: "Skipped due to https://github.com/CocoaPods/CocoaPods/issues/12664"
 
       - label: "Example"
         commands:
@@ -105,9 +106,9 @@ steps:
   #
   # BitBar
   #
-  - group: ":bitbar: E2E Tests"
+  - group: "E2E Tests"
     steps:
-      - label: ":browserstack: iOS 17 E2E Tests"
+      - label: ":browserstack: iOS 18 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 30
@@ -126,7 +127,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bs_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
               - "features/default"
@@ -272,7 +273,7 @@ steps:
 
   - group: ":bitbar: XcFramework E2E Tests"
     steps:
-      - label: ":browserstack: iOS XcFramework 17 E2E Tests"
+      - label: ":browserstack: iOS XcFramework 18 E2E Tests"
         depends_on:
           - ios_xcframework_fixture
         timeout_in_minutes: 30
@@ -291,7 +292,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bs_xcframework_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
