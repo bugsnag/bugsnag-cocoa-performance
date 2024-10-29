@@ -22,6 +22,7 @@ public:
     NSMutableDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSMutableDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSMutableDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
+    NSMutableDictionary *customSpanAttributes() noexcept;
 
     static NSString *httpUrlAttributeKey();
 };

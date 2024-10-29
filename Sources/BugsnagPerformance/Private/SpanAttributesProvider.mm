@@ -192,3 +192,10 @@ SpanAttributesProvider::viewLoadPhaseSpanAttributes(NSString *className, NSStrin
         @"bugsnag.phase": phase,
     }.mutableCopy;
 }
+
+NSMutableDictionary *
+SpanAttributesProvider::customSpanAttributes() noexcept {
+    return @{
+        @"bugsnag.span.category": @"custom",
+    }.mutableCopy;
+}
