@@ -15,6 +15,7 @@ Feature: Manual creation of spans
     * a span field "name" equals "WillRetry"
     * a span field "name" equals "Success"
     * every span bool attribute "bugsnag.span.first_class" is true
+    * every span string attribute "bugsnag.span.category" equals "custom"
 
   Scenario: Manually start and end a span
     Given I run "ManualSpanScenario"
@@ -47,6 +48,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "10.0"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+    * every span string attribute "bugsnag.span.category" equals "custom"
 
   Scenario: Starting and ending a span before starting the SDK
     Given I run "ManualSpanBeforeStartScenario"
@@ -65,6 +67,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "42.42"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "42"
+    * every span string attribute "bugsnag.span.category" equals "custom"
 
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario"
