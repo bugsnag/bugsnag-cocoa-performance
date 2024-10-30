@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Set bugsnag.span.category to 'custom' for custom spans.
+  [336](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/336)
+
 * Fixed a crash after shared NSURLSession invalidate
   [334](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/334)
 
