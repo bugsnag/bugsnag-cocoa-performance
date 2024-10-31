@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## 1.10.2 (2024-10-31)
+
+* Fixed a crash after shared NSURLSession invalidate
+  [334](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/334)
+
+* Fix visionOS compilation errors. Note that visionOS is not yet officially supported.
+  [327](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/327)
+
 ## 1.10.1 (2024-10-30)
 
 ### Bug fixes

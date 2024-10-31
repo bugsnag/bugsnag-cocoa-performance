@@ -15,11 +15,11 @@ class Scenario: NSObject {
     let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
-    
+
     private override init() {
         fatalError("do not use the default init of Scenario")
     }
-    
+
     required init(fixtureConfig: FixtureConfig) {
         self.fixtureConfig = fixtureConfig
     }
@@ -50,11 +50,11 @@ class Scenario: NSObject {
                                              prefixes: [URL]) -> BugsnagPerformanceNetworkRequestInfo {
         if info.url == nil {
             return info
-         }
+        }
 
         if urlHasAnyPrefixIn(url: info.url!, prefixes: prefixes) {
-             info.url = nil
-         }
+            info.url = nil
+        }
         return info
     }
 
@@ -102,7 +102,7 @@ class Scenario: NSObject {
             BugsnagPerformance.start(configuration: config)
         }, measurement: "start")
     }
-    
+
     func run() {
         logError("Scenario.run() has not been overridden!")
         fatalError("To be implemented by subclass")
@@ -136,7 +136,7 @@ class Scenario: NSObject {
         // Wait long enough to allow the current batch to be packaged and sent
         Thread.sleep(forTimeInterval: 1.0)
     }
-    
+
     func performAndReportDuration(_ body: () -> Void, measurement: String) {
         let startDate = Date()
         body()
@@ -147,7 +147,7 @@ class Scenario: NSObject {
         let metrics = ["duration.nanos": "\(duration.nanosecond ?? 0)"]
         pendingMeasurements.append((name: measurement, metrics: metrics))
     }
-    
+
     func report(metrics: [String: Any], name: String) {
         var request = URLRequest(url: fixtureConfig.metricsURL)
         request.httpMethod = "POST"
@@ -166,5 +166,10 @@ class Scenario: NSObject {
         request.httpBody = jsonData
         
         URLSession.shared.dataTask(with: request).resume()
+    }
+
+    func callReflectUrl(appendingToUrl: String) {
+        let url = URL(string: appendingToUrl, relativeTo: fixtureConfig.reflectURL)!
+        URLSession.shared.dataTask(with: url).resume()
     }
 }
