@@ -21,6 +21,7 @@
 
 - (NSArray *) testingGetCurrentTraceAndSpanIdV1;
 - (BugsnagPerformanceConfiguration *) testingGetConfigurationV1;
+- (BugsnagPerformanceSpan *) testingStartSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn;
 
 @end
 
@@ -76,6 +77,12 @@ static id crossTalkRealAPI = nil;
 - (void)testGetConfigurationV1 {
     XCTAssertNil([CrossTalkAPITester mapAPINamed:@"getConfigurationV1" toSelector:@selector(testingGetConfigurationV1)]);
     [CrossTalkAPITester.sharedInstance testingGetConfigurationV1];
+}
+
+- (void)testStartSpanV1 {
+    XCTAssertNil([CrossTalkAPITester mapAPINamed:@"startSpanV1" toSelector:@selector(testingStartSpanV1:options:)]);
+    BugsnagPerformanceSpanOptions *spanOptions = [BugsnagPerformanceSpanOptions new];
+    [CrossTalkAPITester.sharedInstance testingStartSpanV1:@"test" options:spanOptions];
 }
 
 @end
