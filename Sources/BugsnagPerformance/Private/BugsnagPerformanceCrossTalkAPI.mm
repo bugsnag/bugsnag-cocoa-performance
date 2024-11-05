@@ -52,7 +52,7 @@
     }
     
     auto options = SpanOptions(optionsIn);
-    auto span = tracer->startCustomSpan(name, options);
+    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
     return span;
 }
 
