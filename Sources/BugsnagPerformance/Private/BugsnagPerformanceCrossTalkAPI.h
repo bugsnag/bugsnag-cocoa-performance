@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "SpanStackingHandler.h"
 #import "PhasedStartup.h"
+#import "Tracer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -21,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark Configuration and Internal Functions
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property(nonatomic) std::shared_ptr<Tracer> tracer;
 
 @end
 

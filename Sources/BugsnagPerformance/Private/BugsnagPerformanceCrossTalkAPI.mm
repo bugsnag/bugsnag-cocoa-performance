@@ -45,6 +45,17 @@
     return self.configuration;
 }
 
+- (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
+    auto tracer = self.tracer;
+    if (tracer == nullptr) {
+        return nil;
+    }
+    
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
+    return span;
+}
+
 #pragma mark BSGPhasedStartup
 
 - (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
@@ -81,6 +92,8 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
         fromSelector = @selector(getCurrentTraceAndSpanIdV1);
     } else if ([apiName isEqualToString:@"getConfigurationV1"]) {
         fromSelector = @selector(getConfigurationV1);
+    } else if ([apiName isEqualToString:@"startSpanV1"]) {
+        fromSelector = @selector(startSpanV1:options:);
     } else {
         err = [NSError errorWithDomain:@"com.bugsnag.BugsnagCocoaPerformance"
                                   code:0
