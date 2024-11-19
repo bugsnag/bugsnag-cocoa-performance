@@ -39,6 +39,10 @@ steps:
           artifacts#v1.9.3:
             upload:
               - "logs/*"
+        agents:
+          queue: macos-12-arm
+        env:
+          XCODE_VERSION: "14"
 
   - group: "E2E Tests Full"
     steps:
