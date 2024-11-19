@@ -469,3 +469,7 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+
+
+  - label: 'Conditionally trigger full set of tests'
+    command: sh -c .buildkite/pipeline_trigger.sh
