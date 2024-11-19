@@ -404,9 +404,40 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: ":bitbar: Swizzling premain E2E Tests"
+  - group: "Swizzling premain E2E Tests"
     steps:
-      - label: ":bitbar: iOS 16 E2E Tests swizzling premain"
+      - label: ":browserstack: iOS 18 E2E Tests swizzling premain"
+        depends_on:
+          - ios_fixture_swizzling_premain
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.9.3:
+            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          docker-compose#v4.8.0:
+            pull: maze-runner-bs
+            run: maze-runner-bs
+            service-ports: true
+            command:
+              - "--app=@build/bb_url_swizzling_premain.txt"
+              - "--device=IOS_18"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+
+      - label: ":bitbar: iOS 13 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
         timeout_in_minutes: 30
@@ -424,7 +455,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_16"
+              - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
@@ -437,39 +468,6 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
-
-      - label: ":bitbar: iOS 14 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-
 
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
