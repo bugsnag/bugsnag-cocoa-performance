@@ -69,8 +69,10 @@ steps:
           - ./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled.txt
+          - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_disabled.txt
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_disabled.txt
+          - features/fixtures/ios/output/bs_url_swizzling_disabled.txt
 
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
@@ -78,8 +80,10 @@ steps:
           - ./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt
+          - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_premain.txt
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_premain.txt
+          - features/fixtures/ios/output/bs_url_swizzling_premain.txt
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
@@ -236,7 +240,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: ":bitbar: Swizzling disabled E2E Tests"
+  - group: "Swizzling disabled E2E Tests"
     steps:
       - label: ":browserstack: iOS 18 E2E Tests swizzling disabled"
         depends_on:
@@ -246,7 +250,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
+            download: "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -256,7 +260,7 @@ steps:
             run: maze-runner-bs
             service-ports: true
             command:
-              - "--app=@build/bb_url_swizzling_disabled.txt"
+              - "--app=@build/bs_url_swizzling_disabled.txt"
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
@@ -311,7 +315,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
+            download: "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -321,7 +325,7 @@ steps:
             run: maze-runner-bs
             service-ports: true
             command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
+              - "--app=@build/bs_url_swizzling_premain.txt"
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"

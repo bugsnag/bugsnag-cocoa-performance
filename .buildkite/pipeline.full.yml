@@ -351,7 +351,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
+            download: "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -361,7 +361,7 @@ steps:
             run: maze-runner-bs
             service-ports: true
             command:
-              - "--app=@build/bb_url_swizzling_disabled.txt"
+              - "--app=@build/bs_url_swizzling_disabled.txt"
               - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bs"
@@ -480,7 +480,7 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
+            download: "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
@@ -490,7 +490,7 @@ steps:
             run: maze-runner-bs
             service-ports: true
             command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
+              - "--app=@build/bs_url_swizzling_premain.txt"
               - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bs"
