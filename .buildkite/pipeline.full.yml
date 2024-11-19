@@ -6,7 +6,7 @@ agents:
   queue: macos-14
 
 steps:
-  - group: ":xcode_simulator: Unit Tests Full"
+  - group: ":xcode_simulator: Unit Tests"
     steps:
       - label: "iOS 17 Unit Tests"
         commands:
@@ -44,7 +44,7 @@ steps:
         env:
           XCODE_VERSION: "14"
 
-  - group: "E2E Tests Full"
+  - group: "E2E Tests"
     steps:
       - label: ":browserstack: iOS 17 E2E Tests"
         depends_on:
@@ -209,7 +209,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: "XcFramework E2E Tests Full"
+  - group: "XcFramework E2E Tests"
     steps:
       - label: ":browserstack: iOS XcFramework 17 E2E Tests"
         depends_on:
@@ -233,7 +233,6 @@ steps:
               - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bs"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -267,7 +266,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -301,7 +299,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -335,7 +332,6 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -345,7 +341,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: "Swizzling disabled E2E Tests Full"
+  - group: "Swizzling disabled E2E"
     steps:
       - label: ":browserstack: iOS 17 E2E Tests swizzling disabled"
         depends_on:
@@ -474,7 +470,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: "Swizzling premain E2E Tests Full"
+  - group: "Swizzling premain E2E"
     steps:
       - label: ":browserstack: iOS 17 E2E Tests swizzling premain"
         depends_on:
