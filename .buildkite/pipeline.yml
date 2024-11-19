@@ -170,7 +170,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: ":bitbar: XcFramework E2E Tests"
+  - group: "XcFramework E2E Tests"
     steps:
       - label: ":browserstack: iOS XcFramework 18 E2E Tests"
         depends_on:
@@ -238,7 +238,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: ":bitbar: Swizzling disabled E2E Tests"
+  - group: "Swizzling disabled E2E Tests"
     steps:
       - label: ":browserstack: iOS 18 E2E Tests swizzling disabled"
         depends_on:
@@ -303,7 +303,7 @@ steps:
         concurrency_group: bitbar-app
         concurrency_method: eager
 
-  - group: ":bitbar: Swizzling premain E2E Tests"
+  - group: "Swizzling premain E2E Tests"
     steps:
       - label: ":browserstack: iOS 18 E2E Tests swizzling premain"
         depends_on:
@@ -372,6 +372,5 @@ steps:
   #
   # Trigger more tests
   #
-
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
