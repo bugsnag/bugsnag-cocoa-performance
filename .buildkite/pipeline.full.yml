@@ -18,7 +18,7 @@ steps:
 
       - label: "iOS 16 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 15"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
         plugins:
           artifacts#v1.9.3:
             upload:
@@ -26,7 +26,7 @@ steps:
 
       - label: "iOS 15 Unit Tests"
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 15"
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
         plugins:
           artifacts#v1.9.3:
             upload:
