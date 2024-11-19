@@ -1,6 +1,6 @@
 env:
   LANG: "en_GB.UTF-8"
-  XCODE_VERSION: "15.3.0"
+  XCODE_VERSION: "15.4.0"
 
 agents:
   queue: macos-14
