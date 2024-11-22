@@ -66,6 +66,9 @@
 		09D807F52B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */; };
 		09D807F62B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		09E313042BF363020081F219 /* CrossTalkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E313032BF363020081F219 /* CrossTalkTests.m */; };
+		09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */; };
+		09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */; };
+		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
@@ -308,6 +311,9 @@
 		09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
 		09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanContext+Private.h"; sourceTree = "<group>"; };
 		09E313032BF363020081F219 /* CrossTalkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrossTalkTests.m; sourceTree = "<group>"; };
+		09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSwiftTools.h; sourceTree = "<group>"; };
+		09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagSwiftTools.m; sourceTree = "<group>"; };
+		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -537,7 +543,6 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				966634D82C8A3939004A934D /* FrameRateMetrics */,
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
@@ -552,10 +557,13 @@
 				09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */,
 				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
 				CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */,
+				09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */,
+				09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */,
 				CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */,
 				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
 				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
+				966634D82C8A3939004A934D /* FrameRateMetrics */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
 				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
 				0122C22229019770002D243C /* IdGenerator.h */,
@@ -700,6 +708,7 @@
 			children = (
 				960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */,
 				096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */,
+				09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */,
 			);
 			path = BugsnagPerformanceSwift;
 			sourceTree = "<group>";
@@ -841,6 +850,7 @@
 				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */,
+				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
@@ -1058,7 +1068,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					B4A4A4DE1EA43C6C4D6D3894 = {
-						LastSwiftMigration = 1520;
+						LastSwiftMigration = 1540;
 					};
 				};
 			};
@@ -1177,6 +1187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				094FA7362B10EDE600112ED4 /* BugsnagPerformanceSwift.docc in Sources */,
+				09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */,
 				960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */,
 				096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */,
 			);
@@ -1219,6 +1230,7 @@
 				966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
+				09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */,
 				968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
