@@ -129,6 +129,7 @@ steps:
               - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_17"
               - "--appium-version=2.0.1"
+              - "--bundle-id=com.bugsnag.fixtures.cocoaperformance"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
