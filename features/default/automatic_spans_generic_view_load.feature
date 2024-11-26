@@ -1,3 +1,5 @@
+# The scenarios in this file are skipped for swizzling premain mode as it doesn't support Swift Generics
+
 Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
   Scenario: AutoInstrumentGenericViewLoadScenario
     Given I run "AutoInstrumentGenericViewLoadScenario"
