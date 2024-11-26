@@ -21,7 +21,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner-bb:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4309
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4310
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
