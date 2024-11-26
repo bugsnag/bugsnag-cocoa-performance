@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://www.bugsnag.com/platforms/ios-crash-reporting">
+  <a href="https://www.bugsnag.com/platforms/ios">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://assets.smartbear.com/m/3dab7e6cf880aa2b/original/BugSnag-Repository-Header-Dark.svg">
       <img alt="SmartBear BugSnag logo" src="https://assets.smartbear.com/m/3945e02cdc983893/original/BugSnag-Repository-Header-Light.svg">
@@ -10,6 +10,7 @@
 
 [![Documentation](https://img.shields.io/badge/documentation-latest-blue.svg)](https://docs.bugsnag.com/performance/cocoa/)
 [![Build status](https://badge.buildkite.com/48e2de18a691e329d2d1923aa1a454830cdd591fa9e892f63b.svg?branch=main)](https://buildkite.com/bugsnag/bugsnag-cocoa-performance)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/bugsnag/bugsnag-cocoa-performance/badge)](https://scorecard.dev/viewer/?uri=github.com/bugsnag/bugsnag-cocoa-performance)
 
 Monitor the start-up, screen loading and network requests of your app and see the results in your [BugSnag](https://www.bugsnag.com) dashboard.
 
@@ -20,8 +21,6 @@ Monitor the start-up, screen loading and network requests of your app and see th
 - Report `NSURLSession` request times
 
 ## Getting started
-
-_This functionality is currently in its preview phase – please [contact us](mailto:support@bugsnag.com) for more information._
 
 For integration instructions, see our online docs: [docs.bugsnag.com/performance/ios](https://docs.bugsnag.com/performance/ios)
 
