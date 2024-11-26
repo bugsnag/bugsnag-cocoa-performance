@@ -42,6 +42,7 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bb_ipa_url.txt"
+              - "--app-bundle-id=com.bugsnag.fixtures.cocoaperformance"
               - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bb"
