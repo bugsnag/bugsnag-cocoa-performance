@@ -21,8 +21,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner-bb:
-#    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-ci-ruby-3-build-4308
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:je-ios-17-debug-ci-ruby-3
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
