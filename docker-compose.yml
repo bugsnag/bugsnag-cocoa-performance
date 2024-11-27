@@ -37,7 +37,7 @@ services:
       - ./reports/:/app/reports/
 
   maze-runner-bs:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4322
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:

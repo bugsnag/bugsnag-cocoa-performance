@@ -42,7 +42,6 @@ steps:
             service-ports: true
             command:
               - "--app=@build/bb_ipa_url.txt"
-              - "--app-bundle-id=com.bugsnag.fixtures.cocoaperformance"
               - "--device=IOS_17"
               - "--fail-fast"
               - "--farm=bb"
@@ -55,6 +54,37 @@ steps:
             branch: "^main|next$$"
         concurrency: 25
         concurrency_group: bitbar-app
+        concurrency_method: eager
+
+      - label: ":browserstack: iOS 17 E2E Tests"
+        depends_on:
+          - ios_fixture
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.9.3:
+            download: "features/fixtures/ios/output/bs_ipa_url.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          docker-compose#v4.8.0:
+            pull: maze-runner-bs
+            run: maze-runner-bs
+            service-ports: true
+            command:
+              - "--app=@build/bs_ipa_url.txt"
+              - "--device=IOS_17"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "features/default"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
+        concurrency: 5
+        concurrency_group: browserstack-app
         concurrency_method: eager
 
       - label: ":bitbar: iOS 13 E2E Tests"
@@ -89,3 +119,4 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+z
