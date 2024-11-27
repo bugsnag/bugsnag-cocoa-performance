@@ -11,9 +11,14 @@ import BugsnagPerformance
 
 class ViewController: UIViewController {
 
+    @IBAction func showGenericView(_ sender: Any) {
+        let vc = GenericViewController<Int>()
+        show(vc, sender:sender)
+    }
+
     @IBAction func showSwiftUIView(_ sender: Any) {
         if #available(iOS 13.0.0, *) {
-            show(UIHostingController(rootView: SomeView()), sender: sender)
+            show(UIHostingController(rootView: SomeView<Int>().bugsnagTraced()), sender: sender)
         } else {
             present(UIAlertController(
                 title: "Error",

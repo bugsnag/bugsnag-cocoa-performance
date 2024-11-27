@@ -47,7 +47,7 @@ public extension UIViewController {
     func bugsnagTraced(_ name: String? = nil) -> UIViewController {
         let viewController = BugsnagPerformanceTrackedViewController()
         viewController.trackedViewController = self
-        viewController.viewName = name ?? String(reflecting: type(of: self))
+        viewController.viewName = name ?? BugsnagSwiftToolsImpl.demangledClassNameFromInstance(object: self)
         return viewController
     }
 }
