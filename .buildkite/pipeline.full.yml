@@ -46,7 +46,7 @@ steps:
 
   - group: "E2E Tests"
     steps:
-      - label: ":browserstack: iOS 17 E2E Tests"
+      - label: ":bitbar: iOS 17 E2E Tests"
         depends_on:
           - ios_fixture
         timeout_in_minutes: 30
@@ -54,27 +54,29 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bs_ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bs
-            run: maze-runner-bs
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/bs_ipa_url.txt"
+              - "--app=@build/bb_ipa_url.txt"
               - "--device=IOS_17"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
       - label: ":bitbar: iOS 16 E2E Tests"
@@ -178,7 +180,7 @@ steps:
 
   - group: "XcFramework E2E Tests"
     steps:
-      - label: ":browserstack: iOS XcFramework 17 E2E Tests"
+      - label: ":bitbar: iOS XcFramework 17 E2E Tests"
         depends_on:
           - ios_xcframework_fixture
         timeout_in_minutes: 30
@@ -186,27 +188,29 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
+            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bs
-            run: maze-runner-bs
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/bs_xcframework_ipa_url.txt"
+              - "--app=@build/bb_xcframework_ipa_url.txt"
               - "--device=IOS_17"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
               - "features/default/automatic_spans.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
       - label: ":bitbar: iOS XcFramework 16 E2E Tests"
@@ -310,7 +314,7 @@ steps:
 
   - group: "Swizzling disabled E2E"
     steps:
-      - label: ":browserstack: iOS 17 E2E Tests swizzling disabled"
+      - label: ":bitbar: iOS 17 E2E Tests swizzling disabled"
         depends_on:
           - ios_fixture_swizzling_disabled
         timeout_in_minutes: 30
@@ -318,27 +322,28 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
+            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bs
-            run: maze-runner-bs
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/bs_url_swizzling_disabled.txt"
+              - "--app=@build/bb_url_swizzling_disabled.txt"
               - "--device=IOS_17"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
               - "features/swizzling_disabled"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
       - label: ":bitbar: iOS 16 E2E Tests swizzling disabled"
@@ -439,7 +444,7 @@ steps:
 
   - group: "Swizzling premain E2E"
     steps:
-      - label: ":browserstack: iOS 17 E2E Tests swizzling premain"
+      - label: ":bitbar: iOS 17 E2E Tests swizzling premain"
         depends_on:
           - ios_fixture_swizzling_premain
         timeout_in_minutes: 30
@@ -447,28 +452,29 @@ steps:
           queue: opensource
         plugins:
           artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
+            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
           docker-compose#v4.8.0:
-            pull: maze-runner-bs
-            run: maze-runner-bs
+            pull: maze-runner-bb
+            run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/bs_url_swizzling_premain.txt"
+              - "--app=@build/bb_url_swizzling_premain.txt"
               - "--device=IOS_17"
               - "--fail-fast"
-              - "--farm=bs"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: browserstack-app
+        concurrency: 25
+        concurrency_group: bitbar-app
         concurrency_method: eager
 
       - label: ":bitbar: iOS 16 E2E Tests swizzling premain"
