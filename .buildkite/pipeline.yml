@@ -1,6 +1,5 @@
 env:
   LANG: "en_GB.UTF-8"
-  XCODE_VERSION: "15.4.0"
 
 agents:
   queue: macos-14
@@ -14,6 +13,8 @@ steps:
         timeout_in_minutes: 20
         commands:
           - make build_xcframework
+        env:
+          XCODE_VERSION: "15.4.0"
         plugins:
           - artifacts#v1.9.3:
               upload:
@@ -24,16 +25,22 @@ steps:
         commands:
           - bundle install
           - ./features/fixtures/carthage/build.sh
+        env:
+          XCODE_VERSION: "15.4.0"
 
       - label: "CocoaPods"
         commands:
           - bundle install
           - pod lib lint BugsnagPerformance.podspec.json
+        env:
+          XCODE_VERSION: "15.4.0"
 
       - label: "Example"
         commands:
           - bundle install
           - ./Example/build.sh
+        env:
+          XCODE_VERSION: "15.4.0"
 
       - label: "Fixture"
         key: ios_fixture
@@ -42,6 +49,8 @@ steps:
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bb_ipa_url.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bs_ipa_url.txt
+        env:
+          XCODE_VERSION: "15.4.0"
         artifact_paths:
           - features/fixtures/ios/output/bb_ipa_url.txt
           - features/fixtures/ios/output/bs_ipa_url.txt
@@ -54,6 +63,8 @@ steps:
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bb_xcframework_ipa_url.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bs_xcframework_ipa_url.txt
+        env:
+          XCODE_VERSION: "15.4.0"
         plugins:
           - artifacts#v1.9.3:
               download:
@@ -70,6 +81,8 @@ steps:
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_disabled.txt
+        env:
+          XCODE_VERSION: "15.4.0"
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_disabled.txt
           - features/fixtures/ios/output/bs_url_swizzling_disabled.txt
@@ -81,6 +94,8 @@ steps:
           - bundle install
           - bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt
           - bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_premain.txt
+        env:
+          XCODE_VERSION: "15.4.0"
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_premain.txt
           - features/fixtures/ios/output/bs_url_swizzling_premain.txt
@@ -88,23 +103,28 @@ steps:
   - group: ":xcode_simulator: Unit Tests"
     steps:
       - label: "iOS 18 Unit Tests"
+        timeout_in_minutes: 10
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.0 DEVICE="iPhone 15"
+        env:
+          XCODE_VERSION: "15.4.0"
         plugins:
           artifacts#v1.9.3:
             upload:
               - "logs/*"
+
       - label: "iOS 13 Unit Tests"
-        commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
-        plugins:
-          artifacts#v1.9.3:
-            upload:
-              - "logs/*"
+        timeout_in_minutes: 10
         agents:
           queue: macos-12-arm
+        commands:
+          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         env:
           XCODE_VERSION: "14"
+        plugins:
+          artifacts#v1.9.3:
+            upload:
+              - "logs/*"
 
   - group: "E2E Tests"
     steps:
@@ -371,4 +391,6 @@ steps:
         concurrency_method: eager
 
   - label: 'Conditionally trigger full set of tests'
+    agents:
+      queue: macos
     command: sh -c .buildkite/pipeline_trigger.sh
