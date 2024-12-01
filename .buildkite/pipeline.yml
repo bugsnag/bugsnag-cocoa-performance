@@ -10,7 +10,7 @@ steps:
     steps:
       - label: "XCFramework"
         key: xcframework
-        timeout_in_minutes: 20
+        timeout_in_minutes: 10
         commands:
           - make build_xcframework
         env:
@@ -22,6 +22,7 @@ steps:
                 - "BugsnagPerformanceSwift.xcframework.zip"
 
       - label: "Carthage"
+        timeout_in_minutes: 10
         commands:
           - bundle install
           - ./features/fixtures/carthage/build.sh
@@ -29,6 +30,7 @@ steps:
           XCODE_VERSION: "15.4.0"
 
       - label: "CocoaPods"
+        timeout_in_minutes: 10
         commands:
           - bundle install
           - pod lib lint BugsnagPerformance.podspec.json
@@ -36,6 +38,7 @@ steps:
           XCODE_VERSION: "15.4.0"
 
       - label: "Example"
+        timeout_in_minutes: 10
         commands:
           - bundle install
           - ./Example/build.sh
@@ -44,6 +47,7 @@ steps:
 
       - label: "Fixture"
         key: ios_fixture
+        timeout_in_minutes: 10
         commands:
           - ./features/fixtures/ios/build.sh
           - bundle install
@@ -58,6 +62,7 @@ steps:
       - label: "XcFramework Fixture"
         key: ios_xcframework_fixture
         depends_on: xcframework
+        timeout_in_minutes: 10
         commands:
           - ./features/fixtures/ios/build_xcframework.sh
           - bundle install
@@ -76,6 +81,7 @@ steps:
 
       - label: "Fixture swizzling disabled"
         key: ios_fixture_swizzling_disabled
+        timeout_in_minutes: 10
         commands:
           - ./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling
           - bundle install
@@ -89,6 +95,7 @@ steps:
 
       - label: "Fixture swizzling premain"
         key: ios_fixture_swizzling_premain
+        timeout_in_minutes: 10
         commands:
           - ./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain
           - bundle install
@@ -393,4 +400,5 @@ steps:
   - label: 'Conditionally trigger full set of tests'
     agents:
       queue: macos
+    timeout_in_minutes: 2
     command: sh -c .buildkite/pipeline_trigger.sh
