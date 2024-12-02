@@ -23,7 +23,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner-bb:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4333
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4335
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
@@ -39,7 +39,7 @@ services:
       - ./reports/:/app/reports/
 
   maze-runner-bs:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4333
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:maze-runner-cli-build-4335
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
