@@ -11,6 +11,8 @@
 #import "PhasedStartup.h"
 #import "Tracer.h"
 
+#define BUGSNAG_PERFORMANCE_CROSSTALK_PRESENT 1
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
