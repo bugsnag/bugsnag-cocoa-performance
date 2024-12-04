@@ -7,6 +7,7 @@
 //
 
 #import "BugsnagPerformanceCrossTalkAPI.h"
+#import "Utils.h"
 #import <objc/runtime.h>
 
 @interface BugsnagPerformanceCrossTalkAPI ()
@@ -45,13 +46,54 @@
     return self.configuration;
 }
 
-- (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
+/**
+ * Start a span with a given name and span options
+ *
+ * Options is an NSDictionary containing the following keys:
+ * startTime: an NSNumber containing the start time as a unix nanosecond timestamp
+ * makeCurrentContext: an NSNumber with a value of 0 or 1
+ * firstClass: an NSNumber with a value of 0 or 1
+ * parentContext: an NSDictionary with keys 'id' and 'traceId' as NSString values
+ */
+- (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(NSDictionary * _Nullable)optionsIn {
     auto tracer = self.tracer;
     if (tracer == nullptr) {
         return nil;
     }
     
-    auto options = SpanOptions(optionsIn);
+    auto options = SpanOptions();
+    
+    if (optionsIn != nil) {
+        NSNumber *startTimeUnixNanos = optionsIn[@"startTime"];
+        if (startTimeUnixNanos != nil) {
+            NSDate *startTime = [NSDate dateWithTimeIntervalSince1970:([startTimeUnixNanos doubleValue] / NSEC_PER_SEC)];
+            options.startTime = dateToAbsoluteTime(startTime);
+        }
+        
+        NSNumber *makeCurrentContext = optionsIn[@"makeCurrentContext"];
+        if (makeCurrentContext != nil) {
+            options.makeCurrentContext = [makeCurrentContext boolValue];
+        }
+        
+        NSNumber *firstClassOpt = optionsIn[@"firstClass"];
+        if (firstClassOpt != nil) {
+            BSGFirstClass isFirstClass = BSGFirstClass([firstClassOpt intValue]);
+        }
+        
+        NSDictionary *parentContextOpt =optionsIn[@"parentContext"];
+        if (parentContextOpt != nil) {
+            NSString *parentSpanId = parentContextOpt[@"id"];
+            NSString *parentTraceId = parentContextOpt[@"traceId"];
+
+            uint64_t spanId = hexStringToUInt64(parentSpanId);
+            uint64_t traceIdHi = hexStringToUInt64([parentTraceId substringToIndex:16]);
+            uint64_t traceIdLo = hexStringToUInt64([parentTraceId substringFromIndex:16]);
+
+            options.parentContext = [[BugsnagPerformanceSpanContext alloc] initWithTraceIdHi:traceIdHi
+                    traceIdLo:traceIdLo spanId:spanId];
+        }
+    }
+    
     auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
     return span;
 }

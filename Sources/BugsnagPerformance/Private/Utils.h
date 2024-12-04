@@ -178,5 +178,16 @@ static inline NSURLRequest *getTaskRequest(NSURLSessionTask *task, NSError **err
     return getTaskCurrentRequest(task, error);
 }
 
+/**
+ * Convert a 64-bit hexadecimal string to a uint64_t.
+ */
+static inline uint64_t hexStringToUInt64(NSString *hexString) {
+    uint64_t result = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    [scanner setScanLocation:0];
+    [scanner scanHexLongLong:&result];
+    
+    return result;
+}
 
 }
