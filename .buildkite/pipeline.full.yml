@@ -9,6 +9,7 @@ steps:
   - group: ":xcode_simulator: Unit Tests"
     steps:
       - label: "iOS 17 Unit Tests"
+        timeout_in_minutes: 10
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
         plugins:
@@ -17,6 +18,7 @@ steps:
               - "logs/*"
 
       - label: "iOS 16 Unit Tests"
+        timeout_in_minutes: 10
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
         plugins:
@@ -25,6 +27,7 @@ steps:
               - "logs/*"
 
       - label: "iOS 15 Unit Tests"
+        timeout_in_minutes: 10
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
         plugins:
@@ -33,6 +36,7 @@ steps:
               - "logs/*"
 
       - label: "iOS 14 Unit Tests"
+        timeout_in_minutes: 10
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
         plugins:
