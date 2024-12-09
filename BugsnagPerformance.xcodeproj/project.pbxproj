@@ -65,7 +65,7 @@
 		09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */; };
 		09D807F52B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc in Sources */ = {isa = PBXBuildFile; fileRef = 09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */; };
 		09D807F62B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		09E313042BF363020081F219 /* CrossTalkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 09E313032BF363020081F219 /* CrossTalkTests.m */; };
+		09E313042BF363020081F219 /* CrossTalkTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09E313032BF363020081F219 /* CrossTalkTests.mm */; };
 		09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */; };
 		09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */; };
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
@@ -310,7 +310,7 @@
 		09D807F32B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSwiftUI.h; sourceTree = "<group>"; };
 		09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwiftUI.docc; sourceTree = "<group>"; };
 		09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanContext+Private.h"; sourceTree = "<group>"; };
-		09E313032BF363020081F219 /* CrossTalkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CrossTalkTests.m; sourceTree = "<group>"; };
+		09E313032BF363020081F219 /* CrossTalkTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CrossTalkTests.mm; sourceTree = "<group>"; };
 		09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagSwiftTools.h; sourceTree = "<group>"; };
 		09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagSwiftTools.m; sourceTree = "<group>"; };
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
@@ -662,7 +662,7 @@
 				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
 				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
-				09E313032BF363020081F219 /* CrossTalkTests.m */,
+				09E313032BF363020081F219 /* CrossTalkTests.mm */,
 				CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */,
 				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
 				CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */,
@@ -1172,7 +1172,7 @@
 				CBEC51D92976D54B009C0CE3 /* FilesystemTests.m in Sources */,
 				CB0AD75D29641B59002A3FB6 /* BatchTests.mm in Sources */,
 				CB68FABC2A3C4208005B2CDB /* PersistentDeviceIDTest.mm in Sources */,
-				09E313042BF363020081F219 /* CrossTalkTests.m in Sources */,
+				09E313042BF363020081F219 /* CrossTalkTests.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */,
