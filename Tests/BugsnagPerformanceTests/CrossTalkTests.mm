@@ -53,6 +53,7 @@
 // Do NOT make implementations for any of the selectors you'll be mapping to.
 
 - (NSArray *) getCurrentTraceAndSpanId;
+- (BugsnagPerformanceConfiguration *) getConfiguration;
 
 @end
 
@@ -155,6 +156,13 @@ static id hostMissingCrossTalkAPI = nil;
     XCTAssertNil(err);
     // Calling the API should work. We can't test the return value since it will return nil in this situation.
     [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance getCurrentTraceAndSpanId];
+}
+
+- (void)testGetConfigurationV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"getConfigurationV1" toSelector:@selector(getConfiguration)];
+    XCTAssertNil(err);
+    // Calling the API should work. We can't test the return value since it will return nil in this situation.
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance getConfiguration];
 }
 
 #pragma mark Unit Tests: BugsnagPerformanceCrossTalkAPI published APIs (for unit testing support only)

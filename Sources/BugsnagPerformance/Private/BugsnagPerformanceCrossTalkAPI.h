@@ -23,6 +23,7 @@
 
 #import <Foundation/Foundation.h>
 #import <memory>
+#import "PhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,7 +31,7 @@ namespace bugsnag {
 class SpanStackingHandler;
 }
 
-@interface BugsnagPerformanceCrossTalkAPI : NSObject
+@interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
 
 + (instancetype) sharedInstance;
 

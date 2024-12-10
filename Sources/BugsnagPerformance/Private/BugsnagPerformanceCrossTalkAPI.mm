@@ -19,6 +19,7 @@ using namespace bugsnag;
 // Declare the things your API class needs here
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
 
 @end
 
@@ -64,6 +65,27 @@ using namespace bugsnag;
         [NSString stringWithFormat:@"%llx", span.spanId]
     ];
 }
+
+/**
+ * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
+ */
+- (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
+    return self.configuration;
+}
+
+#pragma mark BSGPhasedStartup
+
+- (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
+
+- (void)earlySetup {}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.configuration = config;
+}
+
+- (void)start {}
+
+- (void)preStartSetup {}
 
 #pragma mark Internal Functionality
 
