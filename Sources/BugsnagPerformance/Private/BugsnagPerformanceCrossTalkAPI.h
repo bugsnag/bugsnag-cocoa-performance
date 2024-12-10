@@ -6,23 +6,61 @@
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
+// Bugsnag CrossTalk API
+//
+// CrossTalk is an Objective-C layer for sharing private APIs between Bugsnag libraries.
+// It allows client libraries to call internal functions of this one without the usual
+// worries of breaking downstream clients whenever internal code changes.
+//
+// This code should be duplicated and used as a template for any Bugsnag Objective-C
+// library that wants to expose its API to other Bugsnag libraries.
+//
+// NOTE: Your CrossTalk class name MUST be unique or else it will clash with another
+//       Bugsnag library's CrossTalk class name.
+//
+// See CrossTalkTests.mm for an example of how to use CrossTalk from a client library.
+// It contains a full example for how to set up a client library to call this one.
+
 #import <Foundation/Foundation.h>
-#import "SpanStackingHandler.h"
-#import "PhasedStartup.h"
-#import "Tracer.h"
+#import <memory>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
+namespace bugsnag {
+class SpanStackingHandler;
+}
 
-#pragma mark Mandatory Methods
+@interface BugsnagPerformanceCrossTalkAPI : NSObject
 
 + (instancetype) sharedInstance;
 
-#pragma mark Configuration and Internal Functions
+/**
+ * Use the configure method to pass any information this CrossTalk API requires to function.
+ */
++ (void)configureWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler;
 
-@property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
-@property(nonatomic) std::shared_ptr<Tracer> tracer;
+@end
+
+/**
+ * A very permissive proxy that won't crash if a method or property doesn't exist.
+ *
+ * When returning instances of Bugsnag classes, wrap them in this proxy so that
+ * they don't crash when that class's API changes.
+ *
+ * WARNING: Returning internal classes is effectively creating a contract between Bugsnag libraries!
+ * Be VERY conservative about any internal class you expose, because its interfaces will effectively
+ * be "published", and changing a method's signature could break client libraries that use it.
+ *
+ * Adding/removing methods/properties is fine, but changing signatures WILL break things.
+ *
+ * Some ways to protect against breakage due to changed method signatures:
+ * - Convert to maps and arrays instead
+ * - Create custom classes designed specifically for library interop
+ * - Create versioned wrapper methods in the classes and access those instead (doStuffV1, doStuffV2, etc)
+ */
+@interface BugsnagPerformanceCrossTalkProxiedObject : NSProxy
+
++ (instancetype) proxied:(id _Nullable)delegate;
 
 @end
 
