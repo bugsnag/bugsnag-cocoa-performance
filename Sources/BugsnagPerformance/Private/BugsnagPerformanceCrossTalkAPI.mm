@@ -8,6 +8,7 @@
 
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import "SpanStackingHandler.h"
+#import "Tracer.h"
 #import "Utils.h"
 #import <objc/runtime.h>
 
@@ -19,6 +20,7 @@ using namespace bugsnag;
 // Declare the things your API class needs here
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property(nonatomic) std::shared_ptr<Tracer> tracer;
 @property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
 
 @end
@@ -29,8 +31,9 @@ using namespace bugsnag;
 /**
  * You'll call your configure method during start up.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler {
++ (void)configureWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
     BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = handler;
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.tracer = tracer;
 }
 
 #pragma mark Exposed API
@@ -71,6 +74,17 @@ using namespace bugsnag;
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
     return self.configuration;
+}
+
+- (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
+    auto tracer = self.tracer;
+    if (tracer == nullptr) {
+        return nil;
+    }
+
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
+    return span;
 }
 
 #pragma mark BSGPhasedStartup

@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 namespace bugsnag {
 class SpanStackingHandler;
+class Tracer;
 }
 
 @interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
@@ -38,7 +39,7 @@ class SpanStackingHandler;
 /**
  * Use the configure method to pass any information this CrossTalk API requires to function.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler;
++ (void)configureWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
 
 @end
 

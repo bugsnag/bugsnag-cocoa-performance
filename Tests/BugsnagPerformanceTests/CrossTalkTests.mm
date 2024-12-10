@@ -54,6 +54,7 @@
 
 - (NSArray *) getCurrentTraceAndSpanId;
 - (BugsnagPerformanceConfiguration *) getConfiguration;
+- (BugsnagPerformanceSpan *) startSpan:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options;
 
 @end
 
@@ -163,6 +164,14 @@ static id hostMissingCrossTalkAPI = nil;
     XCTAssertNil(err);
     // Calling the API should work. We can't test the return value since it will return nil in this situation.
     [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance getConfiguration];
+}
+
+- (void)testStartSpanV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"startSpanV1:options:" toSelector:@selector(startSpan:options:)];
+    XCTAssertNil(err);
+    // Calling the API should work. We can't test the return value since it will return nil in this situation.
+    BugsnagPerformanceSpanOptions *spanOptions = [BugsnagPerformanceSpanOptions new];
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance startSpan:@"test" options:spanOptions];
 }
 
 #pragma mark Unit Tests: BugsnagPerformanceCrossTalkAPI published APIs (for unit testing support only)
