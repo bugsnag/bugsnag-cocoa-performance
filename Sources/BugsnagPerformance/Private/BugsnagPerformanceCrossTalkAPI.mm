@@ -73,7 +73,7 @@ using namespace bugsnag;
  * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
-    return self.configuration;
+    return (BugsnagPerformanceConfiguration *)[BugsnagPerformanceCrossTalkProxiedObject proxied:self.configuration];
 }
 
 - (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
@@ -84,7 +84,7 @@ using namespace bugsnag;
 
     auto options = SpanOptions(optionsIn);
     auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
-    return span;
+    return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 
 #pragma mark BSGPhasedStartup
