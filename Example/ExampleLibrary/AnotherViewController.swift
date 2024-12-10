@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import BugsnagPerformance
 
 class AnotherViewController: UIViewController {
     
@@ -36,4 +37,33 @@ class AnotherViewController: UIViewController {
     }
     */
 
+}
+
+class GenericViewController<T>: UIViewController {
+    var value: T?
+
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        value = nil
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        value = nil
+    }
+
+    override func loadView() {
+        print("GenericViewController", #function)
+        super.loadView()
+    }
+
+    override func viewDidLoad() {
+        print("GenericViewController", #function)
+        super.viewDidLoad()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        print("GenericViewController", #function)
+        super.viewDidAppear(animated)
+    }
 }

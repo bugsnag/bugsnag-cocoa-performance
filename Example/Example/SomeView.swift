@@ -10,7 +10,7 @@ import BugsnagPerformanceSwift
 import SwiftUI
 
 @available(iOS 13.0.0, *)
-struct SomeView: View {
+struct SomeView<T>: View {
     @State var data: Data?
     @State var deferringViewLoadSpan = true
 
@@ -61,6 +61,6 @@ struct SomeView: View {
 @available(iOS 13.0.0, *)
 struct SomeView_Previews: PreviewProvider {
     static var previews: some View {
-        SomeView()
+        SomeView<Int>()
     }
 }

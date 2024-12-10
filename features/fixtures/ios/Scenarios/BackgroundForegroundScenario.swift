@@ -18,7 +18,6 @@ class BackgroundForegroundScenario: Scenario {
     
     override func run() {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: nil) { _ in
-            logInfo("### Scenario: didEnterBackgroundNotification: Starting and ending 'BackgroundForegroundScenario' span")
             BugsnagPerformance.startSpan(name: "BackgroundForegroundScenario").end()
         }
     }

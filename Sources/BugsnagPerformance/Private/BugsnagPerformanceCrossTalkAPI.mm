@@ -7,15 +7,46 @@
 //
 
 #import "BugsnagPerformanceCrossTalkAPI.h"
+#import "SpanStackingHandler.h"
+#import "Tracer.h"
+#import "Utils.h"
 #import <objc/runtime.h>
 
+using namespace bugsnag;
+
+
 @interface BugsnagPerformanceCrossTalkAPI ()
+
+// Declare the things your API class needs here
+
+@property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property(nonatomic) std::shared_ptr<Tracer> tracer;
 @property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
+
 @end
+
 
 @implementation BugsnagPerformanceCrossTalkAPI
 
+/**
+ * You'll call your configure method during start up.
+ */
++ (void)configureWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = handler;
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.tracer = tracer;
+}
+
 #pragma mark Exposed API
+
+// Implement internal functions you want to expose to a CrossTalk client library here.
+// NOTE: ALWAYS ALWAYS ALWAYS check the mapping of every single API with a unit test!!!
+
+/**
+ * For unit tests only.
+ */
+- (NSString *)returnStringTestV1 {
+    return @"test";
+}
 
 /**
  * Return the current trace and span IDs as strings in a 2-entry array, or return nil if no current span exists.
@@ -42,7 +73,7 @@
  * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
-    return self.configuration;
+    return (BugsnagPerformanceConfiguration *)[BugsnagPerformanceCrossTalkProxiedObject proxied:self.configuration];
 }
 
 - (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
@@ -50,10 +81,10 @@
     if (tracer == nullptr) {
         return nil;
     }
-    
+
     auto options = SpanOptions(optionsIn);
     auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
-    return span;
+    return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 
 #pragma mark BSGPhasedStartup
@@ -72,34 +103,53 @@
 
 #pragma mark Internal Functionality
 
-static NSString *BSGUserInfoKeyMapped = @"mapped";
-static NSString *BSGUserInfoValueMappedYes = @"YES";
-static NSString *BSGUserInfoValueMappedNo = @"NO";
+static NSString *BSGUserInfoKeyIsSafeToCall = @"isSafeToCall";
+static NSString *BSGUserInfoKeyWillNOOP = @"willNOOP";
+
+static bool classImplementsSelector(Class cls, SEL selector) {
+    bool selectorExists = false;
+    unsigned int methodCount = 0;
+    Method *methods = class_copyMethodList(cls, &methodCount);
+    for (unsigned int i = 0; i < methodCount; i++) {
+        if (method_getName(methods[i]) == selector) {
+            selectorExists = true;
+            break;
+        }
+    }
+    free(methods);
+    return selectorExists;
+}
 
 /**
  * Map a named API to a method with the specified selector.
- * If an error occurs, the user info dictionary of the error will contain a field "mapped".
- * If "mapped" is "YES", then the selector has been mapped to a null implementation (does nothing, returns nil).
- * If "mapped" is "NO", then no mapping has occurred, and the method doesn't exist (alling it will result in no such selector).
+ *
+ * If an error occurs, the user info dictionary will contain the following NSNumber (boolean) fields:
+ *  - "isSafeToCall": If @(YES), this method is safe to call (it has an implementation). Otherwise, calling it WILL throw a selector-not-found exception.
+ *  - "willNOOP": If @(YES), calling the mapped method will no-op.
+ *
+ * Common scenarios:
+ *  - The host library isn't linked in: isSafeToCall = YES, willNOOP = YES
+ *  - apiName doesn't exist: isSafeToCall = YES, willNOOP = YES
+ *  - toSelector already exists: isSafeToCall = YES, willNOOP = NO
+ *  - Tried to map the same thing twice: isSafeToCall = YES, willNOOP = NO
+ *  - Selector signature clash: isSafeToCall = NO, willNOOP = NO
  */
 + (NSError *)mapAPINamed:(NSString * _Nonnull)apiName toSelector:(SEL)toSelector {
     NSError *err = nil;
     // By default, we map to a "do nothing" implementation in case we don't find a real one.
     SEL fromSelector = @selector(internal_doNothing);
 
-    // Note: ALWAYS ALWAYS ALWAYS check every single API mapping with a unit test!!!
-    if ([apiName isEqualToString:@"getCurrentTraceAndSpanIdV1"]) {
-        fromSelector = @selector(getCurrentTraceAndSpanIdV1);
-    } else if ([apiName isEqualToString:@"getConfigurationV1"]) {
-        fromSelector = @selector(getConfigurationV1);
-    } else if ([apiName isEqualToString:@"startSpanV1"]) {
-        fromSelector = @selector(startSpanV1:options:);
+    // apiName should map to an existing method in this API
+    SEL apiSelector = NSSelectorFromString(apiName);
+    if (classImplementsSelector(self.class, apiSelector)) {
+        fromSelector = apiSelector;
     } else {
         err = [NSError errorWithDomain:@"com.bugsnag.BugsnagCocoaPerformance"
                                   code:0
                               userInfo:@{
             NSLocalizedDescriptionKey:[NSString stringWithFormat:@"No such API: %@", apiName],
-            BSGUserInfoKeyMapped:BSGUserInfoValueMappedYes
+            BSGUserInfoKeyIsSafeToCall:@YES,
+            BSGUserInfoKeyWillNOOP:@YES
         }];
     }
 
@@ -113,7 +163,8 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
                                        apiName,
                                        NSStringFromSelector(fromSelector),
                                        self.class],
-            BSGUserInfoKeyMapped:BSGUserInfoValueMappedNo
+            BSGUserInfoKeyIsSafeToCall:@NO,
+            BSGUserInfoKeyWillNOOP:@NO
         }];
     }
 
@@ -127,7 +178,8 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
                                        apiName,
                                        NSStringFromSelector(fromSelector),
                                        self.class],
-            BSGUserInfoKeyMapped:BSGUserInfoValueMappedNo
+            BSGUserInfoKeyIsSafeToCall:@NO,
+            BSGUserInfoKeyWillNOOP:@NO
         }];
     }
 
@@ -141,7 +193,23 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
                                        apiName,
                                        NSStringFromSelector(fromSelector),
                                        self.class],
-            BSGUserInfoKeyMapped:BSGUserInfoValueMappedNo
+            BSGUserInfoKeyIsSafeToCall:@NO,
+            BSGUserInfoKeyWillNOOP:@NO
+        }];
+    }
+
+    // Don't add a method that already exists
+    if (classImplementsSelector(self.class, toSelector)) {
+        return [NSError errorWithDomain:@"com.bugsnag.BugsnagCocoaPerformance"
+                                  code:0
+                              userInfo:@{
+            NSLocalizedDescriptionKey:[NSString stringWithFormat:
+                                       @"class_addMethod (while mapping api %@): Instance method %@ already exists in class %@",
+                                       apiName,
+                                       NSStringFromSelector(fromSelector),
+                                       self.class],
+            BSGUserInfoKeyIsSafeToCall:@YES,
+            BSGUserInfoKeyWillNOOP:@NO
         }];
     }
 
@@ -154,7 +222,8 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
                                        apiName,
                                        NSStringFromSelector(fromSelector),
                                        self.class],
-            BSGUserInfoKeyMapped:BSGUserInfoValueMappedNo
+            BSGUserInfoKeyIsSafeToCall:@NO,
+            BSGUserInfoKeyWillNOOP:@NO
         }];
     }
 
@@ -170,6 +239,102 @@ static NSString *BSGUserInfoValueMappedNo = @"NO";
     static dispatch_once_t once;
     dispatch_once(&once, ^{ sharedInstance = [[self alloc] init]; });
     return sharedInstance;
+}
+
+@end
+
+
+#pragma mark BugsnagPerformanceCrossTalkProxiedObject
+
+@interface BugsnagPerformanceCrossTalkProxiedObject ()
+
+@property(nonatomic,strong) id delegate;
+
+@end
+
+@implementation BugsnagPerformanceCrossTalkProxiedObject
+
++ (instancetype) proxied:(id _Nullable)delegate {
+    BugsnagPerformanceCrossTalkProxiedObject *proxy = [BugsnagPerformanceCrossTalkProxiedObject alloc];
+    proxy.delegate = delegate;
+    return proxy;
+}
+
+// Allow faster access to ivars in these special cases
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
+    if ([_delegate respondsToSelector:anInvocation.selector]) {
+        [anInvocation setTarget:_delegate];
+        [anInvocation invoke];
+    }
+}
+
+-(NSMethodSignature*)methodSignatureForSelector:(SEL)aSelector {
+    NSMethodSignature *sig = [_delegate methodSignatureForSelector:aSelector];
+    if (sig) {
+        return sig;
+    }
+
+    BSGLogWarning(@"CrossTalk: Tried to invoke unimplemented selector [%@] on proxied object %@",
+                  NSStringFromSelector(aSelector), [_delegate debugDescription]);
+
+    // Return a no-arg signature that's guaranteed to exist
+    return [NSObject instanceMethodSignatureForSelector:@selector(init)];
+}
+
+#pragma mark NSObject protocol (BugsnagPerformanceCrossTalkProxiedObject)
+
+- (Class)class {
+    return [_delegate class];
+}
+
+- (Class)superclass {
+    return [_delegate superclass];
+}
+
+- (BOOL)isKindOfClass:(Class)aClass {
+    return [_delegate isKindOfClass:aClass];
+}
+
+- (BOOL)isMemberOfClass:(Class)aClass {
+    return [_delegate isMemberOfClass:aClass];
+}
+
+- (BOOL)respondsToSelector:(SEL)aSelector {
+    // Be truthful about this
+    return [_delegate respondsToSelector:aSelector];
+}
+
+- (BOOL)conformsToProtocol:(Protocol *)aProtocol {
+    // Be truthful about this
+    return [_delegate conformsToProtocol:aProtocol];
+}
+
+- (BOOL)isEqual:(id)object {
+    return [_delegate isEqual:object];
+}
+
+- (NSUInteger)hash {
+    return [_delegate hash];
+}
+
+- (BOOL)isProxy {
+    return YES;
+}
+
+- (NSString *)description {
+    if (_delegate) {
+        return [_delegate description];
+    }
+    return super.description;
+}
+
+- (NSString *)debugDescription {
+    if (_delegate) {
+        return [_delegate debugDescription];
+    }
+    return super.debugDescription;
 }
 
 @end
