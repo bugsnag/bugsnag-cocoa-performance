@@ -87,6 +87,16 @@ using namespace bugsnag;
     return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 
+- (BugsnagPerformanceSpanOptions *)newSpanOptionsV1 {
+    return (BugsnagPerformanceSpanOptions *)[BugsnagPerformanceCrossTalkProxiedObject proxied:[BugsnagPerformanceSpanOptions new]];
+}
+
+- (BugsnagPerformanceSpanContext *)newSpanContextV1:(uint64_t)traceIdHi traceIdLo:(uint64_t)traceIdLo spanId:(SpanId)spanId {
+    BugsnagPerformanceSpanContext *spanContext = [[BugsnagPerformanceSpanContext alloc] initWithTraceIdHi:traceIdHi
+                                                                                                traceIdLo:traceIdLo spanId:spanId];
+    return (BugsnagPerformanceSpanContext *)[BugsnagPerformanceCrossTalkProxiedObject proxied:spanContext];
+}
+
 #pragma mark BSGPhasedStartup
 
 - (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
