@@ -84,7 +84,21 @@ using namespace bugsnag;
 
     auto options = SpanOptions(optionsIn);
     auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
-    return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
+    
+    // TODO: return a proxy object
+    return span;
+}
+
+- (BugsnagPerformanceSpanOptions *)newSpanOptionsV1 {
+    return (BugsnagPerformanceSpanOptions *)[BugsnagPerformanceCrossTalkProxiedObject proxied:[BugsnagPerformanceSpanOptions new]];
+}
+
+- (BugsnagPerformanceSpanContext *)newSpanContextV1:(uint64_t)traceIdHi traceIdLo:(uint64_t)traceIdLo spanId:(SpanId)spanId {
+    BugsnagPerformanceSpanContext *spanContext = [[BugsnagPerformanceSpanContext alloc] initWithTraceIdHi:traceIdHi
+                                                                                                traceIdLo:traceIdLo spanId:spanId];
+    
+    // TODO: return a proxy object
+    return spanContext;
 }
 
 #pragma mark BSGPhasedStartup
