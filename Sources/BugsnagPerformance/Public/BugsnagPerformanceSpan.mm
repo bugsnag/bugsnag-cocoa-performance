@@ -90,21 +90,13 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         }
         self.state = SpanStateAborted;
     }
-    [self callOnSpanClosed];
-    self.isMutable = false;
+    [self sendForProcessing];
 }
 
 - (void)abortUnconditionally {
-    bool wasOpen = false;
-    @synchronized (self) {
-        BSGLogDebug(@"Span.abortUnconditionally: %@: Was open: %d", self.name, self.state == SpanStateOpen);
-        wasOpen = self.state == SpanStateOpen;
-        self.state = SpanStateAborted;
-    }
-    if (wasOpen) {
-        [self callOnSpanClosed];
-    }
-    self.isMutable = false;
+    BSGLogDebug(@"Span.abortUnconditionally: %@: Was open: %d", self.name, self.state == SpanStateOpen);
+    self.state = SpanStateAborted;
+    [self sendForProcessing];
 }
 
 - (void)end {
@@ -134,18 +126,36 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
             }
         }
 
-        self.endAbsTime = currentTimeIfUnset(endTime);
+        [self markEndAbsoluteTime:endTime];
         self.state = SpanStateEnded;
     }
-    [self callOnSpanClosed];
-    self.isMutable = false;
+    [self sendForProcessing];
 }
 
-- (void)callOnSpanClosed {
-    auto onSpanClosed = self.onSpanClosed;
-    if(onSpanClosed != nil) {
-        onSpanClosed(self);
+- (void)markEndTime:(NSDate *)endTime {
+    [self markEndAbsoluteTime:dateToAbsoluteTime(endTime)];
+}
+
+- (void)markEndAbsoluteTime:(CFAbsoluteTime)endTime {
+    self.endAbsTime = currentTimeIfUnset(endTime);
+}
+
+- (void)sendForProcessing {
+    BOOL hasBeenProcessed = false;
+    @synchronized (self) {
+        hasBeenProcessed = self.hasBeenProcessed;
+        self.hasBeenProcessed = true;
     }
+    if (!hasBeenProcessed) {
+        auto onSpanClosed = self.onSpanClosed;
+        if(onSpanClosed != nil) {
+            onSpanClosed(self);
+        }
+    }
+    if (self.state == SpanStateOpen) {
+        self.state = SpanStateEnded;
+    }
+    self.isMutable = false;
 }
 
 - (void)endOnDestroy {

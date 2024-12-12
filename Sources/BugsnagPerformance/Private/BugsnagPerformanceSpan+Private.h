@@ -46,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BSGFirstClass firstClass;
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
+@property (nonatomic,readwrite) BOOL hasBeenProcessed;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
 @property (nonatomic) BSGInstrumentRendering instrumentRendering;
