@@ -64,7 +64,7 @@ using namespace bugsnag;
         return nil;
     }
     return @[
-        [NSString stringWithFormat:@"%llx%llx", span.traceId.hi, span.traceId.lo],
+        [NSString stringWithFormat:@"%llx%llx", span.traceIdHi, span.traceIdLo],
         [NSString stringWithFormat:@"%llx", span.spanId]
     ];
 }
