@@ -22,4 +22,12 @@
     return [self initWithTraceId:TraceId{.hi=traceIdHi, .lo=traceIdLo} spanId:spanId];
 }
 
+- (uint64_t) traceIdHi {
+    return self.traceId.hi;
+}
+
+- (uint64_t) traceIdLo {
+    return self.traceId.lo;
+}
+
 @end
