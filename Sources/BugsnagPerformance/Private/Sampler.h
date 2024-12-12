@@ -47,7 +47,7 @@ public:
         } else {
             idUpperBound = uint64_t(p * double(UINT64_MAX));
         }
-        return span.traceId.hi <= idUpperBound;
+        return span.traceIdHi <= idUpperBound;
     }
 
 private:

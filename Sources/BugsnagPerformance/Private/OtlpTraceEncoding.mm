@@ -17,8 +17,8 @@ static NSString * EncodeSpanId(SpanId const &spanId) {
     return [NSString stringWithFormat:@"%016llx", spanId];
 }
 
-static NSString * EncodeTraceId(TraceId const &traceId) {
-    return [NSString stringWithFormat:@"%016llx%016llx", traceId.hi, traceId.lo];
+static NSString * EncodeTraceId(uint64_t traceIdHi, uint64_t traceIdLo) {
+    return [NSString stringWithFormat:@"%016llx%016llx", traceIdHi, traceIdLo];
 }
 
 static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
@@ -37,7 +37,7 @@ OtlpTraceEncoding::encode(BugsnagPerformanceSpan *span) noexcept {
     // random trace_id if empty or invalid trace_id was received.
     //
     // This field is required.
-    result[@"traceId"] = EncodeTraceId(span.traceId);
+    result[@"traceId"] = EncodeTraceId(span.traceIdHi, span.traceIdLo);
 
     // A unique identifier for a span within a trace, assigned when the span
     // is created. The ID is an 8-byte array. An ID with all zeroes is considered

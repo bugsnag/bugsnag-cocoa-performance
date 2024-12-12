@@ -60,12 +60,12 @@ public:
         }
     }
 
-    void removeSpan(TraceId traceId, SpanId spanId) noexcept {
-        BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx)", traceId.hi, traceId.lo, spanId);
+    void removeSpan(uint64_t traceIdHi, uint64_t traceIdLo, SpanId spanId) noexcept {
+        BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx)", traceIdHi, traceIdLo, spanId);
         std::lock_guard<std::mutex> guard(mutex_);
 
         if (spans_.count == 0) {
-            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Batch is empty", traceId.hi, traceId.lo, spanId);
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Batch is empty", traceIdHi, traceIdLo, spanId);
             return;
         }
 
@@ -73,13 +73,13 @@ public:
         size_t index = 0;
         for(; index < spans_.count; index++) {
             BugsnagPerformanceSpan *potential = spans_[index];
-            if (potential.spanId == spanId && potential.traceId.value == traceId.value) {
+            if (potential.spanId == spanId && potential.traceIdHi == traceIdHi && potential.traceIdLo == traceIdLo) {
                 found = potential;
             }
         }
 
         if (found == nil) {
-            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span not found", traceId.hi, traceId.lo, spanId);
+            BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span not found", traceIdHi, traceIdLo, spanId);
             return;
         }
 
@@ -87,12 +87,12 @@ public:
 //        [spans_ removeObjectAtIndex:index];
 
         for (BugsnagPerformanceSpan *span in spans_) {
-            if (span.parentId == spanId && span.traceId.value == traceId.value) {
+            if (span.parentId == spanId && span.traceIdHi == traceIdHi && span.traceIdLo == traceIdLo) {
                 span.parentId = 0;
             }
         }
         BSGLogDebug(@"Batch:removeSpan(%llx%llx, %llx): Span %@ removed. Batch size is now %zu",
-                    traceId.hi, traceId.lo, spanId, found.name, spans_.count);
+                    traceIdHi, traceIdLo, spanId, found.name, spans_.count);
     }
 
     /**

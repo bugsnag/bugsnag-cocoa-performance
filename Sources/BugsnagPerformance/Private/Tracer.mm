@@ -97,7 +97,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         BSGLogTrace(@"Tracer::startSpan: No parent specified; using current span");
         parentSpan = spanStackingHandler_->currentSpan();
     }
-    auto traceId = parentSpan.traceId;
+
+    TraceId traceId = { .hi = parentSpan.traceIdHi, .lo = parentSpan.traceIdLo };
     if (traceId.value == 0) {
         BSGLogTrace(@"Tracer::startSpan: No parent traceId; generating one");
         traceId = IdGenerator::generateTraceId();
@@ -280,7 +281,7 @@ void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
         [span abortIfOpen];
-        batch_->removeSpan(span.traceId, span.spanId);
+        batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
     }
 }
 
