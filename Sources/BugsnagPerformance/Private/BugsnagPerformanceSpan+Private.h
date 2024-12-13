@@ -27,7 +27,7 @@ typedef enum {
     SpanStateAborted = 3,
 } SpanState;
 
-typedef void (^OnSpanClosed)(BugsnagPerformanceSpan * _Nonnull);
+typedef void (^SpanLifecycleCallback)(BugsnagPerformanceSpan * _Nonnull);
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,7 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) OnSpanDestroyAction onSpanDestroyAction;
 @property (nonatomic,readwrite) NSString *name;
 @property (nonatomic,readonly) NSMutableDictionary *attributes;
-@property (nonatomic) OnSpanClosed onSpanClosed;
+@property (nonatomic) SpanLifecycleCallback onSpanEndSet;
+@property (nonatomic) SpanLifecycleCallback onSpanClosed;
 @property (nonatomic,readwrite) SpanId parentId;
 @property (nonatomic) double samplingProbability;
 @property (nonatomic) BSGFirstClass firstClass;
@@ -67,7 +68,8 @@ NS_ASSUME_NONNULL_BEGIN
                   firstClass:(BSGFirstClass) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
          instrumentRendering:(BSGInstrumentRendering)instrumentRendering
-                onSpanClosed:(OnSpanClosed) onSpanEnded NS_DESIGNATED_INITIALIZER;
+                onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
+                onSpanClosed:(SpanLifecycleCallback) onSpanEnded NS_DESIGNATED_INITIALIZER;
 
 - (void)internalSetAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes;

@@ -18,7 +18,7 @@ using namespace bugsnag;
 
 @implementation SpanTests
 
-static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpanClosed onEnded) {
+static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanLifecycleCallback onEnded) {
     TraceId tid = {.value = 1};
     return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:tid
@@ -28,6 +28,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpa
                                              firstClass:BSGFirstClassUnset
                                     attributeCountLimit:128
                                     instrumentRendering:BSGInstrumentRenderingNo
+                                           onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                            onSpanClosed:onEnded];
 }
 
@@ -278,6 +279,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, OnSpa
                                                   firstClass:BSGFirstClassUnset
                                          attributeCountLimit:5
                                          instrumentRendering:BSGInstrumentRenderingNo
+                                                onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                                 onSpanClosed:^(BugsnagPerformanceSpan *) {}];
 
     // Note: "bugsnag.sampling.p" is automatically added.

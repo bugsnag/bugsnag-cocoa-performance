@@ -35,7 +35,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
                   firstClass:(BSGFirstClass) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
          instrumentRendering:(BSGInstrumentRendering)instrumentRendering
-                onSpanClosed:(OnSpanClosed) onSpanClosed {
+                onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
+                onSpanClosed:(SpanLifecycleCallback) onSpanClosed {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _name = name;
@@ -44,6 +45,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _firstClass = firstClass;
         _onSpanDestroyAction = OnSpanDestroyAbort;
+        _onSpanEndSet = onSpanEndSet;
         _onSpanClosed = onSpanClosed;
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = 1;
@@ -138,6 +140,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)markEndAbsoluteTime:(CFAbsoluteTime)endTime {
     self.endAbsTime = currentTimeIfUnset(endTime);
+    auto onSpanEndSet = self.onSpanEndSet;
+    if(onSpanEndSet != nil) {
+        onSpanEndSet(self);
+    }
 }
 
 - (void)sendForProcessing {
