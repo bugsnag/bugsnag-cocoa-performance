@@ -67,6 +67,7 @@ using namespace bugsnag;
                                                                          firstClass:BSGFirstClassUnset
                                                                 attributeCountLimit:128
                                                                 instrumentRendering:BSGInstrumentRenderingNo
+                                                                       onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                        onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
         }];
         if (sampler.sampled(span)) {

@@ -99,6 +99,7 @@ private:
 
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
+    void onSpanEndSet(BugsnagPerformanceSpan *span);
     void onSpanClosed(BugsnagPerformanceSpan *span);
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
