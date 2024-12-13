@@ -109,6 +109,12 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
+    auto onSpanEndSet = ^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+        blockThis->onSpanEndSet(endedSpan);
+    };
+    auto onSpanClosed = ^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+        blockThis->onSpanClosed(endedSpan);
+    };
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
                                                                         traceId:traceId
                                                                          spanId:spanId
@@ -117,9 +123,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                      firstClass:firstClass
                                                             attributeCountLimit:attributeCountLimit_
                                                             instrumentRendering: options.instrumentRendering
-                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
-        blockThis->onSpanClosed(endedSpan);
-    }];
+                                                                   onSpanEndSet:onSpanEndSet
+                                                                   onSpanClosed:onSpanClosed];
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
@@ -133,12 +138,16 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     return span;
 }
 
-void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
-    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
-    
+void Tracer::onSpanEndSet(BugsnagPerformanceSpan *span) {
+    BSGLogTrace(@"Tracer::onSpanEndSet: for span %@", span.name);
+
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+}
+
+void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
+    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
 
     spanStackingHandler_->onSpanClosed(span.spanId);
 

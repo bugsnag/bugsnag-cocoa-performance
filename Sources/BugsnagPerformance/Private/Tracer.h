@@ -98,6 +98,7 @@ private:
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
+    void onSpanEndSet(BugsnagPerformanceSpan *span);
     void onSpanClosed(BugsnagPerformanceSpan *span);
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
