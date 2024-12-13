@@ -55,6 +55,8 @@
 - (NSArray *) getCurrentTraceAndSpanId;
 - (BugsnagPerformanceConfiguration *) getConfiguration;
 - (BugsnagPerformanceSpan *) startSpan:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options;
+- (BugsnagPerformanceSpanOptions *) newSpanOptions;
+- (BugsnagPerformanceSpanContext *) newSpanContext:(u_int64_t)traceIdHi traceIdLo:(u_int64_t)traceIdLo spanId:(u_int64_t)spanId;
 
 @end
 
@@ -172,6 +174,30 @@ static id hostMissingCrossTalkAPI = nil;
     // Calling the API should work. We can't test the return value since it will return nil in this situation.
     BugsnagPerformanceSpanOptions *spanOptions = [BugsnagPerformanceSpanOptions new];
     [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance startSpan:@"test" options:spanOptions];
+}
+
+- (void)testNewSpanOptionsV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"newSpanOptionsV1" toSelector:@selector(newSpanOptions)];
+    XCTAssertNil(err);
+    
+    BugsnagPerformanceSpanOptions *spanOptions = [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance newSpanOptions];
+    NSDate *startTime = [NSDate new];
+    spanOptions.startTime = startTime;
+    XCTAssertEqualObjects(spanOptions.startTime, startTime);
+}
+
+- (void)testNewSpanContextV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"newSpanContextV1:traceIdLo:spanId:" toSelector:@selector(newSpanContext:traceIdLo:spanId:)];
+    XCTAssertNil(err);
+    
+    u_int64_t traceIdHi = 1;
+    u_int64_t traceIdLo = 2;
+    SpanId spanId = 3;
+    BugsnagPerformanceSpanContext *spanContext = [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance newSpanContext:traceIdHi traceIdLo:traceIdLo spanId:spanId];
+    
+    XCTAssertEqual(spanContext.traceIdHi, traceIdHi);
+    XCTAssertEqual(spanContext.traceIdLo, traceIdLo);
+    XCTAssertEqual(spanContext.spanId, spanId);
 }
 
 #pragma mark Unit Tests: BugsnagPerformanceCrossTalkAPI published APIs (for unit testing support only)
