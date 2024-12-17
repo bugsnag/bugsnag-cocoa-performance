@@ -8,6 +8,11 @@ Changelog
 * Improved Swift mangled name handling when reporting view spans.
   [344](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/344)
 
+### Enhancements
+
+* Removed the platform restriction on CoreTelephony since it's now available on all platforms. This will allow building for Mac Catalyst targets (although this is not yet officially supported).
+  [364](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/364)
+
 ## 1.10.2 (2024-10-31)
 
 * Fixed a crash after shared NSURLSession invalidate
