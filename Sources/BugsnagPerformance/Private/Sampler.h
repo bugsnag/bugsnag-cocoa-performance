@@ -9,6 +9,7 @@
 
 #import "IdGenerator.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "Utils.h"
 
 #import <Foundation/Foundation.h>
 #import <vector>
@@ -35,6 +36,7 @@ public:
      */
     bool sampled(BugsnagPerformanceSpan *span) noexcept {
         if (span == nil) {
+            BSGLogTrace(@"Sampler::sampled(): span is null");
             return false;
         }
 
@@ -47,6 +49,7 @@ public:
         } else {
             idUpperBound = uint64_t(p * double(UINT64_MAX));
         }
+        BSGLogTrace(@"Sampler::sampled(): p = %f, returning span %@ traceId %llx <= %llx", p, span.name, span.traceIdHi, idUpperBound);
         return span.traceIdHi <= idUpperBound;
     }
 
