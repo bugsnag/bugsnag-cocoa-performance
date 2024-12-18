@@ -37,6 +37,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
          instrumentRendering:(BSGInstrumentRendering)instrumentRendering
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanClosed {
+    BSGLogInfo(@"### BugsnagPerformanceSpan.init: %@", name);
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _name = name;
@@ -147,6 +148,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)sendForProcessing {
+    BSGLogInfo(@"### BugsnagPerformanceSpan.sendForProcessing: %@", self.name);
     BOOL hasBeenProcessed = false;
     @synchronized (self) {
         hasBeenProcessed = self.hasBeenProcessed;

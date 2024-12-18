@@ -275,22 +275,14 @@ BugsnagPerformanceImpl::sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
-#ifndef __clang_analyzer__
-    #pragma clang diagnostic ignored "-Wunused-variable"
-    size_t origSpansSize = origSpans.count;
-#endif
     auto spans = sendableSpans(origSpans);
     if (spans.count == 0) {
-#ifndef __clang_analyzer__
-        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
-#endif
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpans.count);
         return false;
     }
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
-#ifndef __clang_analyzer__
-    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
-#endif
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpans.count, spans.count);
     uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     return true;
 }
