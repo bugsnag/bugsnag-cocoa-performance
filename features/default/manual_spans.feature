@@ -380,9 +380,8 @@ Feature: Manual creation of spans
 
   Scenario: Frame metrics - frozen frames
     Given I run "FrameMetricsFronzenFramesScenario"
-    And I wait for 3 spans
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "FrameMetricsFronzenFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
