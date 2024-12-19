@@ -26,6 +26,10 @@ let package = Package(
             resources: [
                .copy("resources/PrivacyInfo.xcprivacy")
             ],
+            cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release))
+            ],
             linkerSettings: [
                 .linkedFramework("SystemConfiguration"),
                 .linkedFramework("UIKit"),
@@ -35,7 +39,11 @@ let package = Package(
         .target(
             name: "BugsnagPerformanceSwift",
             dependencies: ["BugsnagPerformance"],
-            path: "Sources/BugsnagPerformanceSwift"
+            path: "Sources/BugsnagPerformanceSwift",
+            cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release))
+            ]
         ),
         .target(
             name: "BugsnagPerformanceSwiftUI",
