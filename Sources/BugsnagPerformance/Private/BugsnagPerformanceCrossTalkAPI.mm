@@ -73,6 +73,10 @@ using namespace bugsnag;
  * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
+    if (self.configuration == nil) {
+        return nil;
+    }
+    
     return (BugsnagPerformanceConfiguration *)[BugsnagPerformanceCrossTalkProxiedObject proxied:self.configuration];
 }
 
