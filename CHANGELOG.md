@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Network spans are now type 3 (Client).
+  [368](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/368)
+
 * Improved Swift mangled name handling when reporting view spans.
   [344](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/344)
 
