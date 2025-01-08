@@ -81,7 +81,7 @@ Feature: Manual creation of spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/ManualView"
     * a span string attribute "bugsnag.view.name" equals "ManualView"
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
-    * every span bool attribute "bugsnag.span.first_class" is true
+    * every span bool attribute "bugsnag.span.first_class" is false
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
@@ -116,7 +116,7 @@ Feature: Manual creation of spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load"
-    * every span bool attribute "bugsnag.span.first_class" is true
+    * every span bool attribute "bugsnag.span.first_class" is false
 
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario"

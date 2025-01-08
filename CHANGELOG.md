@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* View load spans are now not first class by default, and don't set the current context.
+  [369](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/369)
+
 * Improved Swift mangled name handling when reporting view spans.
   [344](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/344)
 
