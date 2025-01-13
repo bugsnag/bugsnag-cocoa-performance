@@ -25,6 +25,8 @@ OBJC_EXPORT
 
 @property(nonatomic,readonly) TraceId traceId;
 @property(nonatomic,readonly) SpanId spanId;
+@property(nonatomic,readonly) uint64_t traceIdHi;
+@property(nonatomic,readonly) uint64_t traceIdLo;
 
 - (instancetype) initWithTraceId:(TraceId)traceId spanId:(SpanId)spanId;
 

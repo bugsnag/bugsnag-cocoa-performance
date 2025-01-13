@@ -113,4 +113,17 @@ static BugsnagPerformanceConfiguration *newConfig() {
     XCTAssertEqual(spans.count, 1UL);
 }
 
+- (void)testNetworkSpan {
+    auto stackingHandler = std::make_shared<SpanStackingHandler>();
+    auto sampler = std::make_shared<Sampler>();
+    sampler->setProbability(1.0);
+    auto batch = std::make_shared<Batch>();
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    SpanOptions spanOptions;
+    auto span = tracer->startNetworkSpan(@"GET", spanOptions);
+    XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
+    XCTAssertEqualObjects(span.name, @"[HTTP/GET]");
+}
+
 @end

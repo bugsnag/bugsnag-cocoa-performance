@@ -12,6 +12,7 @@
 #import "../Tracer.h"
 #import "../Swizzle.h"
 #import "../Utils.h"
+#import "../BugsnagSwiftTools.h"
 
 #import <objc/runtime.h>
 
@@ -142,7 +143,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     }
 
     auto viewType = BugsnagPerformanceViewTypeUIKit;
-    auto name = nameForViewController(viewController);
+    auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, name, options);
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
@@ -218,7 +219,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
     auto isPreloaded = [viewWillAppearStartTime timeIntervalSinceDate: viewDidLoadEndTime] > kViewWillAppearPreloadedDelayThreshold;
     if (isPreloaded) {
         auto viewType = BugsnagPerformanceViewTypeUIKit;
-        auto className = NSStringFromClass([viewController class]);
+        auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
         [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
         [span updateStartTime: viewWillAppearStartTime];
         [span internalSetMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
@@ -307,20 +308,12 @@ ViewLoadInstrumentation::isClassObserved(Class cls) noexcept {
     return (*result).second;
 }
 
-NSString *
-ViewLoadInstrumentation::nameForViewController(UIViewController *viewController) noexcept {
-    if ([viewController respondsToSelector:@selector(bugsnagPerformanceTrackedViewName)]) {
-        return [(id)viewController bugsnagPerformanceTrackedViewName];
-    }
-    return NSStringFromClass([viewController class]);
-}
-
 BugsnagPerformanceSpan *
 ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept {
     if (!canCreateSpans(viewController)) {
         return nullptr;
     }
-    auto name = nameForViewController(viewController);
+    auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     auto span = tracer_->startViewLoadPhaseSpan(name, phase, getOverallSpan(viewController));
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 

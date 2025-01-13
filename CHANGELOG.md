@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 1.11.0 (2025-01-13)
+
+### Bug fixes
+
+* Network spans are now type 3 (Client).
+  [368](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/368)
+
+* Improved Swift mangled name handling when reporting view spans.
+  [344](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/344)
+
+### Enhancements
+
+* Disabled assertions on release build.
+  [366](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/366)
+
+* Removed the platform restriction on CoreTelephony since it's now available on all platforms. This will allow building for Mac Catalyst targets (although this is not yet officially supported).
+  [364](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/364)
+  
+* A span's end time can now be set to a different time to when it was closed.
+  [363](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/363)
+
 ## 1.10.2 (2024-10-31)
 
 * Fixed a crash after shared NSURLSession invalidate

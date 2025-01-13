@@ -97,7 +97,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         BSGLogTrace(@"Tracer::startSpan: No parent specified; using current span");
         parentSpan = spanStackingHandler_->currentSpan();
     }
-    auto traceId = parentSpan.traceId;
+
+    TraceId traceId = { .hi = parentSpan.traceIdHi, .lo = parentSpan.traceIdLo };
     if (traceId.value == 0) {
         BSGLogTrace(@"Tracer::startSpan: No parent traceId; generating one");
         traceId = IdGenerator::generateTraceId();
@@ -108,6 +109,12 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         firstClass = defaultFirstClass;
     }
     auto spanId = IdGenerator::generateSpanId();
+    auto onSpanEndSet = ^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+        blockThis->onSpanEndSet(endedSpan);
+    };
+    auto onSpanClosed = ^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
+        blockThis->onSpanClosed(endedSpan);
+    };
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
                                                                         traceId:traceId
                                                                          spanId:spanId
@@ -116,9 +123,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                      firstClass:firstClass
                                                             attributeCountLimit:attributeCountLimit_
                                                             instrumentRendering: options.instrumentRendering
-                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
-        blockThis->onSpanClosed(endedSpan);
-    }];
+                                                                   onSpanEndSet:onSpanEndSet
+                                                                   onSpanClosed:onSpanClosed];
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
@@ -132,12 +138,16 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     return span;
 }
 
-void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
-    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
-    
+void Tracer::onSpanEndSet(BugsnagPerformanceSpan *span) {
+    BSGLogTrace(@"Tracer::onSpanEndSet: for span %@", span.name);
+
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+}
+
+void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
+    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
 
     spanStackingHandler_->onSpanClosed(span.spanId);
 
@@ -259,7 +269,9 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
-    return startSpan(name, options, BSGFirstClassUnset);
+    auto span = startSpan(name, options, BSGFirstClassUnset);
+    span.kind = SPAN_KIND_CLIENT;
+    return span;
 }
 
 BugsnagPerformanceSpan *
@@ -280,7 +292,7 @@ void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
         [span abortIfOpen];
-        batch_->removeSpan(span.traceId, span.spanId);
+        batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
     }
 }
 
