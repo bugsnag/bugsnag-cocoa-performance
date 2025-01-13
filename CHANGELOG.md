@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 1.11.0 (2025-01-13)
 
 ### Bug fixes
 
@@ -13,8 +13,14 @@ Changelog
 
 ### Enhancements
 
+* Disabled assertions on release build.
+  [366](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/366)
+
 * Removed the platform restriction on CoreTelephony since it's now available on all platforms. This will allow building for Mac Catalyst targets (although this is not yet officially supported).
   [364](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/364)
+  
+* A span's end time can now be set to a different time to when it was closed.
+  [363](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/363)
 
 ## 1.10.2 (2024-10-31)
 
