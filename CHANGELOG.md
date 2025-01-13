@@ -8,6 +8,9 @@ Changelog
 * View load spans are now not first class by default, and don't set the current context.
   [369](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/369)
 
+* Network spans are now type 3 (Client).
+  [368](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/368)
+
 * Improved Swift mangled name handling when reporting view spans.
   [344](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/344)
 

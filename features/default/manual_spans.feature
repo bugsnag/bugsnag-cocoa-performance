@@ -136,7 +136,7 @@ Feature: Manual creation of spans
     * every span string attribute "net.host.connection.type" equals "wifi"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
-    * every span field "kind" equals 1
+    * every span field "kind" equals 3
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
@@ -158,7 +158,7 @@ Feature: Manual creation of spans
     * a span string attribute "net.host.connection.type" equals "wifi"
     * a span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * a span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
-    * a span field "kind" equals 1
+    * a span field "kind" equals 3
     * a span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * a span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
