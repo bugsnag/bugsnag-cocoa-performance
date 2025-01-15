@@ -108,7 +108,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     [worker_ earlySetup];
     [frameMetricsCollector_ earlySetup];
 
-    [BugsnagPerformanceCrossTalkAPI configureWithSpanStackingHandler:spanStackingHandler_ tracer:tracer_];
+    [BugsnagPerformanceCrossTalkAPI initializeWithSpanStackingHandler:spanStackingHandler_ tracer:tracer_];
 }
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {

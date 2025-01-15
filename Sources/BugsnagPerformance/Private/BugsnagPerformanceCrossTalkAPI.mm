@@ -29,9 +29,9 @@ using namespace bugsnag;
 @implementation BugsnagPerformanceCrossTalkAPI
 
 /**
- * You'll call your configure method during start up.
+ * You'll call your initialize method during start up.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
     BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = handler;
     BugsnagPerformanceCrossTalkAPI.sharedInstance.tracer = tracer;
 }

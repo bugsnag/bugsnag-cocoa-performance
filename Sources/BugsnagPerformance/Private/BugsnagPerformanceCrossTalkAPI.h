@@ -37,9 +37,9 @@ class Tracer;
 + (instancetype) sharedInstance;
 
 /**
- * Use the configure method to pass any information this CrossTalk API requires to function.
+ * Use the initialize method to pass any information this CrossTalk API requires to function.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
 
 @end
 
