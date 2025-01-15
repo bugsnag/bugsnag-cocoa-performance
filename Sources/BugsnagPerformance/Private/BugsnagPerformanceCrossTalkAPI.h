@@ -62,7 +62,7 @@ class Tracer;
  */
 @interface BugsnagPerformanceCrossTalkProxiedObject : NSProxy
 
-+ (instancetype) proxied:(id _Nullable)delegate;
++ (instancetype _Nullable) proxied:(id _Nullable)delegate;
 
 @end
 

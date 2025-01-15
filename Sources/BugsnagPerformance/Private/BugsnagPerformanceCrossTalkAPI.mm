@@ -73,10 +73,6 @@ using namespace bugsnag;
  * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
  */
 - (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
-    if (self.configuration == nil) {
-        return nil;
-    }
-    
     return (BugsnagPerformanceConfiguration *)[BugsnagPerformanceCrossTalkProxiedObject proxied:self.configuration];
 }
 
@@ -268,7 +264,11 @@ static bool classImplementsSelector(Class cls, SEL selector) {
 
 @implementation BugsnagPerformanceCrossTalkProxiedObject
 
-+ (instancetype) proxied:(id _Nullable)delegate {
++ (instancetype _Nullable) proxied:(id _Nullable)delegate {
+    if (delegate == nil) {
+        return nil;
+    }
+
     BugsnagPerformanceCrossTalkProxiedObject *proxy = [BugsnagPerformanceCrossTalkProxiedObject alloc];
     proxy.delegate = delegate;
     return proxy;
