@@ -23,21 +23,23 @@
 
 #import <Foundation/Foundation.h>
 #import <memory>
+#import "PhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 namespace bugsnag {
 class SpanStackingHandler;
+class Tracer;
 }
 
-@interface BugsnagPerformanceCrossTalkAPI : NSObject
+@interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
 
 + (instancetype) sharedInstance;
 
 /**
- * Use the configure method to pass any information this CrossTalk API requires to function.
+ * Use the initialize method to pass any information this CrossTalk API requires to function.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler;
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
 
 @end
 
@@ -60,7 +62,7 @@ class SpanStackingHandler;
  */
 @interface BugsnagPerformanceCrossTalkProxiedObject : NSProxy
 
-+ (instancetype) proxied:(id _Nullable)delegate;
++ (instancetype _Nullable) proxied:(id _Nullable)delegate;
 
 @end
 
