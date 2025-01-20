@@ -8,6 +8,7 @@
 
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import "SpanStackingHandler.h"
+#import "Tracer.h"
 #import "Utils.h"
 #import <objc/runtime.h>
 
@@ -19,6 +20,8 @@ using namespace bugsnag;
 // Declare the things your API class needs here
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property(nonatomic) std::shared_ptr<Tracer> tracer;
+@property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
 
 @end
 
@@ -26,10 +29,11 @@ using namespace bugsnag;
 @implementation BugsnagPerformanceCrossTalkAPI
 
 /**
- * You'll call your configure method during start up.
+ * You'll call your initialize method during start up.
  */
-+ (void)configureWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler {
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
     BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = handler;
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.tracer = tracer;
 }
 
 #pragma mark Exposed API
@@ -64,6 +68,48 @@ using namespace bugsnag;
         [NSString stringWithFormat:@"%llx", span.spanId]
     ];
 }
+
+/**
+ * Return the final configuration that was provided to [BugsnagPerformance start], or return nil if start has not been called.
+ */
+- (BugsnagPerformanceConfiguration * _Nullable)getConfigurationV1 {
+    return (BugsnagPerformanceConfiguration *)[BugsnagPerformanceCrossTalkProxiedObject proxied:self.configuration];
+}
+
+- (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
+    auto tracer = self.tracer;
+    if (tracer == nullptr) {
+        return nil;
+    }
+
+    auto options = SpanOptions(optionsIn);
+    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
+    return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
+}
+
+- (BugsnagPerformanceSpanOptions *)newSpanOptionsV1 {
+    return (BugsnagPerformanceSpanOptions *)[BugsnagPerformanceCrossTalkProxiedObject proxied:[BugsnagPerformanceSpanOptions new]];
+}
+
+- (BugsnagPerformanceSpanContext *)newSpanContextV1:(uint64_t)traceIdHi traceIdLo:(uint64_t)traceIdLo spanId:(SpanId)spanId {
+    BugsnagPerformanceSpanContext *spanContext = [[BugsnagPerformanceSpanContext alloc] initWithTraceIdHi:traceIdHi
+                                                                                                traceIdLo:traceIdLo spanId:spanId];
+    return (BugsnagPerformanceSpanContext *)[BugsnagPerformanceCrossTalkProxiedObject proxied:spanContext];
+}
+
+#pragma mark BSGPhasedStartup
+
+- (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
+
+- (void)earlySetup {}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.configuration = config;
+}
+
+- (void)start {}
+
+- (void)preStartSetup {}
 
 #pragma mark Internal Functionality
 
@@ -218,7 +264,11 @@ static bool classImplementsSelector(Class cls, SEL selector) {
 
 @implementation BugsnagPerformanceCrossTalkProxiedObject
 
-+ (instancetype) proxied:(id _Nullable)delegate {
++ (instancetype _Nullable) proxied:(id _Nullable)delegate {
+    if (delegate == nil) {
+        return nil;
+    }
+
     BugsnagPerformanceCrossTalkProxiedObject *proxy = [BugsnagPerformanceCrossTalkProxiedObject alloc];
     proxy.delegate = delegate;
     return proxy;
