@@ -1,12 +1,16 @@
 Changelog
 =========
 
-## 1.11.0 (2025-01-13)
+## 1.11.1 (2025-01-20)
 
 ### Bug fixes
 
 * View load spans are now not first class by default, and don't set the current context.
   [369](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/369)
+
+## 1.11.0 (2025-01-13)
+
+### Bug fixes
 
 * Network spans are now type 3 (Client).
   [368](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/368)
