@@ -7,6 +7,11 @@ Changelog
 
 * View load spans are now not first class by default, and don't set the current context.
   [369](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/369)
+  
+### Enhancements
+
+* Added mechanism for delivering external spans with natively-captured metrics (for initial use with React Native rendering metrics)
+  [373](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/373)
 
 ## 1.11.0 (2025-01-13)
 
