@@ -13,12 +13,12 @@ class FrameMetricsSpanInstrumentRenderingOffScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentRendering = true
+        config.enabledMetrics.rendering = true
     }
     
     override func run() {
         let options = BugsnagPerformanceSpanOptions()
-        options.setInstrumentRendering(.no)
+        options.metricsOptions.rendering = (.no)
         let span = BugsnagPerformance.startSpan(name: "FrameMetricsSpanInstrumentRenderingOffScenario", options: options)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

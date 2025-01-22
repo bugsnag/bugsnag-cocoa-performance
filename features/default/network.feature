@@ -46,7 +46,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow All
     Given I load scenario "AutoInstrumentNetworkTracePropagationScenario"
-    And I configure "propagateTraceParentToUrlsMatching" to ".*"
+    And I configure bugsnag "propagateTraceParentToUrlsMatching" to ".*"
     And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1"
     And I start bugsnag
     And I run the loaded scenario
@@ -63,7 +63,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow Some
     Given I load scenario "AutoInstrumentNetworkTracePropagationScenario"
-    And I configure "propagateTraceParentToUrlsMatching" to ".*test.*"
+    And I configure bugsng "propagateTraceParentToUrlsMatching" to ".*test.*"
     And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1,?temp=1"
     And I start bugsnag
     And I run the loaded scenario

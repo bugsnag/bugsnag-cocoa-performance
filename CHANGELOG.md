@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Spans can now capture CPU usage data.
+  [377](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/377)
+
 ## 1.11.1 (2025-01-20)
 
 ### Bug fixes

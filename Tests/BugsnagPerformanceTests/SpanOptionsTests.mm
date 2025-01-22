@@ -28,7 +28,7 @@ using namespace bugsnag;
     XCTAssertNil(objcOptions.parentContext);
     XCTAssertNil(objcOptions.startTime);
     XCTAssertTrue(objcOptions.makeCurrentContext);
-    XCTAssertEqual(objcOptions.firstClass, BSGFirstClassUnset);
+    XCTAssertEqual(objcOptions.firstClass, BSGTriStateUnset);
 }
 
 - (void)testConversionDefaults {
@@ -37,18 +37,20 @@ using namespace bugsnag;
     XCTAssertNil(cOptions.parentContext);
     XCTAssertTrue(isnan(cOptions.startTime));
     XCTAssertTrue(cOptions.makeCurrentContext);
-    XCTAssertEqual(cOptions.firstClass, BSGFirstClassUnset);
+    XCTAssertEqual(cOptions.firstClass, BSGTriStateUnset);
 }
 
 - (void)testConversion {
-    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"test" 
+    MetricsOptions metricsOptions;
+    metricsOptions.rendering = BSGTriStateNo;
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                                         traceId:IdGenerator::generateTraceId()
                                                                          spanId:IdGenerator::generateSpanId()
                                                                        parentId:IdGenerator::generateSpanId()
                                                                       startTime:SpanOptions().startTime 
-                                                                     firstClass:BSGFirstClassNo
+                                                                     firstClass:BSGTriStateNo
                                                             attributeCountLimit:128
-                                                            instrumentRendering:BSGInstrumentRenderingNo
+                                                                 metricsOptions:metricsOptions
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
     }];
@@ -56,13 +58,13 @@ using namespace bugsnag;
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = span;
     objcOptions.makeCurrentContext = true;
-    objcOptions.firstClass = BSGFirstClassNo;
+    objcOptions.firstClass = BSGTriStateNo;
     
     SpanOptions cOptions(objcOptions);
     XCTAssertEqual(1.0, cOptions.startTime);
     XCTAssertEqual(span, cOptions.parentContext);
     XCTAssertEqual(true, cOptions.makeCurrentContext);
-    XCTAssertEqual(BSGFirstClassNo, cOptions.firstClass);
+    XCTAssertEqual(BSGTriStateNo, cOptions.firstClass);
 }
 
 @end

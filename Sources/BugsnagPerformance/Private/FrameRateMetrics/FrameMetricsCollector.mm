@@ -80,7 +80,7 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 - (void)earlySetup {}
 
 - (void)configure:(BugsnagPerformanceConfiguration *)config {
-    self.autoInstrumentRendering = config.autoInstrumentRendering;
+    self.autoInstrumentRendering = config.enabledMetrics.rendering;
 }
 
 - (void)start {

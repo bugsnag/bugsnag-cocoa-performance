@@ -42,9 +42,12 @@ When('I start bugsnag') do
   run_command("start_bugsnag", {})
 end
 
-When('I configure {string} to {string}') do |config_name, config_value|
-  # Note: The method will usually be of the form "xyzWithParam:"
+When('I configure bugsnag {string} to {string}') do |config_name, config_value|
   run_command("configure_bugsnag", { path:config_name, value:config_value })
+end
+
+When('I configure scenario {string} to {string}') do |config_name, config_value|
+  run_command("configure_scenario", { path:config_name, value:config_value })
 end
 
 When('I run the loaded scenario') do
@@ -91,6 +94,11 @@ end
 Then('every span bool attribute {string} is false') do |attribute|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   spans.map { |span| Maze::check.false span['attributes'].find { |a| a['key'] == attribute }['value']['boolValue'] }
+end
+
+Then('every span attribute {string} does not exist') do |attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.map { |span| Maze.check.nil span['attributes'].find { |a| a['key'] == attribute } }
 end
 
 Then('every span bool attribute {string} does not exist') do |attribute|
@@ -192,6 +200,30 @@ Then('a span integer attribute {string} is less than {int}') do |attribute, expe
   Maze.check.false(attribute_values.empty?)
 end
 
+
+Then('a span float attribute {string} is greater than {float}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['doubleValue'].to_f > expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+Then('a span float attribute {string} equals {float}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['doubleValue'].to_f == expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+Then('a span float attribute {string} is less than {float}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['doubleValue'].to_f < expected }
+  Maze.check.false(attribute_values.empty?)
+end
+
+
+
 Then('a span array attribute {string} contains the string value {string} at index {int}') do |attribute, expected, index|
   value = get_array_value_at_index(attribute, index, 'stringValue')
   Maze.check.true(value == expected)
@@ -243,6 +275,11 @@ end
 Then('a span array attribute {string} is empty') do |attribute|
   array_contents = get_array_attribute_contents(attribute)
   Maze.check.true(array_contents.empty?)
+end
+
+Then('a span array attribute {string} contains {int} elements') do |attribute, count|
+  array_contents = get_array_attribute_contents(attribute)
+  Maze.check.true(array_contents.length() == count)
 end
 
 Then('a span named {string} is a child of span named {string}') do |name1, name2|

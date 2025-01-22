@@ -20,14 +20,16 @@ using namespace bugsnag;
 
 static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanLifecycleCallback onEnded) {
     TraceId tid = {.value = 1};
+    MetricsOptions metricsOptions;
+    metricsOptions.rendering = BSGTriStateNo;
     return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:tid
                                                  spanId:1
                                                parentId:0
                                               startTime:startTime
-                                             firstClass:BSGFirstClassUnset
+                                             firstClass:BSGTriStateUnset
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                            onSpanClosed:onEnded];
 }
@@ -39,6 +41,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartNearPastEndUnset {
@@ -48,6 +52,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartUnsetEndNearPast {
@@ -57,6 +63,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, endTime, 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartUnsetEndNearFuture {
@@ -66,6 +74,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, endTime, 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartNearPastEndNearFuture {
@@ -75,6 +85,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, endTime, 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartFarPastEndUnset {
@@ -84,6 +96,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqualWithAccuracy(span.endAbsTime, CFAbsoluteTimeGetCurrent(), 0.001);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartFarPastEndNearPast {
@@ -93,6 +107,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartFarPastEndNearFuture {
@@ -102,6 +118,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartNowEndFarFuture {
@@ -111,6 +129,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartFarPastEndFarFuture {
@@ -120,6 +140,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartNearPastEndFarFuture {
@@ -129,6 +151,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartNearFutureEndFarFuture {
@@ -138,6 +162,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testStartEndDistantPast {
@@ -147,6 +173,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
     BugsnagPerformanceSpan *span = spanWithStartTime(startTime, ^(BugsnagPerformanceSpan *cbSpan) {foundSpan = cbSpan;});
     [span endWithAbsoluteTime:endTime];
     XCTAssertEqual(span.endAbsTime, endTime);
+    XCTAssertTrue(!isnan(span.actuallyStartedAt));
+    XCTAssertTrue(!isnan(span.actuallyEndedAt));
 }
 
 - (void)testAddRemoveAttributes {
@@ -270,15 +298,16 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
 }
 
 - (void)testTooManyAttributes {
+    MetricsOptions metricsOptions;
     TraceId tid = {.value = 1};
     auto span = [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                      traceId:tid
                                                       spanId:1
                                                     parentId:0
                                                    startTime:0
-                                                  firstClass:BSGFirstClassUnset
+                                                  firstClass:BSGTriStateUnset
                                          attributeCountLimit:5
-                                         instrumentRendering:BSGInstrumentRenderingNo
+                                              metricsOptions:metricsOptions
                                                 onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                                 onSpanClosed:^(BugsnagPerformanceSpan *) {}];
 

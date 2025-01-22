@@ -8,17 +8,46 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 
+typedef NS_ENUM(uint8_t, BSGTriState) {
+    BSGTriStateNo = 0,
+    BSGTriStateYes = 1,
+    BSGTriStateUnset = 2,
+};
+
+@interface BugsnagPerformanceSpanMetricsOptions : NSObject
+
+/**
+ * No = never include these metrics
+ * Yes = Always include these metrics, as long as the corresponding enabledMetrics configuration option is on
+ * Unset = Include metrics only if the span is first class, start and end times were not set when creating/closing
+ *       the span and the corresponding enabledMetrics configuration option is on
+ * Default: Unset
+ */
+@property(nonatomic) BSGTriState rendering;
+
+/**
+ * No = never include these metrics
+ * Yes = Always include these metrics, as long as the corresponding enabledMetrics configuration option is on
+ * Unset = Include metrics only if the span is first class and the corresponding enabledMetrics configuration option is on
+ * Default: Unset
+ */
+@property(nonatomic) BSGTriState cpu;
+
+- (_Nonnull instancetype)clone;
+
+@end
+
 typedef NS_ENUM(uint8_t, BSGFirstClass) {
-    BSGFirstClassNo = 0,
-    BSGFirstClassYes = 1,
-    BSGFirstClassUnset = 2,
+    BSGFirstClassNo __attribute__((deprecated)) = BSGTriStateNo,
+    BSGFirstClassYes __attribute__((deprecated)) = BSGTriStateYes,
+    BSGFirstClassUnset __attribute__((deprecated)) = BSGTriStateUnset,
 };
 
 // Affects whether or not a span should include rendering metrics
 typedef NS_ENUM(uint8_t, BSGInstrumentRendering) {
-    BSGInstrumentRenderingNo = 0, // Never include rendering metrics
-    BSGInstrumentRenderingYes = 1, // Always include rendering metrics, as long as the autoInstrumentRendering configuration option is on
-    BSGInstrumentRenderingUnset = 2, // Include rendering metrics only if the span is first class, start and end times were not set when creating/closing the span and the autoInstrumentRendering configuration option is on
+    BSGInstrumentRenderingNo __attribute__((deprecated)) = BSGTriStateNo, // Never include rendering metrics
+    BSGInstrumentRenderingYes __attribute__((deprecated)) = BSGTriStateYes, // Always include rendering metrics, as long as the autoInstrumentRendering configuration option is on
+    BSGInstrumentRenderingUnset __attribute__((deprecated)) = BSGTriStateUnset, // Include rendering metrics only if the span is first class, start and end times were not set when creating/closing the span and the autoInstrumentRendering configuration option is on
 };
 
 // Span options allow the user to affect how spans are created.
@@ -35,15 +64,17 @@ OBJC_EXPORT
 @property(nonatomic, readonly) BOOL makeCurrentContext;
 
 // If true, this span will be considered "first class" on the dashboard.
-@property(nonatomic, readonly) BSGFirstClass firstClass;
+@property(nonatomic, readonly) BSGTriState firstClass;
 
-@property(nonatomic, readonly) BSGInstrumentRendering instrumentRendering;
+@property(nonatomic, readonly) BSGTriState instrumentRendering DEPRECATED_ATTRIBUTE;
+
+@property(nonatomic, strong) BugsnagPerformanceSpanMetricsOptions * _Nonnull metricsOptions;
 
 - (instancetype _Nonnull)setStartTime:(NSDate * _Nullable)startTime;
 - (instancetype _Nonnull)setParentContext:(BugsnagPerformanceSpanContext * _Nullable)parentContext;
 - (instancetype _Nonnull)setMakeCurrentContext:(BOOL)makeCurrentContext;
-- (instancetype _Nonnull)setFirstClass:(BSGFirstClass)firstClass;
-- (instancetype _Nonnull)setInstrumentRendering:(BSGInstrumentRendering)instrumentRendering;
+- (instancetype _Nonnull)setFirstClass:(BSGTriState)firstClass;
+- (instancetype _Nonnull)setInstrumentRendering:(BSGTriState)instrumentRendering DEPRECATED_ATTRIBUTE;
 
 - (instancetype _Nonnull)clone;
 

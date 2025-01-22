@@ -27,10 +27,12 @@
 #import "NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "SystemInfoSampler.h"
 
 #import <mutex>
 
 namespace bugsnag {
+
 class BugsnagPerformanceImpl: public PhasedStartup {
 public:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
@@ -112,6 +114,9 @@ private:
     bool sendRetriesTask() noexcept;
     bool sweepTracerTask() noexcept;
 
+    // Periodic Measurements
+    SystemInfoSampler systemInfoSampler_;
+
     // Event reactions
     void onBatchFull() noexcept;
     void onConnectivityChanged(Reachability::Connectivity connectivity) noexcept;
@@ -130,6 +135,7 @@ private:
     void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
     NSMutableArray<BugsnagPerformanceSpan *> *
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
+    bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

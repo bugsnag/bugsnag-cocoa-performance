@@ -17,6 +17,7 @@
 #import "SpanStackingHandler.h"
 #import "WeakSpansList.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "BSGPSystemInfo.h"
 
 #import <memory>
 
@@ -40,7 +41,7 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         onSpanEndCallbacks_ = config.onSpanEndCallbacks;
         attributeCountLimit_ = config.attributeCountLimit;
-        autoInstrumentRendering_ = config.autoInstrumentRendering;
+        enabledMetrics_ = [config.enabledMetrics clone];
     };
     void preStartSetup() noexcept;
     void start() noexcept {}
@@ -49,8 +50,8 @@ public:
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept;
-    
+    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass) noexcept;
+
     BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
 
     BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
@@ -83,7 +84,7 @@ private:
     FrameMetricsCollector *frameMetricsCollector_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
-    std::atomic<bool> autoInstrumentRendering_{false};
+    BugsnagPerformanceEnabledMetrics *enabledMetrics_{nil};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;

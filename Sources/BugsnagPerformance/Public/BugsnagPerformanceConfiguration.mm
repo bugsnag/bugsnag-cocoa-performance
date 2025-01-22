@@ -24,6 +24,26 @@ using namespace bugsnag;
 #define MAX_ATTRIBUTE_COUNT_LIMIT 1000
 #define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
 
+@implementation BugsnagPerformanceEnabledMetrics
+
+- (instancetype) initWithRendering:(BOOL)rendering cpu:(BOOL)cpu {
+    if ((self = [super init])) {
+        _rendering = rendering;
+        _cpu = cpu;
+    }
+    return self;
+}
+
+- (instancetype) init {
+    return [self initWithRendering:NO cpu:NO];
+}
+
+- (instancetype) clone {
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:self.rendering cpu:self.cpu];
+}
+
+@end
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
@@ -34,7 +54,7 @@ using namespace bugsnag;
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
-        _autoInstrumentRendering = NO;
+        _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
@@ -46,6 +66,14 @@ using namespace bugsnag;
 #endif
     }
     return self;
+}
+
+- (void)setAutoInstrumentRendering:(BOOL)autoInstrumentRendering {
+    self.enabledMetrics.rendering = autoInstrumentRendering;
+}
+
+- (BOOL)autoInstrumentRendering {
+    return self.enabledMetrics.rendering;
 }
 
 static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInteger max, NSUInteger def) {
@@ -146,7 +174,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
     }
     if (autoInstrumentRendering != nil) {
-        configuration.autoInstrumentRendering = [autoInstrumentRendering boolValue];
+        configuration.enabledMetrics.rendering = [autoInstrumentRendering boolValue];
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;
