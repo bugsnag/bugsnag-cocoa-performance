@@ -17,14 +17,18 @@
 #import "Utils.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 
+static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
+static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
+
 // App start spans will be thrown out if the early app start duration exceeds this.
-static CFTimeInterval maxAppStartDuration = 2.0;
+static constexpr CFTimeInterval maxAppStartDuration = 2.0;
 
 // App start spans will be thrown out if the app gets backgrounded within this timeframe after starting.
-static CFTimeInterval minTimeToBackgrounding = 2.0;
+static constexpr CFTimeInterval minTimeToBackgrounding = 2.0;
 
 
 static NSString *getPersistenceDir() {
@@ -55,6 +59,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
 , deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
 , resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
+, systemInfoSampler_(SAMPLER_INTERVAL_SECONDS, SAMPLER_HISTORY_SECONDS)
 , networkRequestCallback_(
     ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
         return info;
@@ -68,6 +73,8 @@ BugsnagPerformanceImpl::~BugsnagPerformanceImpl() {
 
 void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::earlyConfigure()");
+    // Do systemInfoSampler first so that any early spans will always have a bounding sample
+    systemInfoSampler_.earlyConfigure(config);
     persistentState_->earlyConfigure(config);
     traceEncoding_.earlyConfigure(config);
     tracer_->earlyConfigure(config);
@@ -98,6 +105,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::earlySetup()");
+    systemInfoSampler_.earlySetup();
     persistentState_->earlySetup();
     traceEncoding_.earlySetup();
     tracer_->earlySetup();
@@ -126,6 +134,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     }
 
     configuration_ = config;
+    systemInfoSampler_.configure(config);
     persistentState_->configure(config);
     traceEncoding_.configure(config);
     deviceID_->configure(config);
@@ -142,6 +151,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 
 void BugsnagPerformanceImpl::preStartSetup() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::preStartSetup()");
+    systemInfoSampler_.preStartSetup();
     persistentState_->preStartSetup();
     traceEncoding_.preStartSetup();
     tracer_->preStartSetup();
@@ -215,6 +225,8 @@ void BugsnagPerformanceImpl::start() noexcept {
     resourceAttributes_->start();
     networkHeaderInjector_->start();
 
+    systemInfoSampler_.start();
+
     [worker_ start];
     [frameMetricsCollector_ start];
 
@@ -275,6 +287,13 @@ BugsnagPerformanceImpl::sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *
     return sendableSpans;
 }
 
+bool BugsnagPerformanceImpl::shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept {
+    if (span.metricsOptions.cpu == BSGTriStateUnset) {
+        return span.firstClass == BSGTriStateYes;
+    }
+    return span.metricsOptions.cpu == BSGTriStateYes;
+}
+
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
@@ -291,10 +310,29 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     }
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
+    // Delay so that the sampler has time to fetch one more sample.
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
+                   dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
+        for(BugsnagPerformanceSpan *span: spans) {
+            auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
+            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
+            if (samples.size() >= 2) {
+                if (shouldSampleCPU(span)) {
+                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
+                    [span forceMutate:^() {
+                        [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
+                    }];
+                }
+            }
+        }
+
 #ifndef __clang_analyzer__
-    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
 #endif
-    uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
+        uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
+    });
+
     return true;
 }
 
