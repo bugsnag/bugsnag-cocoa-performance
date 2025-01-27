@@ -309,27 +309,27 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
-//                   dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-//        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
-//        for(BugsnagPerformanceSpan *span: spans) {
-//            auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
-//            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
-//            if (samples.size() >= 2) {
-//                if (shouldSampleCPU(span)) {
-//                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
+                   dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
+        for(BugsnagPerformanceSpan *span: spans) {
+            auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
+            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
+            if (samples.size() >= 2) {
+                if (shouldSampleCPU(span)) {
+                    BSGLogInfo(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
 //                    [span forceMutate:^() {
 //                        [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
 //                    }];
-//                }
-//            }
-//        }
+                }
+            }
+        }
 
 #ifndef __clang_analyzer__
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
 #endif
         uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
-//    });
+    });
 
     return true;
 }
