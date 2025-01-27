@@ -13,7 +13,7 @@ class FrameMetricsSlowFramesScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentRendering = true
+        config.enabledMetrics.rendering = true
     }
     
     override func run() {

@@ -83,7 +83,7 @@ using namespace bugsnag;
     }
 
     auto options = SpanOptions(optionsIn);
-    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
+    auto span = tracer->startSpan(name, options, BSGTriStateUnset);
     return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 

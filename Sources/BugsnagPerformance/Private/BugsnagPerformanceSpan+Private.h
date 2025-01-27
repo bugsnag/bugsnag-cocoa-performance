@@ -11,6 +11,7 @@
 #import "BugsnagPerformanceSpanContext+Private.h"
 #import "SpanKind.h"
 #import "FrameRateMetrics/FrameMetricsSnapshot.h"
+#import "SpanOptions.h"
 
 #import <memory>
 
@@ -35,6 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, copy) void (^onDumped)(BugsnagPerformanceSpan *);
 
+// These mark the actual times that the span was instantiated and ended,
+// irrespective of any time values this span will report.
+// We need this because we're recording metrics data in spans instead of metrics.
+@property (nonatomic) CFAbsoluteTime actuallyStartedAt;
+@property (nonatomic) CFAbsoluteTime actuallyEndedAt;
+
 @property (nonatomic) CFAbsoluteTime startAbsTime;
 @property (nonatomic) CFAbsoluteTime endAbsTime;
 @property (nonatomic) OnSpanDestroyAction onSpanDestroyAction;
@@ -44,13 +51,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) SpanLifecycleCallback onSpanClosed;
 @property (nonatomic,readwrite) SpanId parentId;
 @property (nonatomic) double samplingProbability;
-@property (nonatomic) BSGFirstClass firstClass;
+@property (nonatomic) BSGTriState firstClass;
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
 @property (nonatomic,readwrite) BOOL hasBeenProcessed;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
-@property (nonatomic) BSGInstrumentRendering instrumentRendering;
+@property (nonatomic) MetricsOptions metricsOptions;
 @property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
 @property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;
 
@@ -65,9 +72,9 @@ NS_ASSUME_NONNULL_BEGIN
                       spanId:(SpanId) spanId
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startTime
-                  firstClass:(BSGFirstClass) firstClass
+                  firstClass:(BSGTriState) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
-         instrumentRendering:(BSGInstrumentRendering)instrumentRendering
+              metricsOptions:(MetricsOptions) metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanEnded NS_DESIGNATED_INITIALIZER;
 
@@ -86,6 +93,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateName:(NSString *)name;
 - (void)updateStartTime:(NSDate *)startTime;
 - (void)updateSamplingProbability:(double) value;
+
+- (void)forceMutate:(void (^)())block;
 
 @end
 

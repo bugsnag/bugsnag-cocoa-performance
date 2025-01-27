@@ -9,6 +9,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import "Utils.h"
+#import "Metrics.h"
 
 namespace bugsnag {
 
@@ -17,13 +18,13 @@ public:
     SpanOptions(BugsnagPerformanceSpanContext *parentContext,
                 CFAbsoluteTime startTime,
                 bool makeCurrentContext,
-                BSGFirstClass firstClass,
-                BSGInstrumentRendering instrumentRendering)
+                BSGTriState firstClass,
+                MetricsOptions metricsOptions)
     : parentContext(parentContext)
     , startTime(startTime)
     , makeCurrentContext(makeCurrentContext)
     , firstClass(firstClass)
-    , instrumentRendering(instrumentRendering)
+    , metricsOptions(metricsOptions)
     {}
     
     SpanOptions(BugsnagPerformanceSpanOptions *options)
@@ -31,7 +32,7 @@ public:
                   dateToAbsoluteTime(options.startTime),
                   options.makeCurrentContext,
                   options.firstClass,
-                  options.instrumentRendering)
+                  options.metricsOptions)
     {}
     
     SpanOptions()
@@ -39,15 +40,15 @@ public:
     : SpanOptions(nil,
                   CFABSOLUTETIME_INVALID,
                   true,
-                  BSGFirstClassUnset,
-                  BSGInstrumentRenderingUnset)
+                  BSGTriStateUnset,
+                  MetricsOptions())
     {}
     
     BugsnagPerformanceSpanContext *parentContext{nil};
     CFAbsoluteTime startTime{CFABSOLUTETIME_INVALID};
     bool makeCurrentContext{false};
-    BSGFirstClass firstClass{BSGFirstClassUnset};
-    BSGInstrumentRendering instrumentRendering{BSGInstrumentRenderingUnset};
+    BSGTriState firstClass{BSGTriStateUnset};
+    MetricsOptions metricsOptions;
 };
 
 }

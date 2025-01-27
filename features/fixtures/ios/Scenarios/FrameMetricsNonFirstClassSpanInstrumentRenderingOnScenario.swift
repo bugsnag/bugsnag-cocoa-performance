@@ -13,12 +13,12 @@ class FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentRendering = true
+        config.enabledMetrics.rendering = true
     }
     
     override func run() {
         let options = BugsnagPerformanceSpanOptions()
-        options.setInstrumentRendering(.yes)
+        options.metricsOptions.rendering = (.yes)
         options.setFirstClass(.no)
         let span = BugsnagPerformance.startSpan(name: "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario", options: options)
         

@@ -14,6 +14,7 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import <algorithm>
 
 using namespace bugsnag;
 
@@ -59,10 +60,10 @@ void Tracer::reprocessEarlySpans(void) {
             [span abortUnconditionally];
             continue;
         }
-        span.isMutable = true;
-        [span updateSamplingProbability:sampler_->getProbability()];
-        callOnSpanEndCallbacks(span);
-        span.isMutable = false;
+        [span forceMutate:^() {
+            [span updateSamplingProbability:sampler_->getProbability()];
+            callOnSpanEndCallbacks(span);
+        }];
         if (span.state == SpanStateAborted) {
             BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             [span abortUnconditionally];
@@ -89,7 +90,7 @@ Tracer::sweep() noexcept {
 }
 
 BugsnagPerformanceSpan *
-Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirstClass) noexcept {
+Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass) noexcept {
     BSGLogDebug(@"Tracer::startSpan(%@, opts, %d)", name, defaultFirstClass);
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
@@ -103,8 +104,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
         BSGLogTrace(@"Tracer::startSpan: No parent traceId; generating one");
         traceId = IdGenerator::generateTraceId();
     }
-    BSGFirstClass firstClass = options.firstClass;
-    if (firstClass == BSGFirstClassUnset) {
+    BSGTriState firstClass = options.firstClass;
+    if (firstClass == BSGTriStateUnset) {
         BSGLogTrace(@"Tracer::startSpan: firstClass not specified; using default of %d", defaultFirstClass);
         firstClass = defaultFirstClass;
     }
@@ -115,6 +116,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
     auto onSpanClosed = ^(BugsnagPerformanceSpan * _Nonnull endedSpan) {
         blockThis->onSpanClosed(endedSpan);
     };
+
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
                                                                         traceId:traceId
                                                                          spanId:spanId
@@ -122,7 +124,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGFirstClass defaultFirs
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
                                                             attributeCountLimit:attributeCountLimit_
-                                                            instrumentRendering: options.instrumentRendering
+                                                                 metricsOptions:options.metricsOptions
                                                                    onSpanEndSet:onSpanEndSet
                                                                    onSpanClosed:onSpanClosed];
     if (shouldInstrumentRendering(span)) {
@@ -238,13 +240,13 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
 BugsnagPerformanceSpan *
 Tracer::startAppStartSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGFirstClassUnset);
+    return startSpan(name, options, BSGTriStateUnset);
 }
 
 BugsnagPerformanceSpan *
 Tracer::startCustomSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGFirstClassYes);
+    return startSpan(name, options, BSGTriStateYes);
 }
 
 BugsnagPerformanceSpan *
@@ -256,12 +258,12 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
-    if (options.firstClass == BSGFirstClassUnset) {
+    if (options.firstClass == BSGTriStateUnset) {
         if (spanStackingHandler_->hasSpanWithAttribute(@"bugsnag.span.category", @"view_load")) {
-            options.firstClass = BSGFirstClassNo;
+            options.firstClass = BSGTriStateNo;
         }
     }
-    auto span = startSpan(name, options, BSGFirstClassNo);
+    auto span = startSpan(name, options, BSGTriStateNo);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }
@@ -271,7 +273,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
-    auto span = startSpan(name, options, BSGFirstClassUnset);
+    auto span = startSpan(name, options, BSGTriStateUnset);
     span.kind = SPAN_KIND_CLIENT;
     return span;
 }
@@ -283,7 +285,7 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
     NSString *name = [NSString stringWithFormat:@"[ViewLoadPhase/%@]/%@", phase, className];
     SpanOptions options;
     options.parentContext = parentContext;
-    auto span = startSpan(name, options, BSGFirstClassUnset);
+    auto span = startSpan(name, options, BSGTriStateUnset);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }
@@ -314,7 +316,7 @@ Tracer::createFrozenFrameSpan(NSTimeInterval startTime,
     options.startTime = startTime;
     options.parentContext = parentContext;
     options.makeCurrentContext = false;
-    auto span = startSpan(@"FrozenFrame", options, BSGFirstClassNo);
+    auto span = startSpan(@"FrozenFrame", options, BSGTriStateNo);
     [span endWithAbsoluteTime:endTime];
 }
 
@@ -334,14 +336,14 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
 
 bool 
 Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
-    switch (span.instrumentRendering) {
-        case BSGInstrumentRenderingYes:
-            return autoInstrumentRendering_;
-        case BSGInstrumentRenderingNo:
+    switch (span.metricsOptions.rendering) {
+        case BSGTriStateYes:
+            return enabledMetrics_.rendering;
+        case BSGTriStateNo:
             return false;
-        case BSGInstrumentRenderingUnset:
-            return autoInstrumentRendering_ &&
+        case BSGTriStateUnset:
+            return enabledMetrics_.rendering &&
             !span.wasStartOrEndTimeProvided && 
-            span.firstClass == BSGFirstClassYes;
+            span.firstClass == BSGTriStateYes;
     }
 }

@@ -17,14 +17,15 @@
 using namespace bugsnag;
 
 static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> handler) {
+    MetricsOptions metricsOptions;
     return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:IdGenerator::generateTraceId()
                                                  spanId:IdGenerator::generateSpanId()
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime
-                                             firstClass:BSGFirstClassNo
+                                             firstClass:BSGTriStateNo
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);
