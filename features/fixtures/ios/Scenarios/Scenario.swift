@@ -15,6 +15,7 @@ class Scenario: NSObject {
     let fixtureConfig: FixtureConfig
     var config = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
+    var scenarioConfig: Dictionary<String,String> = [:]
 
     private override init() {
         fatalError("do not use the default init of Scenario")
@@ -32,7 +33,7 @@ class Scenario: NSObject {
         config.autoInstrumentAppStarts = false
         config.autoInstrumentNetworkRequests = false
         config.autoInstrumentViewControllers = false
-        config.autoInstrumentRendering = false
+        config.enabledMetrics.rendering = false
         config.endpoint = fixtureConfig.tracesURL
         config.networkRequestCallback = filterAdminMazeRunnerNetRequests
     }
@@ -91,9 +92,17 @@ class Scenario: NSObject {
             }
             config.tracePropagationUrls = regexes
             break
+        case "cpuMetrics":
+            config.enabledMetrics.cpu = (value == "true")
+            break
         default:
             fatalError("\(path): Unknown configuration path")
         }
+    }
+
+    func configureScenario(path: String, value: String) {
+        logDebug("Scenario.configureScenario()")
+        scenarioConfig[path] = value;
     }
 
     func startBugsnag() {
@@ -141,7 +150,7 @@ class Scenario: NSObject {
         let startDate = Date()
         body()
         let endDate = Date()
-        
+
         let calendar = Calendar.current
         let duration = calendar.dateComponents([.nanosecond], from: startDate, to: endDate)
         let metrics = ["duration.nanos": "\(duration.nanosecond ?? 0)"]
@@ -152,7 +161,7 @@ class Scenario: NSObject {
         var request = URLRequest(url: fixtureConfig.metricsURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         var body = metrics
         body["metric.measurement"] = name
         body["device.manufacturer"] = "Apple"
@@ -164,12 +173,34 @@ class Scenario: NSObject {
             return
         }
         request.httpBody = jsonData
-        
+
         URLSession.shared.dataTask(with: request).resume()
     }
 
     func callReflectUrl(appendingToUrl: String) {
         let url = URL(string: appendingToUrl, relativeTo: fixtureConfig.reflectURL)!
         URLSession.shared.dataTask(with: url).resume()
+    }
+
+    func toDouble(string: String?) -> Double {
+        if string == nil {
+            return 0
+        }
+        return Double(string!)!
+    }
+
+    func toTriState(string: String?) -> BSGTriState {
+        switch string {
+        case "yes":
+            (.yes)
+        case "no":
+            (.no)
+        case "unset":
+            (.unset)
+        case nil:
+            (.unset)
+        default:
+            fatalError("\(String(describing: string)): Unknown tri-state value")
+        }
     }
 }
