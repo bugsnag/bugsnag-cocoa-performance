@@ -268,18 +268,18 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)setIsMutable:(BOOL)isMutable {
-    @synchronized (self) {
+//    @synchronized (self) {
         _isMutable = isMutable;
-    }
+//    }
 }
 
 - (void)forceMutate:(void (^)())block {
-    @synchronized (self) {
+//    @synchronized (self) {
         const bool wasMutable = self.isMutable;
         self.isMutable = true;
         block();
         self.isMutable = wasMutable;
-    }
+//    }
 }
 
 @end

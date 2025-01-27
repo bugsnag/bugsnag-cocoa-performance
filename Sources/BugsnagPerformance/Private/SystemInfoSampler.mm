@@ -123,13 +123,13 @@ void SystemInfoSampler::recordSample() {
     lastSampledAtTime_ = sample.sampledAt;
 
     if (sample.hasValidData()) {
-        std::lock_guard<std::mutex> guard(mutex_);
+//        std::lock_guard<std::mutex> guard(mutex_);
         samples_.push_back(sample);
     }
 }
 
 std::vector<SystemInfoSampleData> SystemInfoSampler::samplesAroundTimePeriod(CFAbsoluteTime startTime, CFAbsoluteTime endTime) {
-    std::lock_guard<std::mutex> guard(mutex_);
+//    std::lock_guard<std::mutex> guard(mutex_);
     if (samples_.empty()) {
         BSGLogTrace(@"SystemInfoSampler::samplesAroundTimePeriod(): No samples available");
         return std::vector<SystemInfoSampleData>();
