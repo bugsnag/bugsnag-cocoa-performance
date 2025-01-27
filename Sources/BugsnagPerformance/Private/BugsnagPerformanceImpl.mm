@@ -328,7 +328,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 #ifndef __clang_analyzer__
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
 #endif
-        uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
+//        uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     });
 
     return true;
