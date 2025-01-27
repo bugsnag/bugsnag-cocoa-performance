@@ -54,7 +54,7 @@ void SystemInfoSampler::earlySetup() noexcept {
         samples_.clear();
     }];
 
-//    [samplerThread_ start];
+    [samplerThread_ start];
 }
 
 void SystemInfoSampler::configure(BugsnagPerformanceConfiguration *config) noexcept {
