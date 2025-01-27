@@ -306,7 +306,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 #endif
         return false;
     }
-    bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
+//    bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
