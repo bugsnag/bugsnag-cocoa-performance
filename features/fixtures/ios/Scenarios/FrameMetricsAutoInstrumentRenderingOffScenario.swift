@@ -13,7 +13,7 @@ class FrameMetricsAutoInstrumentRenderingOffScenario: Scenario {
     
     override func configure() {
         super.configure()
-        config.autoInstrumentRendering = false
+        config.enabledMetrics.rendering = false
     }
     
     override func run() {

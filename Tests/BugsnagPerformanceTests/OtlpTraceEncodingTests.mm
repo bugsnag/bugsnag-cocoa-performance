@@ -176,7 +176,9 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                   spanId:(SpanId) spanId
                                 parentId:(SpanId) parentId
                                startTime:(CFAbsoluteTime) startAbsTime
-                              firstClass:(BSGFirstClass) firstClass {
+                              firstClass:(BSGTriState) firstClass {
+    MetricsOptions metricsOptions;
+    metricsOptions.rendering = BSGTriStateNo;
     return [[BugsnagPerformanceSpan alloc] initWithName:name
                                                 traceId:traceId
                                                  spanId:spanId
@@ -184,7 +186,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                               startTime:startAbsTime
                                              firstClass:firstClass
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
@@ -198,7 +200,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:CFAbsoluteTimeGetCurrent()
-                             firstClass:BSGFirstClassYes]];
+                             firstClass:BSGTriStateYes]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -224,7 +226,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:CFAbsoluteTimeGetCurrent()
-                             firstClass:BSGFirstClassNo]];
+                             firstClass:BSGTriStateNo]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -250,7 +252,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:CFAbsoluteTimeGetCurrent()
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     auto json = encoder->encode(spans, @{});
     
     XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
@@ -280,7 +282,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                spanId:0xface
                                              parentId:0
                                             startTime:startTime
-                                           firstClass:BSGFirstClassUnset];
+                                           firstClass:BSGTriStateUnset];
     [span setEndAbsTime:startTime + 15];
     
     auto json = encoder->encode(span);
@@ -316,7 +318,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                spanId:0xface
                                              parentId:0xcafe
                                             startTime:startTime
-                                           firstClass:BSGFirstClassUnset];
+                                           firstClass:BSGTriStateUnset];
     [span setEndAbsTime:startTime + 15];
     
     auto json = encoder->encode(span);
@@ -366,7 +368,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     auto resourceAttributes = @{};
     auto package = encoder->buildUploadPackage(spans, resourceAttributes, true);
 
@@ -389,7 +391,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.3];
 
     auto resourceAttributes = @{};
@@ -408,13 +410,13 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test2"
                                 traceId:tid
                                  spanId:2
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
 
@@ -434,13 +436,13 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test2"
                                 traceId:tid
                                  spanId:2
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.5];
     [spans[1] updateSamplingProbability:0.5];
 
@@ -460,31 +462,31 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test2"
                                 traceId:tid
                                  spanId:2
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test3"
                                 traceId:tid
                                  spanId:3
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test4"
                                 traceId:tid
                                  spanId:4
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test5"
                                 traceId:tid
                                  spanId:5
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.3];
@@ -507,67 +509,67 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test1"
                                 traceId:tid
                                  spanId:2
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test2"
                                 traceId:tid
                                  spanId:3
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test3"
                                 traceId:tid
                                  spanId:4
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test4"
                                 traceId:tid
                                  spanId:5
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test5"
                                 traceId:tid
                                  spanId:6
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test6"
                                 traceId:tid
                                  spanId:7
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test7"
                                 traceId:tid
                                  spanId:8
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test8"
                                 traceId:tid
                                  spanId:9
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test9"
                                 traceId:tid
                                  spanId:10
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test10"
                                 traceId:tid
                                  spanId:11
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.0];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.2];
@@ -596,31 +598,31 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                  spanId:1
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test2"
                                 traceId:tid
                                  spanId:2
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test3"
                                 traceId:tid
                                  spanId:3
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test4"
                                 traceId:tid
                                  spanId:4
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans addObject:[self spanWithName:@"test5"
                                 traceId:tid
                                  spanId:5
                                parentId:0
                               startTime:0
-                             firstClass:BSGFirstClassUnset]];
+                             firstClass:BSGTriStateUnset]];
     [spans[0] updateSamplingProbability:0.3];
     [spans[1] updateSamplingProbability:0.1];
     [spans[2] updateSamplingProbability:0.3];

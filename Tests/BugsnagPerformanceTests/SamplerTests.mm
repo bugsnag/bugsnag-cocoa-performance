@@ -59,14 +59,15 @@ using namespace bugsnag;
     auto numSamplesTries = 1'000;
     auto count = 0;
     for (auto i = 0; i < numSamplesTries; i++) {
+        MetricsOptions metricsOptions;
         BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"a"
                                                                             traceId:IdGenerator::generateTraceId()
                                                                              spanId:IdGenerator::generateSpanId()
                                                                            parentId:0
                                                                           startTime:0
-                                                                         firstClass:BSGFirstClassUnset
+                                                                         firstClass:BSGTriStateUnset
                                                                 attributeCountLimit:128
-                                                                instrumentRendering:BSGInstrumentRenderingNo
+                                                                     metricsOptions:metricsOptions
                                                                        onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                        onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
         }];
