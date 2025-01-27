@@ -44,6 +44,7 @@
 		098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */; };
 		098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */; };
 		098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */; };
+		098FC87C2D40EAB8001B627D /* CPUMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */; };
 		099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */; };
 		09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */; };
 		09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */; };
@@ -136,6 +137,7 @@
 		098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ErrorGenerator.h; sourceTree = "<group>"; };
 		098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ErrorGenerator.m; sourceTree = "<group>"; };
 		098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftErrorGenerator.swift; sourceTree = "<group>"; };
+		098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPUMetricsScenario.swift; sourceTree = "<group>"; };
 		099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAVAssetScenario.swift; sourceTree = "<group>"; };
 		09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
 		09D59E1C2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkTracePropagationScenario.swift; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 				96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
+				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 			);
 			path = Scenarios;
 			sourceTree = "<group>";
@@ -446,6 +449,7 @@
 				09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */,
 				96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */,
 				09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */,
+				098FC87C2D40EAB8001B627D /* CPUMetricsScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,
 				093EE63D2C32E5B900632B30 /* ManualParentSpanScenario.swift in Sources */,
