@@ -104,6 +104,10 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
     }
 }
 
+static uint64_t CFAbsoluteTimeToUTCNanos(CFAbsoluteTime time) {
+    return (uint64_t)((time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC);
+}
+
 NSMutableDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
@@ -198,4 +202,73 @@ SpanAttributesProvider::customSpanAttributes() noexcept {
     return @{
         @"bugsnag.span.category": @"custom",
     }.mutableCopy;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
+    auto process = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto mainThread = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto monitorThread = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto timestamps = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    uint64_t processSampleCount = 0;
+    double processTotal = 0;
+    uint64_t mainThreadSampleCount = 0;
+    double mainThreadTotal = 0;
+    uint64_t monitorThreadSampleCount = 0;
+    double monitorThreadTotal = 0;
+    for(auto sample: samples) {
+        if (!sample.hasValidData()) {
+            continue;
+        }
+        [timestamps addObject:@(CFAbsoluteTimeToUTCNanos(sample.sampledAt))];
+
+        if (sample.isProcessCPUPctValid()) {
+            processSampleCount++;
+            processTotal += sample.processCPUPct;
+            [process addObject:@(sample.processCPUPct)];
+        } else {
+            [process addObject:@(-1)];
+        }
+
+        if (sample.isMainThreadCPUPctValid()) {
+            mainThreadSampleCount++;
+            mainThreadTotal += sample.mainThreadCPUPct;
+            [mainThread addObject:@(sample.mainThreadCPUPct)];
+        } else {
+            [mainThread addObject:@(-1)];
+        }
+
+        if (sample.isMonitorThreadCPUPctValid()) {
+            monitorThreadSampleCount++;
+            monitorThreadTotal += sample.monitorThreadCPUPct;
+            [monitorThread addObject:@(sample.monitorThreadCPUPct)];
+        } else {
+            [monitorThread addObject:@(-1)];
+        }
+    }
+
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    if (timestamps.count < 2) {
+        return result;
+    }
+
+    result[@"bugsnag.system.cpu_measures_timestamps"] = timestamps;
+
+    if(processSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_total"] = process;
+        result[@"bugsnag.system.cpu_mean_total"] = @(processTotal / (double)processSampleCount);
+    }
+
+    if(mainThreadSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_main_thread"] = mainThread;
+        result[@"bugsnag.system.cpu_mean_main_thread"] = @(mainThreadTotal / (double)mainThreadSampleCount);
+    }
+
+    if(monitorThreadSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_overhead"] = monitorThread;
+        result[@"bugsnag.system.cpu_mean_overhead"] = @(monitorThreadTotal / (double)monitorThreadSampleCount);
+    }
+
+    return result;
 }
