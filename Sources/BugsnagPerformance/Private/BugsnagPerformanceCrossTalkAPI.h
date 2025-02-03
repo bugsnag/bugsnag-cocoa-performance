@@ -41,6 +41,9 @@ class Tracer;
  */
 + (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
 
+- (void)willEndUIInitSpan:(BugsnagPerformanceSpan *)span;
+- (void)willEndViewLoadSpan:(BugsnagPerformanceSpan *)span viewController:(UIViewController *)viewController;
+
 @end
 
 /**
