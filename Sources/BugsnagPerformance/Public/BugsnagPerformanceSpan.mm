@@ -37,7 +37,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
          attributeCountLimit:(NSUInteger)attributeCountLimit
               metricsOptions:(MetricsOptions)metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
-                onSpanClosed:(SpanLifecycleCallback) onSpanClosed {
+                onSpanClosed:(SpanLifecycleCallback) onSpanClosed
+                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _actuallyStartedAt = CFAbsoluteTimeGetCurrent();
         _actuallyEndedAt = CFABSOLUTETIME_INVALID;
@@ -50,6 +51,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _onSpanDestroyAction = OnSpanDestroyAbort;
         _onSpanEndSet = onSpanEndSet;
         _onSpanClosed = onSpanClosed;
+        _onSpanBlocked = onSpanBlocked;
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = 1;
         _state = SpanStateOpen;
@@ -62,6 +64,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
         _metricsOptions = metricsOptions;
         _wasStartOrEndTimeProvided = isCFAbsoluteTimeValid(startAbsTime);
+        _activeConditions = [NSMutableArray new];
     }
     return self;
 }
@@ -171,6 +174,35 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)endOnDestroy {
     self.onSpanDestroyAction = OnSpanDestroyEnd;
+}
+
+- (BugsnagPerformanceSpanCondition *_Nullable)blockWithTimeout:(NSTimeInterval)timeout {
+    BugsnagPerformanceSpanCondition *condition = self.onSpanBlocked(self, timeout);
+    @synchronized (self) {
+        if (condition) {
+            [self.activeConditions addObject:condition];
+            
+            __block __weak BugsnagPerformanceSpan *weakSelf = self;
+            [condition addOnDeactivatedCallback:^(BugsnagPerformanceSpanCondition *c) {
+                __strong BugsnagPerformanceSpan *strongSelf = weakSelf;
+                @synchronized (strongSelf) {
+                    [strongSelf.activeConditions removeObject:c];
+                }
+            }];
+        }
+    }
+    return condition;
+}
+
+- (BOOL)isBlocked {
+    @synchronized (self) {
+        for (BugsnagPerformanceSpanCondition *condition in self.activeConditions) {
+            if (condition.isActive) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 - (NSDate *)startTime {

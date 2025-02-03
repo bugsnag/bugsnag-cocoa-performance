@@ -28,9 +28,10 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -53,7 +54,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -76,7 +78,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -99,7 +102,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -119,7 +123,8 @@ static BugsnagPerformanceConfiguration *newConfig() {
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, ^(){});
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(@"GET", spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);

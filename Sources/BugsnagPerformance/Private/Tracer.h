@@ -17,6 +17,7 @@
 #import "SpanStackingHandler.h"
 #import "WeakSpansList.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "ConditionTimeoutExecutor.h"
 
 #import <memory>
 
@@ -32,6 +33,7 @@ public:
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
+           std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
@@ -81,11 +83,13 @@ private:
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     FrameMetricsCollector *frameMetricsCollector_;
+    std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{nil};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
+    NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
     NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     NSUInteger attributeCountLimit_{128};
 
@@ -101,6 +105,7 @@ private:
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanEndSet(BugsnagPerformanceSpan *span);
     void onSpanClosed(BugsnagPerformanceSpan *span);
+    BugsnagPerformanceSpanCondition *onSpanBlocked(BugsnagPerformanceSpan *blocked, NSTimeInterval timeout);
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;

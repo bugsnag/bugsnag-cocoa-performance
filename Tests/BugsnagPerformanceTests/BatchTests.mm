@@ -29,8 +29,8 @@ static BugsnagPerformanceSpan *newSpanData() {
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
-    }];
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 - (void)testDrainAllow {

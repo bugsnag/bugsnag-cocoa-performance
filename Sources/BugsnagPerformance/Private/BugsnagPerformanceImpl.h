@@ -27,6 +27,7 @@
 #import "NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "ConditionTimeoutExecutor.h"
 
 #import <mutex>
 
@@ -81,6 +82,7 @@ private:
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
+    std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;

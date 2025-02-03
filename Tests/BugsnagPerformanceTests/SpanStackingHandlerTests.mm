@@ -29,7 +29,8 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);
-    }];
+    }
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 @interface SpanStackingHandlerTests : XCTestCase

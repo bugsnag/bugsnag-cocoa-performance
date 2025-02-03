@@ -188,7 +188,8 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}];
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 - (void)testEncodeRequestFirstClassYes {

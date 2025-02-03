@@ -69,8 +69,8 @@ using namespace bugsnag;
                                                                 attributeCountLimit:128
                                                                      metricsOptions:metricsOptions
                                                                        onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
-        }];
+                                                                       onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                      onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
         if (sampler.sampled(span)) {
             count++;
         }

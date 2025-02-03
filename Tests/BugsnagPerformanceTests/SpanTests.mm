@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "BugsnagPerformanceSpan+Private.h"
+#import "BugsnagPerformanceSpanCondition+Private.h"
 #import "Utils.h"
 
 using namespace bugsnag;
@@ -19,6 +20,12 @@ using namespace bugsnag;
 @implementation SpanTests
 
 static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanLifecycleCallback onEnded) {
+    return spanWithStartTime(startTime, onEnded, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return nil;
+    });
+}
+
+static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanLifecycleCallback onEnded, SpanBlockedCallback onBlocked) {
     TraceId tid = {.value = 1};
     MetricsOptions metricsOptions;
     metricsOptions.rendering = BSGTriStateNo;
@@ -31,7 +38,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan *) {}
-                                           onSpanClosed:onEnded];
+                                           onSpanClosed:onEnded
+                                          onSpanBlocked:onBlocked];
 }
 
 - (void)testStartEndUnset {
@@ -309,7 +317,8 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                          attributeCountLimit:5
                                               metricsOptions:metricsOptions
                                                 onSpanEndSet:^(BugsnagPerformanceSpan *) {}
-                                                onSpanClosed:^(BugsnagPerformanceSpan *) {}];
+                                                onSpanClosed:^(BugsnagPerformanceSpan *) {}
+                                               onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 
     // Note: "bugsnag.sampling.p" is automatically added.
 
@@ -337,6 +346,79 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
 
     [span setAttribute:@"bugsnag.sampling.p" withValue:@0.5];
     XCTAssertEqualObjects(span.attributes[@"bugsnag.sampling.p"], @0.5);
+}
+
+#pragma mark - SpanConditions
+
+- (void)testSpanIsNotInitiallyNotBlocked {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {});
+    XCTAssertFalse(span.isBlocked);
+}
+
+- (void)testSpanBlockAndTimeout {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {}, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return [BugsnagPerformanceSpanCondition conditionWithSpan:nil onClosedCallback:^(BugsnagPerformanceSpanCondition *, CFAbsoluteTime ) {} onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *) { return nil; }];
+    });
+    XCTAssertFalse(span.isBlocked);
+    BugsnagPerformanceSpanCondition *condition = [span blockWithTimeout:1];
+    XCTAssertTrue(span.isBlocked);
+    [condition didTimeout];
+    XCTAssertFalse(span.isBlocked);
+}
+
+- (void)testSpanBlockUpgradeAndCancel {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {}, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return [BugsnagPerformanceSpanCondition conditionWithSpan:nil onClosedCallback:^(BugsnagPerformanceSpanCondition *, CFAbsoluteTime ) {} onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *) { return nil; }];
+    });
+    XCTAssertFalse(span.isBlocked);
+    BugsnagPerformanceSpanCondition *condition = [span blockWithTimeout:1];
+    XCTAssertTrue(span.isBlocked);
+    [condition upgrade];
+    XCTAssertTrue(span.isBlocked);
+    [condition cancel];
+    XCTAssertFalse(span.isBlocked);
+}
+
+- (void)testSpanBlockUpgradeAndClose {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {}, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return [BugsnagPerformanceSpanCondition conditionWithSpan:nil onClosedCallback:^(BugsnagPerformanceSpanCondition *, CFAbsoluteTime ) {} onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *) { return nil; }];
+    });
+    XCTAssertFalse(span.isBlocked);
+    BugsnagPerformanceSpanCondition *condition = [span blockWithTimeout:1];
+    XCTAssertTrue(span.isBlocked);
+    [condition upgrade];
+    XCTAssertTrue(span.isBlocked);
+    [condition closeWithEndTime:[NSDate date]];
+    XCTAssertFalse(span.isBlocked);
+}
+
+- (void)testSpanBlockAndClose {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {}, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return [BugsnagPerformanceSpanCondition conditionWithSpan:nil onClosedCallback:^(BugsnagPerformanceSpanCondition *, CFAbsoluteTime ) {} onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *) { return nil; }];
+    });
+    XCTAssertFalse(span.isBlocked);
+    BugsnagPerformanceSpanCondition *condition = [span blockWithTimeout:1];
+    XCTAssertTrue(span.isBlocked);
+    [condition closeWithEndTime:[NSDate date]];
+    XCTAssertFalse(span.isBlocked);
+}
+
+- (void)testMultipleSpanBlocks {
+    auto span = spanWithStartTime(0, ^(BugsnagPerformanceSpan *) {}, ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) {
+        return [BugsnagPerformanceSpanCondition conditionWithSpan:nil onClosedCallback:^(BugsnagPerformanceSpanCondition *, CFAbsoluteTime ) {} onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *) { return nil; }];
+    });
+    XCTAssertFalse(span.isBlocked);
+    BugsnagPerformanceSpanCondition *condition1 = [span blockWithTimeout:1];
+    XCTAssertTrue(span.isBlocked);
+    
+    BugsnagPerformanceSpanCondition *condition2 = [span blockWithTimeout:2];
+    XCTAssertTrue(span.isBlocked);
+    
+    [condition1 closeWithEndTime:[NSDate date]];
+    XCTAssertTrue(span.isBlocked);
+    
+    [condition2 cancel];
+    XCTAssertFalse(span.isBlocked);
 }
 
 @end
