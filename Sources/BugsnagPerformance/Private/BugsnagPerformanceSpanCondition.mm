@@ -100,10 +100,15 @@ typedef NS_ENUM(uint8_t, BSGSpanConditionState) {
 
 - (void)closeWithEndTime:(NSDate *)endTime {
     @synchronized (self) {
-        if (self.state == BSGSpanConditionStateClosed || self.state == BSGSpanConditionStateCancelled) {
-            return;
+        switch (self.state) {
+            case BSGSpanConditionStateClosed:
+            case BSGSpanConditionStateCancelled:
+                return;
+            case BSGSpanConditionStateInitial:
+            case BSGSpanConditionStateUpgraded:
+                self.state = BSGSpanConditionStateClosed;
+                break;
         }
-        self.state = BSGSpanConditionStateClosed;
     }
     self.onClosedCallback(self, [endTime timeIntervalSinceReferenceDate]);
     [self didDeactivate];
@@ -111,31 +116,46 @@ typedef NS_ENUM(uint8_t, BSGSpanConditionState) {
 
 - (BugsnagPerformanceSpanContext *)upgrade {
     @synchronized (self) {
-        if (self.state != BSGSpanConditionStateInitial) {
-            return nil;
+        switch (self.state) {
+            case BSGSpanConditionStateClosed:
+            case BSGSpanConditionStateCancelled:
+            case BSGSpanConditionStateUpgraded:
+                return nil;
+            case BSGSpanConditionStateInitial:
+                self.state = BSGSpanConditionStateUpgraded;
+                break;
         }
-        self.state = BSGSpanConditionStateUpgraded;
     }
     return self.onUpgradedCallback(self);
 }
 
 - (void)cancel {
     @synchronized (self) {
-        if (self.state == BSGSpanConditionStateCancelled || self.state == BSGSpanConditionStateClosed) {
-            return;
+        switch (self.state) {
+            case BSGSpanConditionStateClosed:
+            case BSGSpanConditionStateCancelled:
+                return;
+            case BSGSpanConditionStateInitial:
+            case BSGSpanConditionStateUpgraded:
+                self.state = BSGSpanConditionStateCancelled;
+                break;
         }
-        self.state = BSGSpanConditionStateCancelled;
     }
     [self didDeactivate];
 }
 
 - (void)didTimeout {
     @synchronized (self) {
-        if (self.state == BSGSpanConditionStateUpgraded) {
-            return;
+        switch (self.state) {
+            case BSGSpanConditionStateClosed:
+            case BSGSpanConditionStateCancelled:
+            case BSGSpanConditionStateUpgraded:
+                return;
+            case BSGSpanConditionStateInitial:
+                break;
         }
+        [self cancel];
     }
-    [self cancel];
 }
 
 - (void)addOnDeactivatedCallback:(SpanConditionDeavtivatedCallback)onDeactivated {

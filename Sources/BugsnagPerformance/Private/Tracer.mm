@@ -214,8 +214,8 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
         @synchronized (this->blockedSpans_) {
             this->conditionTimeoutExecutor_->cancelTimeout(c);
         }
-        @synchronized (strongSpan) {
-            if (strongSpan.state == SpanStateOpen) {
+        @synchronized (c) {
+            if (c.isActive) {
                 return strongSpan;
             }
         }
