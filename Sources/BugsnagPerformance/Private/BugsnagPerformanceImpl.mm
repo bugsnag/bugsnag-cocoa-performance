@@ -297,6 +297,7 @@ bool BugsnagPerformanceImpl::shouldSampleCPU(BugsnagPerformanceSpan *span) noexc
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Got %lu origSpans", (unsigned long)origSpans.count);
 #ifndef __clang_analyzer__
     #pragma clang diagnostic ignored "-Wunused-variable"
     size_t origSpansSize = origSpans.count;
@@ -309,6 +310,8 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
         return false;
     }
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
+
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): dispatch_after() will send %lu spans after %f seconds", (unsigned long)spans.count, SAMPLER_INTERVAL_SECONDS + 0.5);
 
     // Delay so that the sampler has time to fetch one more sample.
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
