@@ -11,6 +11,7 @@
 #import "../Utils.h"
 #import "../BugsnagPerformanceSpan+Private.h"
 #import "../BugsnagPerformanceImpl.h"
+#import "../BugsnagPerformanceCrossTalkAPI.h"
 
 #import <array>
 #import <os/trace_base.h>
@@ -177,6 +178,7 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
     shouldRespondToAppDidBecomeActive_ = false;
 
     didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
+    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
     [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
     [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
 }

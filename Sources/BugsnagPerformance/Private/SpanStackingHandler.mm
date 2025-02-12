@@ -82,6 +82,21 @@ SpanStackingHandler::hasSpanWithAttribute(NSString *attribute, NSString *value) 
     return false;
 }
 
+BugsnagPerformanceSpan *
+SpanStackingHandler::findSpanForCategory(NSString *categoryName) {
+    std::lock_guard<std::mutex> guard(mutex_);
+    std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
+    while (state != nullptr) {
+        if (state->span.state == SpanStateOpen) {
+            if ([state->span hasAttribute:@"bugsnag.span.category" withValue:categoryName]) {
+                return state->span;
+            }
+        }
+        state = spanStateForActivity(state->parentActivityId);
+    }
+    return nil;
+}
+
 void
 SpanStackingHandler::sweep(SpanId spanId) {
     std::shared_ptr<SpanActivityState> state = spanStateForSpan(spanId);
