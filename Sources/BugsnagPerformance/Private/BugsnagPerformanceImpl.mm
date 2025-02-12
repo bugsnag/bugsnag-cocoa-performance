@@ -16,6 +16,7 @@
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import "Utils.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "ConditionTimeoutExecutor.h"
 
 using namespace bugsnag;
 
@@ -42,7 +43,8 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , sampler_(std::make_shared<Sampler>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, ^{this->onSpanStarted();}))
+, conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality

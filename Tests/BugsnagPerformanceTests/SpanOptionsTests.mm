@@ -12,6 +12,7 @@
 #import "SpanOptions.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import "IdGenerator.h"
+#import "BugsnagPerformanceSpanCondition+Private.h"
 #import <memory>
 
 using namespace bugsnag;
@@ -52,8 +53,8 @@ using namespace bugsnag;
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
-    }];
+                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     objcOptions.startTime = [NSDate dateWithTimeIntervalSinceReferenceDate:1.0];
     objcOptions.parentContext = span;
