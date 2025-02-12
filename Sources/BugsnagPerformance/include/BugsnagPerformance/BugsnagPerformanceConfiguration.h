@@ -21,7 +21,6 @@ OBJC_EXPORT
 @interface BugsnagPerformanceEnabledMetrics : NSObject
 
 @property(nonatomic) BOOL rendering; // (default NO)
-@property(nonatomic) BOOL cpu;       // (default NO)
 
 - (instancetype) clone;
 
