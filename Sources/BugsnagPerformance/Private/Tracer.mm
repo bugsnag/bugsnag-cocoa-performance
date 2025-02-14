@@ -233,7 +233,7 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
         }
     }];
     this->conditionTimeoutExecutor_->sheduleTimeout(condition, timeout);
-    BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %d", span.name, timeout);
+    BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %f", span.name, timeout);
     return condition;
 }
 
