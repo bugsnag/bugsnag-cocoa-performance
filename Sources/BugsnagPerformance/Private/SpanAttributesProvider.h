@@ -7,6 +7,7 @@
 //
 #import <Foundation/Foundation.h>
 #import "BugsnagPerformanceViewType+Private.h"
+#import "SystemInfoSampler.h"
 
 namespace bugsnag {
 class SpanAttributesProvider {
@@ -23,6 +24,8 @@ public:
     NSMutableDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSMutableDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
     NSMutableDictionary *customSpanAttributes() noexcept;
+
+    NSMutableDictionary *cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
 
     static NSString *httpUrlAttributeKey();
 };
