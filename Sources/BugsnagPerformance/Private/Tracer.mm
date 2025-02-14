@@ -23,7 +23,7 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Batch> batch,
                FrameMetricsCollector *frameMetricsCollector,
                std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
-               void (^onSpanStarted)()) noexcept
+               void (^onSpanStarted)(BugsnagPerformanceSpan *)) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
 , prewarmSpans_([NSMutableArray new])
@@ -149,7 +149,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
     }
     [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
-    onSpanStarted_();
+    onSpanStarted_(span);
     return span;
 }
 

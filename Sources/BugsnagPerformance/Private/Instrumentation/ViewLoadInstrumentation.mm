@@ -14,6 +14,9 @@
 #import "../Utils.h"
 #import "../BugsnagSwiftTools.h"
 #import "../BugsnagPerformanceCrossTalkAPI.h"
+#import "../BugsnagPerformanceSpanCondition+Private.h"
+#import "../BSGWeakViewControllerList.h"
+#import "../BSGSpanConditionsPool.h"
 
 #import <objc/runtime.h>
 
@@ -29,6 +32,7 @@ static constexpr int kAssociatedViewLoadSpan = 0;
 static constexpr int kAssociatedViewAppearingSpan = 0;
 static constexpr int kAssociatedSubviewLayoutSpan = 0;
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr int kAssociatedViewLoadChildSpanConditionsPool = 0;
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 @implementation ViewLoadInstrumentationState
@@ -134,6 +138,7 @@ void ViewLoadInstrumentation::endOverallSpan(UIViewController *viewController) n
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     setOverallSpan(viewController, nil);
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndViewLoadSpan:span viewController:viewController];
+    viewControllers_->remove(viewController);
 
     [span end];
 }
@@ -159,6 +164,9 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     setOverallSpan(viewController, span);
     objc_setAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState, instrumentationState,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(viewController, &kAssociatedViewLoadChildSpanConditionsPool, [BSGSpanConditionsPool pool],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    viewControllers_->add(viewController);
 }
 
 void
@@ -226,9 +234,59 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         [span updateStartTime: viewWillAppearStartTime];
         [span internalSetMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
+        
+        BSGSpanConditionsPool *conditionsPool = objc_getAssociatedObject(viewController, &kAssociatedViewLoadChildSpanConditionsPool);
+        for (BugsnagPerformanceSpanCondition *condition in conditionsPool.conditions) {
+            BugsnagPerformanceSpan *childSpan = condition.span;
+            [childSpan forceMutate:^{
+                [childSpan setAttribute:[NSString stringWithFormat:@"originalStart-%@", [NSDate date]] withValue:@(absoluteTimeToNanoseconds(childSpan.startAbsTime))];
+                [childSpan updateStartTime:viewWillAppearStartTime];
+                if (childSpan.endTime != nil) {
+                    [childSpan markEndAbsoluteTime:dateToAbsoluteTime(viewWillAppearStartTime)];
+                }
+            }];
+        }
     }
 }
 
+void ViewLoadInstrumentation::didStartSpan(BugsnagPerformanceSpan *span) noexcept {
+    viewControllers_->forEach(^(UIViewController *viewController) {
+        if (shouldBlockSpanForViewLoad(span, viewController)) {
+            auto condition = [span blockWithTimeout:0.1];
+            if (condition != nil) {
+                BSGSpanConditionsPool *conditionsPool = objc_getAssociatedObject(viewController, &kAssociatedViewLoadChildSpanConditionsPool);
+                [conditionsPool add:(BugsnagPerformanceSpanCondition  * _Nonnull)condition];
+            }
+        }
+    });
+}
+
+bool ViewLoadInstrumentation::shouldBlockSpanForViewLoad(BugsnagPerformanceSpan *span, UIViewController *viewController) {
+    ViewLoadInstrumentationState *instrumentationState = objc_getAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState);
+    if (instrumentationState.viewWillAppearPhaseSpanCreated) {
+        return false;
+    }
+    
+    auto viewLoadSpan = getOverallSpan(viewController);
+    if (viewLoadSpan == nil) {
+        return false;
+    }
+    if (span.parentId == viewLoadSpan.spanId) {
+        return true;
+    }
+    
+    BSGSpanConditionsPool *conditionsPool = objc_getAssociatedObject(viewController, &kAssociatedViewLoadChildSpanConditionsPool);
+    if (conditionsPool == nil) {
+        return false;
+    }
+    for (BugsnagPerformanceSpanCondition *condition in conditionsPool.conditions) {
+        if (condition.span.spanId == span.parentId) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
 // NOLINTBEGIN(cppcoreguidelines-*)
@@ -401,6 +459,9 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
         }
         [span end];
         adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
+        BSGSpanConditionsPool *conditionsPool = objc_getAssociatedObject(self, &kAssociatedViewLoadChildSpanConditionsPool);
+        [conditionsPool clear];
+        
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         objc_setAssociatedObject(self, &kAssociatedViewAppearingSpan, viewAppearingSpan,
                                  OBJC_ASSOCIATION_RETAIN_NONATOMIC);

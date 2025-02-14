@@ -93,6 +93,8 @@
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
+		96986DBF2D5EA1A300A44C34 /* BSGWeakViewControllerList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96986DBE2D5EA1A300A44C34 /* BSGWeakViewControllerList.mm */; };
+		96986DC12D5EA1CF00A44C34 /* BSGSpanConditionsPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96986DC02D5EA1CF00A44C34 /* BSGSpanConditionsPool.mm */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
@@ -342,6 +344,10 @@
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
+		96986DBD2D5EA18700A44C34 /* BSGWeakViewControllerList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGWeakViewControllerList.h; sourceTree = "<group>"; };
+		96986DBE2D5EA1A300A44C34 /* BSGWeakViewControllerList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGWeakViewControllerList.mm; sourceTree = "<group>"; };
+		96986DC02D5EA1CF00A44C34 /* BSGSpanConditionsPool.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGSpanConditionsPool.mm; sourceTree = "<group>"; };
+		96986DC22D5EA1E500A44C34 /* BSGSpanConditionsPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGSpanConditionsPool.h; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -557,6 +563,10 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
+				96986DC22D5EA1E500A44C34 /* BSGSpanConditionsPool.h */,
+				96986DC02D5EA1CF00A44C34 /* BSGSpanConditionsPool.mm */,
+				96986DBD2D5EA18700A44C34 /* BSGWeakViewControllerList.h */,
+				96986DBE2D5EA1A300A44C34 /* BSGWeakViewControllerList.mm */,
 				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 				09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */,
 				09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */,
@@ -565,6 +575,7 @@
 				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */,
 				964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */,
 				09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */,
 				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
@@ -612,7 +623,6 @@
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
 				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
 				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
-				964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */,
 				0122C22329019770002D243C /* SpanKind.h */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
 				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
@@ -1254,6 +1264,7 @@
 				964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
+				96986DBF2D5EA1A300A44C34 /* BSGWeakViewControllerList.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
@@ -1276,6 +1287,7 @@
 				09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,
+				96986DC12D5EA1CF00A44C34 /* BSGSpanConditionsPool.mm in Sources */,
 				CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */,
 				CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */,
 				0921F02C2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m in Sources */,

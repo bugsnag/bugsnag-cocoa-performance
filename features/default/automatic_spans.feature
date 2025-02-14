@@ -250,7 +250,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentPreLoadedViewLoadScenario
     Given I run "AutoInstrumentPreLoadedViewLoadScenario"
-    And I wait for 18 spans
+    And I wait for 28 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -271,6 +271,16 @@ Feature: Automatic instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController (pre-loaded)"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span field "name" equals "SubViewController_ChildSpan"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -284,6 +294,24 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (pre-loaded)" started at the same time as a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started at the same time as a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started at the same time as a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (pre-loaded)" started before a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController (pre-loaded)"
+    * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController (pre-loaded)" started at the same time as a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started at the same time as a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started at the same time as a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started before a span named "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController"
+    * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_SubViewController" started at the same time as a span named "SubViewController_ChildSpan"
 
   Scenario: ViewDidLoadDoesntTriggerScenario
     Given I run "ViewDidLoadDoesntTriggerScenario"
