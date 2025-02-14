@@ -44,7 +44,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, ^{this->onSpanStarted();}))
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, ^(BugsnagPerformanceSpan *span){this->onSpanStarted(span);}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -356,13 +356,14 @@ void BugsnagPerformanceImpl::onProbabilityChanged(double newProbability) noexcep
     persistentState_->setProbability(newProbability);
 }
 
-void BugsnagPerformanceImpl::onSpanStarted() noexcept {
+void BugsnagPerformanceImpl::onSpanStarted(BugsnagPerformanceSpan *span) noexcept {
     // If a span starts before we've started Bugsnag, there won't be an uploader yet.
     if (uploader_ != nullptr) {
         if (CFAbsoluteTimeGetCurrent() > probabilityExpiry_) {
             uploadPValueRequest();
         }
     }
+    instrumentation_->didStartSpan(span);
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
