@@ -282,6 +282,11 @@ Then('a span array attribute {string} contains {int} elements') do |attribute, c
   Maze.check.true(array_contents.length() == count)
 end
 
+Then('a span array attribute {string} contains from {int} to {int} elements') do |attribute, count_low, count_high|
+  array_contents = get_array_attribute_contents(attribute)
+  Maze.check.true(array_contents.length() >= count_low && array_contents.length() <= count_high)
+end
+
 Then('a span named {string} is a child of span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
