@@ -251,8 +251,6 @@ BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
-    // Always override this on a view load span
-    options.makeCurrentContext = false;
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
@@ -261,7 +259,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGFirstClassNo;
         }
     }
-    auto span = startSpan(name, options, BSGFirstClassNo);
+    auto span = startSpan(name, options, BSGFirstClassYes);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }
