@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* REVERTED: View load spans are now not first class by default, and don't set the current context.
+* Fixes ViewLoadSpans not setting context or being first class (reverts #369).
   [392](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/392)
 
 ## 1.11.1 (2025-01-20)
