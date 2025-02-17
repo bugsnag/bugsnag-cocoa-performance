@@ -11,6 +11,9 @@
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import <BugsnagPerformance/BugsnagPerformance.h>
 
+typedef void (^AppStartCallback)(BugsnagPerformanceSpan *);
+typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
+
 // ============================================================================
 
 #pragma mark Example CrossTalk API client. Use this as a template.
@@ -57,6 +60,9 @@
 - (BugsnagPerformanceSpan *) startSpan:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options;
 - (BugsnagPerformanceSpanOptions *) newSpanOptions;
 - (BugsnagPerformanceSpanContext *) newSpanContext:(u_int64_t)traceIdHi traceIdLo:(u_int64_t)traceIdLo spanId:(u_int64_t)spanId;
+- (void)addWillEndUIInitSpanCallback:(AppStartCallback)callback;
+- (void)addWillEndViewLoadSpanCallback:(ViewLoadCallback)callback;
+- (BugsnagPerformanceSpan *)findSpanForCategory:(NSString *)categoryName;
 
 @end
 
@@ -198,6 +204,25 @@ static id hostMissingCrossTalkAPI = nil;
     XCTAssertEqual(spanContext.traceIdHi, traceIdHi);
     XCTAssertEqual(spanContext.traceIdLo, traceIdLo);
     XCTAssertEqual(spanContext.spanId, spanId);
+}
+
+- (void)testAddWillEndUIInitSpanCallbackV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"addWillEndUIInitSpanCallbackV1:" toSelector:@selector(addWillEndUIInitSpanCallback:)];
+    XCTAssertNil(err);
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndUIInitSpanCallback:^(BugsnagPerformanceSpan *) {}];
+}
+
+- (void)testAddWillEndViewLoadSpanCallbackV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"addWillEndViewLoadSpanCallbackV1:" toSelector:@selector(addWillEndViewLoadSpanCallback:)];
+    XCTAssertNil(err);
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndViewLoadSpanCallback:^(BugsnagPerformanceSpan *, UIViewController *) {}];
+}
+
+- (void)testFindSpanForCategoryV1 {
+    NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"findSpanForCategoryV1:" toSelector:@selector(findSpanForCategory:)];
+    XCTAssertNil(err);
+    // Calling the API should work. We can't test the return value since it will return nil in this situation.
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance findSpanForCategory:@""];
 }
 
 #pragma mark Unit Tests: BugsnagPerformanceCrossTalkAPI published APIs (for unit testing support only)

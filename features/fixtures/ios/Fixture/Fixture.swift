@@ -53,6 +53,11 @@ class Fixture: NSObject, CommandReceiver {
                                       value: command.args["value"] as! String)
                 self.readyToReceiveCommand = true
                 break
+            case "configure_scenario":
+                self.configureScenario(path: command.args["path"] as! String,
+                                      value: command.args["value"] as! String)
+                self.readyToReceiveCommand = true
+                break
             case "start_bugsnag":
                 self.startBugsnag()
                 self.readyToReceiveCommand = true
@@ -100,6 +105,11 @@ class Fixture: NSObject, CommandReceiver {
     private func configureBugsnag(path: String, value: String) {
         logInfo("Configuring bugsnag [\(path)] to [\(value)]")
         scenario!.configureBugsnag(path: path, value: value)
+    }
+
+    private func configureScenario(path: String, value: String) {
+        logInfo("Configuring scenario [\(path)] to [\(value)]")
+        scenario!.configureScenario(path: path, value: value)
     }
 
     private func startBugsnag() {

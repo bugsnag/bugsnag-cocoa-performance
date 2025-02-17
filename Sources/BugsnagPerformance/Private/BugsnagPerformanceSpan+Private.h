@@ -11,6 +11,8 @@
 #import "BugsnagPerformanceSpanContext+Private.h"
 #import "SpanKind.h"
 #import "FrameRateMetrics/FrameMetricsSnapshot.h"
+#import "SpanOptions.h"
+#import "BugsnagPerformanceSpanCondition+Private.h"
 
 #import <memory>
 
@@ -28,12 +30,19 @@ typedef enum {
 } SpanState;
 
 typedef void (^SpanLifecycleCallback)(BugsnagPerformanceSpan * _Nonnull);
+typedef BugsnagPerformanceSpanCondition *_Nullable(^SpanBlockedCallback)(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval timeout);
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan ()
 
 @property(nonatomic, copy) void (^onDumped)(BugsnagPerformanceSpan *);
+
+// These mark the actual times that the span was instantiated and ended,
+// irrespective of any time values this span will report.
+// We need this because we're recording metrics data in spans instead of metrics.
+@property (nonatomic) CFAbsoluteTime actuallyStartedAt;
+@property (nonatomic) CFAbsoluteTime actuallyEndedAt;
 
 @property (nonatomic) CFAbsoluteTime startAbsTime;
 @property (nonatomic) CFAbsoluteTime endAbsTime;
@@ -42,19 +51,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) NSMutableDictionary *attributes;
 @property (nonatomic) SpanLifecycleCallback onSpanEndSet;
 @property (nonatomic) SpanLifecycleCallback onSpanClosed;
+@property (nonatomic) SpanBlockedCallback onSpanBlocked;
 @property (nonatomic,readwrite) SpanId parentId;
 @property (nonatomic) double samplingProbability;
-@property (nonatomic) BSGFirstClass firstClass;
+@property (nonatomic) BSGTriState firstClass;
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
 @property (nonatomic,readwrite) BOOL hasBeenProcessed;
+@property (nonatomic,readonly) BOOL isBlocked;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
-@property (nonatomic) BSGInstrumentRendering instrumentRendering;
+@property (nonatomic) MetricsOptions metricsOptions;
 @property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
 @property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;
-
-
+@property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *activeConditions;
 
 @property(nonatomic) uint64_t startClock;
 
@@ -65,11 +75,12 @@ NS_ASSUME_NONNULL_BEGIN
                       spanId:(SpanId) spanId
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startTime
-                  firstClass:(BSGFirstClass) firstClass
+                  firstClass:(BSGTriState) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
-         instrumentRendering:(BSGInstrumentRendering)instrumentRendering
+              metricsOptions:(MetricsOptions) metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
-                onSpanClosed:(SpanLifecycleCallback) onSpanEnded NS_DESIGNATED_INITIALIZER;
+                onSpanClosed:(SpanLifecycleCallback) onSpanEnded
+               onSpanBlocked:(SpanBlockedCallback) onSpanBlocked NS_DESIGNATED_INITIALIZER;
 
 - (void)internalSetAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes;
@@ -86,6 +97,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateName:(NSString *)name;
 - (void)updateStartTime:(NSDate *)startTime;
 - (void)updateSamplingProbability:(double) value;
+- (void)markEndAbsoluteTime:(CFAbsoluteTime)endTime;
+
+- (void)forceMutate:(void (^)())block;
 
 @end
 

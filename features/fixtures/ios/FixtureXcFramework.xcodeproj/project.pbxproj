@@ -68,6 +68,9 @@
 		9691A9DD2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9DC2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift */; };
 		9691A9DF2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9DE2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift */; };
 		9691A9E12CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */; };
+		96986DA42D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */; };
+		96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */; };
+		96986DA62D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */; };
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
@@ -174,6 +177,9 @@
 		9691A9DC2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsAutoInstrumentRenderingOffScenario.swift; sourceTree = "<group>"; };
 		9691A9DE2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsSpanInstrumentRenderingOffScenario.swift; sourceTree = "<group>"; };
 		9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift; sourceTree = "<group>"; };
+		96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsMultipleConditionsScenario.swift; sourceTree = "<group>"; };
+		96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsConditionTimedOutScenario.swift; sourceTree = "<group>"; };
+		96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsSimpleConditionScenario.swift; sourceTree = "<group>"; };
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
@@ -347,6 +353,9 @@
 				09E045602C98649D003882D3 /* SetAttributeCountLimitScenario.swift */,
 				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
 				09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */,
+				96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */,
+				96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
+				96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
 			);
 			path = Scenarios;
@@ -460,9 +469,11 @@
 				096EE5EF2B3C2B3E006059CE /* AutoInstrumentSwiftUIDeferredScenario.swift in Sources */,
 				CBAAE2592912601D006D4AA0 /* BatchingScenario.swift in Sources */,
 				96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */,
+				96986DA42D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift in Sources */,
 				09637A3C2B0607F300F4F776 /* Logging.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
+				96986DA62D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift in Sources */,
 				09E0455F2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift in Sources */,
 				01E3F99128F46B6700003F44 /* ManualViewLoadScenario.swift in Sources */,
 				96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */,
@@ -474,6 +485,7 @@
 				097FFC0B2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				96E0B34B2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */,
+				96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,

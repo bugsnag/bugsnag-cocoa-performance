@@ -6,6 +6,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,6 +34,8 @@ OBJC_EXPORT
 - (void)endWithEndTime:(NSDate *)endTime NS_SWIFT_NAME(end(endTime:));
 
 - (void)setAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
+
+- (BugsnagPerformanceSpanCondition *_Nullable)blockWithTimeout:(NSTimeInterval)timeout NS_SWIFT_NAME(block(timeout:));
 
 @end
 

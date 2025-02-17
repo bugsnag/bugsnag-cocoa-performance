@@ -17,6 +17,7 @@ die() {
 	exit $status
 }
 
+bundle install
 
 echo "--- Analyze"
 

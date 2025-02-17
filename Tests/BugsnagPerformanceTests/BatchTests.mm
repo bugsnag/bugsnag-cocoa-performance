@@ -19,17 +19,18 @@ using namespace bugsnag;
 
 static BugsnagPerformanceSpan *newSpanData() {
     TraceId tid = {.value = 1};
-    return [[BugsnagPerformanceSpan alloc] initWithName:@"test" 
+    MetricsOptions metricsOptions;
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:tid
                                                  spanId:1
                                                parentId:0
                                               startTime:0
-                                             firstClass:BSGFirstClassUnset
+                                             firstClass:BSGTriStateUnset
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
-    }];
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 - (void)testDrainAllow {

@@ -13,6 +13,7 @@
 #import "../Swizzle.h"
 #import "../Utils.h"
 #import "../BugsnagSwiftTools.h"
+#import "../BugsnagPerformanceCrossTalkAPI.h"
 
 #import <objc/runtime.h>
 
@@ -132,6 +133,7 @@ void ViewLoadInstrumentation::endOverallSpan(UIViewController *viewController) n
     BugsnagPerformanceSpan *span = getOverallSpan(viewController);
     // Prevent calling -[BugsnagPerformanceSpan end] more than once.
     setOverallSpan(viewController, nil);
+    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndViewLoadSpan:span viewController:viewController];
 
     [span end];
 }

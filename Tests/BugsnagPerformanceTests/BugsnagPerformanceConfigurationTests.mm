@@ -135,7 +135,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertFalse(config.autoInstrumentRendering);
+    XCTAssertFalse(config.enabledMetrics.rendering);
 }
 
 - (void)testLoadConfigDoesntTakeValuesFromBugsnagWhenAllValuesAreInPerformanceDictionary {
@@ -181,7 +181,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertTrue(config.autoInstrumentRendering);
+    XCTAssertTrue(config.enabledMetrics.rendering);
 }
 
 - (void)testLoadConfigDoesTakeValuesFromBugsnagWhenSomeValuesAreMissingInPerformanceDictionary {
@@ -212,7 +212,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertFalse(config.autoInstrumentAppStarts);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
-    XCTAssertTrue(config.autoInstrumentRendering);
+    XCTAssertTrue(config.enabledMetrics.rendering);
 }
 
 - (void)testShouldSetIncludeApiKeyInTheDefaultEndpoint {
