@@ -29,6 +29,8 @@ class FrameMetricsFronzenFramesScenario: Scenario {
                         Thread.sleep(forTimeInterval: 1.0)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             span.end()
+                            // Force sleep so that Browserstack doesn't prematurely shut down the app while BugsnagPerformanceImpl delays for sampling.
+                            Thread.sleep(forTimeInterval: 2)
                         }
                     }
                 }
