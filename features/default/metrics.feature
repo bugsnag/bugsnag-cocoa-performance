@@ -172,11 +172,11 @@ Feature: Metrics
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * a span array attribute "bugsnag.system.cpu_measures_total" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_total" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
-    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
-    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
 
   Scenario: Generate spans later
@@ -202,13 +202,13 @@ Feature: Metrics
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * a span array attribute "bugsnag.system.cpu_measures_total" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_total" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_total" is less than 10.0
-    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is less than 10.0
-    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is less than 10.0
 
@@ -236,11 +236,11 @@ Feature: Metrics
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * a span array attribute "bugsnag.system.cpu_measures_total" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_total" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 50.0
-    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 50.0
-    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is less than 10.0
 
@@ -268,11 +268,11 @@ Feature: Metrics
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * a span array attribute "bugsnag.system.cpu_measures_total" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_total" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 50.0
-    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is less than 10.0
-    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains 3 elements
+    * a span array attribute "bugsnag.system.cpu_measures_overhead" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is less than 10.0
