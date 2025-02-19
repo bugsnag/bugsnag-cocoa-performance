@@ -12,6 +12,7 @@
 #import "../Instrumentation/AppStartupInstrumentation.h"
 #import "../Instrumentation/NetworkInstrumentation.h"
 #import "../Instrumentation/ViewLoadInstrumentation.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 namespace bugsnag {
 
@@ -38,6 +39,7 @@ public:
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
     CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
+    void didStartSpan(BugsnagPerformanceSpan *span) noexcept { viewLoadInstrumentation_->didStartSpan(span); };
 
 private:
     Instrumentation() = delete;

@@ -8,6 +8,7 @@
 #import <UIKit/UIKit.h>
 #import "../PhasedStartup.h"
 #import "../Tracer.h"
+#import "../BSGWeakViewControllerList.h"
 
 #import <vector>
 
@@ -33,6 +34,7 @@ public:
     , tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
     , earlySpans_([NSMutableArray new])
+    , viewControllers_(std::make_shared<BSGWeakViewControllerList>())
     {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
@@ -40,6 +42,8 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept {};
     void start() noexcept {}
+    
+    void didStartSpan(BugsnagPerformanceSpan *) noexcept;
     
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;
@@ -72,6 +76,7 @@ private:
     bool isClassObserved(Class cls) noexcept;
     void adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *instrumentationState, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept;
     NSString *nameForViewController(UIViewController *viewController) noexcept;
+    bool shouldBlockSpanForViewLoad(BugsnagPerformanceSpan *span, UIViewController *viewController);
 
     bool isEnabled_{true};
     bool swizzleViewLoadPreMain_{true};
@@ -82,6 +87,7 @@ private:
     std::atomic<bool> isEarlySpanPhase_{true};
     std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
+    std::shared_ptr<BSGWeakViewControllerList> viewControllers_;
     std::recursive_mutex vcInitMutex_;
 };
 }

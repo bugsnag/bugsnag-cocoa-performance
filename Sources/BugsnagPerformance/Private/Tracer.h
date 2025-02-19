@@ -34,7 +34,7 @@ public:
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
            std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
-           void (^onSpanStarted)()) noexcept;
+           void (^onSpanStarted)(BugsnagPerformanceSpan *)) noexcept;
     ~Tracer() {};
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
@@ -98,7 +98,7 @@ private:
     std::shared_ptr<WeakSpansList> potentiallyOpenSpans_;
 
     std::shared_ptr<Batch> batch_;
-    void (^onSpanStarted_)(){ ^(){} };
+    void (^onSpanStarted_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
 
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
