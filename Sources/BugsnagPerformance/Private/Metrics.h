@@ -19,10 +19,12 @@ public:
     MetricsOptions(BugsnagPerformanceSpanMetricsOptions *metrics)
     : rendering(metrics.rendering)
     , cpu(metrics.cpu)
+    , memory(metrics.memory)
     {}
 
     BSGTriState rendering{BSGTriStateUnset};
     BSGTriState cpu{BSGTriStateUnset};
+    BSGTriState memory{BSGTriStateUnset};
 };
 
 };

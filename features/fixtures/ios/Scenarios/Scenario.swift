@@ -83,7 +83,7 @@ class Scenario: NSObject {
     }
 
     func configureBugsnag(path: String, value: String) {
-        logDebug("Scenario.configureBugsnag()")
+        logDebug("Scenario.configureBugsnag(): SET \(path) = \(value)")
         switch path {
         case "propagateTraceParentToUrlsMatching":
             var regexes: Set<NSRegularExpression> = []
@@ -91,9 +91,15 @@ class Scenario: NSObject {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
             config.tracePropagationUrls = regexes
+            logDebug("config.tracePropagationUrls = \(regexes)")
             break
         case "cpuMetrics":
             config.enabledMetrics.cpu = (value == "true")
+            logDebug("config.enabledMetrics.cpu = \(config.enabledMetrics.cpu)")
+            break
+        case "memoryMetrics":
+            config.enabledMetrics.memory = (value == "true")
+            logDebug("config.enabledMetrics.memory = \(config.enabledMetrics.memory)")
             break
         default:
             fatalError("\(path): Unknown configuration path")

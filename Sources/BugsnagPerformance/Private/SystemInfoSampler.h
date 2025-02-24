@@ -28,11 +28,14 @@ struct SystemInfoSampleData {
     double processCPUPct{-1};
     double mainThreadCPUPct{-1};
     double monitorThreadCPUPct{-1};
+    uint64_t physicalMemoryBytesTotal{0};
+    uint64_t physicalMemoryBytesInUse{0};
 
     bool isSampledAtValid()           const { return sampledAt > 0; }
     bool isProcessCPUPctValid()       const { return processCPUPct >= 0; }
     bool isMainThreadCPUPctValid()    const { return mainThreadCPUPct >= 0; }
     bool isMonitorThreadCPUPctValid() const { return monitorThreadCPUPct >= 0; }
+    bool isPhysicalMemoryInUseValid() const { return physicalMemoryBytesInUse > 0; }
 
     bool hasValidCPUData() const {
         return isProcessCPUPctValid() ||
@@ -40,11 +43,15 @@ struct SystemInfoSampleData {
         isMonitorThreadCPUPctValid();
     }
 
+    bool hasValidMemoryData() const {
+        return isPhysicalMemoryInUseValid();
+    }
+
     bool hasValidData() {
         if (!isSampledAtValid()) {
             return false;
         }
-        return hasValidCPUData();
+        return hasValidCPUData() || hasValidMemoryData();
     }
 
     static struct {
@@ -98,6 +105,7 @@ private:
 
     // These start off enabled until disabled via config
     bool shouldSampleCPU_{true};
+    bool shouldSampleMemory_{true};
 
     // Cached sampling checkpoints
     CFAbsoluteTime lastSampledAtTime_{0};

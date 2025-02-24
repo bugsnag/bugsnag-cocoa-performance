@@ -26,20 +26,25 @@ using namespace bugsnag;
 
 @implementation BugsnagPerformanceEnabledMetrics
 
-- (instancetype) initWithRendering:(BOOL)rendering cpu:(BOOL)cpu {
+- (instancetype) initWithRendering:(BOOL)rendering
+                               cpu:(BOOL)cpu
+                            memory:(BOOL)memory {
     if ((self = [super init])) {
         _rendering = rendering;
         _cpu = cpu;
+        _memory = memory;
     }
     return self;
 }
 
 - (instancetype) init {
-    return [self initWithRendering:NO cpu:NO];
+    return [self initWithRendering:NO cpu:NO memory:NO];
 }
 
 - (instancetype) clone {
-    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:self.rendering cpu:self.cpu];
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:self.rendering
+                                                                   cpu:self.cpu
+                                                                memory:self.memory];
 }
 
 @end

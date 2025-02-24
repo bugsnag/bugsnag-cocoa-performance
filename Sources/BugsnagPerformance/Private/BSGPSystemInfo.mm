@@ -12,6 +12,10 @@
 
 using namespace bugsnag;
 
+BSGPSystemInfo::BSGPSystemInfo()
+: physicalMemoryBytesTotal_(NSProcessInfo.processInfo.physicalMemory)
+{}
+
 struct kinfo_proc *BSGPSystemInfo::kinfoProc() {
     size_t len = 4;
     int mib[len];
@@ -121,10 +125,6 @@ UIDeviceBatteryState BSGPSystemInfo::batteryState() {
     UIDevice *dev = UIDevice.currentDevice;
     dev.batteryMonitoringEnabled = YES;
     return dev.batteryState;
-}
-
-unsigned long long BSGPSystemInfo::physicalMemoryBytes() {
-    return NSProcessInfo.processInfo.physicalMemory;
 }
 
 NSUInteger BSGPSystemInfo::activeProcessorCount() {

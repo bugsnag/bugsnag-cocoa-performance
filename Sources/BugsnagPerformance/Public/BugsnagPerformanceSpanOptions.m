@@ -13,21 +13,24 @@
 @implementation BugsnagPerformanceSpanMetricsOptions
 
 - (instancetype)initWithRendering:(BSGTriState)rendering
-                              cpu:(BSGTriState)cpu {
+                              cpu:(BSGTriState)cpu
+                           memory:(BSGTriState)memory {
     if ((self = [super init])) {
         _rendering = rendering;
         _cpu = cpu;
+        _memory = memory;
     }
     return self;
 }
 
 - (instancetype)init {
-    return [self initWithRendering:BSGTriStateUnset cpu:BSGTriStateUnset];
+    return [self initWithRendering:BSGTriStateUnset cpu:BSGTriStateUnset memory:BSGTriStateUnset];
 }
 
 - (instancetype)clone {
     return [[BugsnagPerformanceSpanMetricsOptions alloc] initWithRendering:self.rendering
-                                                                       cpu:self.cpu];
+                                                                       cpu:self.cpu
+                                                                    memory:self.memory];
 }
 
 @end

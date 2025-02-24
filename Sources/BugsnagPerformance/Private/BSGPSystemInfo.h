@@ -42,6 +42,8 @@ class BSGPSystemInfo {
 public:
     static constexpr size_t cpuHistogramSize{30};
 public:
+    BSGPSystemInfo();
+
     /**
      * Get the number of CPUs that are allocated to this process.
      */
@@ -183,7 +185,7 @@ public:
     // 0 .. 1.0. -1.0 if UIDeviceBatteryStateUnknown
     float batteryLevel();
 
-    unsigned long long physicalMemoryBytes();
+    uint64_t physicalMemoryBytesTotal() { return physicalMemoryBytesTotal_; }
 
     double calcCPUUsagePct(CFAbsoluteTime lastSampledAtSec,
                            uint64_t *lastTimeValueUSInOut,
@@ -206,6 +208,7 @@ private:
     uint64_t lastThisThreadCPUTimeUS_{0};
     CFAbsoluteTime lastThisThreadCPUSampledAtSec_{0};
     CFAbsoluteTime lastCPUSampledAtSec_{0};
+    uint64_t physicalMemoryBytesTotal_;
 
 public:
     ~BSGPSystemInfo() {
