@@ -9,6 +9,7 @@
 #import "SystemInfoSampler.h"
 #import <algorithm>
 #import "Utils.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 
 using namespace bugsnag;
 
