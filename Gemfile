@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bugsnag-maze-runner', '~>9.22.0'
+gem 'bugsnag-maze-runner', '~>9.23.2'
 gem 'cocoapods'
 gem 'xcpretty', '~>0.4.0'
 
