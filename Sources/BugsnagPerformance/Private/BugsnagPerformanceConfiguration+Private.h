@@ -12,6 +12,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface BugsnagPerformanceEnabledMetrics ()
+
+@property(nonatomic) BOOL cpu;       // (default NO)
+
+@end
+
 @interface BSGInternalConfiguration: NSObject
 
 @property(nonatomic,readwrite) bool clearPersistenceOnStart;
