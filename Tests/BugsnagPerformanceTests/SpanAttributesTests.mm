@@ -342,4 +342,58 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_overhead"], @50.0);
 }
 
+- (void)testMemorySampleAttributesInsufficient {
+    SpanAttributesProvider provider;
+
+    // Not enough samples
+    std::vector<SystemInfoSampleData> samples;
+    auto attributes = provider.memorySampleAttributes(samples);
+    XCTAssertEqual(0U, attributes.count);
+
+    // Still not enough samples
+    samples.push_back(SystemInfoSampleData(1));
+    attributes = provider.memorySampleAttributes(samples);
+    XCTAssertEqual(0U, attributes.count);
+
+    // Both samples don't contain any valid data
+    samples.push_back(SystemInfoSampleData(2));
+    attributes = provider.memorySampleAttributes(samples);
+    XCTAssertEqual(0U, attributes.count);
+
+    // Only one sample contains valid data and we need at least 2
+    samples[0].physicalMemoryBytesTotal = 10000;
+    samples[1].physicalMemoryBytesInUse = 1000;
+    attributes = provider.memorySampleAttributes(samples);
+    XCTAssertEqual(0U, attributes.count);
+}
+
+- (void)testMemorySampleAttributesProcessOnly {
+    SpanAttributesProvider provider;
+    std::vector<SystemInfoSampleData> samples = {
+        SystemInfoSampleData(11),
+        SystemInfoSampleData(12),
+    };
+
+    samples[0].physicalMemoryBytesTotal = 100;
+    samples[0].physicalMemoryBytesInUse = 80;
+    samples[1].physicalMemoryBytesTotal = 100;
+    samples[1].physicalMemoryBytesInUse = 50;
+
+    auto attributes = provider.memorySampleAttributes(samples);
+    XCTAssertEqual(4U, attributes.count);
+    NSArray *expectedTimestamps = @[
+        @978307211000000000,
+        @978307212000000000,
+    ];
+    NSArray *expectedMemory = @[
+        @80.0,
+        @50.0,
+    ];
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.timestamps"], expectedTimestamps);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.size"], @100);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.used"], expectedMemory);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.mean"], @65.0);
+}
+
+
 @end

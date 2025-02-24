@@ -272,3 +272,41 @@ SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleDa
 
     return result;
 }
+
+NSMutableDictionary *
+SpanAttributesProvider::memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
+    auto memory = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto timestamps = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    uint64_t memorySampleCount = 0;
+    uint64_t memoryUseTotal = 0;
+    uint64_t memorySize = 0;
+
+    for(auto sample: samples) {
+        if (!sample.isSampledAtValid()) {
+            continue;
+        }
+
+        if (!sample.isPhysicalMemoryInUseValid()) {
+            // In this case we're only recording one metric, so no sense in recording just a failed reading.
+            continue;
+        }
+
+        memorySize = sample.physicalMemoryBytesTotal;
+        [timestamps addObject:@(CFAbsoluteTimeToUTCNanos(sample.sampledAt))];
+
+        memorySampleCount++;
+        memoryUseTotal += sample.physicalMemoryBytesInUse;
+        [memory addObject:@(sample.physicalMemoryBytesInUse)];
+    }
+
+    if (memorySampleCount < 2) {
+        return [NSMutableDictionary new];
+    }
+
+    return @{
+        @"bugsnag.system.memory.timestamps": timestamps,
+        @"bugsnag.system.memory.spaces.device.size": @(memorySize),
+        @"bugsnag.system.memory.spaces.device.used": memory,
+        @"bugsnag.system.memory.spaces.device.mean": @(memoryUseTotal / memorySampleCount),
+    }.mutableCopy;
+}

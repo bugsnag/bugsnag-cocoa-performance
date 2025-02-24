@@ -138,6 +138,7 @@ private:
     NSMutableArray<BugsnagPerformanceSpan *> *
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
     bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleMemory(BugsnagPerformanceSpan *span) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

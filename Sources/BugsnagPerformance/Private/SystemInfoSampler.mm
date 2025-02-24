@@ -44,6 +44,7 @@ void SystemInfoSampler::earlySetup() noexcept {
         for (;;) {
             [NSThread sleepForTimeInterval:samplePeriod_];
             if (shouldAbortSamplerThread_) {
+                BSGLogDebug(@"User has disabled all sampling in the configuration. No longer recording samples.");
                 // It turns out that the user didn't want to record samples.
                 break;
             }
@@ -60,7 +61,9 @@ void SystemInfoSampler::earlySetup() noexcept {
 
 void SystemInfoSampler::configure(BugsnagPerformanceConfiguration *config) noexcept {
     shouldSampleCPU_ = config.enabledMetrics.cpu;
-    if (!shouldSampleCPU_) {
+    shouldSampleMemory_ = config.enabledMetrics.memory;
+
+    if (!(shouldSampleCPU_ || shouldSampleMemory_)) {
         shouldAbortSamplerThread_ = true;
     }
 }
@@ -92,7 +95,7 @@ void SystemInfoSampler::recordSample() {
                                                    sample.sampledAt,
                                                    taskInfo->user_time);
             lastSampleProcessCPU_ = taskInfo->user_time;
-            BSGLogTrace(@"taskInfo: %d.%d = %f", taskInfo->user_time.seconds, taskInfo->user_time.microseconds, sample.processCPUPct);
+            BSGLogTrace(@"SystemInfoSampler::recordSample: taskInfo: %d.%d = %f", taskInfo->user_time.seconds, taskInfo->user_time.microseconds, sample.processCPUPct);
         }
 
         auto mainThreadInfo = systemInfo_.threadBasicInfo(mainThread_);
@@ -102,7 +105,7 @@ void SystemInfoSampler::recordSample() {
                                                       sample.sampledAt,
                                                       mainThreadInfo->user_time);
             lastSampleMainThreadCPU_ = mainThreadInfo->user_time;
-            BSGLogTrace(@"mainThreadInfo: %d.%d = %f", mainThreadInfo->user_time.seconds, mainThreadInfo->user_time.microseconds, sample.mainThreadCPUPct);
+            BSGLogTrace(@"SystemInfoSampler::recordSample: mainThreadInfo: %d.%d = %f", mainThreadInfo->user_time.seconds, mainThreadInfo->user_time.microseconds, sample.mainThreadCPUPct);
         }
 
         // First call to captureSample() will be from the main thread because the monitor thread
@@ -116,9 +119,16 @@ void SystemInfoSampler::recordSample() {
                                                              sample.sampledAt,
                                                              monitorThreadInfo->user_time);
                 lastSampleMonitorThreadCPU_ = monitorThreadInfo->user_time;
-                BSGLogTrace(@"monitorThreadInfo: %d.%d = %f", monitorThreadInfo->user_time.seconds, monitorThreadInfo->user_time.microseconds, sample.monitorThreadCPUPct);
+                BSGLogTrace(@"SystemInfoSampler::recordSample: monitorThreadInfo: %d.%d = %f", monitorThreadInfo->user_time.seconds, monitorThreadInfo->user_time.microseconds, sample.monitorThreadCPUPct);
             }
         }
+    }
+
+    if (shouldSampleMemory_) {
+        sample.physicalMemoryBytesTotal = systemInfo_.physicalMemoryBytesTotal();
+        sample.physicalMemoryBytesInUse = systemInfo_.taskVMInfo()->phys_footprint;
+        BSGLogTrace(@"SystemInfoSampler::recordSample: physical memory: %llu, in use: %llu",
+                    sample.physicalMemoryBytesTotal, sample.physicalMemoryBytesInUse);
     }
 
     lastSampledAtTime_ = sample.sampledAt;

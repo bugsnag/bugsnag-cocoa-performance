@@ -294,6 +294,13 @@ bool BugsnagPerformanceImpl::shouldSampleCPU(BugsnagPerformanceSpan *span) noexc
     return span.metricsOptions.cpu == BSGTriStateYes;
 }
 
+bool BugsnagPerformanceImpl::shouldSampleMemory(BugsnagPerformanceSpan *span) noexcept {
+    if (span.metricsOptions.memory == BSGTriStateUnset) {
+        return span.firstClass == BSGTriStateYes;
+    }
+    return span.metricsOptions.memory == BSGTriStateYes;
+}
+
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
@@ -311,6 +318,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delaying %f seconds (%lld ns) before getting system info", SAMPLER_INTERVAL_SECONDS + 0.5, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC));
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
                    dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
@@ -322,6 +330,12 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
                     BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
                     [span forceMutate:^() {
                         [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
+                    }];
+                }
+                if (shouldSampleMemory(span)) {
+                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting memory sample attributes for span %@", span.name);
+                    [span forceMutate:^() {
+                        [span internalSetMultipleAttributes:spanAttributesProvider_->memorySampleAttributes(samples)];
                     }];
                 }
             }
