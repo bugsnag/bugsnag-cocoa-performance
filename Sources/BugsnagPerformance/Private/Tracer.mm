@@ -163,6 +163,12 @@ void Tracer::onSpanEndSet(BugsnagPerformanceSpan *span) {
 
 void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
+    
+    @synchronized (span) {
+        for (BugsnagPerformanceSpanCondition *condtion in span.assignedConditions) {
+            [condtion closeWithEndTime:span.endTime];
+        }
+    }
 
     spanStackingHandler_->onSpanClosed(span.spanId);
 
@@ -308,6 +314,14 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
+    BugsnagPerformanceSpanCondition *appStartupCondition = nil;
+    if (options.parentContext == nil && getAppStartupInstrumentationState_ != nil) {
+        AppStartupInstrumentationState *appStartupState = getAppStartupInstrumentationState_();
+        if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
+            options.parentContext = appStartupState.uiInitSpan;
+            appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];
+        }
+    }
     onViewLoadSpanStarted_(className);
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (options.firstClass == BSGTriStateUnset) {
@@ -318,6 +332,9 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     auto span = startSpan(name, options, BSGTriStateYes);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
+    }
+    if (appStartupCondition) {
+        [span assignCondition:appStartupCondition];
     }
     return span;
 }

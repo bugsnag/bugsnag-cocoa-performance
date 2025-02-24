@@ -65,6 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
 @property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *activeConditions;
+@property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *assignedConditions;
 
 @property(nonatomic) uint64_t startClock;
 
@@ -98,6 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)updateStartTime:(NSDate *)startTime;
 - (void)updateSamplingProbability:(double) value;
 - (void)markEndAbsoluteTime:(CFAbsoluteTime)endTime;
+- (void)assignCondition:(BugsnagPerformanceSpanCondition *)condition;
 
 - (void)forceMutate:(void (^)())block;
 

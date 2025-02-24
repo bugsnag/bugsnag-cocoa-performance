@@ -10,6 +10,7 @@
 #import "../PhasedStartup.h"
 #import "../SpanAttributesProvider.h"
 #import "../Tracer.h"
+#import "AppStartupInstrumentationState.h"
 
 @class BugsnagPerformanceSpan;
 
@@ -29,6 +30,7 @@ public:
     void start() noexcept {}
 
     void didStartViewLoadSpan(NSString *name) noexcept;
+    AppStartupInstrumentationState *appStartupState() noexcept;
     void willCallMainFunction() noexcept;
     void abortAllSpans() noexcept;
 
@@ -82,5 +84,6 @@ private:
     void beginPreMainSpan() noexcept;
     void beginPostMainSpan() noexcept;
     void beginUIInitSpan() noexcept;
+    AppStartupInstrumentationState *instrumentationState() noexcept;
 };
 }

@@ -64,7 +64,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
         _metricsOptions = metricsOptions;
         _wasStartOrEndTimeProvided = isCFAbsoluteTimeValid(startAbsTime);
-        _activeConditions = [NSMutableArray new];
+        _activeConditions = [NSMutableArray array];
+        _assignedConditions = [NSMutableArray array];
     }
     return self;
 }
@@ -73,6 +74,9 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
     if (self.state == SpanStateOpen && self.onDumped) {
         self.onDumped(self);
+    }
+    for (BugsnagPerformanceSpanCondition *condition in _assignedConditions) {
+        [condition cancel];
     }
     switch(self.onSpanDestroyAction) {
         case OnSpanDestroyAbort:
@@ -151,6 +155,13 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     auto onSpanEndSet = self.onSpanEndSet;
     if(onSpanEndSet != nil) {
         onSpanEndSet(self);
+    }
+}
+
+- (void)assignCondition:(BugsnagPerformanceSpanCondition *)condition {
+    @synchronized (self) {
+        [condition upgrade];
+        [self.assignedConditions addObject:condition];
     }
 }
 

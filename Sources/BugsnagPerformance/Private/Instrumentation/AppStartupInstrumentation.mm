@@ -21,6 +21,7 @@
 using namespace bugsnag;
 
 static constexpr CFTimeInterval kMaxDuration = 120;
+static constexpr CGFloat kFirstViewDelayThreshold = 1.5;
 
 static CFAbsoluteTime getProcessStartTime() noexcept;
 static bool isColdLaunch(void);
@@ -65,7 +66,9 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tra
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
 , isColdLaunch_(isColdLaunch())
-{}
+{
+    tracer_->setGetAppStartInstrumentationState([=]{ return instrumentationState(); });
+}
 
 void AppStartupInstrumentation::earlySetup() noexcept {
     if (!canInstallInstrumentation()) {
@@ -162,7 +165,10 @@ AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
 
 void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
-    firstViewName_ = name;
+    if (firstViewName_ == nil) {
+        firstViewName_ = name;
+        [appStartSpan_ internalSetAttribute:@"bugsnag.app_start.first_view_name" withValue:name];
+    }
 }
 
 void
@@ -179,8 +185,15 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
     didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
-    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
+    BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
+    if (appStartCondition) {
+        [uiInitSpan_ assignCondition:appStartCondition];
+    }
     [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
+    if (firstViewName_ == nil) {
+        [uiInitSpan_ blockWithTimeout:kFirstViewDelayThreshold];
+    }
+    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
 }
 
 void
@@ -248,6 +261,18 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+}
+
+AppStartupInstrumentationState *
+AppStartupInstrumentation::instrumentationState() noexcept {
+    auto state = [AppStartupInstrumentationState new];
+    state.appStartSpan = appStartSpan_;
+    state.preMainSpan = preMainSpan_;
+    state.postMainSpan = postMainSpan_;
+    state.uiInitSpan = uiInitSpan_;
+    state.hasFirstView = firstViewName_ != nil;
+    state.isInProgress = uiInitSpan_.isValid || uiInitSpan_.isBlocked;
+    return state;
 }
 
 #pragma mark -

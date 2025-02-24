@@ -93,6 +93,8 @@
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
+		96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */; };
+		96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
@@ -342,6 +344,8 @@
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
+		96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationState.h; sourceTree = "<group>"; };
+		96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationState.mm; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -638,6 +642,8 @@
 			children = (
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */,
+				96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */,
 				CBEBE59829F671A800BF0B4F /* Instrumentation.h */,
 				CBEBE59929F671A800BF0B4F /* Instrumentation.mm */,
 				CB34771929068C350033759C /* NetworkInstrumentation */,
@@ -853,6 +859,7 @@
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
 				015836C4291264E0002F54C8 /* Version.h in Headers */,
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
+				96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */,
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
@@ -1239,6 +1246,7 @@
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
+				96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */,
 				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				966634D32C8909D9004A934D /* FrameMetricsCollector.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
