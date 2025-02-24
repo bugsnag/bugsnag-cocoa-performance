@@ -26,7 +26,7 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
 @property(nonatomic) std::shared_ptr<Tracer> tracer;
 @property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
 @property(nonatomic, copy) NSArray<AppStartCallback> *willEndUIInitSpanCallbacks;
-@property(nonatomic, strong) NSArray<ViewLoadCallback> *willEndViewLoadSpanCallbacks;
+@property(nonatomic, copy) NSArray<ViewLoadCallback> *willEndViewLoadSpanCallbacks;
 
 @end
 
@@ -274,10 +274,14 @@ static bool classImplementsSelector(Class cls, SEL selector) {
     return NULL;
 }
 
-+ (instancetype) sharedInstance {
-    static id sharedInstance;
++ (instancetype)sharedInstance {
+    static BugsnagPerformanceCrossTalkAPI *sharedInstance;
     static dispatch_once_t once;
-    dispatch_once(&once, ^{ sharedInstance = [[self alloc] init]; });
+    dispatch_once(&once, ^{
+        sharedInstance = [[self alloc] init];
+        sharedInstance.willEndUIInitSpanCallbacks = [NSArray array];
+        sharedInstance.willEndViewLoadSpanCallbacks = [NSArray array];
+    });
     return sharedInstance;
 }
 
