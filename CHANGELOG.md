@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed issue where bugsnag.app_start.first_view_name was missing for app start spans.
+  [404](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/404)
+
 ## 1.11.2 (2025-02-17)
 
 ### Bug fixes
