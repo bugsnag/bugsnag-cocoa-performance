@@ -162,7 +162,12 @@ AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
 
 void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
-    firstViewName_ = name;
+    if (firstViewName_ == nil) {
+        firstViewName_ = name;
+        if (isAppStartInProgress()) {
+            [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+        }
+    }
 }
 
 void
@@ -248,6 +253,11 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+}
+
+bool
+AppStartupInstrumentation::isAppStartInProgress() noexcept {
+    return appStartSpan_ != nil && (appStartSpan_.isValid || appStartSpan_.isBlocked);
 }
 
 #pragma mark -
