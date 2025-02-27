@@ -53,6 +53,10 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
     [urlRequest setValue:timestamp forHTTPHeaderField:@"Bugsnag-Sent-At"];
     package.fillURLRequest(urlRequest);
 
+    BSGLogTrace(@"OtlpUploader::upload: Uploading to URL: %@", urlRequest.URL);
+    BSGLogTrace(@"OtlpUploader::upload: Uploading HTTP headers: %@", urlRequest.allHTTPHeaderFields);
+    BSGLogTrace(@"OtlpUploader::upload: Uploading HTTP body:\n%@", [[NSString alloc] initWithData:(NSData*)urlRequest.HTTPBody encoding:NSUTF8StringEncoding]);
+
     [[NSURLSession.sharedSession dataTaskWithRequest:urlRequest completionHandler:
       ^(__unused NSData *responseData, NSURLResponse *response, __unused NSError *taskError) {
         if (callback) {
@@ -60,6 +64,11 @@ void OtlpUploader::upload(OtlpPackage &package, UploadResultCallback callback) n
             BSGLogDebug(@"OtlpUploader::upload: callback(%d)", uploadResult);
             callback(uploadResult);
         }
+        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            BSGLogTrace(@"OtlpUploader::upload: HTTP response headers = \n%@", ((NSHTTPURLResponse *_Nonnull)response).allHeaderFields);
+            BSGLogTrace(@"OtlpUploader::upload: HTTP response data = \n%@", [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]);
+        }
+
         if (newProbabilityCallback_) {
             auto newProbability = getNewProbability(response);
             if (newProbability >= 0 && newProbability <= 1) {
