@@ -10,10 +10,10 @@ import BugsnagPerformance
 @objcMembers
 class BatchingWithTimeoutScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.internal.autoTriggerExportOnBatchSize = 100
-        config.internal.performWorkInterval = 10
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
+        bugsnagPerfConfig.internal.performWorkInterval = 10
     }
     
     override func run() {

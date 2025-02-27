@@ -10,10 +10,10 @@ import Foundation
 @objcMembers
 class AutoInstrumentNullNetworkCallbackScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
-        config.networkRequestCallback = nil
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
+        bugsnagPerfConfig.networkRequestCallback = nil
     }
 
     func query(url: URL) {

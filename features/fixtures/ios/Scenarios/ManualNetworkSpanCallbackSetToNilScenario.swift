@@ -33,9 +33,9 @@ class ManualNetworkSpanCallbackSetToNilScenario: Scenario {
         MyCallbackSetToNilNetworkDelegate.shared.urlSession.dataTask(with: url).resume()
     }
     
-    override func configure() {
-        super.configure()
-        config.networkRequestCallback = nil
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.networkRequestCallback = nil
     }
 
     override func run() {

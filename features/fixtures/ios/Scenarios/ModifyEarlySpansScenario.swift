@@ -10,11 +10,11 @@ import BugsnagPerformance
 @objcMembers
 class ModifyEarlySpansScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.autoInstrumentAppStarts = true
-        config.autoInstrumentNetworkRequests = true
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentAppStarts = true
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             span.setAttribute("modifiedOnEnd", withValue: "yes")
             return true
         })

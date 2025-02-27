@@ -10,14 +10,17 @@ import Foundation
 @objcMembers
 class EarlySpanOnEndScenario: Scenario {
 
-    override func configure() {
+    override func postLoad() {
+        super.postLoad()
         // Early network span
         query(string: "test")
+    }
 
-        super.configure()
-        config.autoInstrumentAppStarts = true
-        config.autoInstrumentNetworkRequests = true
-        config.add { span in
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentAppStarts = true
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
+        bugsnagPerfConfig.add { span in
             // We've turned on app start spans, but they'll get filtered
             // out here because they don't contain "HTTP" in their names.
             return span.name.contains("HTTP")

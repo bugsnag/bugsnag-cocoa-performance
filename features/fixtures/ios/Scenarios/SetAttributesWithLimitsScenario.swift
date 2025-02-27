@@ -10,10 +10,10 @@ import BugsnagPerformance
 @objcMembers
 class SetAttributesWithLimitsScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.attributeStringValueLimit = 10
-        config.attributeArrayLengthLimit = 3
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.attributeStringValueLimit = 10
+        bugsnagPerfConfig.attributeArrayLengthLimit = 3
     }
 
     override func run() {

@@ -13,7 +13,7 @@ typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 class Scenario: NSObject {
     let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
-    var config = BugsnagPerformanceConfiguration.loadConfig()
+    var bugsnagPerfConfig = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
     var scenarioConfig: Dictionary<String,String> = [:]
 
@@ -25,17 +25,22 @@ class Scenario: NSObject {
         self.fixtureConfig = fixtureConfig
     }
 
-    func configure() {
-        logDebug("Scenario.configure()")
-        config.internal.clearPersistenceOnStart = true
-        config.internal.autoTriggerExportOnBatchSize = 1
-        config.apiKey = "12312312312312312312312312312312"
-        config.autoInstrumentAppStarts = false
-        config.autoInstrumentNetworkRequests = false
-        config.autoInstrumentViewControllers = false
-        config.enabledMetrics.rendering = false
-        config.endpoint = fixtureConfig.tracesURL
-        config.networkRequestCallback = filterAdminMazeRunnerNetRequests
+    func postLoad() {
+        // Called right after loading. Subclasses may need to do things early, before any configuration happens.
+    }
+
+    func setInitialBugsnagConfiguration() {
+        logDebug("Scenario.setInitialBugsnagConfiguration()")
+        bugsnagPerfConfig.internal.clearPersistenceOnStart = true
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
+        bugsnagPerfConfig.apiKey = "12312312312312312312312312312312"
+        bugsnagPerfConfig.autoInstrumentAppStarts = false
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = false
+        bugsnagPerfConfig.autoInstrumentViewControllers = false
+        bugsnagPerfConfig.enabledMetrics.rendering = false
+        bugsnagPerfConfig.endpoint = fixtureConfig.tracesURL
+        logDebug("Scenario.setInitialBugsnagConfiguration: config.endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+        bugsnagPerfConfig.networkRequestCallback = filterAdminMazeRunnerNetRequests
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {
@@ -90,13 +95,13 @@ class Scenario: NSObject {
             for reStr in splitArgs(args: value) {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
-            config.tracePropagationUrls = regexes
+            bugsnagPerfConfig.tracePropagationUrls = regexes
             break
         case "cpuMetrics":
-            config.enabledMetrics.cpu = (value == "true")
+            bugsnagPerfConfig.enabledMetrics.cpu = (value == "true")
             break
         case "renderingMetrics":
-            config.enabledMetrics.rendering = (value == "true")
+            bugsnagPerfConfig.enabledMetrics.rendering = (value == "true")
             break
         default:
             fatalError("\(path): Unknown configuration path")
@@ -111,7 +116,8 @@ class Scenario: NSObject {
     func startBugsnag() {
         logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
-            BugsnagPerformance.start(configuration: config)
+            logDebug("Scenario.startBugsnag: Trace endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+            BugsnagPerformance.start(configuration: bugsnagPerfConfig)
         }, measurement: "start")
     }
 

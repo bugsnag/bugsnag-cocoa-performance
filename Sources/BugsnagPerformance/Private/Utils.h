@@ -18,7 +18,7 @@
 #define BSG_LOGLEVEL_TRACE 50
 
 #ifndef BSG_LOG_LEVEL
-#define BSG_LOG_LEVEL BSG_LOGLEVEL_TRACE
+#define BSG_LOG_LEVEL BSG_LOGLEVEL_INFO
 #endif
 
 #define BSG_LOG_PREFIX "[BugsnagPerformance]"

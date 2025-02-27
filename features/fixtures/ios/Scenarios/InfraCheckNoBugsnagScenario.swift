@@ -10,8 +10,8 @@ import Foundation
 // Scenario for testing the infrastructure with NO Bugsnag involvement.
 @objcMembers
 class InfraCheckNoBugsnagScenario: Scenario {
-    override func configure() {
-        logDebug("InfraCheckNoBugsnagScenario.configure(): Doing nothing")
+    override func setInitialBugsnagConfiguration() {
+        logDebug("InfraCheckNoBugsnagScenario.setInitialBugsnagConfiguration(): Doing nothing")
     }
 
     override func startBugsnag() {

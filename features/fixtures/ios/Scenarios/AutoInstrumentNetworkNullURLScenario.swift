@@ -10,12 +10,15 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkNullURLScenario: Scenario {
 
-    override func configure() {
+    override func postLoad() {
+        super.postLoad()
         // Early phase span. Make sure it doesn't crash or generate a span
         ObjCURLSession.dataTask(with: nil).resume()
+    }
 
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {

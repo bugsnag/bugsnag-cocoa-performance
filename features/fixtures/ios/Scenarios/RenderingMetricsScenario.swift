@@ -16,7 +16,7 @@ class RenderingMetricsScenario: Scenario {
 
     var span: BugsnagPerformanceSpan? = nil
 
-    override func configure() {
+    override func startBugsnag() {
         logError("### RenderingMetricsScenario.configure()")
         if getSpanStartTime() == .early {
             logError("### RenderingMetricsScenario.configure(): Starting span early")
@@ -24,7 +24,7 @@ class RenderingMetricsScenario: Scenario {
         }
 
         logError("### RenderingMetricsScenario.configure(): running super configure")
-        super.configure()
+        super.startBugsnag()
     }
 
     override func run() {

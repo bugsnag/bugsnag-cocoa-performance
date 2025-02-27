@@ -10,18 +10,17 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkPreStartScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
     
-    override func startBugsnag() {
+    override func postLoad() {
+        super.postLoad()
         query(string: "?status=200")
         
         // Wait for the query to finish before starting bugsnag
         Thread.sleep(forTimeInterval: 2.0)
-        
-        super.startBugsnag()
     }
     
     func query(string: String) {

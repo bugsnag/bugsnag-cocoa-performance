@@ -11,10 +11,10 @@ import BugsnagPerformance
 @objcMembers
 class FrameMetricsFronzenFramesScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.enabledMetrics.rendering = true
-        config.internal.autoTriggerExportOnBatchSize = 3
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.enabledMetrics.rendering = true
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 3
     }
     
     override func run() {

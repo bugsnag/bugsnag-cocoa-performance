@@ -96,6 +96,12 @@ class Fixture: NSObject, CommandReceiver {
         let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
         logInfo("Loaded scenario class: \(scenarioClass)")
         scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
+        logInfo("Calling scenario post-load")
+        scenario!.postLoad()
+        logInfo("Clearing persistent data")
+        scenario!.clearPersistentData()
+        logInfo("Setting up initial Bugsnag configuration for \(String(describing: scenario))")
+        scenario!.setInitialBugsnagConfiguration()
     }
 
     private func configureBugsnag(path: String, value: String) {
@@ -114,11 +120,6 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     private func runLoadedScenario(completion: @escaping () -> ()) {
-        logInfo("Configuring scenario \(String(describing: scenario))")
-        scenario!.configure()
-        logInfo("Clearing persistent data")
-        scenario!.clearPersistentData()
-
         logInfo("Starting scenario \(String(describing: scenario))")
         scenario!.run()
         logInfo("========== Completed scenario \(String(describing: scenario)) ==========")

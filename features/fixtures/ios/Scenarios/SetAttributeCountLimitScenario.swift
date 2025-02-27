@@ -10,9 +10,9 @@ import BugsnagPerformance
 @objcMembers
 class SetAttributeCountLimitScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.attributeCountLimit = 3
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.attributeCountLimit = 3
     }
 
     override func run() {

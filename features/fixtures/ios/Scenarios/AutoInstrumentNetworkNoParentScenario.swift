@@ -10,9 +10,9 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkNoParentScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {

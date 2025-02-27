@@ -10,9 +10,9 @@ import BugsnagPerformance
 @objcMembers
 class FixedSamplingProbabilityOneScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.samplingProbability = 1.0
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.samplingProbability = 1.0
     }
     
     override func run() {

@@ -11,9 +11,9 @@ import AVFoundation
 @objcMembers
 class AutoInstrumentAVAssetScenario: Scenario, AVAssetDownloadDelegate {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {
