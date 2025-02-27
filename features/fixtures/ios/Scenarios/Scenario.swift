@@ -95,13 +95,16 @@ class Scenario: NSObject {
         case "cpuMetrics":
             config.enabledMetrics.cpu = (value == "true")
             break
+        case "renderingMetrics":
+            config.enabledMetrics.rendering = (value == "true")
+            break
         default:
             fatalError("\(path): Unknown configuration path")
         }
     }
 
     func configureScenario(path: String, value: String) {
-        logDebug("Scenario.configureScenario()")
+        logDebug("Scenario.configureScenario(): Setting \(path) to \(value)")
         scenarioConfig[path] = value;
     }
 
@@ -182,11 +185,21 @@ class Scenario: NSObject {
         URLSession.shared.dataTask(with: url).resume()
     }
 
+    func waitForBrowserstack() {
+        // Force sleep so that Browserstack doesn't prematurely shut down
+        // the app while BugsnagPerformanceImpl delays for sampling.
+        Thread.sleep(forTimeInterval: 2)
+    }
+
     func toDouble(string: String?) -> Double {
         if string == nil {
             return 0
         }
         return Double(string!)!
+    }
+
+    func toBool(string: String?) -> Bool {
+        return string == "true"
     }
 
     func toTriState(string: String?) -> BSGTriState {

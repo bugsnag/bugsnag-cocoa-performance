@@ -96,14 +96,17 @@ UploadResult OtlpUploader::getUploadResult(NSURLResponse *response) const {
 
 double OtlpUploader::getNewProbability(NSURLResponse *response) const {
     if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
+        BSGLogDebug(@"getNewProbability(): Not an NSHTTPURLResponse, so returning -1");
         return -1;
     }
 
     auto httpResponse = (NSHTTPURLResponse *_Nonnull)response;
     NSString *probability = httpResponse.allHeaderFields[@"Bugsnag-Sampling-Probability"];
     if (probability) {
+        BSGLogDebug(@"getNewProbability(): Bugsnag-Sampling-Probability = \"%@\", so returning %f", probability, probability.doubleValue);
         return probability.doubleValue;
     }
 
+    BSGLogDebug(@"getNewProbability(): Bugsnag-Sampling-Probability not present, so returning -1");
     return -1;
 }
