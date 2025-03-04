@@ -17,7 +17,7 @@ class AutoInstrumentNetworkPreStartDisabledScenario: Scenario {
     
     override func postLoad() {
         super.postLoad()
-        query(string: "?status=200")
+        query(string: "?status=204")
         
         // Wait for the query to finish before starting bugsnag
         Thread.sleep(forTimeInterval: 2.0)

@@ -20,7 +20,7 @@ class InfraCheckNoBugsnagScenario: Scenario {
 
     override func run() {
         logDebug("InfraCheckNoBugsnagScenario.run(): Calling reflect URL")
-        callReflectUrl(appendingToUrl: "?status=200")
+        callReflectUrl(appendingToUrl: "?status=209")
         logDebug("InfraCheckNoBugsnagScenario.run(): Done")
     }
 }
