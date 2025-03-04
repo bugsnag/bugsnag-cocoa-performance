@@ -19,7 +19,7 @@ class ModifyEarlySpansScenario: Scenario {
             return true
         })
 
-        query(string: "?status=200")
+        query(string: "?status=212")
     }
 
     func query(string: String) {

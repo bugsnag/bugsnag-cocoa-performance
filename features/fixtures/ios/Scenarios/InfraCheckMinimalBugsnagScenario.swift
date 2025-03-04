@@ -12,7 +12,7 @@ import Foundation
 class InfraCheckMinimalBugsnagScenario: Scenario {
     override func run() {
         logDebug("InfraCheckMinimalBugsnagScenario.run(): Calling reflect URL")
-        callReflectUrl(appendingToUrl: "?status=200")
+        callReflectUrl(appendingToUrl: "?status=208")
         logDebug("InfraCheckMinimalBugsnagScenario.run(): Opening and closing a basic span")
         BugsnagPerformance.startSpan(name: "test").end()
         logDebug("InfraCheckMinimalBugsnagScenario.run(): Done")

@@ -30,6 +30,6 @@ class AutoInstrumentNetworkNullURLScenario: Scenario {
         // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
         // Send an actual request to be captured
-        query(string: "?status=200")
+        query(string: "?status=203")
     }
 }

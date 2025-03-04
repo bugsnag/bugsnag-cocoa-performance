@@ -39,6 +39,6 @@ class ManualNetworkSpanCallbackSetToNilScenario: Scenario {
     }
 
     override func run() {
-        query(string: "?status=200")
+        query(string: "?status=210")
     }
 }
