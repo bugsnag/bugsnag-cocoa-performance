@@ -86,7 +86,7 @@ private:
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
-    BugsnagPerformanceEnabledMetrics *enabledMetrics_{nil};
+    BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
