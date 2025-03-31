@@ -11,9 +11,9 @@ import BugsnagPerformance
 @objcMembers
 class FrameMetricsAutoInstrumentRenderingOffScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.enabledMetrics.rendering = false
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.enabledMetrics.rendering = false
     }
     
     override func run() {

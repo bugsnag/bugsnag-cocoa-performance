@@ -10,9 +10,9 @@ import BugsnagPerformance
 @objcMembers
 class AutoInstrumentAppStartsScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.autoInstrumentAppStarts = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentAppStarts = true
     }
 
     override func run() {

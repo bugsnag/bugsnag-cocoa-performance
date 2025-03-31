@@ -10,19 +10,6 @@ import BugsnagPerformance
 
 @objcMembers
 class SpanConditionsMultipleConditionsScenario: Scenario {
-    
-    override func startBugsnag() {
-        Bugsnag.start(with: {
-            let config = BugsnagConfiguration.loadConfig()
-            config.apiKey = "12312312312312312312312312312312"
-            config.endpoints.notify = fixtureConfig.notifyURL.absoluteString
-            config.endpoints.sessions = fixtureConfig.sessionsURL.absoluteString
-            return config
-        }())
-        
-        super.startBugsnag()
-    }
-    
     override func run() {
         let span1 = BugsnagPerformance.startSpan(name: "SpanConditionsMultipleConditionsScenarioSpan1")
         let condition1 = span1.block(timeout: 0.5)

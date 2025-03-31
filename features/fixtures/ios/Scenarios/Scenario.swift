@@ -13,7 +13,7 @@ typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 class Scenario: NSObject {
     let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
-    var config = BugsnagPerformanceConfiguration.loadConfig()
+    var bugsnagPerfConfig = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
     var scenarioConfig: Dictionary<String,String> = [:]
 
@@ -25,17 +25,22 @@ class Scenario: NSObject {
         self.fixtureConfig = fixtureConfig
     }
 
-    func configure() {
-        logDebug("Scenario.configure()")
-        config.internal.clearPersistenceOnStart = true
-        config.internal.autoTriggerExportOnBatchSize = 1
-        config.apiKey = "12312312312312312312312312312312"
-        config.autoInstrumentAppStarts = false
-        config.autoInstrumentNetworkRequests = false
-        config.autoInstrumentViewControllers = false
-        config.enabledMetrics.rendering = false
-        config.endpoint = fixtureConfig.tracesURL
-        config.networkRequestCallback = filterAdminMazeRunnerNetRequests
+    func postLoad() {
+        // Called right after loading. Subclasses may need to do things early, before any configuration happens.
+    }
+
+    func setInitialBugsnagConfiguration() {
+        logDebug("Scenario.setInitialBugsnagConfiguration()")
+        bugsnagPerfConfig.internal.clearPersistenceOnStart = true
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
+        bugsnagPerfConfig.apiKey = "12312312312312312312312312312312"
+        bugsnagPerfConfig.autoInstrumentAppStarts = false
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = false
+        bugsnagPerfConfig.autoInstrumentViewControllers = false
+        bugsnagPerfConfig.enabledMetrics.rendering = false
+        bugsnagPerfConfig.endpoint = fixtureConfig.tracesURL
+        logDebug("Scenario.setInitialBugsnagConfiguration: config.endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+        bugsnagPerfConfig.networkRequestCallback = filterAdminMazeRunnerNetRequests
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {
@@ -90,10 +95,13 @@ class Scenario: NSObject {
             for reStr in splitArgs(args: value) {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
-            config.tracePropagationUrls = regexes
+            bugsnagPerfConfig.tracePropagationUrls = regexes
             break
         case "cpuMetrics":
-            config.enabledMetrics.cpu = (value == "true")
+            bugsnagPerfConfig.enabledMetrics.cpu = (value == "true")
+            break
+        case "renderingMetrics":
+            bugsnagPerfConfig.enabledMetrics.rendering = (value == "true")
             break
         default:
             fatalError("\(path): Unknown configuration path")
@@ -101,14 +109,15 @@ class Scenario: NSObject {
     }
 
     func configureScenario(path: String, value: String) {
-        logDebug("Scenario.configureScenario()")
+        logDebug("Scenario.configureScenario(): Setting \(path) to \(value)")
         scenarioConfig[path] = value;
     }
 
     func startBugsnag() {
         logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
-            BugsnagPerformance.start(configuration: config)
+            logDebug("Scenario.startBugsnag: Trace endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+            BugsnagPerformance.start(configuration: bugsnagPerfConfig)
         }, measurement: "start")
     }
 
@@ -182,11 +191,21 @@ class Scenario: NSObject {
         URLSession.shared.dataTask(with: url).resume()
     }
 
+    func waitForBrowserstack() {
+        // Force sleep so that Browserstack doesn't prematurely shut down
+        // the app while BugsnagPerformanceImpl delays for sampling.
+        Thread.sleep(forTimeInterval: 2)
+    }
+
     func toDouble(string: String?) -> Double {
         if string == nil {
             return 0
         }
         return Double(string!)!
+    }
+
+    func toBool(string: String?) -> Bool {
+        return string == "true"
     }
 
     func toTriState(string: String?) -> BSGTriState {

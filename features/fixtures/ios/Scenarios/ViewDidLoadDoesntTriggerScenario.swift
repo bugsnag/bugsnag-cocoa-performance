@@ -10,9 +10,9 @@ import UIKit
 @objcMembers
 class ViewDidLoadDoesntTriggerScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.autoInstrumentViewControllers = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentViewControllers = true
     }
 
     override func run() {

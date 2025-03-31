@@ -13,27 +13,27 @@ enum MyError: Error {
 @objcMembers
 class OnEndCallbackScenario: Scenario {
 
-    override func configure() {
-        super.configure()
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
 
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             return true
         })
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             return span.name != "drop_me"
         })
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             self.errorGenerator.throwObjCException()
             return true
         })
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             // Swift is actually auto-compiling in a catch-and-convert-to-NSError
             // whenever a Swift throw crosses the Swift-ObjC membrane. But we do this
             // anyway just in case something changes and this starts to break.
             self.errorGenerator.throwSwiftException()
             return true
         })
-        config.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             return span.name != "drop_me_too"
         })
     }

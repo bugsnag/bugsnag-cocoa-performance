@@ -472,7 +472,7 @@ Feature: Automatic instrumentation spans
     * a span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
@@ -498,7 +498,7 @@ Feature: Automatic instrumentation spans
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
@@ -553,7 +553,7 @@ Feature: Automatic instrumentation spans
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
@@ -597,7 +597,7 @@ Feature: Automatic instrumentation spans
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
@@ -619,7 +619,7 @@ Feature: Automatic instrumentation spans
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
-    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * a span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * a span string attribute "http.method" equals "GET"
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0

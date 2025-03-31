@@ -26,6 +26,10 @@ using namespace bugsnag;
 
 @implementation BugsnagPerformanceEnabledMetrics
 
++ (instancetype) withAllEnabled {
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:YES cpu:YES];
+}
+
 - (instancetype) initWithRendering:(BOOL)rendering cpu:(BOOL)cpu {
     if ((self = [super init])) {
         _rendering = rendering;

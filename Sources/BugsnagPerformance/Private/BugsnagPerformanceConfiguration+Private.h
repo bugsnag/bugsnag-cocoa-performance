@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic) BOOL cpu;       // (default NO)
 
++ (instancetype) withAllEnabled;
+
 @end
 
 @interface BSGInternalConfiguration: NSObject

@@ -10,9 +10,9 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkNoParentScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {
@@ -25,6 +25,6 @@ class AutoInstrumentNetworkNoParentScenario: Scenario {
         waitForCurrentBatch()
         let span = BugsnagPerformance.startSpan(name: "parentSpan")
         span.end();
-        query(string: "?status=200")
+        query(string: "?status=202")
     }
 }

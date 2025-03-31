@@ -10,15 +10,15 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkSharedSessionInvalidateScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
     
     override func run() {
         URLSession.shared.finishTasksAndInvalidate()
         URLSession.shared.invalidateAndCancel()
-        query(string: "?status=200")
+        query(string: "?status=206")
     }
     
     func query(string: String) {
