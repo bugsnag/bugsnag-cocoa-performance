@@ -29,7 +29,6 @@
 		0122C25129019770002D243C /* Tracer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0122C23329019770002D243C /* Tracer.h */; };
 		0122C25829019904002D243C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0122C25729019904002D243C /* UIKit.framework */; };
 		0122C26929019CE1002D243C /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
-		0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */; };
 		0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */; };
 		015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 015836BF29125E7A002F54C8 /* ResourceAttributes.h */; };
 		015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 015836C029125E7A002F54C8 /* ResourceAttributes.mm */; };
@@ -59,6 +58,12 @@
 		0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */; };
 		0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0987F2782C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm */; };
+		098FC8462D2EB8E8001B627D /* BSGPSystemInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */; };
+		098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */; };
+		098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */ = {isa = PBXBuildFile; fileRef = 098FC84D2D350E60001B627D /* FixedLengthDequeue.h */; };
+		098FC8542D37A08D001B627D /* SystemInfoSampler.h in Headers */ = {isa = PBXBuildFile; fileRef = 098FC8532D37A08D001B627D /* SystemInfoSampler.h */; };
+		098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 098FC8522D37A08D001B627D /* SystemInfoSampler.mm */; };
+		098FC8792D3FADFE001B627D /* SpanAttributesTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 098FC8782D3FADFE001B627D /* SpanAttributesTests.mm */; };
 		09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B473052B23087D0024CF11 /* WeakSpansList.h */; };
 		09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09B473092B2313570024CF11 /* WeakSpansListTests.mm */; };
 		09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */ = {isa = PBXBuildFile; fileRef = 09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */; };
@@ -279,7 +284,6 @@
 		0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpan+Private.h"; sourceTree = "<group>"; };
 		0122C23329019770002D243C /* Tracer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tracer.h; sourceTree = "<group>"; };
 		0122C25729019904002D243C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceTests.mm; sourceTree = "<group>"; };
 		0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpTraceEncodingTests.mm; sourceTree = "<group>"; };
 		0122C26529019CE1002D243C /* BugsnagPerformance-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		015836BF29125E7A002F54C8 /* ResourceAttributes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResourceAttributes.h; sourceTree = "<group>"; };
@@ -307,6 +311,14 @@
 		0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansList.mm; sourceTree = "<group>"; };
 		0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
 		0987F2782C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanContext.mm; sourceTree = "<group>"; };
+		098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPSystemInfo.mm; sourceTree = "<group>"; };
+		098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPSystemInfo.h; sourceTree = "<group>"; };
+		098FC84D2D350E60001B627D /* FixedLengthDequeue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FixedLengthDequeue.h; sourceTree = "<group>"; };
+		098FC8522D37A08D001B627D /* SystemInfoSampler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SystemInfoSampler.mm; sourceTree = "<group>"; };
+		098FC8532D37A08D001B627D /* SystemInfoSampler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SystemInfoSampler.h; sourceTree = "<group>"; };
+		098FC8772D3E8D43001B627D /* Metrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Metrics.h; sourceTree = "<group>"; };
+		098FC8782D3FADFE001B627D /* SpanAttributesTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanAttributesTests.mm; sourceTree = "<group>"; };
+		098FC87A2D3FD095001B627D /* TestHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestHelpers.h; sourceTree = "<group>"; };
 		09B473052B23087D0024CF11 /* WeakSpansList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WeakSpansList.h; sourceTree = "<group>"; };
 		09B473092B2313570024CF11 /* WeakSpansListTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansListTests.mm; sourceTree = "<group>"; };
 		09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkHeaderInjector.h; sourceTree = "<group>"; };
@@ -557,6 +569,8 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
+				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
+				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
 				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 				09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */,
 				09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */,
@@ -576,6 +590,7 @@
 				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
 				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
 				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
+				098FC84D2D350E60001B627D /* FixedLengthDequeue.h */,
 				966634D82C8A3939004A934D /* FrameRateMetrics */,
 				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
 				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
@@ -583,6 +598,7 @@
 				0122C22929019770002D243C /* Instrumentation */,
 				CBEC51BE296DB311009C0CE3 /* JSON.h */,
 				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
+				098FC8772D3E8D43001B627D /* Metrics.h */,
 				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
 				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
 				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
@@ -619,6 +635,8 @@
 				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
 				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
 				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
+				098FC8532D37A08D001B627D /* SystemInfoSampler.h */,
+				098FC8522D37A08D001B627D /* SystemInfoSampler.mm */,
 				CBC90C4429C84DEB00280884 /* Targets.h */,
 				0122C23329019770002D243C /* Tracer.h */,
 				0122C22529019770002D243C /* Tracer.mm */,
@@ -690,6 +708,7 @@
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
+				098FC8782D3FADFE001B627D /* SpanAttributesTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
 				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
@@ -697,6 +716,7 @@
 				09509B742ADFE9A900A358EC /* TracerTests.mm */,
 				09B473092B2313570024CF11 /* WeakSpansListTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
+				098FC87A2D3FD095001B627D /* TestHelpers.h */,
 			);
 			path = BugsnagPerformanceTests;
 			sourceTree = "<group>";
@@ -865,6 +885,7 @@
 				964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */,
 				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
 				964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */,
+				098FC8542D37A08D001B627D /* SystemInfoSampler.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
@@ -877,7 +898,9 @@
 				09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
+				098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */,
 				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
+				098FC8462D2EB8E8001B627D /* BSGPSystemInfo.h in Headers */,
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
@@ -1177,7 +1200,6 @@
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
-				0122C26F29019CEF002D243C /* BugsnagPerformanceTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
 				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
@@ -1195,6 +1217,7 @@
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */,
+				098FC8792D3FADFE001B627D /* SpanAttributesTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
@@ -1235,6 +1258,7 @@
 			files = (
 				CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */,
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
+				098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
@@ -1257,6 +1281,7 @@
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
+				098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,

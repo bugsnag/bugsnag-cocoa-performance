@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceEnabledMetrics ()
 
-@property(nonatomic) BOOL cpu;       // (default NO)
-
 + (instancetype) withAllEnabled;
 
 @end
