@@ -694,7 +694,6 @@
 				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
 				CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */,
 				964B785A2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm */,
-				0122C25F29019C05002D243C /* BugsnagPerformanceTests.mm */,
 				09E313032BF363020081F219 /* CrossTalkTests.mm */,
 				CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */,
 				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
@@ -1655,6 +1654,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -1684,6 +1684,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;

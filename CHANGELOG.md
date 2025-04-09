@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Added missing MARKETING_VERSION build setting to BugsnagPerformance-iOS. This is required for generating CFBundleShortVersionString in some situations.
+  [418](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/418)
+
 * Fixed issue where bugsnag.app_start.first_view_name was missing for app start spans.
   [404](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/404)
 
