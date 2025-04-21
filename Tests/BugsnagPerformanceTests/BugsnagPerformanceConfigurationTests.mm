@@ -220,6 +220,52 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertEqualObjects(config.endpoint.absoluteString, @"https://0123456789abcdef0123456789abcdef.otlp.bugsnag.com/v1/traces");
 }
 
+- (void)testUpdatingAPIKeyInLoadedConfigAlsoUpdatesTheEndpoint {
+    auto config = [BugsnagPerformanceConfiguration loadConfigWithInfoDictionary:@{
+        @"bugsnag": @{
+            @"performance": @{
+                @"apiKey": performanceApiKey,
+                @"appVersion": performanceAppVersion,
+                @"bundleVersion": performanceBundleVersion,
+            }
+        }
+    }];
+    [config setApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqualObjects(config.apiKey, @"0123456789abcdef0123456789abcdef");
+    XCTAssertEqualObjects(config.endpoint.absoluteString, @"https://0123456789abcdef0123456789abcdef.otlp.bugsnag.com/v1/traces");
+}
+
+- (void)testUpdatingAPIKeyInConfigAlsoUpdatesTheEndpoint {
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:performanceApiKey];
+    [config setApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqualObjects(config.apiKey, @"0123456789abcdef0123456789abcdef");
+    XCTAssertEqualObjects(config.endpoint.absoluteString, @"https://0123456789abcdef0123456789abcdef.otlp.bugsnag.com/v1/traces");
+}
+
+- (void)testUpdatingAPIKeyInLoadedConfigDoesntUpdateTheEndpointIfACustomEndpointIsSet {
+    auto config = [BugsnagPerformanceConfiguration loadConfigWithInfoDictionary:@{
+        @"bugsnag": @{
+            @"performance": @{
+                @"apiKey": performanceApiKey,
+                @"appVersion": performanceAppVersion,
+                @"bundleVersion": performanceBundleVersion,
+                @"endpoint": performanceEndpoint,
+            }
+        }
+    }];
+    [config setApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqualObjects(config.apiKey, @"0123456789abcdef0123456789abcdef");
+    XCTAssertEqualObjects(config.endpoint.absoluteString, performanceEndpoint);
+}
+
+- (void)testUpdatingAPIKeyInConfigDoesntUpdateTheEndpointIfACustomEndpointIsSet {
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:performanceApiKey];
+    config.endpoint = [NSURL URLWithString:performanceEndpoint];
+    [config setApiKey:@"0123456789abcdef0123456789abcdef"];
+    XCTAssertEqualObjects(config.apiKey, @"0123456789abcdef0123456789abcdef");
+    XCTAssertEqualObjects(config.endpoint.absoluteString, performanceEndpoint);
+}
+
 - (void)testLimits {
 #define MIN_ATTRIBUTE_COUNT_LIMIT (uint64_t)1
 #define MAX_ATTRIBUTE_COUNT_LIMIT (uint64_t)500
