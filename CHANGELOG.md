@@ -5,6 +5,9 @@ Changelog
 
 ### Bug fixes
 
+* Fixed issue where API Key override not was not reflected in `endpoint` when using `BugsnagPerformanceConfiguration`.
+  [423](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/423)
+
 * Added missing MARKETING_VERSION build setting to BugsnagPerformance-iOS. This is required for generating CFBundleShortVersionString in some situations.
   [418](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/418)
 
