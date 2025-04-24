@@ -212,7 +212,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json
+	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json BugsnagPerformance.xcodeproj/project.pbxproj
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)

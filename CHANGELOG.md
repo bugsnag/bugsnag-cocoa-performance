@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 1.12.0 (2025-04-24)
 
 ### Bug fixes
 
@@ -13,6 +13,14 @@ Changelog
 
 * Fixed issue where bugsnag.app_start.first_view_name was missing for app start spans.
   [404](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/404)
+
+### Enhancements
+
+* Optionally capture and report CPU and Memory use on selected spans (opt-in using BugsnagPerformanceConfiguration.enabledMetrics)
+  [416](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/416)
+
+* Speculatively collect rendering metrics before Bugsnag is started
+  [405](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/405)
 
 ## 1.11.2 (2025-02-17)
 
