@@ -13,7 +13,8 @@ Maze.hooks.after do |scenario|
     if scenario.failed? || Maze.config.farm == :local
       FileUtils.makedirs(path)
       File.open(File.join(path, 'syslog.log'), 'wb') do |file|
-        Maze.driver.get_log('syslog').each { |entry| file.puts entry.message }
+        manager = Maze::Api::Appium::DeviceManager.new
+        manager.get_log('syslog').each { |entry| file.puts entry.message }
       end
     end
   end

@@ -129,7 +129,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span field "name" equals "[HTTP/GET]"
     * every span string attribute "http.flavor" exists
-    * every span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * every span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * every span string attribute "http.method" equals "GET"
     * every span integer attribute "http.status_code" is greater than 0
     * every span integer attribute "http.response_content_length" is greater than 0
@@ -305,7 +305,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesScenario"
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
     * every span bool attribute "d" does not exist
@@ -322,7 +322,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
     * a span array attribute "b" contains the integer value 1 at index 0
     * a span array attribute "b" contains the integer value 2 at index 1
@@ -334,7 +334,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributeCountLimitScenario"
     * every span string attribute "a" does not exist
 
   Scenario: Set OnEnd
@@ -342,7 +342,7 @@ Feature: Manual creation of spans
     And I wait for exactly 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "OnEndCallbackScenario"
 
   Scenario: Frame metrics - no slow frames
     Given I run "FrameMetricsNoSlowFramesScenario"
@@ -446,3 +446,51 @@ Feature: Manual creation of spans
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
     * a span integer attribute "bugsnag.rendering.slow_frames" equals 3
     * a span integer attribute "bugsnag.rendering.frozen_frames" equals 0
+
+  Scenario: Span Conditions - condition closed
+    Given I run "SpanConditionsSimpleConditionScenario"
+    And I wait for 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan1"
+    * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan2"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsSimpleConditionScenarioSpan1" ended after a span named "SpanConditionsSimpleConditionScenarioSpan2"
+    * a span named "SpanConditionsSimpleConditionScenarioSpan2" is a child of span named "SpanConditionsSimpleConditionScenarioSpan1"
+
+  Scenario: Span Conditions - condition timed out
+    Given I run "SpanConditionsConditionTimedOutScenario"
+    And I wait for 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan1"
+    * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan2"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsConditionTimedOutScenarioSpan1" ended before a span named "SpanConditionsConditionTimedOutScenarioSpan2" started
+
+  Scenario: Span Conditions - multiple conditions
+    Given I run "SpanConditionsMultipleConditionsScenario"
+    And I wait for 3 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan1"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan2"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan3"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
+    * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"

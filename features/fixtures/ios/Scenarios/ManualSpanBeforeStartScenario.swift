@@ -9,12 +9,16 @@ import BugsnagPerformance
 
 @objcMembers
 class ManualSpanBeforeStartScenario: Scenario {
-    
-    override func startBugsnag() {
-        config.appVersion = "42"
-        config.bundleVersion = "42.42"
+
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.appVersion = "42"
+        bugsnagPerfConfig.bundleVersion = "42.42"
+    }
+
+    override func postLoad() {
+        super.postLoad()
         BugsnagPerformance.startSpan(name: "BeforeStart").end()
-        super.startBugsnag()
     }
 
     override func run() {

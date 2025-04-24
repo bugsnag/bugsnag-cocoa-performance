@@ -13,8 +13,9 @@ typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 class Scenario: NSObject {
     let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
-    var config = BugsnagPerformanceConfiguration.loadConfig()
+    var bugsnagPerfConfig = BugsnagPerformanceConfiguration.loadConfig()
     var pendingMeasurements: [MazerunnerMeasurement] = []
+    var scenarioConfig: Dictionary<String,String> = [:]
 
     private override init() {
         fatalError("do not use the default init of Scenario")
@@ -24,17 +25,22 @@ class Scenario: NSObject {
         self.fixtureConfig = fixtureConfig
     }
 
-    func configure() {
-        logDebug("Scenario.configure()")
-        config.internal.clearPersistenceOnStart = true
-        config.internal.autoTriggerExportOnBatchSize = 1
-        config.apiKey = "12312312312312312312312312312312"
-        config.autoInstrumentAppStarts = false
-        config.autoInstrumentNetworkRequests = false
-        config.autoInstrumentViewControllers = false
-        config.autoInstrumentRendering = false
-        config.endpoint = fixtureConfig.tracesURL
-        config.networkRequestCallback = filterAdminMazeRunnerNetRequests
+    func postLoad() {
+        // Called right after loading. Subclasses may need to do things early, before any configuration happens.
+    }
+
+    func setInitialBugsnagConfiguration() {
+        logDebug("Scenario.setInitialBugsnagConfiguration()")
+        bugsnagPerfConfig.internal.clearPersistenceOnStart = true
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
+        bugsnagPerfConfig.apiKey = "12312312312312312312312312312312"
+        bugsnagPerfConfig.autoInstrumentAppStarts = false
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = false
+        bugsnagPerfConfig.autoInstrumentViewControllers = false
+        bugsnagPerfConfig.enabledMetrics.rendering = false
+        bugsnagPerfConfig.endpoint = fixtureConfig.tracesURL
+        logDebug("Scenario.setInitialBugsnagConfiguration: config.endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+        bugsnagPerfConfig.networkRequestCallback = filterAdminMazeRunnerNetRequests
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {
@@ -82,24 +88,43 @@ class Scenario: NSObject {
     }
 
     func configureBugsnag(path: String, value: String) {
-        logDebug("Scenario.configureBugsnag()")
+        logDebug("Scenario.configureBugsnag(): SET \(path) = \(value)")
         switch path {
         case "propagateTraceParentToUrlsMatching":
             var regexes: Set<NSRegularExpression> = []
             for reStr in splitArgs(args: value) {
                 regexes.insert(try! NSRegularExpression(pattern: reStr))
             }
-            config.tracePropagationUrls = regexes
+            bugsnagPerfConfig.tracePropagationUrls = regexes
+            logDebug("config.tracePropagationUrls = \(regexes)")
+            break
+        case "cpuMetrics":
+            bugsnagPerfConfig.enabledMetrics.cpu = (value == "true")
+            logDebug("config.enabledMetrics.cpu = \(bugsnagPerfConfig.enabledMetrics.cpu)")
+            break
+        case "memoryMetrics":
+            bugsnagPerfConfig.enabledMetrics.memory = (value == "true")
+            logDebug("config.enabledMetrics.memory = \(bugsnagPerfConfig.enabledMetrics.memory)")
+            break
+        case "renderingMetrics":
+            bugsnagPerfConfig.enabledMetrics.rendering = (value == "true")
+            logDebug("config.enabledMetrics.rendering = \(bugsnagPerfConfig.enabledMetrics.rendering)")
             break
         default:
             fatalError("\(path): Unknown configuration path")
         }
     }
 
+    func configureScenario(path: String, value: String) {
+        logDebug("Scenario.configureScenario(): Setting \(path) to \(value)")
+        scenarioConfig[path] = value;
+    }
+
     func startBugsnag() {
         logDebug("Scenario.startBugsnag()")
         performAndReportDuration({
-            BugsnagPerformance.start(configuration: config)
+            logDebug("Scenario.startBugsnag: Trace endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
+            BugsnagPerformance.start(configuration: bugsnagPerfConfig)
         }, measurement: "start")
     }
 
@@ -141,7 +166,7 @@ class Scenario: NSObject {
         let startDate = Date()
         body()
         let endDate = Date()
-        
+
         let calendar = Calendar.current
         let duration = calendar.dateComponents([.nanosecond], from: startDate, to: endDate)
         let metrics = ["duration.nanos": "\(duration.nanosecond ?? 0)"]
@@ -152,7 +177,7 @@ class Scenario: NSObject {
         var request = URLRequest(url: fixtureConfig.metricsURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         var body = metrics
         body["metric.measurement"] = name
         body["device.manufacturer"] = "Apple"
@@ -164,7 +189,7 @@ class Scenario: NSObject {
             return
         }
         request.httpBody = jsonData
-        
+
         URLSession.shared.dataTask(with: request).resume()
     }
 
@@ -172,4 +197,38 @@ class Scenario: NSObject {
         let url = URL(string: appendingToUrl, relativeTo: fixtureConfig.reflectURL)!
         URLSession.shared.dataTask(with: url).resume()
     }
+
+    func waitForBrowserstack() {
+        // Force sleep so that Browserstack doesn't prematurely shut down
+        // the app while BugsnagPerformanceImpl delays for sampling.
+        Thread.sleep(forTimeInterval: 2)
+    }
+
+    func toDouble(string: String?) -> Double {
+        if string == nil {
+            return 0
+        }
+        return Double(string!)!
+    }
+
+    func toBool(string: String?) -> Bool {
+        return string == "true"
+    }
+
+    func toTriState(string: String?) -> BSGTriState {
+        switch string {
+        case "yes":
+            (.yes)
+        case "no":
+            (.no)
+        case "unset":
+            (.unset)
+        case nil:
+            (.unset)
+        default:
+            fatalError("\(String(describing: string)): Unknown tri-state value")
+        }
+    }
+    
+    var spanName: String { "\(String(describing: type(of: self)).replacingOccurrences(of: "Fixture", with: ""))\(scenarioConfig["variant_name"] ?? "")" }
 }

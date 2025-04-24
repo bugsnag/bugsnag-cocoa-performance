@@ -11,7 +11,7 @@ import BugsnagPerformance
 class SetAttributesScenario: Scenario {
     
     override func run() {
-        let span = BugsnagPerformance.startSpan(name: "MySpan")
+        let span = BugsnagPerformance.startSpan(name: "SetAttributesScenario")
         span.setAttribute("a", withValue: "xyz")
         span.setAttribute("b", withValue: "abc")
         span.setAttribute("b", withValue: nil)

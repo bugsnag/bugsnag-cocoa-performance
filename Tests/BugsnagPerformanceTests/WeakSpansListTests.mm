@@ -19,17 +19,18 @@ using namespace bugsnag;
 @end
 
 static BugsnagPerformanceSpan *createSpan() {
+    MetricsOptions metricsOptions;
     return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:IdGenerator::generateTraceId()
                                                  spanId:IdGenerator::generateSpanId()
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime 
-                                             firstClass:BSGFirstClassNo
+                                             firstClass:BSGTriStateNo
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {
-    }];
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 @implementation WeakSpansListTests

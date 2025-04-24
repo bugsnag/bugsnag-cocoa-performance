@@ -17,18 +17,20 @@
 using namespace bugsnag;
 
 static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> handler) {
+    MetricsOptions metricsOptions;
     return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
                                                 traceId:IdGenerator::generateTraceId()
                                                  spanId:IdGenerator::generateSpanId()
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime
-                                             firstClass:BSGFirstClassNo
+                                             firstClass:BSGTriStateNo
                                     attributeCountLimit:128
-                                    instrumentRendering:BSGInstrumentRenderingNo
+                                         metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);
-    }];
+    }
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 @interface SpanStackingHandlerTests : XCTestCase
@@ -218,7 +220,6 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     [span internalSetMultipleAttributes:@{@"testAttribute": @"testValue"}];
     handler->push(span);
     XCTAssertTrue(handler->hasSpanWithAttribute(@"testAttribute", @"testValue"));
-    
 }
 
 - (void)testHasSpanWithAttributeShouldReturnTrueWhenTheAttributeIsFurtherInTheStack {
@@ -269,6 +270,67 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
     
     [span2 end];
     XCTAssertFalse(handler->hasSpanWithAttribute(@"testAttribute", @"testValue"));
+}
+
+- (void)testFindSpanForCategoryShouldReturnTheCurrentSpanWhenThereIsOneSpan {
+    auto handler = std::make_shared<SpanStackingHandler>();
+    BugsnagPerformanceSpan *span = createSpan(handler);
+    [span internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory"}];
+    handler->push(span);
+    XCTAssertEqual(handler->findSpanForCategory(@"testCategory"), span);
+}
+
+- (void)testFindSpanForCategoryShouldReturnTheCorrectSpanWhenItIsFurtherInTheStack {
+    auto handler = std::make_shared<SpanStackingHandler>();
+    BugsnagPerformanceSpan *span1 = createSpan(handler);
+    BugsnagPerformanceSpan *span2 = createSpan(handler);
+    BugsnagPerformanceSpan *span3 = createSpan(handler);
+    [span2 internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory"}];
+    handler->push(span1);
+    handler->push(span2);
+    handler->push(span3);
+    XCTAssertEqual(handler->findSpanForCategory(@"testCategory"), span2);
+}
+
+- (void)testFindSpanForCategoryShouldReturnNilWhenThereAreNoSpansWithTheCategory {
+    auto handler = std::make_shared<SpanStackingHandler>();
+    BugsnagPerformanceSpan *span1 = createSpan(handler);
+    BugsnagPerformanceSpan *span2 = createSpan(handler);
+    BugsnagPerformanceSpan *span3 = createSpan(handler);
+    [span2 internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory1"}];
+    handler->push(span1);
+    handler->push(span2);
+    handler->push(span3);
+    XCTAssertNil(handler->findSpanForCategory(@"testCategory"));
+}
+
+- (void)testFindSpanForCategoryShouldReturnNilWhenTheOnlySpanWithTheCategoryHasEnded {
+    auto handler = std::make_shared<SpanStackingHandler>();
+    BugsnagPerformanceSpan *span1 = createSpan(handler);
+    BugsnagPerformanceSpan *span2 = createSpan(handler);
+    BugsnagPerformanceSpan *span3 = createSpan(handler);
+    [span2 internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory"}];
+    handler->push(span1);
+    handler->push(span2);
+    handler->push(span3);
+    
+    [span2 end];
+    XCTAssertNil(handler->findSpanForCategory(@"testCategory"));
+}
+
+- (void)testFindSpanForCategoryShouldReturnTheSapnWhenAnotherSpanWithTheCategoryHasEnded {
+    auto handler = std::make_shared<SpanStackingHandler>();
+    BugsnagPerformanceSpan *span1 = createSpan(handler);
+    BugsnagPerformanceSpan *span2 = createSpan(handler);
+    BugsnagPerformanceSpan *span3 = createSpan(handler);
+    [span1 internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory"}];
+    [span2 internalSetMultipleAttributes:@{@"bugsnag.span.category": @"testCategory"}];
+    handler->push(span1);
+    handler->push(span2);
+    handler->push(span3);
+    
+    [span2 end];
+    XCTAssertEqual(handler->findSpanForCategory(@"testCategory"), span1);
 }
 
 - (void)testCurrentSpanShouldPerformWellInStressTestWithThreads {

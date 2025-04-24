@@ -24,21 +24,57 @@ using namespace bugsnag;
 #define MAX_ATTRIBUTE_COUNT_LIMIT 1000
 #define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
 
+#define DEFAULT_URL_FORMAT @"https://%@.otlp.bugsnag.com/v1/traces"
+
+@implementation BugsnagPerformanceEnabledMetrics
+
++ (instancetype) withAllEnabled {
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:YES cpu:YES memory:YES];
+}
+
+- (instancetype) initWithRendering:(BOOL)rendering
+                               cpu:(BOOL)cpu
+                            memory:(BOOL)memory {
+    if ((self = [super init])) {
+        _rendering = rendering;
+        _cpu = cpu;
+        _memory = memory;
+    }
+    return self;
+}
+
+- (instancetype) init {
+    return [self initWithRendering:NO cpu:NO memory:NO];
+}
+
+- (instancetype) clone {
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:self.rendering
+                                                                   cpu:self.cpu
+                                                                memory:self.memory];
+}
+
+@end
+
+@interface BugsnagPerformanceConfiguration ()
+@property (nonatomic) BOOL didSetCustomEndpoint;
+@end
+
 @implementation BugsnagPerformanceConfiguration
 
 - (instancetype)initWithApiKey:(NSString *)apiKey {
     if ((self = [super init])) {
         _internal = [BSGInternalConfiguration new];
         _apiKey = [apiKey copy];
-        _endpoint = nsurlWithString([NSString stringWithFormat: @"https://%@.otlp.bugsnag.com/v1/traces", apiKey], nil);
+        _endpoint = nsurlWithString([NSString stringWithFormat: DEFAULT_URL_FORMAT, apiKey], nil);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
-        _autoInstrumentRendering = NO;
+        _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
         _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
+        _didSetCustomEndpoint = NO;
 #if defined(DEBUG) && DEBUG
         _releaseStage = @"development";
 #else
@@ -46,6 +82,14 @@ using namespace bugsnag;
 #endif
     }
     return self;
+}
+
+- (void)setAutoInstrumentRendering:(BOOL)autoInstrumentRendering {
+    self.enabledMetrics.rendering = autoInstrumentRendering;
+}
+
+- (BOOL)autoInstrumentRendering {
+    return self.enabledMetrics.rendering;
 }
 
 static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInteger max, NSUInteger def) {
@@ -77,6 +121,20 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
                                          MIN_ATTRIBUTE_COUNT_LIMIT,
                                          MAX_ATTRIBUTE_COUNT_LIMIT,
                                          DEFAULT_ATTRIBUTE_COUNT_LIMIT);
+}
+
+- (void)setApiKey:(NSString *)apiKey {
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    _apiKey = apiKey;
+    if (!_didSetCustomEndpoint) {
+        _endpoint = nsurlWithString([NSString stringWithFormat: DEFAULT_URL_FORMAT, apiKey], nil);
+    }
+}
+
+- (void)setEndpoint:(NSURL *)endpoint {
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    _endpoint = endpoint;
+    _didSetCustomEndpoint = YES;
 }
 
 + (instancetype)loadConfig {
@@ -146,7 +204,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
         configuration.autoInstrumentNetworkRequests = [autoInstrumentNetworkRequests boolValue];
     }
     if (autoInstrumentRendering != nil) {
-        configuration.autoInstrumentRendering = [autoInstrumentRendering boolValue];
+        configuration.enabledMetrics.rendering = [autoInstrumentRendering boolValue];
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;

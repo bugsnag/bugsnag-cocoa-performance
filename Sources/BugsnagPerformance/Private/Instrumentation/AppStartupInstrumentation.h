@@ -82,5 +82,6 @@ private:
     void beginPreMainSpan() noexcept;
     void beginPostMainSpan() noexcept;
     void beginUIInitSpan() noexcept;
+    bool isAppStartInProgress() noexcept;
 };
 }

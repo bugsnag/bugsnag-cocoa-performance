@@ -12,6 +12,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface BugsnagPerformanceEnabledMetrics ()
+
++ (instancetype) withAllEnabled;
+
+@end
+
 @interface BSGInternalConfiguration: NSObject
 
 @property(nonatomic,readwrite) bool clearPersistenceOnStart;

@@ -18,6 +18,17 @@ typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewC
 typedef BOOL (^ BugsnagPerformanceSpanEndCallback)(BugsnagPerformanceSpan *span);
 
 OBJC_EXPORT
+@interface BugsnagPerformanceEnabledMetrics : NSObject
+
+@property(nonatomic) BOOL rendering; // (default NO)
+@property(nonatomic) BOOL cpu;       // (default NO)
+@property(nonatomic) BOOL memory;    // (default NO)
+
+- (instancetype) clone;
+
+@end
+
+OBJC_EXPORT
 @interface BugsnagPerformanceConfiguration : NSObject
 
 - (instancetype)initWithApiKey:(NSString *)apiKey NS_DESIGNATED_INITIALIZER;
@@ -44,7 +55,9 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentNetworkRequests;
 
-@property (nonatomic) BOOL autoInstrumentRendering;
+@property (nonatomic) BOOL autoInstrumentRendering DEPRECATED_ATTRIBUTE;
+
+@property(nonatomic,strong) BugsnagPerformanceEnabledMetrics *enabledMetrics;
 
 /**
  *  The version of the application

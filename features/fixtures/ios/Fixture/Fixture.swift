@@ -53,6 +53,11 @@ class Fixture: NSObject, CommandReceiver {
                                       value: command.args["value"] as! String)
                 self.readyToReceiveCommand = true
                 break
+            case "configure_scenario":
+                self.configureScenario(path: command.args["path"] as! String,
+                                      value: command.args["value"] as! String)
+                self.readyToReceiveCommand = true
+                break
             case "start_bugsnag":
                 self.startBugsnag()
                 self.readyToReceiveCommand = true
@@ -91,15 +96,22 @@ class Fixture: NSObject, CommandReceiver {
         let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
         logInfo("Loaded scenario class: \(scenarioClass)")
         scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
-        logInfo("Configuring scenario in class \(scenarioClass)")
-        scenario!.configure()
+        logInfo("Calling scenario post-load")
+        scenario!.postLoad()
         logInfo("Clearing persistent data")
         scenario!.clearPersistentData()
+        logInfo("Setting up initial Bugsnag configuration for \(String(describing: scenario))")
+        scenario!.setInitialBugsnagConfiguration()
     }
 
     private func configureBugsnag(path: String, value: String) {
         logInfo("Configuring bugsnag [\(path)] to [\(value)]")
         scenario!.configureBugsnag(path: path, value: value)
+    }
+
+    private func configureScenario(path: String, value: String) {
+        logInfo("Configuring scenario [\(path)] to [\(value)]")
+        scenario!.configureScenario(path: path, value: value)
     }
 
     private func startBugsnag() {
@@ -190,13 +202,24 @@ class Fixture: NSObject, CommandReceiver {
 }
 
 class PresetFixture: Fixture {
+    var scenarioConfig: Dictionary<String, String>
+    var bugsnagConfig: Dictionary<String, String>
     let scenarioName: String
-    init(scenarioName: String) {
+
+    init(scenarioName: String, scenarioConfig: Dictionary<String, String>?, bugsnagConfig: Dictionary<String, String>?) {
         self.scenarioName = scenarioName
+        self.scenarioConfig = scenarioConfig ?? [:]
+        self.bugsnagConfig = bugsnagConfig ?? [:]
     }
 
     override func start() {
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "load_scenario", args: ["scenario": scenarioName], message: ""))
+        for (key, value) in bugsnagConfig {
+            receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "configure_bugsnag", args: ["path": key, "value": value], message: ""))
+        }
+        for (key, value) in scenarioConfig {
+            receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "configure_scenario", args: ["path": key, "value": value], message: ""))
+        }
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "start_bugsnag", args: [:], message: ""))
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "run_loaded_scenario", args: [:], message: ""))
     }

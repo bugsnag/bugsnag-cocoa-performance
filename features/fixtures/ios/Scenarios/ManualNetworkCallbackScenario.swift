@@ -17,10 +17,10 @@ class ManualNetworkCallbackScenario: Scenario {
         self.urlSession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
     }
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = false
-        config.networkRequestCallback = { (origInfo: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = false
+        bugsnagPerfConfig.networkRequestCallback = { (origInfo: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
             let info = self.filterAdminMazeRunnerNetRequests(info: origInfo)
 
             let testUrl = info.url

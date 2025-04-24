@@ -10,9 +10,9 @@ import BugsnagPerformance
 @objcMembers
 class ManualParentSpanScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.internal.autoTriggerExportOnBatchSize = 1;
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1;
     }
 
     override func run() {

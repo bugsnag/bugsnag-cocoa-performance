@@ -27,10 +27,13 @@
 #import "NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "ConditionTimeoutExecutor.h"
+#import "SystemInfoSampler.h"
 
 #import <mutex>
 
 namespace bugsnag {
+
 class BugsnagPerformanceImpl: public PhasedStartup {
 public:
     BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
@@ -81,6 +84,7 @@ private:
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
+    std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
@@ -112,6 +116,9 @@ private:
     bool sendRetriesTask() noexcept;
     bool sweepTracerTask() noexcept;
 
+    // Periodic Measurements
+    SystemInfoSampler systemInfoSampler_;
+
     // Event reactions
     void onBatchFull() noexcept;
     void onConnectivityChanged(Reachability::Connectivity connectivity) noexcept;
@@ -130,6 +137,8 @@ private:
     void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
     NSMutableArray<BugsnagPerformanceSpan *> *
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
+    bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleMemory(BugsnagPerformanceSpan *span) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

@@ -179,17 +179,16 @@ endif
 	# Swift Package Manager prefers tags to be unprefixed package versions
 	@git tag $(PRESET_VERSION)
 	@git push origin v$(PRESET_VERSION) $(PRESET_VERSION)
-	@git checkout next
-	@git rebase origin/next
-	@git merge main
-	@git push origin next
+	# Synchronize main and next
+	@open "https://github.com/bugsnag/bugsnag-cocoa-performance/compare/next...main?expand=1&title=Sync%20main%20into%20next"
+	@./scripts/build-xcframework.sh
 	# Prep GitHub release
 	# We could technically do a `hub release` here but a verification step
 	# before it goes live always seems like a good thing
 	@open 'https://github.com/bugsnag/bugsnag-cocoa-performance/releases/new?title=v$(PRESET_VERSION)&tag=v$(PRESET_VERSION)&body='$$(awk 'start && /^## /{exit;};/^## /{start=1;next};start' CHANGELOG.md | hexdump -v -e '/1 "%02x"' | sed 's/\(..\)/%\1/g')
 	# Workaround for CocoaPods/CocoaPods#8000
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
-	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformanceSwift.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings --synchronous BugsnagPerformanceSwift.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -205,6 +204,7 @@ endif
 	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" .jazzy.yaml
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" Sources/BugsnagPerformance/Private/Version.h
+	@sed -i '' "s/MARKETING_VERSION = .*/MARKETING_VERSION = $(VERSION);/" BugsnagPerformance.xcodeproj/project.pbxproj
 	@agvtool new-marketing-version $(VERSION)
 
 prerelease: bump ## Generates a PR for the $VERSION release
@@ -212,7 +212,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json
+	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json BugsnagPerformance.xcodeproj/project.pbxproj
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)

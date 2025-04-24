@@ -23,6 +23,7 @@ public:
     void onSpanClosed(SpanId spanId);
 
     bool hasSpanWithAttribute(NSString *attribute, NSString *value);
+    BugsnagPerformanceSpan *findSpanForCategory(NSString *categoryName);
     
     bool unitTest_isEmpty();
 private:

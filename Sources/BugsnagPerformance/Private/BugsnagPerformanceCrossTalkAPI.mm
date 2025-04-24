@@ -14,6 +14,9 @@
 
 using namespace bugsnag;
 
+typedef void (^AppStartCallback)(BugsnagPerformanceSpan *);
+typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
+
 
 @interface BugsnagPerformanceCrossTalkAPI ()
 
@@ -22,6 +25,8 @@ using namespace bugsnag;
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
 @property(nonatomic) std::shared_ptr<Tracer> tracer;
 @property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
+@property(nonatomic, copy) NSArray<AppStartCallback> *willEndUIInitSpanCallbacks;
+@property(nonatomic, copy) NSArray<ViewLoadCallback> *willEndViewLoadSpanCallbacks;
 
 @end
 
@@ -83,7 +88,7 @@ using namespace bugsnag;
     }
 
     auto options = SpanOptions(optionsIn);
-    auto span = tracer->startSpan(name, options, BSGFirstClassUnset);
+    auto span = tracer->startSpan(name, options, BSGTriStateUnset);
     return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 
@@ -95,6 +100,31 @@ using namespace bugsnag;
     BugsnagPerformanceSpanContext *spanContext = [[BugsnagPerformanceSpanContext alloc] initWithTraceIdHi:traceIdHi
                                                                                                 traceIdLo:traceIdLo spanId:spanId];
     return (BugsnagPerformanceSpanContext *)[BugsnagPerformanceCrossTalkProxiedObject proxied:spanContext];
+}
+
+/**
+ * Add a callback that will be fired right before an UI init app start span is ended.
+ */
+- (void)addWillEndUIInitSpanCallbackV1:(AppStartCallback)callback {
+    @synchronized (self) {
+        self.willEndUIInitSpanCallbacks = [self.willEndUIInitSpanCallbacks arrayByAddingObject:callback];
+    }
+}
+
+/**
+ * Add a callback that will be fired right before a view load start span is ended.
+ */
+- (void)addWillEndViewLoadSpanCallbackV1:(ViewLoadCallback)callback {
+    @synchronized (self) {
+        self.willEndViewLoadSpanCallbacks = [self.willEndViewLoadSpanCallbacks arrayByAddingObject:callback];
+    }
+}
+
+/**
+ * Return the top-most span of a given category from the stack.
+ */
+- (BugsnagPerformanceSpan *)findSpanForCategoryV1:(NSString *)categoryName {
+    return self.spanStackingHandler->findSpanForCategory(categoryName);
 }
 
 #pragma mark BSGPhasedStartup
@@ -244,11 +274,27 @@ static bool classImplementsSelector(Class cls, SEL selector) {
     return NULL;
 }
 
-+ (instancetype) sharedInstance {
-    static id sharedInstance;
++ (instancetype)sharedInstance {
+    static BugsnagPerformanceCrossTalkAPI *sharedInstance;
     static dispatch_once_t once;
-    dispatch_once(&once, ^{ sharedInstance = [[self alloc] init]; });
+    dispatch_once(&once, ^{
+        sharedInstance = [[self alloc] init];
+        sharedInstance.willEndUIInitSpanCallbacks = [NSArray array];
+        sharedInstance.willEndViewLoadSpanCallbacks = [NSArray array];
+    });
     return sharedInstance;
+}
+
+- (void)willEndUIInitSpan:(BugsnagPerformanceSpan *)span {
+    for (AppStartCallback callback in self.willEndUIInitSpanCallbacks) {
+        callback(span);
+    }
+}
+
+- (void)willEndViewLoadSpan:(BugsnagPerformanceSpan *)span viewController:(UIViewController *)viewController {
+    for (ViewLoadCallback callback in self.willEndViewLoadSpanCallbacks) {
+        callback(span, viewController);
+    }
 }
 
 @end

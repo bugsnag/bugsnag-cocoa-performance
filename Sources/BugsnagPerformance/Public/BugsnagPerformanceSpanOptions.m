@@ -10,12 +10,36 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 
+@implementation BugsnagPerformanceSpanMetricsOptions
+
+- (instancetype)initWithRendering:(BSGTriState)rendering
+                              cpu:(BSGTriState)cpu
+                           memory:(BSGTriState)memory {
+    if ((self = [super init])) {
+        _rendering = rendering;
+        _cpu = cpu;
+        _memory = memory;
+    }
+    return self;
+}
+
+- (instancetype)init {
+    return [self initWithRendering:BSGTriStateUnset cpu:BSGTriStateUnset memory:BSGTriStateUnset];
+}
+
+- (instancetype)clone {
+    return [[BugsnagPerformanceSpanMetricsOptions alloc] initWithRendering:self.rendering
+                                                                       cpu:self.cpu
+                                                                    memory:self.memory];
+}
+
+@end
+
 @interface BugsnagPerformanceSpanOptions()
 @property(nonatomic,strong) NSDate *startTime_;
 @property(nonatomic,strong) BugsnagPerformanceSpanContext *parentContext_;
 @property(nonatomic) BOOL makeCurrentContext_;
-@property(nonatomic) BSGFirstClass firstClass_;
-@property(nonatomic) BSGInstrumentRendering instrumentRendering_;
+@property(nonatomic) BSGTriState firstClass_;
 @end
 
 @implementation BugsnagPerformanceSpanOptions
@@ -24,28 +48,27 @@
 @synthesize parentContext_ = _parentContext;
 @synthesize makeCurrentContext_ = _makeCurrentContext;
 @synthesize firstClass_ = _firstClass;
-@synthesize instrumentRendering_ = _instrumentRendering;
 
 - (instancetype)init {
     // These defaults must match the defaults in SpanOptions.h
     return [self initWithStartTime:nil
                      parentContext:nil
                 makeCurrentContext:true
-                        firstClass:BSGFirstClassUnset
-               instrumentRendering:BSGInstrumentRenderingUnset];
+                        firstClass:BSGTriStateUnset
+                    metricsOptions:[BugsnagPerformanceSpanMetricsOptions new]];
 }
 
 - (instancetype)initWithStartTime:(NSDate *)startTime
                     parentContext:(BugsnagPerformanceSpanContext *)parentContext
                makeCurrentContext:(BOOL)makeCurrentContext
-                       firstClass:(BSGFirstClass)firstClass
-              instrumentRendering:(BSGInstrumentRendering)instrumentRendering {
+                       firstClass:(BSGTriState)firstClass
+                   metricsOptions:(BugsnagPerformanceSpanMetricsOptions *)metricsOptions {
     if ((self = [super init])) {
         _startTime = startTime;
         _parentContext = parentContext;
         _makeCurrentContext = makeCurrentContext;
         _firstClass = firstClass;
-        _instrumentRendering = instrumentRendering;
+        _metricsOptions = metricsOptions;
     }
     return self;
 }
@@ -65,14 +88,14 @@
     return _makeCurrentContext;
 }
 
-- (BSGFirstClass)firstClass {
+- (BSGTriState)firstClass {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     return _firstClass;
 }
 
-- (BSGInstrumentRendering)instrumentRendering {
+- (BSGTriState)instrumentRendering {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
-    return _instrumentRendering;
+    return _metricsOptions.rendering;
 }
 
 - (instancetype)setStartTime:(NSDate *)startTime {
@@ -93,15 +116,15 @@
     return self;
 }
 
-- (instancetype)setFirstClass:(BSGFirstClass)firstClass {
+- (instancetype)setFirstClass:(BSGTriState)firstClass {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
     _firstClass = firstClass;
     return self;
 }
 
-- (instancetype _Nonnull)setInstrumentRendering:(BSGInstrumentRendering)instrumentRendering {
+- (instancetype _Nonnull)setInstrumentRendering:(BSGTriState)instrumentRendering {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
-    _instrumentRendering = instrumentRendering;
+    _metricsOptions.rendering = instrumentRendering;
     return self;
 }
 
@@ -111,7 +134,7 @@
                                                       parentContext:_parentContext
                                                  makeCurrentContext:_makeCurrentContext
                                                          firstClass:_firstClass
-                                                instrumentRendering:_instrumentRendering];
+                                                     metricsOptions:[self.metricsOptions clone]];
 }
 
 @end

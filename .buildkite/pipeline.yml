@@ -58,6 +58,7 @@ steps:
         artifact_paths:
           - features/fixtures/ios/output/bb_ipa_url.txt
           - features/fixtures/ios/output/bs_ipa_url.txt
+          - features/fixtures/ios/output/Fixture.ipa
 
       - label: "XcFramework Fixture"
         key: ios_xcframework_fixture

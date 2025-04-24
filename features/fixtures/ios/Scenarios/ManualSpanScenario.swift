@@ -10,7 +10,7 @@ import BugsnagPerformance
 
 @objcMembers
 class ManualSpanScenario: Scenario {
-    
+
     override func startBugsnag() {
         Bugsnag.start(with: {
             let config = BugsnagConfiguration.loadConfig()
@@ -19,10 +19,10 @@ class ManualSpanScenario: Scenario {
             config.endpoints.sessions = fixtureConfig.sessionsURL.absoluteString
             return config
         }())
-        
+
         super.startBugsnag()
     }
-    
+
     override func run() {
         let span = BugsnagPerformance.startSpan(name: "ManualSpanScenario")
         Bugsnag.notifyError(NSError(domain: "Test", code: 0))

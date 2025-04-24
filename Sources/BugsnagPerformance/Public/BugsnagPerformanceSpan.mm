@@ -7,6 +7,7 @@
 
 #import "../Private/BugsnagPerformanceSpan+Private.h"
 #import "../Private/Utils.h"
+#import "../Private/SpanOptions.h"
 
 using namespace bugsnag;
 
@@ -32,12 +33,15 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
                       spanId:(SpanId) spanId
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startAbsTime
-                  firstClass:(BSGFirstClass) firstClass
+                  firstClass:(BSGTriState) firstClass
          attributeCountLimit:(NSUInteger)attributeCountLimit
-         instrumentRendering:(BSGInstrumentRendering)instrumentRendering
+              metricsOptions:(MetricsOptions)metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
-                onSpanClosed:(SpanLifecycleCallback) onSpanClosed {
+                onSpanClosed:(SpanLifecycleCallback) onSpanClosed
+                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
+        _actuallyStartedAt = CFAbsoluteTimeGetCurrent();
+        _actuallyEndedAt = CFABSOLUTETIME_INVALID;
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _name = name;
         _parentId = parentId;
@@ -47,18 +51,20 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _onSpanDestroyAction = OnSpanDestroyAbort;
         _onSpanEndSet = onSpanEndSet;
         _onSpanClosed = onSpanClosed;
+        _onSpanBlocked = onSpanBlocked;
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = 1;
         _state = SpanStateOpen;
         _attributeCountLimit = attributeCountLimit;
         _attributes = [[NSMutableDictionary alloc] init];
         _isMutable = true;
-        if (firstClass != BSGFirstClassUnset) {
-            _attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGFirstClassYes);
+        if (firstClass != BSGTriStateUnset) {
+            _attributes[@"bugsnag.span.first_class"] = @(firstClass == BSGTriStateYes);
         }
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
-        _instrumentRendering = instrumentRendering;
+        _metricsOptions = metricsOptions;
         _wasStartOrEndTimeProvided = isCFAbsoluteTimeValid(startAbsTime);
+        _activeConditions = [NSMutableArray new];
     }
     return self;
 }
@@ -118,6 +124,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
             return;
         }
 
+        self.actuallyEndedAt = CFAbsoluteTimeGetCurrent();
+
         // If our start and end times were both "unset", then it's on us to counter any
         // clock skew using the monotonic clock.
         if (isMonotonicClockValid(self.startClock)) {
@@ -166,6 +174,35 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)endOnDestroy {
     self.onSpanDestroyAction = OnSpanDestroyEnd;
+}
+
+- (BugsnagPerformanceSpanCondition *_Nullable)blockWithTimeout:(NSTimeInterval)timeout {
+    BugsnagPerformanceSpanCondition *condition = self.onSpanBlocked(self, timeout);
+    @synchronized (self) {
+        if (condition) {
+            [self.activeConditions addObject:condition];
+            
+            __block __weak BugsnagPerformanceSpan *weakSelf = self;
+            [condition addOnDeactivatedCallback:^(BugsnagPerformanceSpanCondition *c) {
+                __strong BugsnagPerformanceSpan *strongSelf = weakSelf;
+                @synchronized (strongSelf) {
+                    [strongSelf.activeConditions removeObject:c];
+                }
+            }];
+        }
+    }
+    return condition;
+}
+
+- (BOOL)isBlocked {
+    @synchronized (self) {
+        for (BugsnagPerformanceSpanCondition *condition in self.activeConditions) {
+            if (condition.isActive) {
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 - (NSDate *)startTime {
@@ -259,6 +296,21 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
             self.samplingProbability = value;
             self.attributes[@"bugsnag.sampling.p"] = @(value);
         }
+    }
+}
+
+- (void)setIsMutable:(BOOL)isMutable {
+    @synchronized (self) {
+        _isMutable = isMutable;
+    }
+}
+
+- (void)forceMutate:(void (^)())block {
+    @synchronized (self) {
+        const bool wasMutable = self.isMutable;
+        self.isMutable = true;
+        block();
+        self.isMutable = wasMutable;
     }
 }
 
