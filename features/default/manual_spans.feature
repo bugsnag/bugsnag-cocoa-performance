@@ -305,7 +305,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesScenario"
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
     * every span bool attribute "d" does not exist
@@ -322,7 +322,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
     * a span array attribute "b" contains the integer value 1 at index 0
     * a span array attribute "b" contains the integer value 2 at index 1
@@ -334,7 +334,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributeCountLimitScenario"
     * every span string attribute "a" does not exist
 
   Scenario: Set OnEnd
@@ -342,7 +342,7 @@ Feature: Manual creation of spans
     And I wait for exactly 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "OnEndCallbackScenario"
 
   Scenario: Frame metrics - no slow frames
     Given I run "FrameMetricsNoSlowFramesScenario"

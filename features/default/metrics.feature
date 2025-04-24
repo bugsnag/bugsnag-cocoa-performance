@@ -4,13 +4,14 @@ Feature: Spans with collected metrics
     Given I load scenario "RenderingMetricsScenario"
     And I configure bugsnag "renderingMetrics" to "true"
     And I set the sampling probability to "1.0"
+    And I configure scenario "variant_name" to "NoSlow"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * every span field "name" equals "MySpan"
+    * every span field "name" equals "RenderingMetricsScenarioNoSlow"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -25,6 +26,7 @@ Feature: Spans with collected metrics
     Given I load scenario "RenderingMetricsScenario"
     And I configure bugsnag "renderingMetrics" to "true"
     And I configure scenario "spanStartTime" to "early"
+    And I configure scenario "variant_name" to "EarlyStart"
     And I set the sampling probability to "1.0"
     And I start bugsnag
     And I run the loaded scenario
@@ -32,7 +34,7 @@ Feature: Spans with collected metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * every span field "name" equals "MySpan"
+    * every span field "name" equals "RenderingMetricsScenarioEarlyStart"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -134,13 +136,14 @@ Feature: Spans with collected metrics
     And I configure scenario "run_delay" to "0"
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "0"
+    And I configure scenario "variant_name" to "DefaultSettingsCPUMetricsDisabled"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioDefaultSettingsCPUMetricsDisabled"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -164,13 +167,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_metrics_cpu" to "yes"
+    And I configure scenario "variant_name" to "NoMetrics"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioNoMetrics"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -194,13 +198,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "FirstClass"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -224,13 +229,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "no"
+    And I configure scenario "variant_name" to "NonFirstClass"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioNonFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -255,13 +261,14 @@ Feature: Spans with collected metrics
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "no"
     And I configure scenario "opts_metrics_cpu" to "yes"
+    And I configure scenario "variant_name" to "NonFirstClassWithMetrics"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioNonFirstClassWithMetrics"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -285,13 +292,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "LongerSpanDuration"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioLongerSpanDuration"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -315,13 +323,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_duration" to "0"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "GenerateSpanLater"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioGenerateSpanLater"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -349,13 +358,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_on_thread" to "main"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "MainThreadHeavyWork"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioMainThreadHeavyWork"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -381,13 +391,14 @@ Feature: Spans with collected metrics
     And I configure scenario "work_on_thread" to "main"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "BgThreadHeavyWork"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "CPUMetricsScenarioBgThreadHeavyWork"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -410,13 +421,14 @@ Feature: Spans with collected metrics
     Given I load scenario "MemoryMetricsScenario"
     And I configure scenario "run_delay" to "0"
     And I configure scenario "span_duration" to "0"
+    And I configure scenario "variant_name" to "DefaultSettings"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioDefaultSettings"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -437,13 +449,14 @@ Feature: Spans with collected metrics
     And I configure scenario "run_delay" to "0"
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "FirstClass"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -464,13 +477,14 @@ Feature: Spans with collected metrics
     And I configure scenario "run_delay" to "0"
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "no"
+    And I configure scenario "variant_name" to "NonFirstClass"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioNonFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -492,13 +506,14 @@ Feature: Spans with collected metrics
     And I configure scenario "span_duration" to "0"
     And I configure scenario "opts_first_class" to "no"
     And I configure scenario "opts_metrics_memory" to "yes"
+    And I configure scenario "variant_name" to "NonFirstClassEnabled"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioNonFirstClassEnabled"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -519,13 +534,14 @@ Feature: Spans with collected metrics
     And I configure scenario "run_delay" to "0"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "LongerDuration"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioLongerDuration"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
@@ -546,13 +562,14 @@ Feature: Spans with collected metrics
     And I configure scenario "run_delay" to "1.1"
     And I configure scenario "span_duration" to "1.5"
     And I configure scenario "opts_first_class" to "yes"
+    And I configure scenario "variant_name" to "GenerateLater"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "MemoryMetricsScenarioGenerateLater"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1

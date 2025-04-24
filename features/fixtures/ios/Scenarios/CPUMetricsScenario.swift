@@ -31,7 +31,7 @@ class CPUMetricsScenario: Scenario {
         let opts = BugsnagPerformanceSpanOptions()
         opts.setFirstClass(toTriState(string: scenarioConfig["opts_first_class"]))
         opts.metricsOptions.cpu = toTriState(string: scenarioConfig["opts_metrics_cpu"])
-        let span = BugsnagPerformance.startSpan(name: "MySpan", options: opts)
+        let span = BugsnagPerformance.startSpan(name: spanName, options: opts)
         let spanDuration = toDouble(string: scenarioConfig["span_duration"])
         DispatchQueue.main.asyncAfter(deadline: .now() + spanDuration) {
             span.end();
