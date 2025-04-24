@@ -17,7 +17,7 @@ class SetAttributesWithLimitsScenario: Scenario {
     }
 
     override func run() {
-        let span = BugsnagPerformance.startSpan(name: "MySpan")
+        let span = BugsnagPerformance.startSpan(name: "SetAttributesWithLimitsScenario")
         span.setAttribute("a", withValue: "12345678901")
         span.setAttribute("b", withValue: [1, 2, 3, 4])
         span.end()

@@ -39,7 +39,7 @@ class OnEndCallbackScenario: Scenario {
     }
 
     override func run() {
-        BugsnagPerformance.startSpan(name: "MySpan").end()
+        BugsnagPerformance.startSpan(name: "OnEndCallbackScenario").end()
         BugsnagPerformance.startSpan(name: "drop_me").end()
         BugsnagPerformance.startSpan(name: "drop_me_too").end()
     }

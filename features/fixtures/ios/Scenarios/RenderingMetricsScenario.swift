@@ -120,7 +120,7 @@ class RenderingMetricsScenario: Scenario {
         let opts = BugsnagPerformanceSpanOptions()
         opts.setFirstClass(toTriState(string: scenarioConfig["opts.firstClass"]))
         opts.metricsOptions.rendering = toTriState(string: scenarioConfig["opts.metrics.rendering"])
-        span = BugsnagPerformance.startSpan(name: "MySpan", options: opts)
+        span = BugsnagPerformance.startSpan(name: spanName, options: opts)
         logError("### startSpan(): Span = \(String(describing: span))")
     }
 

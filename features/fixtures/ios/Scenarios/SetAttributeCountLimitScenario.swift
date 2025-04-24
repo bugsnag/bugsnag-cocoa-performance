@@ -16,7 +16,7 @@ class SetAttributeCountLimitScenario: Scenario {
     }
 
     override func run() {
-        let span = BugsnagPerformance.startSpan(name: "MySpan")
+        let span = BugsnagPerformance.startSpan(name: "SetAttributeCountLimitScenario")
         span.setAttribute("a", withValue: "12345678901")
         span.end()
     }

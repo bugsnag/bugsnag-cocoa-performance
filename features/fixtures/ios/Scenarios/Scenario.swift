@@ -229,4 +229,6 @@ class Scenario: NSObject {
             fatalError("\(String(describing: string)): Unknown tri-state value")
         }
     }
+    
+    var spanName: String { "\(String(describing: type(of: self)).replacingOccurrences(of: "Fixture", with: ""))\(scenarioConfig["variant_name"] ?? "")" }
 }
