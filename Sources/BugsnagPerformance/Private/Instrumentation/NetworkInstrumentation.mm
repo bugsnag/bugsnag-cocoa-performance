@@ -124,7 +124,7 @@ NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
 void NetworkInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     [delegate_ earlyConfigure:config];
 
-    isEnabled_ = config.enableSwizzling;
+    isEnabled_ = config.enableSwizzling && config.instrumentNetwork;
 }
 
 void NetworkInstrumentation::earlySetup() noexcept {

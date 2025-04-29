@@ -37,6 +37,12 @@ static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 void ViewLoadInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     isEnabled_ = config.enableSwizzling;
     swizzleViewLoadPreMain_ = config.swizzleViewLoadPreMain;
+    instrumentLoadView_ = config.instrumentLoadView;
+    instrumentViewDidLoad_ = config.instrumentViewDidLoad;
+    instrumentViewWillAppear_ = config.instrumentViewWillAppear;
+    instrumentViewDidAppear_ = config.instrumentViewDidAppear;
+    instrumentViewWillLayoutSubviews_ = config.instrumentViewWillLayoutSubviews;
+    instrumentViewDidLayoutSubviews_ = config.instrumentViewDidLayoutSubviews;
 }
 
 void ViewLoadInstrumentation::earlySetup() noexcept {
@@ -491,12 +497,24 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
 
 void
 ViewLoadInstrumentation::instrument(Class cls) noexcept {
-    instrumentLoadView(cls);
-    instrumentViewDidLoad(cls);
-    instrumentViewWillAppear(cls);
-    instrumentViewDidAppear(cls);
-    instrumentViewWillLayoutSubviews(cls);
-    instrumentViewDidLayoutSubviews(cls);
+    if (instrumentLoadView_) {
+        instrumentLoadView(cls);
+    }
+    if (instrumentViewDidLoad_) {
+        instrumentViewDidLoad(cls);
+    }
+    if (instrumentViewWillAppear_) {
+        instrumentViewWillAppear(cls);
+    }
+    if (instrumentViewDidAppear_) {
+        instrumentViewDidAppear(cls);
+    }
+    if (instrumentViewWillLayoutSubviews_) {
+        instrumentViewWillLayoutSubviews(cls);
+    }
+    if (instrumentViewDidLayoutSubviews_) {
+        instrumentViewDidLayoutSubviews(cls);
+    }
 }
 
 // NOLINTEND(cppcoreguidelines-*)

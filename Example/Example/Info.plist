@@ -27,6 +27,26 @@
 		<string>YOUR-API-KEY</string>
 		<key>performance</key>
 		<dict>
+			<key>swizzling</key>
+			<dict>
+				<key>instrumentNetwork</key>
+				<true/>
+				<key>viewLoad</key>
+				<dict>
+					<key>instrumentLoadView</key>
+					<true/>
+					<key>instrumentViewDidLoad</key>
+					<true/>
+					<key>instrumentViewWillAppear</key>
+					<true/>
+					<key>instrumentViewDidAppear</key>
+					<true/>
+					<key>instrumentViewWillLayoutSubviews</key>
+					<true/>
+					<key>instrumentViewDidLayoutSubviews</key>
+					<true/>
+				</dict>
+			</dict>
 			<key>disableSwizzling</key>
 			<false/>
 		</dict>

@@ -19,6 +19,13 @@
         id swizzleViewLoadPreMain = [dict valueForKeyPath:@"bugsnag.performance.swizzleViewLoadPreMain"];
         _swizzleViewLoadPreMain = swizzleViewLoadPreMain != nil && [swizzleViewLoadPreMain boolValue];
         _appWasLaunchedPreWarmed = [NSProcessInfo.processInfo.environment[@"ActivePrewarm"] isEqualToString:@"1"];
+        _instrumentLoadView = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentLoadView"] ?: @(YES) boolValue];
+        _instrumentViewDidLoad = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentViewDidLoad"] ?: @(YES) boolValue];
+        _instrumentViewWillAppear = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentViewWillAppear"] ?: @(YES) boolValue];
+        _instrumentViewDidAppear = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentViewDidAppear"] ?: @(YES)  boolValue];
+        _instrumentViewWillLayoutSubviews = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentViewWillLayoutSubviews"] ?: @(YES) boolValue];
+        _instrumentViewDidLayoutSubviews = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.viewLoad.instrumentViewDidLayoutSubviews"] ?: @(YES) boolValue];
+        _instrumentNetwork = [[dict valueForKeyPath:@"bugsnag.performance.swizzling.instrumentNetwork"] ?: @(YES) boolValue];
     }
 
     BSGLogDebug(@"BSGEarlyConfiguration.enableSwizzling = %d", self.enableSwizzling);

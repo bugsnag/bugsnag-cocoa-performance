@@ -32,6 +32,18 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
 @property(nonatomic, readwrite) BOOL appWasLaunchedPreWarmed;
 
+/*
+ The following options are temporarily added for testing purposes only
+ Disabling individual instrumentation of individual callbacks can lead to unexpected behaviour
+ */
+@property(nonatomic, readonly) BOOL instrumentLoadView;
+@property(nonatomic, readonly) BOOL instrumentViewDidLoad;
+@property(nonatomic, readonly) BOOL instrumentViewWillAppear;
+@property(nonatomic, readonly) BOOL instrumentViewDidAppear;
+@property(nonatomic, readonly) BOOL instrumentViewWillLayoutSubviews;
+@property(nonatomic, readonly) BOOL instrumentViewDidLayoutSubviews;
+@property(nonatomic, readonly) BOOL instrumentNetwork;
+
 @end
 
 NS_ASSUME_NONNULL_END

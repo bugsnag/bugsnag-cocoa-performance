@@ -83,6 +83,13 @@ private:
     std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
     std::recursive_mutex vcInitMutex_;
+    
+    bool instrumentLoadView_{true};
+    bool instrumentViewDidLoad_{true};
+    bool instrumentViewWillAppear_{true};
+    bool instrumentViewDidAppear_{true};
+    bool instrumentViewWillLayoutSubviews_{true};
+    bool instrumentViewDidLayoutSubviews_{true};
 };
 }
 
