@@ -286,8 +286,11 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
-  Scenario: ViewDidLoadDoesntTriggerScenario
-    Given I run "ViewDidLoadDoesntTriggerScenario"
+  Scenario: View load doesn't trigger and the ViewController is kept alive
+    Given I load scenario "ViewDidLoadDoesntTriggerScenario"
+    And I configure scenario "keep_view_controller_alive" to "true"
+    And I start bugsnag
+    And I run the loaded scenario
     And I wait for 17 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -308,6 +311,48 @@ Feature: Automatic instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * no span field "name" equals "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
+  Scenario: View load doesn't trigger and the ViewController is not kept alive
+    Given I load scenario "ViewDidLoadDoesntTriggerScenario"
+    And I configure scenario "keep_view_controller_alive" to "false"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait for 18 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span field "name" equals "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan"
+    * a span named "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan" duration is equal or less than 1.0
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
