@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Fixed issue where ViewControllers were kept in memory for up to 10 seconds after being dismissed.
+* Fixed issue where ViewController references were held for up to 10 seconds after being dismissed.
   [428](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/428)
 
 ## 1.12.0 (2025-04-24)
