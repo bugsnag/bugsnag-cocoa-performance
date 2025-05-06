@@ -315,6 +315,13 @@ Then('a span named {string} ended after a span named {string}') do |name1, name2
   Maze.check.true(first_span['endTimeUnixNano'].to_i > second_span['endTimeUnixNano'].to_i)
 end
 
+Then('a span named {string} duration is equal or less than {float}') do |name, maxDuration|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
+  Maze.check.true(duration <= maxDuration)
+end
+
 When('I wait for exactly {int} span(s)') do |span_count|
   assert_received_exactly_spans span_count, Maze::Server.list_for('traces')
 end

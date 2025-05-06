@@ -16,6 +16,7 @@ class ViewDidLoadDoesntTriggerScenario: Scenario {
     }
 
     override func run() {
+        let keepViewControllerAlive = toBool(string: scenarioConfig["keep_view_controller_alive"])
         let vc = ViewDidLoadDoesntTriggerScenario_ViewController()
         
         // Simulate showing a view, except that viewDidAppear doesn't trigger
@@ -24,10 +25,21 @@ class ViewDidLoadDoesntTriggerScenario: Scenario {
         vc.viewWillAppear(false)
         vc.viewWillLayoutSubviews()
         vc.viewDidLayoutSubviews()
+        let endOnDeinitSpan = BugsnagPerformance.startSpan(name: "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan")
+        vc.endOnDeinitSpan = endOnDeinitSpan
+        
+        if keepViewControllerAlive {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 500) {
+                // Will never be excecuted becaouse of the timeout. This is only to keep the view controller alive with a strong reference
+                NSLog("\(vc.children)")
+            }
+        }
     }
 }
 
 class ViewDidLoadDoesntTriggerScenario_ViewController: UIViewController {
+    
+    var endOnDeinitSpan: BugsnagPerformanceSpan?
     
     override func loadView() {
         let label = UILabel()
@@ -35,5 +47,9 @@ class ViewDidLoadDoesntTriggerScenario_ViewController: UIViewController {
         label.textAlignment = .center
         label.text = String(describing: type(of: self))
         view = label
+    }
+    
+    deinit {
+        endOnDeinitSpan?.end()
     }
 }
