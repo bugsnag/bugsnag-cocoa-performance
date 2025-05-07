@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed a potential data race warning in `SystemInfoSampler`.
+  [431](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/431)
+
 ## 1.12.1 (2025-05-06)
 
 ### Bug fixes
