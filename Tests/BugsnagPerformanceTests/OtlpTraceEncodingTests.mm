@@ -185,6 +185,7 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
                                                parentId:parentId
                                               startTime:startAbsTime
                                              firstClass:firstClass
+                                    samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
