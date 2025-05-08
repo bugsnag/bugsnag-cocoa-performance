@@ -8,7 +8,7 @@ Changelog
 * Fixed issue where a very small percentage of spans could be sent even though samplingProbability was set to 0.0.
   [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
 
-* All spans now get their sampling probability value properly initially set and updated.
+* Fixed bugsnag.sampling.p attribute reporting to accurately reflect current sample rate.
   [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
 
 * Fixed a potential data race warning in `SystemInfoSampler`.
