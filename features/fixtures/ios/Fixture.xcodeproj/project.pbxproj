@@ -57,8 +57,8 @@
 		09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */; };
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		09F23AC12CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */; };
-		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		09F3F5282D6C728300BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */; };
+		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		964735CB2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
@@ -77,6 +77,7 @@
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
+		96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
@@ -153,8 +154,8 @@
 		09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkNullURLScenario.swift; sourceTree = "<group>"; };
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario2.swift; sourceTree = "<group>"; };
-		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
+		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
@@ -173,6 +174,7 @@
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
+		96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithRemoteContextParentScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
@@ -325,6 +327,7 @@
 				093EE63C2C32E5B900632B30 /* ManualParentSpanScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
+				96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
 				098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
@@ -337,6 +340,7 @@
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
+				09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */,
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
@@ -347,7 +351,6 @@
 				96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
-				09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */,
 				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 			);
 			path = Scenarios;
@@ -515,6 +518,7 @@
 				094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */,
 				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
+				96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
 				0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
