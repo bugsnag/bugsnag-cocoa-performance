@@ -16,7 +16,7 @@ static const int kTraceParentComponentSpanId = 2;
 @implementation BugsnagPerformanceRemoteSpanContext
 
 + (nullable instancetype)contextWithTraceParentString:(NSString *)traceParentString {
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^00-([0-9a-f]{32})-([0-9a-f]{16})-[0-9]{2}$" options:0 error:nil];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^00-[0-9a-f]{32}-[0-9a-f]{16}-[0-9]{2}$" options:0 error:nil];
     NSRange allStringRange = NSMakeRange(0, [traceParentString length]);
     NSRange rangeOfFirstMatch = [regex rangeOfFirstMatchInString:traceParentString options:0 range:allStringRange];
     if (!NSEqualRanges(rangeOfFirstMatch, allStringRange)) {
