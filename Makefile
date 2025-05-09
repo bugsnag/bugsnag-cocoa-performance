@@ -194,6 +194,7 @@ bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number bump`)
 endif
+	$(eval DATE ?= $(shell date '+%Y-%m-%d'))
 	@echo Bumping the version number to $(VERSION)
 	@echo $(VERSION) > VERSION
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformance.podspec.json
@@ -201,7 +202,7 @@ endif
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
-	@sed -i '' "s/## TBD/## $(VERSION) ($(shell date '+%Y-%m-%d'))/" CHANGELOG.md
+	@sed -i '' "s/## TBD/## $(VERSION) ($(DATE))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" .jazzy.yaml
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" Sources/BugsnagPerformance/Private/Version.h
 	@sed -i '' "s/MARKETING_VERSION = .*/MARKETING_VERSION = $(VERSION);/" BugsnagPerformance.xcodeproj/project.pbxproj
