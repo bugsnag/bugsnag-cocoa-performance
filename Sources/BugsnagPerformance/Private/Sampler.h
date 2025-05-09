@@ -47,7 +47,14 @@ public:
         } else {
             idUpperBound = uint64_t(p * double(UINT64_MAX));
         }
-        return span.traceIdHi <= idUpperBound;
+        auto isSampled = p > 0.0 && span.traceIdHi <= idUpperBound;
+        if (isSampled) {
+            [span forceMutate:^{
+                [span updateSamplingProbability:p];
+            }];
+        }
+        
+        return isSampled;
     }
 
 private:

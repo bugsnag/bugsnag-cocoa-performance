@@ -225,6 +225,7 @@ static id hostMissingCrossTalkAPI = nil;
                                                                        parentId:0
                                                                       startTime:0
                                                                      firstClass:BSGTriStateUnset
+                                                            samplingProbability:1.0
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
@@ -257,6 +258,7 @@ static id hostMissingCrossTalkAPI = nil;
                                                                        parentId:0
                                                                       startTime:0
                                                                      firstClass:BSGTriStateUnset
+                                                            samplingProbability:1.0
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
