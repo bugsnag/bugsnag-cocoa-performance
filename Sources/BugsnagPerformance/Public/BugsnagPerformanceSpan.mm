@@ -8,6 +8,7 @@
 #import "../Private/BugsnagPerformanceSpan+Private.h"
 #import "../Private/Utils.h"
 #import "../Private/SpanOptions.h"
+#import "../Private/Sampler.h"
 
 using namespace bugsnag;
 
@@ -34,6 +35,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startAbsTime
                   firstClass:(BSGTriState) firstClass
+         samplingProbability:(double) samplingProbability
          attributeCountLimit:(NSUInteger)attributeCountLimit
               metricsOptions:(MetricsOptions)metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
@@ -53,7 +55,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _onSpanClosed = onSpanClosed;
         _onSpanBlocked = onSpanBlocked;
         _kind = SPAN_KIND_INTERNAL;
-        _samplingProbability = 1;
+        _samplingProbability = samplingProbability;
         _state = SpanStateOpen;
         _attributeCountLimit = attributeCountLimit;
         _attributes = [[NSMutableDictionary alloc] init];
@@ -232,6 +234,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (BOOL)isValid {
     return self.state == SpanStateOpen;
+}
+
+- (NSString *)encodedAsTraceParent {
+    return [self encodedAsTraceParentWithSampled: Sampler::calculateIsSampled(self.traceId, self.samplingProbability)];
 }
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {

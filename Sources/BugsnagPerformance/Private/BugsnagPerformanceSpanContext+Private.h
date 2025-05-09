@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpanContext ()
 
+- (NSString *)encodedAsTraceParentWithSampled:(BOOL)sampled;
+
 @end
 
 NS_ASSUME_NONNULL_END

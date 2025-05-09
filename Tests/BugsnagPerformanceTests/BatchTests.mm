@@ -26,6 +26,7 @@ static BugsnagPerformanceSpan *newSpanData() {
                                                parentId:0
                                               startTime:0
                                              firstClass:BSGTriStateUnset
+                                    samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}

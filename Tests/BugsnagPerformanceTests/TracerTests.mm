@@ -131,4 +131,20 @@ static BugsnagPerformanceConfiguration *newConfig() {
     XCTAssertEqualObjects(span.name, @"[HTTP/GET]");
 }
 
+- (void)testStartSpan {
+    auto expectedSamplingProbability = 0.4;
+    auto stackingHandler = std::make_shared<SpanStackingHandler>();
+    auto sampler = std::make_shared<Sampler>();
+    sampler->setProbability(expectedSamplingProbability);
+    auto batch = std::make_shared<Batch>();
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    SpanOptions spanOptions;
+    auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes);
+    XCTAssertEqual(span.kind, SPAN_KIND_INTERNAL);
+    XCTAssertEqualObjects(span.name, @"TestSpan");
+    XCTAssertEqual(span.samplingProbability, expectedSamplingProbability);
+}
+
 @end

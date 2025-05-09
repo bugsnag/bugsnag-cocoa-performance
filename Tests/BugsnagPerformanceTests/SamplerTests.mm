@@ -10,8 +10,26 @@
 
 #import "../../Sources/BugsnagPerformance/Private/Sampler.h"
 #import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
+#import "BugsnagPerformanceSpan+Private.h"
 
 #import <vector>
+
+static BugsnagPerformanceSpan *createSpan() {
+    MetricsOptions metricsOptions;
+    TraceId tid = {.value = 1};
+    return [[BugsnagPerformanceSpan alloc] initWithName:@"test"
+                                                traceId:tid
+                                                 spanId:IdGenerator::generateSpanId()
+                                               parentId:IdGenerator::generateSpanId()
+                                              startTime:SpanOptions().startTime
+                                             firstClass:BSGTriStateNo
+                                    samplingProbability:1.0
+                                    attributeCountLimit:128
+                                         metricsOptions:metricsOptions
+                                           onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+}
 
 using namespace bugsnag;
 
@@ -55,6 +73,26 @@ using namespace bugsnag;
     }
 }
 
+- (void)testSamplerUpdatesSampledSpansSamplingProbability {
+    auto span = createSpan();
+    Sampler sampler;
+    sampler.setProbability(0.9);
+    XCTAssertTrue(sampler.sampled(span));
+    XCTAssertEqual(span.samplingProbability, 0.9);
+    
+    sampler.setProbability(0.5);
+    XCTAssertTrue(sampler.sampled(span));
+    XCTAssertEqual(span.samplingProbability, 0.5);
+
+    sampler.setProbability(0.1);
+    XCTAssertTrue(sampler.sampled(span));
+    XCTAssertEqual(span.samplingProbability, 0.1);
+    
+    sampler.setProbability(0.0);
+    XCTAssertFalse(sampler.sampled(span));
+    XCTAssertEqual(span.samplingProbability, 0.1);
+}
+
 - (void)assertSampler:(Sampler &)sampler samplesWithProbability:(double)probability {
     auto numSamplesTries = 1'000;
     auto count = 0;
@@ -66,6 +104,7 @@ using namespace bugsnag;
                                                                            parentId:0
                                                                           startTime:0
                                                                          firstClass:BSGTriStateUnset
+                                                                samplingProbability:1.0
                                                                 attributeCountLimit:128
                                                                      metricsOptions:metricsOptions
                                                                        onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}

@@ -43,6 +43,7 @@ void SystemInfoSampler::earlySetup() noexcept {
 
         for (;;) {
             [NSThread sleepForTimeInterval:samplePeriod_];
+            std::lock_guard<std::mutex> guard(recordMutex_);
             if (shouldAbortSamplerThread_) {
                 BSGLogDebug(@"User has disabled all sampling in the configuration. No longer recording samples.");
                 // It turns out that the user didn't want to record samples.
@@ -53,6 +54,7 @@ void SystemInfoSampler::earlySetup() noexcept {
 
         // We've aborted because config.enabledMetrics.cpu was false.
         // Clear everything and leave this thread.
+        std::lock_guard<std::mutex> guard(samplesMutex_);
         samples_.clear();
     }];
 
@@ -60,6 +62,7 @@ void SystemInfoSampler::earlySetup() noexcept {
 }
 
 void SystemInfoSampler::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    std::lock_guard<std::mutex> guard(recordMutex_);
     shouldSampleCPU_ = config.enabledMetrics.cpu;
     shouldSampleMemory_ = config.enabledMetrics.memory;
 
@@ -134,13 +137,13 @@ void SystemInfoSampler::recordSample() {
     lastSampledAtTime_ = sample.sampledAt;
 
     if (sample.hasValidData()) {
-        std::lock_guard<std::mutex> guard(mutex_);
+        std::lock_guard<std::mutex> guard(samplesMutex_);
         samples_.push_back(sample);
     }
 }
 
 std::vector<SystemInfoSampleData> SystemInfoSampler::samplesAroundTimePeriod(CFAbsoluteTime startTime, CFAbsoluteTime endTime) {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::mutex> guard(samplesMutex_);
     if (samples_.empty()) {
         BSGLogTrace(@"SystemInfoSampler::samplesAroundTimePeriod(): No samples available");
         return std::vector<SystemInfoSampleData>();

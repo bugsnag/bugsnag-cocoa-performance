@@ -64,7 +64,6 @@ void Tracer::reprocessEarlySpans(void) {
             continue;
         }
         [span forceMutate:^() {
-            [span updateSamplingProbability:sampler_->getProbability()];
             callOnSpanEndCallbacks(span);
         }];
         if (span.state == SpanStateAborted) {
@@ -135,6 +134,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
                                                                        parentId:parentSpan.spanId
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
+                                                            samplingProbability:sampler_->getProbability()
                                                             attributeCountLimit:attributeCountLimit_
                                                                  metricsOptions:options.metricsOptions
                                                                    onSpanEndSet:onSpanEndSet
@@ -176,8 +176,6 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
         [span abortUnconditionally];
         return;
     }
-
-    [span updateSamplingProbability:sampler_->getProbability()];
 
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);

@@ -21,9 +21,7 @@ NSString *NetworkHeaderInjector::generateTraceParent(BugsnagPerformanceSpan *spa
         return nil;
     }
     // Sampled status assumes that the current P value won't change soon.
-    return [NSString stringWithFormat:@"00-%016llx%016llx-%016llx-0%d",
-            span.traceIdHi, span.traceIdLo,
-            span.spanId, sampler_->sampled(span)];
+    return [span encodedAsTraceParentWithSampled:sampler_->sampled(span)];
 }
 
 @protocol RequestSetter <NSObject>

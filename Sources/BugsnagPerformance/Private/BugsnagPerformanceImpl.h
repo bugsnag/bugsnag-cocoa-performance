@@ -66,6 +66,10 @@ public:
     void endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept;
 
     void onSpanStarted() noexcept;
+    
+    BugsnagPerformanceSpanContext *currentContext() noexcept {
+        return spanStackingHandler_->currentSpan();
+    }
 
     void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
         tracer_->setOnViewLoadSpanStarted(onViewLoadSpanStarted);

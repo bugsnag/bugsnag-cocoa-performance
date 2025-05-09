@@ -35,6 +35,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                                parentId:0
                                               startTime:startTime
                                              firstClass:BSGTriStateUnset
+                                    samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan *) {}
@@ -314,6 +315,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                                     parentId:0
                                                    startTime:0
                                                   firstClass:BSGTriStateUnset
+                                         samplingProbability:1.0
                                          attributeCountLimit:5
                                               metricsOptions:metricsOptions
                                                 onSpanEndSet:^(BugsnagPerformanceSpan *) {}

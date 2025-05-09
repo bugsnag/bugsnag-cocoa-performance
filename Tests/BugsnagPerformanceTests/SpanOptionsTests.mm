@@ -50,6 +50,7 @@ using namespace bugsnag;
                                                                        parentId:IdGenerator::generateSpanId()
                                                                       startTime:SpanOptions().startTime 
                                                                      firstClass:BSGTriStateNo
+                                                            samplingProbability:1.0
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
