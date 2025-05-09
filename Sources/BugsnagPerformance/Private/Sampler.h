@@ -25,6 +25,20 @@ public:
     Sampler() noexcept
     : probability_(1)
     {}
+    
+    static bool calculateIsSampled(TraceId traceId, double samplingProbability) {
+        if (samplingProbability <= 0.0) {
+            return false;
+        }
+        
+        uint64_t idUpperBound;
+        if (samplingProbability >= 1.0) {
+            idUpperBound = UINT64_MAX;
+        } else {
+            idUpperBound = uint64_t(samplingProbability * double(UINT64_MAX));
+        }
+        return traceId.hi <= idUpperBound;
+    }
 
     void setProbability(double probability) noexcept {probability_ = probability;};
 
@@ -39,15 +53,7 @@ public:
         }
 
         auto p = getProbability();
-        uint64_t idUpperBound;
-        if (p <= 0.0) {
-            idUpperBound = 0;
-        } else if (p >= 1.0) {
-            idUpperBound = UINT64_MAX;
-        } else {
-            idUpperBound = uint64_t(p * double(UINT64_MAX));
-        }
-        auto isSampled = p > 0.0 && span.traceIdHi <= idUpperBound;
+        auto isSampled = calculateIsSampled(span.traceId, p);
         if (isSampled) {
             [span forceMutate:^{
                 [span updateSamplingProbability:p];

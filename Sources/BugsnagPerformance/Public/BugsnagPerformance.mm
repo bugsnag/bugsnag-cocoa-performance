@@ -63,4 +63,8 @@ using namespace bugsnag;
     BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->reportNetworkSpan(task, metrics);
 }
 
++ (BugsnagPerformanceSpanContext *)currentContext {
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->currentContext();
+}
+
 @end

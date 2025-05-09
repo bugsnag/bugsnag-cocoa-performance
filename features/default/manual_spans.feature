@@ -494,3 +494,19 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
+
+  Scenario: Manually start and end a span with remote parent context
+    Given I run "ManualSpanWithRemoteContextParentScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "ManualSpanWithRemoteContextParentScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" equals "a053e37f6d56592bc15a2c13c3c688ff"
+    * every span field "parentSpanId" equals "eeb87b8b7cde2185"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span string attribute "bugsnag.span.category" equals "custom"

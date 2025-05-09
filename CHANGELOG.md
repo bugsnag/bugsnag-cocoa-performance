@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Introduced `BugsnagPerformanceRemoteSpanContext` to allow cross-layer parenting of spans, along with easy encoding of `traceparent` headers.
+  [433](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/433)
+
 ### Bug fixes
 
 * Fixed issue where a very small percentage of spans could be sent even though samplingProbability was set to 0.0.

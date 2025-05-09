@@ -8,6 +8,7 @@
 #import "../Private/BugsnagPerformanceSpan+Private.h"
 #import "../Private/Utils.h"
 #import "../Private/SpanOptions.h"
+#import "../Private/Sampler.h"
 
 using namespace bugsnag;
 
@@ -233,6 +234,10 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (BOOL)isValid {
     return self.state == SpanStateOpen;
+}
+
+- (NSString *)encodedAsTraceParent {
+    return [self encodedAsTraceParentWithSampled: Sampler::calculateIsSampled(self.traceId, self.samplingProbability)];
 }
 
 - (void)setAttribute:(NSString *)attributeName withValue:(id)value {

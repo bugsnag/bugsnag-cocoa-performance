@@ -13,6 +13,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
+#import <BugsnagPerformance/BugsnagPerformanceRemoteSpanContext.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,6 +31,8 @@ OBJC_EXPORT
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name NS_SWIFT_NAME(startSpan(name:));
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options NS_SWIFT_NAME(startSpan(name:options:));
+
++ (BugsnagPerformanceSpanContext *)currentContext;
 
 @end
 
