@@ -91,7 +91,8 @@ private:
     void recordSample();
 
 private:
-    std::mutex mutex_;
+    std::mutex samplesMutex_;
+    std::mutex recordMutex_;
     BSGPSystemInfo systemInfo_;
     FixedLengthDequeue<SystemInfoSampleData> samples_;
 

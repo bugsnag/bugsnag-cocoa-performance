@@ -22,6 +22,14 @@
     return [self initWithTraceId:TraceId{.hi=traceIdHi, .lo=traceIdLo} spanId:spanId];
 }
 
+- (NSString *)encodedAsTraceParent {
+    return [self encodedAsTraceParentWithSampled:YES];
+}
+
+- (NSString *)encodedAsTraceParentWithSampled:(BOOL)sampled {
+    return [NSString stringWithFormat:@"00-%016llx%016llx-%016llx-0%d", self.traceIdHi, self.traceIdLo, self.spanId, sampled];
+}
+
 - (uint64_t) traceIdHi {
     return self.traceId.hi;
 }

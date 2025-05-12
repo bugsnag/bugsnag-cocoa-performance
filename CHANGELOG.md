@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 1.13.0 (2025-05-12)
+
+### Bug fixes
+
+* Fixed issue where a very small percentage of spans could be sent even though samplingProbability was set to 0.0.
+  [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
+
+* Fixed bugsnag.sampling.p attribute reporting to accurately reflect current sample rate.
+  [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
+
+* Fixed a potential data race warning in `SystemInfoSampler`.
+  [431](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/431)
+  
+### Enhancements
+
+* Introduced `BugsnagPerformanceRemoteSpanContext` to allow cross-layer parenting of spans, along with easy encoding of `traceparent` headers.
+  [433](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/433)
+
 ## 1.12.1 (2025-05-06)
 
 ### Bug fixes
