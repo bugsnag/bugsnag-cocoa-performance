@@ -1,12 +1,7 @@
 Changelog
 =========
 
-## TBD
-
-### Enhancements
-
-* Introduced `BugsnagPerformanceRemoteSpanContext` to allow cross-layer parenting of spans, along with easy encoding of `traceparent` headers.
-  [433](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/433)
+## 1.13.0 (2025-05-12)
 
 ### Bug fixes
 
@@ -18,6 +13,11 @@ Changelog
 
 * Fixed a potential data race warning in `SystemInfoSampler`.
   [431](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/431)
+  
+### Enhancements
+
+* Introduced `BugsnagPerformanceRemoteSpanContext` to allow cross-layer parenting of spans, along with easy encoding of `traceparent` headers.
+  [433](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/433)
 
 ## 1.12.1 (2025-05-06)
 
