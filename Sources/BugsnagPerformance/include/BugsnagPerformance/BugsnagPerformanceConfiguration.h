@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
 
+typedef void (^ BugsnagPerformanceSpanStartCallback)(BugsnagPerformanceSpan *span);
+
 typedef BOOL (^ BugsnagPerformanceSpanEndCallback)(BugsnagPerformanceSpan *span);
 
 OBJC_EXPORT
@@ -38,6 +40,15 @@ OBJC_EXPORT
 + (instancetype)loadConfig;
 
 - (BOOL) validate:(NSError * __autoreleasing _Nullable *)error NS_SWIFT_NAME(validate());
+
+/**
+ * Add a callback that get called whenever a span is started.
+ * This callback can be used to setup the span before it is
+ * used (such as setting attributes). These callbacks are considered to be "inside" the span, so
+ * any time taken to run the callback is counted towards the span's duration.
+ *
+ */
+- (void) addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback) callback;
 
 /**
  * Add a callback that get called whenever a span ends.
