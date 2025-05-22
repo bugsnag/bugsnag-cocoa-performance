@@ -149,6 +149,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
     }
     [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
+    
+    callOnSpanStartCallbacks(span);
+    
     onSpanStarted_();
     return span;
 }
@@ -233,6 +236,20 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
     this->conditionTimeoutExecutor_->sheduleTimeout(condition, timeout);
     BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %f", span.name, timeout);
     return condition;
+}
+
+void Tracer::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) {
+    if(span == nil) {
+        return;
+    }
+
+    for (BugsnagPerformanceSpanStartCallback callback: onSpanStartCallbacks_) {
+        @try {
+            callback(span);
+        } @catch(NSException *e) {
+            BSGLogError(@"Tracer::callOnSpanStartCallbacks: span onStart callback threw exception: %@", e);
+        }
+    }
 }
 
 void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
@@ -384,7 +401,7 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
     [prewarmSpans_ removeAllObjects];
 }
 
-bool 
+bool
 Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
@@ -393,7 +410,7 @@ Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
             return false;
         case BSGTriStateUnset:
             return enabledMetrics_.rendering &&
-            !span.wasStartOrEndTimeProvided && 
+            !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }
 }
