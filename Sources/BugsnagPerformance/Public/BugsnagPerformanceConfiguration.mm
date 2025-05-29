@@ -70,6 +70,7 @@ using namespace bugsnag;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
+        _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
@@ -265,6 +266,10 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
 - (BOOL)shouldSendReports {
     return self.enabledReleaseStages.count == 0 ||
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
+}
+
+- (void)addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback)callback {
+    [self.onSpanStartCallbacks addObject:callback];
 }
 
 - (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback {
