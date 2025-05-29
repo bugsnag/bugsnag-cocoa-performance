@@ -268,7 +268,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
-- (void) addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback) callback {
+- (void)addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback)callback {
     [self.onSpanStartCallbacks addObject:callback];
 }
 

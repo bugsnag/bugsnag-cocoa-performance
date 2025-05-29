@@ -48,7 +48,7 @@ OBJC_EXPORT
  * any time taken to run the callback is counted towards the span's duration.
  *
  */
-- (void) addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback) callback;
+- (void)addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback)callback;
 
 /**
  * Add a callback that gets called whenever a span ends.
