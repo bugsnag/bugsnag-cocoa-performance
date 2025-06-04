@@ -18,6 +18,7 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "SpanControl/BSGCompositeSpanControlProvider.h"
 
 using namespace bugsnag;
 
@@ -48,6 +49,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
+, spanControlProvider_([BSGCompositeSpanControlProvider new])
 , tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)

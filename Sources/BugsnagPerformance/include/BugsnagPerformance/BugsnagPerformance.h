@@ -14,6 +14,10 @@
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 #import <BugsnagPerformance/BugsnagPerformanceRemoteSpanContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanControl.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
+#import <BugsnagPerformance/BugsnagPerformancePriority.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -67,6 +71,20 @@ OBJC_EXPORT
 + (void)reportNetworkRequestSpanWithTask:(NSURLSessionTask *)task
                                  metrics:(NSURLSessionTaskMetrics *)metrics
   NS_SWIFT_NAME(reportNetworkRequestSpan(task:metrics:));
+
+@end
+
+@interface BugsnagPerformance (/* Span controls */)
+
+/**
+ * Attempt to retrieve the span controls for a given [BugsnagPerformanceSpanQuery]. This is used to access
+ * specialised behaviours for specific span types.
+ *
+ * @param query the span query to retrieve controls for
+ * @return the span controls for the given query, or nil if none exists or the query cannot
+ *      be fulfilled
+ */
++ (__nullable id<BugsnagPerformanceSpanControl>)getSpanControlsWithQuery:(BugsnagPerformanceSpanQuery *)query;
 
 @end
 
