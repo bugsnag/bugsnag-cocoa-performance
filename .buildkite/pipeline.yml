@@ -124,11 +124,11 @@ steps:
       - label: "iOS 13 Unit Tests"
         timeout_in_minutes: 10
         agents:
-          queue: macos-12-arm
+          queue: macos-13
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         env:
-          XCODE_VERSION: "14"
+          XCODE_VERSION: "14.3.1"
         plugins:
           artifacts#v1.9.3:
             upload:

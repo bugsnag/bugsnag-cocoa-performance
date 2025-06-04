@@ -44,9 +44,9 @@ steps:
             upload:
               - "logs/*"
         agents:
-          queue: macos-12-arm
+          queue: macos-14
         env:
-          XCODE_VERSION: "14"
+          XCODE_VERSION: "15.3.0"
 
   - group: "E2E Tests"
     steps:
