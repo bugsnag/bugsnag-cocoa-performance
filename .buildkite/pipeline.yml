@@ -128,7 +128,7 @@ steps:
         commands:
           - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7
         env:
-          XCODE_VERSION: "14.3.1"
+          XCODE_VERSION: "14.1.0"
         plugins:
           artifacts#v1.9.3:
             upload:
