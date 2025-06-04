@@ -67,4 +67,8 @@ using namespace bugsnag;
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->currentContext();
 }
 
++ (__nullable id<BugsnagPerformanceSpanControl>)getSpanControlsWithQuery:(BugsnagPerformanceSpanQuery *)query {
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->getSpanControls(query);
+}
+
 @end

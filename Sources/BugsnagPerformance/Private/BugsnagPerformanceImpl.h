@@ -10,6 +10,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -77,6 +78,10 @@ public:
 
     void didStartViewLoadSpan(NSString *name) noexcept { instrumentation_->didStartViewLoadSpan(name); }
     void willCallMainFunction() noexcept { instrumentation_->willCallMainFunction(); }
+    
+    id<BugsnagPerformanceSpanControl> getSpanControls(BugsnagPerformanceSpanQuery *query) noexcept {
+        return [spanControlProvider_ getSpanControlsWithQuery:query];
+    }
 
 private:
     std::shared_ptr<Persistence> persistence_;
@@ -99,6 +104,7 @@ private:
     std::shared_ptr<ResourceAttributes> resourceAttributes_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
     OtlpTraceEncoding traceEncoding_;
+    id<BugsnagPerformanceSpanControlProvider> spanControlProvider_;
 
     BugsnagPerformanceConfiguration *configuration_;
     std::shared_ptr<OtlpUploader> uploader_;
