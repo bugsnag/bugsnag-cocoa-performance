@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
-#import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+
+@class BugsnagPerformancePluginContext;
 
 NS_ASSUME_NONNULL_BEGIN
 

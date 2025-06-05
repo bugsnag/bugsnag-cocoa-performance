@@ -10,7 +10,6 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -30,6 +29,8 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "SystemInfoSampler.h"
+#import "SpanControl/BSGCompositeSpanControlProvider.h"
+#import "BSGPluginManager.h"
 
 #import <mutex>
 
@@ -94,6 +95,9 @@ private:
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
+    BSGCompositeSpanControlProvider *spanControlProvider_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
@@ -104,9 +108,9 @@ private:
     std::shared_ptr<ResourceAttributes> resourceAttributes_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
     OtlpTraceEncoding traceEncoding_;
-    id<BugsnagPerformanceSpanControlProvider> spanControlProvider_;
 
     BugsnagPerformanceConfiguration *configuration_;
+    BSGPluginManager *pluginManager_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::mutex viewControllersToSpansMutex_;
     CFAbsoluteTime probabilityExpiry_{0};

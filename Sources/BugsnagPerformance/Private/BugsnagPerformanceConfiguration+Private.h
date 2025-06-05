@@ -60,6 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSMutableArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks;
 
+@property (nonatomic) NSMutableArray<id<BugsnagPerformancePlugin>> *plugins;
+
 @end
 
 NS_ASSUME_NONNULL_END

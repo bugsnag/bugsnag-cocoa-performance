@@ -8,6 +8,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceErrors.h>
 #import <BugsnagPerformance/BugsnagPerformanceNetworkRequestInfo.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 
 #import <UIKit/UIKit.h>
 
@@ -61,7 +62,12 @@ OBJC_EXPORT
  * Add a callback that gets called whenever a span ends.
  * If any of the registered callbacks returns false, the span is discarded.
  */
-- (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback;
+- (void)addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback)callback;
+
+/**
+ * Add a plugin that gets called when the library is started.
+ */
+- (void)addPlugin:(id<BugsnagPerformancePlugin>)plugin;
 
 @property (nonatomic) NSString *apiKey;
 

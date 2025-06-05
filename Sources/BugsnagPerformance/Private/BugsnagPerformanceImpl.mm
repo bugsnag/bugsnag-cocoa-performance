@@ -18,7 +18,6 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
-#import "SpanControl/BSGCompositeSpanControlProvider.h"
 
 using namespace bugsnag;
 
@@ -50,7 +49,9 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , frameMetricsCollector_([FrameMetricsCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, ^{this->onSpanStarted();}))
+, spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
+, spanEndCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new])
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -129,6 +130,19 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
+    for(BugsnagPerformanceSpanStartCallback callback in config.onSpanStartCallbacks) {
+        [spanStartCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
+    for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
+        [spanEndCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
+    
+    pluginManager_ = [[BSGPluginManager alloc] initWithConfiguration:config
+                                                   compositeProvider:spanControlProvider_
+                                                onSpanStartCallbacks:spanStartCallbacks_
+                                                  onSpanEndCallbacks:spanEndCallbacks_];
+    
+    [pluginManager_ installPlugins:config.plugins];
     
     auto networkRequestCallback = config.networkRequestCallback;
     if (networkRequestCallback != nullptr) {
@@ -266,7 +280,13 @@ void BugsnagPerformanceImpl::start() noexcept {
 #pragma mark Tasks
 
 NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
-    return @[];
+    __block auto blockThis = this;
+    return @[
+        ^bool() {
+            [blockThis->pluginManager_ startPlugins];
+            return true;
+        },
+    ];
 }
 
 NSArray<Task> *BugsnagPerformanceImpl::buildRecurringTasks() noexcept {

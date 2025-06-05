@@ -276,6 +276,10 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     [self.onSpanEndCallbacks addObject:callback];
 }
 
+- (void)addPlugin:(id<BugsnagPerformancePlugin>)plugin {
+    [self.plugins addObject:plugin];
+}
+
 @end
 
 @implementation BSGInternalConfiguration

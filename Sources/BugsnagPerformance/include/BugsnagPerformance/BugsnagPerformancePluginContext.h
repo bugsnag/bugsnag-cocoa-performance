@@ -51,7 +51,7 @@ OBJC_EXPORT
  * started. This is a convenience method that is the same as calling
  * -[BugsnagPerformancePluginContext addOnSpanStartCallback:priority:] with the default priority of [BugsnagPerformancePriorityMedium].
  *
- * @param onSpanEndCallback Callback to be called on span start. Adding the same callback multiple times will not take effect
+ * @param callback Callback to be called on span start. Adding the same callback multiple times will not take effect
  * @see -[BugsnagPerformancePluginContext addOnSpanStartCallback:priority:]
  */
 - (void)addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback)callback;
@@ -63,7 +63,7 @@ OBJC_EXPORT
  * is also the priority of the [BugsnagPerformanceSpanStartCallback] added in
  * -[BugsnagPerformanceConfiguration addOnSpanStartCallback:]).
  *
- * @param onSpanEndCallback Callback to be called on span start. Adding the same callback multiple times will not take effect
+ * @param callback Callback to be called on span start. Adding the same callback multiple times will not take effect
  * @param priority The priority of the callback determines the order in which it will be called, with higher priorities being called first.
  * @see -[BugsnagPerformanceConfiguration addOnSpanStartCallback:]
  */
@@ -74,7 +74,7 @@ OBJC_EXPORT
  * ended. This is a convenience method that is the same as calling
  * -[BugsnagPerformancePluginContext addOnSpanEndCallback:priority:] with the default priority of [BugsnagPerformancePriorityMedium].
  *
- * @param onSpanEndCallback Callback to be called on span end. Adding the same callback multiple times will not take effect
+ * @param callback Callback to be called on span end. Adding the same callback multiple times will not take effect
  * @see -[BugsnagPerformancePluginContext addOnSpanEndCallback:priority:]
  */
 - (void)addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback)callback;
@@ -86,7 +86,7 @@ OBJC_EXPORT
  * is also the priority of the [BugsnagPerformanceSpanEndCallback] added in
  * -[BugsnagPerformanceConfiguration addOnSpanEndCallback:]).
  *
- * @param onSpanEndCallback Callback to be called on span end. Adding the same callback multiple times will not take effect
+ * @param callback Callback to be called on span end. Adding the same callback multiple times will not take effect
  * @param priority The priority of the callback determines the order in which it will be called, with higher priorities being called first.
  * @see -[BugsnagPerformanceConfiguration addOnSpanEndCallback:]
  */
