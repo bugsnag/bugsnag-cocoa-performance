@@ -65,11 +65,18 @@
         __block __weak BSGPrioritizedStore *weakSelf = self;
         __block BOOL batchingInProgress = YES;
         batchBlock(^void (id object, BugsnagPerformancePriority priority) {
+            __strong BSGPrioritizedStore *strongSelf = weakSelf;
             if (!batchingInProgress) {
                 BSGLogWarning(@"Ignoring an attempt to add an element after batching has finished");
                 return;
             }
-            [weakSelf.store addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
+            for (BSGPrioritizedStoreEntry *entry in strongSelf.store) {
+                if ([entry.object isEqual:object]) {
+                    BSGLogWarning(@"Ignoring an attempt to add a duplicate element");
+                    return;
+                }
+            }
+            [strongSelf.store addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
         });
         batchingInProgress = NO;
         [self sortStore];
