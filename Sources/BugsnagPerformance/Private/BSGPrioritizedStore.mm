@@ -1,5 +1,5 @@
 //
-//  BSGPrioritizedStore.m
+//  BSGPrioritizedStore.mm
 //  BugsnagPerformance
 //
 //  Created by Robert Bartoszewski on 25/05/2025.
@@ -7,6 +7,7 @@
 //
 
 #import "BSGPrioritizedStore.h"
+#import "Utils.h"
 
 @interface BSGPrioritizedStoreEntry: NSObject
 @property (nonatomic, strong) id object;
@@ -62,9 +63,15 @@
 - (void)batchAddObjects:(BSGPrioritizedStoreBatchBlock)batchBlock {
     @synchronized (self) {
         __block __weak BSGPrioritizedStore *weakSelf = self;
+        __block BOOL batchingInProgress = YES;
         batchBlock(^void (id object, BugsnagPerformancePriority priority) {
+            if (!batchingInProgress) {
+                BSGLogWarning(@"Ignoring an attempt to add an element after batching has finished");
+                return;
+            }
             [weakSelf.store addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
         });
+        batchingInProgress = NO;
         [self sortStore];
         [self updateObjects];
     }

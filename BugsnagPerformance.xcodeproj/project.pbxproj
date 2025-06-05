@@ -93,7 +93,7 @@
 		963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */; };
 		963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */; };
 		963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */; };
-		963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */; };
+		963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */; };
 		963726D72DEFB2CC00C739E6 /* BSGPrioritizedStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726D62DEFB2BE00C739E6 /* BSGPrioritizedStoreTests.m */; };
 		963726DA2DEFBA5A00C739E6 /* BSGCompositeSpanControlProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726D92DEFBA5200C739E6 /* BSGCompositeSpanControlProviderTests.m */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -369,7 +369,7 @@
 		963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformancePriority+Private.h"; sourceTree = "<group>"; };
 		963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "BugsnagPerformancePriority+Private.m"; sourceTree = "<group>"; };
 		963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPrioritizedStore.h; sourceTree = "<group>"; };
-		963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPrioritizedStore.m; sourceTree = "<group>"; };
+		963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPrioritizedStore.mm; sourceTree = "<group>"; };
 		963726D62DEFB2BE00C739E6 /* BSGPrioritizedStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPrioritizedStoreTests.m; sourceTree = "<group>"; };
 		963726D92DEFBA5200C739E6 /* BSGCompositeSpanControlProviderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGCompositeSpanControlProviderTests.m; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
@@ -614,7 +614,7 @@
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
-				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */,
+				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
 				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
 				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
 				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
@@ -1359,7 +1359,7 @@
 				098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */,
 				963726C82DEAB1FC00C739E6 /* BugsnagPerformancePriority.m in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
-				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.m in Sources */,
+				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */,
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,
 				963726C52DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.m in Sources */,
