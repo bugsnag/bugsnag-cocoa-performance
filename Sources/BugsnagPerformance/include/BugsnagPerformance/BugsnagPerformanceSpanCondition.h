@@ -10,6 +10,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 
+OBJC_EXPORT
 @interface BugsnagPerformanceSpanCondition: NSObject
 
 @property (nonatomic) BOOL isActive;

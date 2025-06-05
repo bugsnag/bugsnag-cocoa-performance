@@ -15,8 +15,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
 
+/**
+ * A callback that gets called whenever a span starts.
+ */
 typedef void (^ BugsnagPerformanceSpanStartCallback)(BugsnagPerformanceSpan *span);
 
+/**
+ * A callback that gets called whenever a span ends.
+ * @return If any of the registered callbacks returns false, the span is discarded.
+ */
 typedef BOOL (^ BugsnagPerformanceSpanEndCallback)(BugsnagPerformanceSpan *span);
 
 OBJC_EXPORT
