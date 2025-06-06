@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Set default endpoints based on API key [#441](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/441)
+
 ## 1.13.0 (2025-05-12)
 
 ### Bug fixes
