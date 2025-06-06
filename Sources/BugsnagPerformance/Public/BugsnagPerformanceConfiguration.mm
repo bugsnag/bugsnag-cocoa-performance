@@ -29,6 +29,7 @@ using namespace bugsnag;
 #define HUB_API_PREFIX @"00000"
 
 static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
     NSString *fmt = [apiKey hasPrefix:HUB_API_PREFIX]
         ? DEFAULT_HUB_URL_FORMAT
         : DEFAULT_URL_FORMAT;
