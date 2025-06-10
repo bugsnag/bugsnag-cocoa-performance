@@ -98,6 +98,7 @@
 		CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */; };
 		CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
+		DA58B7D42DF8365E00CB80A4 /* PluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */; };
 		DADB14F72DDF852B0006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -214,6 +215,7 @@
 		CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkMultiple.swift; sourceTree = "<group>"; };
 		CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPayloadSizeScenario.swift; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
+		DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -294,6 +296,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
 				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
@@ -529,6 +532,7 @@
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				091B95722CA179AC007DC8A9 /* AutoInstrumentNetworkPreStartScenario.swift in Sources */,
 				098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */,
+				DA58B7D42DF8365E00CB80A4 /* PluginScenario.swift in Sources */,
 				01FE4DC328E1AF3700D1F239 /* ManualSpanScenario.swift in Sources */,
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
 				094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */,

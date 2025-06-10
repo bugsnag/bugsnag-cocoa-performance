@@ -98,6 +98,7 @@
 		CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */; };
 		CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
+		DA85961E2DF718D100905922 /* PluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA85961D2DF718C800905922 /* PluginScenario.swift */; };
 		DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -199,6 +200,7 @@
 		CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkMultiple.swift; sourceTree = "<group>"; };
 		CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPayloadSizeScenario.swift; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
+		DA85961D2DF718C800905922 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -277,6 +279,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				DA85961D2DF718C800905922 /* PluginScenario.swift */,
 				DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
@@ -306,7 +309,6 @@
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
 				09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */,
-				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 				09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */,
 				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
 				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
@@ -534,6 +536,7 @@
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,
 				DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */,
+				DA85961E2DF718D100905922 /* PluginScenario.swift in Sources */,
 				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
