@@ -2,7 +2,7 @@
 //  SpanAttributesProvider.h
 //  BugsnagPerformance
 //
-//  Created by Robert B on 21/04/2023.
+//  Created by Robert Bartoszewski on 21/04/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 #import <Foundation/Foundation.h>
