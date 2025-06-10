@@ -72,6 +72,7 @@ using namespace bugsnag;
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
+        _plugins = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
         _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
