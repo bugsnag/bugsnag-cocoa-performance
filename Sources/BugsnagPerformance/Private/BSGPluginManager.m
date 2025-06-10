@@ -39,24 +39,25 @@
 }
 
 - (void)installPlugins:(NSArray<id<BugsnagPerformancePlugin>> *)plugins {
-    [self.compositeProvider batchAddProviders:^(AddSpanControlProviderBlock compositeProviderAddBlock) {
-        [self.onSpanStartCallbacks batchAddObjects:^(BSGPrioritizedStoreAddBlock onSpanStartCallbacksAddBlock) {
-            [self.onSpanEndCallbacks batchAddObjects:^(BSGPrioritizedStoreAddBlock onSpanEndCallbacksAddBlock) {
-                for (id<BugsnagPerformancePlugin> plugin in plugins) {
-                    @try {
+    for (id<BugsnagPerformancePlugin> plugin in plugins) {
+        @try {
+            [self.compositeProvider batchAddProviders:^(AddSpanControlProviderBlock compositeProviderAddBlock) {
+                [self.onSpanStartCallbacks batchAddObjects:^(BSGPrioritizedStoreAddBlock onSpanStartCallbacksAddBlock) {
+                    [self.onSpanEndCallbacks batchAddObjects:^(BSGPrioritizedStoreAddBlock onSpanEndCallbacksAddBlock) {
                         BugsnagPerformancePluginContext *context = [[BugsnagPerformancePluginContext alloc] initWithConfiguration:self.configuration
                                                                                                       addSpanControlProviderBlock:compositeProviderAddBlock
                                                                                                                 addSpanStartBlock:onSpanStartCallbacksAddBlock
                                                                                                                   addSpanEndBlock:onSpanEndCallbacksAddBlock];
                         [plugin installWithContext:context];
-                        [self.installedPlugins addObject:plugin];
-                    } @catch(NSException *e) {
-                        BSGLogError(@"BSGPluginManager::installPlugins: plugin install threw exception: %@", e);
-                    }
-                }
+                    }];
+                }];
             }];
-        }];
-    }];
+            [self.installedPlugins addObject:plugin];
+        } @catch(NSException *e) {
+            BSGLogError(@"BSGPluginManager::installPlugins: plugin install threw exception: %@",
+                        e);
+        }
+    }
 }
 
 - (void)startPlugins {

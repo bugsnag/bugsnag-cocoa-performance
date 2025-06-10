@@ -197,4 +197,35 @@
     XCTAssertTrue([store.objects[9] isEqualToString:@"Tenth"]);
 }
 
+- (void)testBatchAddElementsWithAnExceptionShouldIgnoreTheProblematicBatch {
+    BSGPrioritizedStore<NSString *> *store = [BSGPrioritizedStore new];
+    
+    [store batchAddObjects:^(BSGPrioritizedStoreAddBlock addBlock) {
+        addBlock(@"First", BugsnagPerformancePriorityHigh);
+        addBlock(@"Second", BugsnagPerformancePriorityHigh);
+        addBlock(@"Third", BugsnagPerformancePriorityHigh);
+    }];
+    
+    XCTAssertEqual([store.objects count], 3);
+    XCTAssertTrue([store.objects[0] isEqualToString:@"First"]);
+    XCTAssertTrue([store.objects[1] isEqualToString:@"Second"]);
+    XCTAssertTrue([store.objects[2] isEqualToString:@"Third"]);
+    
+    @try {
+        [store batchAddObjects:^(BSGPrioritizedStoreAddBlock addBlock) {
+            addBlock(@"Fourth", BugsnagPerformancePriorityHigh);
+            addBlock(@"Fifth", BugsnagPerformancePriorityHigh);
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:
+                            @"Should prevent the elements above from being added" userInfo:nil];
+        }];
+    } @catch (NSException *exception) {
+        // No-op
+    }
+    
+    XCTAssertEqual([store.objects count], 3);
+    XCTAssertTrue([store.objects[0] isEqualToString:@"First"]);
+    XCTAssertTrue([store.objects[1] isEqualToString:@"Second"]);
+    XCTAssertTrue([store.objects[2] isEqualToString:@"Third"]);
+}
+
 @end

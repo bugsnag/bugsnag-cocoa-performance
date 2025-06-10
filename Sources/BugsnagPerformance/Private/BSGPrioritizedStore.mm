@@ -64,21 +64,24 @@
     @synchronized (self) {
         __block __weak BSGPrioritizedStore *weakSelf = self;
         __block BOOL batchingInProgress = YES;
+        __block NSMutableArray<BSGPrioritizedStoreEntry *> *temporaryStore = [NSMutableArray array];
         batchBlock(^void (id object, BugsnagPerformancePriority priority) {
             __strong BSGPrioritizedStore *strongSelf = weakSelf;
             if (!batchingInProgress) {
                 BSGLogWarning(@"Ignoring an attempt to add an element after batching has finished");
                 return;
             }
-            for (BSGPrioritizedStoreEntry *entry in strongSelf.store) {
+            NSArray *combinedStore = [strongSelf.store arrayByAddingObjectsFromArray:temporaryStore];
+            for (BSGPrioritizedStoreEntry *entry in combinedStore) {
                 if ([entry.object isEqual:object]) {
                     BSGLogWarning(@"Ignoring an attempt to add a duplicate element");
                     return;
                 }
             }
-            [strongSelf.store addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
+            [temporaryStore addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
         });
         batchingInProgress = NO;
+        [self.store addObjectsFromArray:temporaryStore];
         [self sortStore];
         [self updateObjects];
     }
