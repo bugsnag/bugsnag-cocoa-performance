@@ -7,7 +7,6 @@
 import BugsnagPerformance
 
 class TestSpanControl: NSObject, BugsnagPerformanceSpanControl {
-    
     let span: BugsnagPerformanceSpan
     
     init(span: BugsnagPerformanceSpan) {
@@ -18,29 +17,30 @@ class TestSpanControl: NSObject, BugsnagPerformanceSpanControl {
 
 class SpanCounterPlugin: NSObject, BugsnagPerformancePlugin, BugsnagPerformanceSpanControlProvider {
     var spanList: [BugsnagPerformanceSpan] = []
-    var spanCount = 0
-    
+
     func install(with context: BugsnagPerformancePluginContext) {
         context.add(onSpanStartCallback: { (span: BugsnagPerformanceSpan) in
-            self.spanCount += 1
-            span.setAttribute("spanCount", withValue: self.spanCount)
             self.spanList.append(span)
+            span.setAttribute("span_count", withValue: self.spanList.count)
         })
         
         context.add(self)
     }
     
-    func start() {}
+    func start() {
+        for span in self.spanList {
+            span.setAttribute("plugin_start", withValue: true)
+        }
+    }
     
     func getSpanControls(with query: BugsnagPerformanceSpanQuery) -> BugsnagPerformanceSpanControl? {
-        if (query.resultType == TestSpanControl.self && query.getAttributeWithName("index") != nil) {
-            let spanCount = query.getAttributeWithName("index") as? Int
-            if (spanCount != nil && spanCount! <= self.spanCount) {
-                return TestSpanControl(span: self.spanList[spanCount! - 1])
-            }
+        guard query.resultType == TestSpanControl.self,
+              let index = query.getAttributeWithName("index") as? Int,
+              index <= self.spanList.count else {
+            return nil
         }
         
-        return nil
+        return TestSpanControl(span: self.spanList[index - 1])
     }
 }
 
@@ -61,8 +61,10 @@ class PluginScenario: Scenario {
         let spanControl = BugsnagPerformance.getSpanControls(with: query) as? TestSpanControl
         spanControl?.span.setAttribute("queried", withValue: true)
         
-        span1.end()
-        span2.end()
-        span3.end()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            span1.end()
+            span2.end()
+            span3.end()
+        }
     }
 }

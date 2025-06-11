@@ -99,6 +99,7 @@
 		CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */; };
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
 		DA58B7D42DF8365E00CB80A4 /* PluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */; };
+		DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */; };
 		DADB14F72DDF852B0006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -216,6 +217,7 @@
 		CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxPayloadSizeScenario.swift; sourceTree = "<group>"; };
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
 		DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
+		DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginInstallErrorScenario.swift; sourceTree = "<group>"; };
 		DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -296,6 +298,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */,
 				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
 				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
@@ -505,6 +508,7 @@
 				96E0B34B2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */,
 				96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
+				DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
