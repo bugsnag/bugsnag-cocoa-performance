@@ -94,10 +94,11 @@ void SystemInfoSampler::recordSample() {
     if (shouldSampleCPU_) {
         auto taskInfo = systemInfo_.taskTimeInfo();
         if (taskInfo != nullptr) {
+            double activeProcessorCount = (double) systemInfo_.activeProcessorCount();
             sample.processCPUPct = calcCPUUsagePct(lastSampledAtTime_,
                                                    lastSampleProcessCPU_,
                                                    sample.sampledAt,
-                                                   taskInfo->user_time) / systemInfo_.activeProcessorCount();
+                                                   taskInfo->user_time) / activeProcessorCount;
             lastSampleProcessCPU_ = taskInfo->user_time;
             BSGLogTrace(@"SystemInfoSampler::recordSample: taskInfo: %d.%d = %f", taskInfo->user_time.seconds, taskInfo->user_time.microseconds, sample.processCPUPct);
         }
