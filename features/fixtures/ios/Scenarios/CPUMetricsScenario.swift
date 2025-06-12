@@ -19,10 +19,15 @@ class CPUMetricsScenario: Scenario {
         if workDuration > 0 {
             var queue = DispatchQueue.global()
             if scenarioConfig["work_on_thread"] == "main" {
-                queue = DispatchQueue.main
-            }
-            queue.asyncAfter(deadline: .now()) {
-                self.doBusyWork(forSeconds: workDuration);
+                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                    self.doBusyWork(forSeconds: workDuration);
+                }
+            } else {
+                for i in 0..<5 {
+                    Thread {
+                        self.doBusyWork(forSeconds: workDuration);
+                    }.start()
+                }
             }
         }
     }
