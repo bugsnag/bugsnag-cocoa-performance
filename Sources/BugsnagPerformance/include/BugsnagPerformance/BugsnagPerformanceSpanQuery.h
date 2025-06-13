@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 @interface BugsnagPerformanceSpanQuery: NSObject
 
 @property (nonatomic, readonly, nullable) Class resultType;

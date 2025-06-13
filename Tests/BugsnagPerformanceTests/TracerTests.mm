@@ -31,7 +31,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
     sampler->setProbability(1.0);
     auto batch = std::make_shared<Batch>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -55,7 +57,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -79,7 +83,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -103,7 +109,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -124,7 +132,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(@"GET", spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
@@ -139,7 +149,9 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
     auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, ^(){});
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanStartCallbacks, spanEndCallbacks, ^(){});
     SpanOptions spanOptions;
     auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes);
     XCTAssertEqual(span.kind, SPAN_KIND_INTERNAL);

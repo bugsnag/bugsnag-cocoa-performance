@@ -93,14 +93,22 @@
 		963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */; };
 		963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */; };
 		963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */; };
-		963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */; };
+		963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */; };
 		963726D72DEFB2CC00C739E6 /* BSGPrioritizedStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726D62DEFB2BE00C739E6 /* BSGPrioritizedStoreTests.m */; };
 		963726DA2DEFBA5A00C739E6 /* BSGCompositeSpanControlProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726D92DEFBA5200C739E6 /* BSGCompositeSpanControlProviderTests.m */; };
+		963726DD2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726DC2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726DB2DF0B43500C739E6 /* BugsnagPerformancePlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		963726E02DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726DF2DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m */; };
+		963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */; };
+		963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */; };
+		963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */; };
+		963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
 		964B785B2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B785A2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm */; };
 		964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */; };
+		965FBD152DF24D3300D6BACB /* Logging.h in Headers */ = {isa = PBXBuildFile; fileRef = 965FBD142DF24D3100D6BACB /* Logging.h */; };
 		966634D12C8909BB004A934D /* FrameMetricsCollector.h in Headers */ = {isa = PBXBuildFile; fileRef = 966634D02C8909BB004A934D /* FrameMetricsCollector.h */; };
 		966634D32C8909D9004A934D /* FrameMetricsCollector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 966634D22C8909D9004A934D /* FrameMetricsCollector.mm */; };
 		966634D52C8A3647004A934D /* FrameMetricsSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 966634D42C8A3640004A934D /* FrameMetricsSnapshot.h */; };
@@ -369,14 +377,22 @@
 		963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformancePriority+Private.h"; sourceTree = "<group>"; };
 		963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "BugsnagPerformancePriority+Private.m"; sourceTree = "<group>"; };
 		963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPrioritizedStore.h; sourceTree = "<group>"; };
-		963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPrioritizedStore.m; sourceTree = "<group>"; };
+		963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPrioritizedStore.mm; sourceTree = "<group>"; };
 		963726D62DEFB2BE00C739E6 /* BSGPrioritizedStoreTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPrioritizedStoreTests.m; sourceTree = "<group>"; };
 		963726D92DEFBA5200C739E6 /* BSGCompositeSpanControlProviderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGCompositeSpanControlProviderTests.m; sourceTree = "<group>"; };
+		963726DB2DF0B43500C739E6 /* BugsnagPerformancePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformancePlugin.h; sourceTree = "<group>"; };
+		963726DC2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformancePluginContext.h; sourceTree = "<group>"; };
+		963726DF2DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformancePluginContext.m; sourceTree = "<group>"; };
+		963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformancePluginContext+Private.h"; sourceTree = "<group>"; };
+		963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanControlProvider+Private.h"; sourceTree = "<group>"; };
+		963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPluginManager.h; sourceTree = "<group>"; };
+		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
 		964B785A2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanConditionTests.mm; sourceTree = "<group>"; };
 		964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanCondition+Private.h"; sourceTree = "<group>"; };
+		965FBD142DF24D3100D6BACB /* Logging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		966634D02C8909BB004A934D /* FrameMetricsCollector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameMetricsCollector.h; sourceTree = "<group>"; };
 		966634D22C8909D9004A934D /* FrameMetricsCollector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FrameMetricsCollector.mm; sourceTree = "<group>"; };
 		966634D42C8A3640004A934D /* FrameMetricsSnapshot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrameMetricsSnapshot.h; sourceTree = "<group>"; };
@@ -575,6 +591,8 @@
 				0122C21929019770002D243C /* BugsnagPerformanceConfiguration.h */,
 				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
 				0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */,
+				963726DB2DF0B43500C739E6 /* BugsnagPerformancePlugin.h */,
+				963726DC2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h */,
 				963726C02DEA4E5700C739E6 /* BugsnagPerformancePriority.h */,
 				96F1292A2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h */,
 				0122C21729019770002D243C /* BugsnagPerformanceSpan.h */,
@@ -597,6 +615,7 @@
 				0122C21C29019770002D243C /* BugsnagPerformanceConfiguration.mm */,
 				CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */,
 				0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */,
+				963726DF2DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m */,
 				963726C72DEAB1FC00C739E6 /* BugsnagPerformancePriority.m */,
 				96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */,
 				0122C21E29019770002D243C /* BugsnagPerformanceSpan.mm */,
@@ -613,8 +632,10 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
+				963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */,
+				963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */,
 				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
-				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.m */,
+				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
 				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
 				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
 				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
@@ -624,12 +645,14 @@
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
+				963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */,
 				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
 				963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */,
 				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
 				964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */,
 				964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */,
 				09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */,
+				963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */,
 				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
 				CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */,
 				09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */,
@@ -647,6 +670,7 @@
 				0122C22929019770002D243C /* Instrumentation */,
 				CBEC51BE296DB311009C0CE3 /* JSON.h */,
 				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
+				965FBD142DF24D3100D6BACB /* Logging.h */,
 				098FC8772D3E8D43001B627D /* Metrics.h */,
 				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
 				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
@@ -927,9 +951,13 @@
 				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				966634D52C8A3647004A934D /* FrameMetricsSnapshot.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
+				963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */,
+				963726DD2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h in Headers */,
+				963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
+				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
@@ -974,11 +1002,13 @@
 				963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
+				963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
 				96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */,
 				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
 				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
+				963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */,
@@ -1356,11 +1386,13 @@
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
+				963726E02DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m in Sources */,
 				098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */,
 				963726C82DEAB1FC00C739E6 /* BugsnagPerformancePriority.m in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
-				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.m in Sources */,
+				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */,
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
+				963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,
 				963726C52DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.m in Sources */,
 				09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */,

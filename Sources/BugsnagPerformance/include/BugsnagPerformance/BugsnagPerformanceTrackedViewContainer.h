@@ -2,7 +2,7 @@
 //  BugsnagPerformanceTrackedViewContainer.h
 //  BugsnagPerformance
 //
-//  Created by Robert B on 8/12/2023.
+//  Created by Robert Bartoszewski on 8/12/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 

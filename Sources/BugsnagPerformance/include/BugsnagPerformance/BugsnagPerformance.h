@@ -18,6 +18,8 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
+#import <BugsnagPerformance/BugsnagPerformancePlugin.h>
+#import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -1,5 +1,5 @@
 //
-//  BSGPrioritizedStore.m
+//  BSGPrioritizedStore.mm
 //  BugsnagPerformance
 //
 //  Created by Robert Bartoszewski on 25/05/2025.
@@ -7,6 +7,7 @@
 //
 
 #import "BSGPrioritizedStore.h"
+#import "Utils.h"
 
 @interface BSGPrioritizedStoreEntry: NSObject
 @property (nonatomic, strong) id object;
@@ -62,9 +63,25 @@
 - (void)batchAddObjects:(BSGPrioritizedStoreBatchBlock)batchBlock {
     @synchronized (self) {
         __block __weak BSGPrioritizedStore *weakSelf = self;
+        __block BOOL batchingInProgress = YES;
+        __block NSMutableArray<BSGPrioritizedStoreEntry *> *temporaryStore = [NSMutableArray array];
         batchBlock(^void (id object, BugsnagPerformancePriority priority) {
-            [weakSelf.store addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
+            __strong BSGPrioritizedStore *strongSelf = weakSelf;
+            if (!batchingInProgress) {
+                BSGLogWarning(@"Ignoring an attempt to add an element after batching has finished");
+                return;
+            }
+            NSArray *combinedStore = [strongSelf.store arrayByAddingObjectsFromArray:temporaryStore];
+            for (BSGPrioritizedStoreEntry *entry in combinedStore) {
+                if ([entry.object isEqual:object]) {
+                    BSGLogWarning(@"Ignoring an attempt to add a duplicate element");
+                    return;
+                }
+            }
+            [temporaryStore addObject:[BSGPrioritizedStoreEntry entryWithObject:object priority:priority]];
         });
+        batchingInProgress = NO;
+        [self.store addObjectsFromArray:temporaryStore];
         [self sortStore];
         [self updateObjects];
     }

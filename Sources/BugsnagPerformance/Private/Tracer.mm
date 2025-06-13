@@ -23,6 +23,8 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Batch> batch,
                FrameMetricsCollector *frameMetricsCollector,
                std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+               BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
+               BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
@@ -32,6 +34,8 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 , batch_(batch)
 , frameMetricsCollector_(frameMetricsCollector)
 , conditionTimeoutExecutor_(conditionTimeoutExecutor)
+, onSpanStartCallbacks_(onSpanStartCallbacks)
+, onSpanEndCallbacks_(onSpanEndCallbacks)
 , onSpanStarted_(onSpanStarted)
 {}
 
@@ -243,7 +247,7 @@ void Tracer::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) {
         return;
     }
 
-    for (BugsnagPerformanceSpanStartCallback callback: onSpanStartCallbacks_) {
+    for (BugsnagPerformanceSpanStartCallback callback: [onSpanStartCallbacks_ objects]) {
         @try {
             callback(span);
         } @catch(NSException *e) {
@@ -262,7 +266,7 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     }
 
     CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-    for (BugsnagPerformanceSpanEndCallback callback: onSpanEndCallbacks_) {
+    for (BugsnagPerformanceSpanEndCallback callback: [onSpanEndCallbacks_ objects]) {
         BOOL shouldDiscardSpan = false;
         @try {
             shouldDiscardSpan = !callback(span);

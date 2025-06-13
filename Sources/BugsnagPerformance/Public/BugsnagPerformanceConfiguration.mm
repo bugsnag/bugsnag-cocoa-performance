@@ -82,6 +82,7 @@ static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
+        _plugins = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
         _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
@@ -284,6 +285,10 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
 
 - (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback {
     [self.onSpanEndCallbacks addObject:callback];
+}
+
+- (void)addPlugin:(id<BugsnagPerformancePlugin>)plugin {
+    [self.plugins addObject:plugin];
 }
 
 @end

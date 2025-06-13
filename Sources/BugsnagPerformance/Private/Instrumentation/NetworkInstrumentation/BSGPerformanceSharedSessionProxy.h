@@ -2,7 +2,7 @@
 //  BSGPerformanceSharedSessionProxy.h
 //  BugsnagPerformance-iOS
 //
-//  Created by Robert B on 24/10/2024.
+//  Created by Robert Bartoszewski on 24/10/2024.
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 

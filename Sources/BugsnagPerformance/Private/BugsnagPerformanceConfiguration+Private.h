@@ -2,7 +2,7 @@
 //  BugsnagPerformanceConfiguration+Private.h
 //  BugsnagPerformance
 //
-//  Created by Robert B on 16/03/2023.
+//  Created by Robert Bartoszewski on 16/03/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSMutableArray<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks;
 
 @property (nonatomic) NSMutableArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks;
+
+@property (nonatomic) NSMutableArray<id<BugsnagPerformancePlugin>> *plugins;
 
 @end
 

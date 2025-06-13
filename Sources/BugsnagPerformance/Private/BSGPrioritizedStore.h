@@ -8,6 +8,8 @@
 
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface BSGPrioritizedStore<__covariant ObjectType> : NSObject
 
 typedef void (^ BSGPrioritizedStoreAddBlock)(ObjectType object, BugsnagPerformancePriority priority);
@@ -19,3 +21,5 @@ typedef void (^ BSGPrioritizedStoreBatchBlock)(BSGPrioritizedStoreAddBlock addBl
 - (void)batchAddObjects:(BSGPrioritizedStoreBatchBlock)batchBlock;
 
 @end
+
+NS_ASSUME_NONNULL_END

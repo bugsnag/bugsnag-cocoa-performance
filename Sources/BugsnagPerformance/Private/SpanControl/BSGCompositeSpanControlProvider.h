@@ -9,10 +9,9 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 #import "../BSGPrioritizedStore.h"
+#import "../BugsnagPerformanceSpanControlProvider+Private.h"
 
-typedef void (^ BSGCompositeSpanControlProviderAddBlock)(id<BugsnagPerformanceSpanControlProvider> object,
-                                                         BugsnagPerformancePriority priority);
-typedef void (^ BSGCompositeSpanControlProviderBatchBlock)(BSGPrioritizedStoreAddBlock addBlock);
+typedef void (^ BSGCompositeSpanControlProviderBatchBlock)(AddSpanControlProviderBlock addBlock);
 
 @interface BSGCompositeSpanControlProvider : NSObject <BugsnagPerformanceSpanControlProvider>
 
