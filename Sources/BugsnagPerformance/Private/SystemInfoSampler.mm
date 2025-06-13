@@ -94,7 +94,7 @@ void SystemInfoSampler::recordSample() {
     if (shouldSampleCPU_) {
         auto taskInfo = systemInfo_.taskTimeInfo();
         if (taskInfo != nullptr) {
-            double activeProcessorCount = (double) systemInfo_.activeProcessorCount();
+            double activeProcessorCount = MAX((double) systemInfo_.activeProcessorCount(), 1.0);
             sample.processCPUPct = calcCPUUsagePct(lastSampledAtTime_,
                                                    lastSampleProcessCPU_,
                                                    sample.sampledAt,
