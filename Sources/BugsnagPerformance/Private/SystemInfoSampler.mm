@@ -81,10 +81,11 @@ static double calcCPUUsagePct(CFAbsoluteTime earlierSampledAtTime,
         return 0;
     }
     auto diffCPUTimeSec = timeValToTimeInterval(currentTimeValue) - timeValToTimeInterval(earlierTimeValue);
+    auto result = diffCPUTimeSec / diffClockSec * 100;
     BSGLogTrace(@"calcCPUUsagePct(): CPU %f - %f = %f, so returning %f / %f * 100 = %f",
                 timeValToTimeInterval(currentTimeValue), timeValToTimeInterval(earlierTimeValue), diffCPUTimeSec,
-                diffCPUTimeSec, diffClockSec, diffCPUTimeSec / diffClockSec * 100);
-    return diffCPUTimeSec / diffClockSec * 100;
+                diffCPUTimeSec, diffClockSec, result);
+    return result;
 }
 
 void SystemInfoSampler::recordSample() {
@@ -93,10 +94,11 @@ void SystemInfoSampler::recordSample() {
     if (shouldSampleCPU_) {
         auto taskInfo = systemInfo_.taskTimeInfo();
         if (taskInfo != nullptr) {
+            double activeProcessorCount = MAX((double) systemInfo_.activeProcessorCount(), 1.0);
             sample.processCPUPct = calcCPUUsagePct(lastSampledAtTime_,
                                                    lastSampleProcessCPU_,
                                                    sample.sampledAt,
-                                                   taskInfo->user_time);
+                                                   taskInfo->user_time) / activeProcessorCount;
             lastSampleProcessCPU_ = taskInfo->user_time;
             BSGLogTrace(@"SystemInfoSampler::recordSample: taskInfo: %d.%d = %f", taskInfo->user_time.seconds, taskInfo->user_time.microseconds, sample.processCPUPct);
         }

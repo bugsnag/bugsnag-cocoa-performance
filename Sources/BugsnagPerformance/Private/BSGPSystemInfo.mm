@@ -130,16 +130,3 @@ UIDeviceBatteryState BSGPSystemInfo::batteryState() {
 NSUInteger BSGPSystemInfo::activeProcessorCount() {
     return NSProcessInfo.processInfo.activeProcessorCount;
 }
-
-double BSGPSystemInfo::calcCPUUsagePct(CFAbsoluteTime lastSampledAtSec,
-                                       uint64_t *lastTimeValueUSInOut,
-                                       CFAbsoluteTime nowSampledAtSec,
-                                       time_value_t nowTimeValue) {
-    uint64_t lastTimeValueUS = *lastTimeValueUSInOut;
-    uint64_t nowTimeValueUS = (uint64_t)(nowTimeValue.seconds * TIME_MICROS_MAX + nowTimeValue.microseconds);
-    *lastTimeValueUSInOut = nowTimeValueUS;
-
-    double diffCPUTimeSec = (double)(nowTimeValueUS - lastTimeValueUS) / TIME_MICROS_MAX;
-    CFAbsoluteTime diffClockSec = nowSampledAtSec - lastSampledAtSec;
-    return (double)diffCPUTimeSec / diffClockSec * 100;
-}

@@ -3,6 +3,11 @@ Changelog
 
 ## TBD
 
+### Bug fixes
+
+* Fixed issue where reported total CPU usage values were not normalized.
+  [444](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/444)
+
 ### Enhancements
 
 * Set default endpoints based on API key [#441](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/441)
