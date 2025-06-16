@@ -345,7 +345,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
-    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
+    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
     auto span = startSpan(name, options, BSGTriStateUnset);
     span.kind = SPAN_KIND_CLIENT;
     [span internalSetMultipleAttributes:spanAttributesProvider_->initialNetworkSpanAttributes()];

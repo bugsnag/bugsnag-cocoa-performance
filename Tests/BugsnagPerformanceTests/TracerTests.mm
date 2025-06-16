@@ -147,6 +147,24 @@ static BugsnagPerformanceConfiguration *newConfig() {
     XCTAssertEqualObjects(span.name, @"[HTTP/GET]");
 }
 
+- (void)testNetworkSpanWithUnknownMethod {
+    auto stackingHandler = std::make_shared<SpanStackingHandler>();
+    auto sampler = std::make_shared<Sampler>();
+    sampler->setProbability(1.0);
+    auto batch = std::make_shared<Batch>();
+    auto frameMetricsCollector = [FrameMetricsCollector new];
+    auto conditionTimeoutExecutor = std::make_shared<ConditionTimeoutExecutor>();
+    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
+    auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    SpanOptions spanOptions;
+    auto span = tracer->startNetworkSpan(nil, spanOptions);
+    XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
+    XCTAssertTrue([[span getAttribute:@"bugsnag.span.category"] isEqualToString: @"network"]);
+    XCTAssertEqualObjects(span.name, @"[HTTP/unknown]");
+}
+
 - (void)testStartSpan {
     auto expectedSamplingProbability = 0.4;
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
