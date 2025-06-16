@@ -143,7 +143,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(@"GET", spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
-    XCTAssertTrue([[span getAttribute:@"bugsnag.span.category"] isEqualToString: @"network"]);
+    XCTAssertEqualObjects([span getAttribute:@"bugsnag.span.category"], @"network");
     XCTAssertEqualObjects(span.name, @"[HTTP/GET]");
 }
 
@@ -161,7 +161,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(nil, spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
-    XCTAssertTrue([[span getAttribute:@"bugsnag.span.category"] isEqualToString: @"network"]);
+    XCTAssertEqualObjects([span getAttribute:@"bugsnag.span.category"], @"network");
     XCTAssertEqualObjects(span.name, @"[HTTP/unknown]");
 }
 

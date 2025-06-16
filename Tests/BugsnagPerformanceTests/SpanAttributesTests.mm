@@ -17,6 +17,13 @@ using namespace bugsnag;
 
 @implementation SpanAttributesTests
 
+- (void)testInitialNetworkSpanAttributes {
+    SpanAttributesProvider provider;
+    auto attributes = provider.initialNetworkSpanAttributes();
+    XCTAssertEqual(1U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"network");
+}
+
 - (void)testNetworkSpanUrlAttributes {
     SpanAttributesProvider provider;
     NSURL *url = [NSURL URLWithString:@"https://bugsnag.com"];
