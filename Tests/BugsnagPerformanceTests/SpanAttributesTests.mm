@@ -17,6 +17,14 @@ using namespace bugsnag;
 
 @implementation SpanAttributesTests
 
+- (void)testInitialNetworkSpanAttributes {
+    SpanAttributesProvider provider;
+    auto attributes = provider.initialNetworkSpanAttributes();
+    XCTAssertEqual(2U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"network");
+    XCTAssertEqualObjects(attributes[@"http.url"], @"unknown");
+}
+
 - (void)testNetworkSpanUrlAttributes {
     SpanAttributesProvider provider;
     NSURL *url = [NSURL URLWithString:@"https://bugsnag.com"];
@@ -39,6 +47,14 @@ using namespace bugsnag;
 
     attributes = provider.networkSpanUrlAttributes(nil, nil);
     XCTAssertEqual(0U, attributes.count);
+}
+
+- (void)testInternalErrorAttributes {
+    SpanAttributesProvider provider;
+    NSError *error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    auto attributes = provider.internalErrorAttributes(error);
+    XCTAssertEqual(1U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.instrumentation_message"], @"Error Domain=test Code=1 \"(null)\"");
 }
 
 - (void)testAppStartPhaseSpanAttributes {

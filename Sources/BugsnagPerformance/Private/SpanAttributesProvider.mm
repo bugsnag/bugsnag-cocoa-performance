@@ -109,6 +109,15 @@ static uint64_t CFAbsoluteTimeToUTCNanos(CFAbsoluteTime time) {
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::initialNetworkSpanAttributes() noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::initialNetworkSpanAttributes");
+    auto attributes = [NSMutableDictionary new];
+    attributes[@"bugsnag.span.category"] = @"network";
+    attributes[@"http.url"] = @"unknown";
+    return attributes;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
                                               NSURLSessionTaskMetrics *metrics,
@@ -122,7 +131,7 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
     }
     if (encounteredError != nil) {
         BSGLogTrace(@"SpanAttributesProvider::networkSpanAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
-        attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
+        [attributes addEntriesFromDictionary:internalErrorAttributes(encounteredError)];
     }
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = getTaskRequest(task, nil).HTTPMethod;
@@ -144,6 +153,16 @@ SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encountere
     }
     if (encounteredError != nil) {
         BSGLogTrace(@"SpanAttributesProvider::networkSpanUrlAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
+        [attributes addEntriesFromDictionary:internalErrorAttributes(encounteredError)];
+    }
+    return attributes;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::internalErrorAttributes(NSError *encounteredError) noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::errorAttributes");
+    auto attributes = [NSMutableDictionary new];
+    if (encounteredError != nil) {
         attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
     }
     return attributes;

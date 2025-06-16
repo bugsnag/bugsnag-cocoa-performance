@@ -626,9 +626,12 @@ Feature: Automatic instrumentation spans
     * a span field "kind" equals 3
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.instrumentation_message" exists
     * a span string attribute "bugsnag.instrumentation_message" matches the regex "Error.*"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
+    * a span string attribute "bugsnag.span.category" equals "network"
+    * a span string attribute "http.url" equals "unknown"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"

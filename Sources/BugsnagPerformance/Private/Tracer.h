@@ -35,6 +35,7 @@ public:
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
            std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
            BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
            BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
            void (^onSpanStarted)()) noexcept;
@@ -86,6 +87,7 @@ private:
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
