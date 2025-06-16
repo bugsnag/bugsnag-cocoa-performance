@@ -109,6 +109,14 @@ static uint64_t CFAbsoluteTimeToUTCNanos(CFAbsoluteTime time) {
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::initialNetworkSpanAttributes() noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::initialNetworkSpanAttributes");
+    auto attributes = [NSMutableDictionary new];
+    attributes[@"bugsnag.span.category"] = @"network";
+    return attributes;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
                                               NSURLSessionTaskMetrics *metrics,

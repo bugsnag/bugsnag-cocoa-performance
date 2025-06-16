@@ -23,6 +23,7 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Batch> batch,
                FrameMetricsCollector *frameMetricsCollector,
                std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
                BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                void (^onSpanStarted)()) noexcept
@@ -34,6 +35,7 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 , batch_(batch)
 , frameMetricsCollector_(frameMetricsCollector)
 , conditionTimeoutExecutor_(conditionTimeoutExecutor)
+, spanAttributesProvider_(spanAttributesProvider)
 , onSpanStartCallbacks_(onSpanStartCallbacks)
 , onSpanEndCallbacks_(onSpanEndCallbacks)
 , onSpanStarted_(onSpanStarted)
@@ -346,6 +348,7 @@ Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
     auto span = startSpan(name, options, BSGTriStateUnset);
     span.kind = SPAN_KIND_CLIENT;
+    [span internalSetMultipleAttributes:spanAttributesProvider_->initialNetworkSpanAttributes()];
     return span;
 }
 

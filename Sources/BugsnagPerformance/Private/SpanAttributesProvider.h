@@ -15,6 +15,7 @@ public:
     SpanAttributesProvider() noexcept;
     ~SpanAttributesProvider() {};
     
+    NSMutableDictionary *initialNetworkSpanAttributes() noexcept;
     NSMutableDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
     NSMutableDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
                                                NSError *encounteredError) noexcept;
