@@ -2,7 +2,7 @@
 //  BugsnagPerformanceRemoteSpanContextTests.m
 //  BugsnagPerformance-iOSTests
 //
-//  Created by Robert B on 07/05/2025.
+//  Created by Robert Bartoszewski on 07/05/2025.
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 

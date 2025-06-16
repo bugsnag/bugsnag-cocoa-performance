@@ -18,6 +18,7 @@
 #import "WeakSpansList.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
+#import "BSGPrioritizedStore.h"
 
 #import <memory>
 
@@ -34,13 +35,14 @@ public:
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
            std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+           BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
+           BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
-        onSpanEndCallbacks_ = config.onSpanEndCallbacks;
         attributeCountLimit_ = config.attributeCountLimit;
         enabledMetrics_ = [config.enabledMetrics clone];
     };
@@ -90,7 +92,8 @@ private:
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
-    NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     NSUInteger attributeCountLimit_{128};
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
@@ -109,5 +112,6 @@ private:
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
+    void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span);
 };
 }

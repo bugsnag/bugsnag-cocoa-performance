@@ -2,7 +2,7 @@
 //  SpanCondition.m
 //  BugsnagPerformance-iOS
 //
-//  Created by Robert B on 15/01/2025.
+//  Created by Robert Bartoszewski on 15/01/2025.
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 

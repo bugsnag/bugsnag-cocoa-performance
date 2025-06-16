@@ -383,7 +383,7 @@ Feature: Spans with collected metrics
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_overhead" is less than 10.0
 
-  Scenario: Do heavy work on a bg thread while collecting CPU samples
+  Scenario: Do heavy work on a background threads while collecting CPU samples
     Given I load scenario "CPUMetricsScenario"
     And I configure bugsnag "cpuMetrics" to "true"
     And I configure scenario "run_delay" to "1.1"
@@ -410,6 +410,7 @@ Feature: Spans with collected metrics
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span array attribute "bugsnag.system.cpu_measures_total" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 50.0
+    * a span float attribute "bugsnag.system.cpu_mean_total" is less than 100.1
     * a span array attribute "bugsnag.system.cpu_measures_main_thread" contains from 3 to 4 elements
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
     * a span float attribute "bugsnag.system.cpu_mean_main_thread" is less than 10.0

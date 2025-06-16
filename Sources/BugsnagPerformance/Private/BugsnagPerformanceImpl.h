@@ -29,6 +29,8 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "SystemInfoSampler.h"
+#import "SpanControl/BSGCompositeSpanControlProvider.h"
+#import "BSGPluginManager.h"
 
 #import <mutex>
 
@@ -77,6 +79,10 @@ public:
 
     void didStartViewLoadSpan(NSString *name) noexcept { instrumentation_->didStartViewLoadSpan(name); }
     void willCallMainFunction() noexcept { instrumentation_->willCallMainFunction(); }
+    
+    id<BugsnagPerformanceSpanControl> getSpanControls(BugsnagPerformanceSpanQuery *query) noexcept {
+        return [spanControlProvider_ getSpanControlsWithQuery:query];
+    }
 
 private:
     std::shared_ptr<Persistence> persistence_;
@@ -89,6 +95,9 @@ private:
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
+    BSGCompositeSpanControlProvider *spanControlProvider_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
@@ -101,6 +110,7 @@ private:
     OtlpTraceEncoding traceEncoding_;
 
     BugsnagPerformanceConfiguration *configuration_;
+    BSGPluginManager *pluginManager_;
     std::shared_ptr<OtlpUploader> uploader_;
     std::mutex viewControllersToSpansMutex_;
     CFAbsoluteTime probabilityExpiry_{0};

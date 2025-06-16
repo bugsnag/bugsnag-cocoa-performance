@@ -25,6 +25,16 @@ using namespace bugsnag;
 #define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
 
 #define DEFAULT_URL_FORMAT @"https://%@.otlp.bugsnag.com/v1/traces"
+#define DEFAULT_HUB_URL_FORMAT @"https://%@.otlp.insighthub.smartbear.com/v1/traces"
+#define HUB_API_PREFIX @"00000"
+
+static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+    NSString *fmt = [apiKey hasPrefix:HUB_API_PREFIX]
+        ? DEFAULT_HUB_URL_FORMAT
+        : DEFAULT_URL_FORMAT;
+    return nsurlWithString([NSString stringWithFormat:fmt, apiKey], nil);
+}
 
 @implementation BugsnagPerformanceEnabledMetrics
 
@@ -65,12 +75,14 @@ using namespace bugsnag;
     if ((self = [super init])) {
         _internal = [BSGInternalConfiguration new];
         _apiKey = [apiKey copy];
-        _endpoint = nsurlWithString([NSString stringWithFormat: DEFAULT_URL_FORMAT, apiKey], nil);
+        _endpoint = DefaultEndpointForKey(apiKey);
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
+        _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
+        _plugins = [NSMutableArray array];
         _attributeArrayLengthLimit = DEFAULT_ATTRIBUTE_ARRAY_LENGTH_LIMIT;
         _attributeStringValueLimit = DEFAULT_ATTRIBUTE_STRING_VALUE_LIMIT;
         _attributeCountLimit = DEFAULT_ATTRIBUTE_COUNT_LIMIT;
@@ -125,9 +137,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
 
 - (void)setApiKey:(NSString *)apiKey {
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
-    _apiKey = apiKey;
+    _apiKey = [apiKey copy];
     if (!_didSetCustomEndpoint) {
-        _endpoint = nsurlWithString([NSString stringWithFormat: DEFAULT_URL_FORMAT, apiKey], nil);
+        _endpoint = DefaultEndpointForKey(apiKey);
     }
 }
 
@@ -267,8 +279,16 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
            [self.enabledReleaseStages containsObject:self.releaseStage ?: @""];
 }
 
+- (void)addOnSpanStartCallback:(BugsnagPerformanceSpanStartCallback)callback {
+    [self.onSpanStartCallbacks addObject:callback];
+}
+
 - (void) addOnSpanEndCallback:(BugsnagPerformanceSpanEndCallback) callback {
     [self.onSpanEndCallbacks addObject:callback];
+}
+
+- (void)addPlugin:(id<BugsnagPerformancePlugin>)plugin {
+    [self.plugins addObject:plugin];
 }
 
 @end

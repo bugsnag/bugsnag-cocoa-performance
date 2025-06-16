@@ -187,11 +187,6 @@ public:
 
     uint64_t physicalMemoryBytesTotal() { return physicalMemoryBytesTotal_; }
 
-    double calcCPUUsagePct(CFAbsoluteTime lastSampledAtSec,
-                           uint64_t *lastTimeValueUSInOut,
-                           CFAbsoluteTime nowSampledAtSec,
-                           time_value_t nowTimeValue);
-
 private:
     void deallocAllThreads();
     void deallocCPUInfo();

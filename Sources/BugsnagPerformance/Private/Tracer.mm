@@ -23,6 +23,8 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Batch> batch,
                FrameMetricsCollector *frameMetricsCollector,
                std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+               BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
+               BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
@@ -32,6 +34,8 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 , batch_(batch)
 , frameMetricsCollector_(frameMetricsCollector)
 , conditionTimeoutExecutor_(conditionTimeoutExecutor)
+, onSpanStartCallbacks_(onSpanStartCallbacks)
+, onSpanEndCallbacks_(onSpanEndCallbacks)
 , onSpanStarted_(onSpanStarted)
 {}
 
@@ -149,6 +153,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
     }
     [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
+    
+    callOnSpanStartCallbacks(span);
+    
     onSpanStarted_();
     return span;
 }
@@ -235,6 +242,20 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
     return condition;
 }
 
+void Tracer::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) {
+    if(span == nil) {
+        return;
+    }
+
+    for (BugsnagPerformanceSpanStartCallback callback: [onSpanStartCallbacks_ objects]) {
+        @try {
+            callback(span);
+        } @catch(NSException *e) {
+            BSGLogError(@"Tracer::callOnSpanStartCallbacks: span onStart callback threw exception: %@", e);
+        }
+    }
+}
+
 void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     if(span == nil) {
         return;
@@ -245,7 +266,7 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     }
 
     CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-    for (BugsnagPerformanceSpanEndCallback callback: onSpanEndCallbacks_) {
+    for (BugsnagPerformanceSpanEndCallback callback: [onSpanEndCallbacks_ objects]) {
         BOOL shouldDiscardSpan = false;
         @try {
             shouldDiscardSpan = !callback(span);
@@ -384,7 +405,7 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
     [prewarmSpans_ removeAllObjects];
 }
 
-bool 
+bool
 Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
@@ -393,7 +414,7 @@ Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
             return false;
         case BSGTriStateUnset:
             return enabledMetrics_.rendering &&
-            !span.wasStartOrEndTimeProvided && 
+            !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }
 }

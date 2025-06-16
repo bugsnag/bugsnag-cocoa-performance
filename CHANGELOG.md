@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## 1.14.0 (2025-06-16)
+
+### Bug fixes
+
+* Fixed issue where reported total CPU usage values were not normalized.
+  [444](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/444)
+
+### Enhancements
+
+* Set default endpoints based on API key. [441](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/441)
+
+* OnStart span callbacks can now be registered in the configuration. These callbacks are called on all spans.
+  [437](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/437)
+
+* Add plugin interface for future plugin development. [443](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/443)
+
 ## 1.13.0 (2025-05-12)
 
 ### Bug fixes
