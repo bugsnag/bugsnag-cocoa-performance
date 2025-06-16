@@ -113,6 +113,7 @@ SpanAttributesProvider::initialNetworkSpanAttributes() noexcept {
     BSGLogTrace(@"SpanAttributesProvider::initialNetworkSpanAttributes");
     auto attributes = [NSMutableDictionary new];
     attributes[@"bugsnag.span.category"] = @"network";
+    attributes[@"http.url"] = @"unknown";
     return attributes;
 }
 

@@ -20,8 +20,9 @@ using namespace bugsnag;
 - (void)testInitialNetworkSpanAttributes {
     SpanAttributesProvider provider;
     auto attributes = provider.initialNetworkSpanAttributes();
-    XCTAssertEqual(1U, attributes.count);
+    XCTAssertEqual(2U, attributes.count);
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"network");
+    XCTAssertEqualObjects(attributes[@"http.url"], @"unknown");
 }
 
 - (void)testNetworkSpanUrlAttributes {

@@ -262,12 +262,10 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
         SpanOptions options;
         options.makeCurrentContext = false;
         auto span = tracer_->startNetworkSpan(req.HTTPMethod, options);
-        [span end];
         if (errorFromGetRequest) {
-            [span forceMutate:^() {
-                [span internalSetMultipleAttributes:spanAttributesProvider_->internalErrorAttributes(errorFromGetRequest)];
-            }];
+            [span internalSetMultipleAttributes:spanAttributesProvider_->internalErrorAttributes(errorFromGetRequest)];
         }
+        [span end];
         
         return;
     }
