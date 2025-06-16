@@ -19,6 +19,9 @@ public:
     NSMutableDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
     NSMutableDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
                                                NSError *encounteredError) noexcept;
+    
+    NSMutableDictionary *internalErrorAttributes(NSError *encounteredError) noexcept;
+    
     NSMutableDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSMutableDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSMutableDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;

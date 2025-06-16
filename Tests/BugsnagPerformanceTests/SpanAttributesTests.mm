@@ -48,6 +48,14 @@ using namespace bugsnag;
     XCTAssertEqual(0U, attributes.count);
 }
 
+- (void)testInternalErrorAttributes {
+    SpanAttributesProvider provider;
+    NSError *error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+    auto attributes = provider.internalErrorAttributes(error);
+    XCTAssertEqual(1U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.instrumentation_message"], @"Error Domain=test Code=1 \"(null)\"");
+}
+
 - (void)testAppStartPhaseSpanAttributes {
     SpanAttributesProvider provider;
 

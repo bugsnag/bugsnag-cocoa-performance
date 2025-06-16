@@ -261,7 +261,14 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
         BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Not fully tracing task with null URL");
         SpanOptions options;
         options.makeCurrentContext = false;
-        [tracer_->startNetworkSpan(req.HTTPMethod, options) end];
+        auto span = tracer_->startNetworkSpan(req.HTTPMethod, options);
+        [span end];
+        if (errorFromGetRequest) {
+            [span forceMutate:^() {
+                [span internalSetMultipleAttributes:spanAttributesProvider_->internalErrorAttributes(errorFromGetRequest)];
+            }];
+        }
+        
         return;
     }
     BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Got request from task %@ with req %@, URL %@ and error %@", task.class, req, info.url, errorFromGetRequest);
