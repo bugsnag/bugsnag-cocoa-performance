@@ -268,7 +268,7 @@ SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleDa
 
     NSMutableDictionary *result = [NSMutableDictionary new];
 
-    if (timestamps.count < 2) {
+    if (timestamps.count < 2 || processSampleCount == 0) {
         return result;
     }
 
