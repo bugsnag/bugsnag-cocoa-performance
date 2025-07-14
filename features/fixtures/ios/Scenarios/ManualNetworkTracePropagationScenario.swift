@@ -18,9 +18,9 @@ class ManualNetworkTracePropagationScenario: Scenario {
         self.urlSession = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
     }
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = false
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = false
     }
 
     func query(url: URL) {

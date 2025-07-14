@@ -12,6 +12,43 @@ protocol CommandReceiver {
     func receiveCommand(command: MazeRunnerCommand)
 }
 
+func copyDirectory(src: URL, dst: URL) {
+    logInfo("Attempting to copy \"\(src)\" to \"\(dst)\"")
+    let fm = FileManager.default
+    if fm.fileExists(atPath: src.path) {
+        do {
+            try fm.copyItem(at: src, to: dst)
+        } catch {
+            logError("Failed to copy \"\(src)\" to \"\(dst)\": \(error)")
+        }
+    }
+}
+
+func copyCachesToDocumentsFolder() {
+    let fm = FileManager.default
+    let identifier = Bundle.main.bundleIdentifier ?? ProcessInfo.processInfo.processName
+    let cachesUrl = fm.urls(for: .cachesDirectory, in: .userDomainMask)[0]
+    let documentsUrl = fm.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let rootPathComponent = "bugsnag-performance-\(identifier)"
+    let sharedPathComponent = "bugsnag-shared-\(identifier)"
+    let dstCache = documentsUrl.appendingPathComponent("BugsnagCachesCopy")
+    if fm.fileExists(atPath: dstCache.path) {
+        do {
+            try fm.removeItem(at: dstCache)
+        } catch {
+            logError("Failed to remove \"\(dstCache)\": \(error)")
+        }
+    }
+    do {
+        try fm.createDirectory(atPath: dstCache.path, withIntermediateDirectories: true)
+    } catch {
+        logError("Failed to create \"\(dstCache)\": \(error)")
+    }
+
+    copyDirectory(src: cachesUrl.appendingPathComponent(rootPathComponent), dst: dstCache.appendingPathComponent(rootPathComponent))
+    copyDirectory(src: cachesUrl.appendingPathComponent(sharedPathComponent), dst: dstCache.appendingPathComponent(sharedPathComponent))
+}
+
 class Fixture: NSObject, CommandReceiver {
     static let defaultMazeRunnerURL = URL(string: "http://bs-local.com:9339")!
 
@@ -19,6 +56,11 @@ class Fixture: NSObject, CommandReceiver {
     var commandReaderThread: CommandReaderThread?
     var fixtureConfig: FixtureConfig = FixtureConfig(mazeRunnerBaseAddress: defaultMazeRunnerURL)
     var scenario: Scenario? = nil
+
+    override init() {
+        super.init()
+        copyCachesToDocumentsFolder()
+    }
 
     func start() {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -96,10 +138,12 @@ class Fixture: NSObject, CommandReceiver {
         let scenarioClass: AnyClass = NSClassFromString("Fixture.\(scenarioName)")!
         logInfo("Loaded scenario class: \(scenarioClass)")
         scenario = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
-        logInfo("Configuring scenario in class \(scenarioClass)")
-        scenario!.configure()
+        logInfo("Calling scenario post-load")
+        scenario!.postLoad()
         logInfo("Clearing persistent data")
         scenario!.clearPersistentData()
+        logInfo("Setting up initial Bugsnag configuration for \(String(describing: scenario))")
+        scenario!.setInitialBugsnagConfiguration()
     }
 
     private func configureBugsnag(path: String, value: String) {
@@ -200,13 +244,24 @@ class Fixture: NSObject, CommandReceiver {
 }
 
 class PresetFixture: Fixture {
+    var scenarioConfig: Dictionary<String, String>
+    var bugsnagConfig: Dictionary<String, String>
     let scenarioName: String
-    init(scenarioName: String) {
+
+    init(scenarioName: String, scenarioConfig: Dictionary<String, String>?, bugsnagConfig: Dictionary<String, String>?) {
         self.scenarioName = scenarioName
+        self.scenarioConfig = scenarioConfig ?? [:]
+        self.bugsnagConfig = bugsnagConfig ?? [:]
     }
 
     override func start() {
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "load_scenario", args: ["scenario": scenarioName], message: ""))
+        for (key, value) in bugsnagConfig {
+            receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "configure_bugsnag", args: ["path": key, "value": value], message: ""))
+        }
+        for (key, value) in scenarioConfig {
+            receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "configure_scenario", args: ["path": key, "value": value], message: ""))
+        }
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "start_bugsnag", args: [:], message: ""))
         receiveCommand(command: MazeRunnerCommand(uuid: "0", action: "run_loaded_scenario", args: [:], message: ""))
     }

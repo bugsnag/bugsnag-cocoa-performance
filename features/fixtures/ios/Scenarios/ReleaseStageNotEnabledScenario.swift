@@ -10,10 +10,10 @@ import BugsnagPerformance
 @objcMembers
 class ReleaseStageNotEnabledScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.releaseStage = "dev"
-        config.enabledReleaseStages = Set(arrayLiteral: "staging", "release")
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.releaseStage = "dev"
+        bugsnagPerfConfig.enabledReleaseStages = Set(arrayLiteral: "staging", "release")
     }
     
     override func run() {

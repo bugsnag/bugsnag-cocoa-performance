@@ -77,6 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
                     parentId:(SpanId) parentId
                    startTime:(CFAbsoluteTime) startTime
                   firstClass:(BSGTriState) firstClass
+         samplingProbability:(double) samplingProbability
          attributeCountLimit:(NSUInteger)attributeCountLimit
               metricsOptions:(MetricsOptions) metricsOptions
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet

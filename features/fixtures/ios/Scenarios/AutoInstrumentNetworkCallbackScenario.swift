@@ -10,10 +10,10 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkCallbackScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
-        config.networkRequestCallback = { (origInfo: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
+        bugsnagPerfConfig.networkRequestCallback = { (origInfo: BugsnagPerformanceNetworkRequestInfo) -> BugsnagPerformanceNetworkRequestInfo in
             let info = self.filterAdminMazeRunnerNetRequests(info: origInfo)
 
             let testUrl = info.url

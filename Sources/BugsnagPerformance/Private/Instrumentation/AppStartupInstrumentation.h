@@ -85,5 +85,6 @@ private:
     void beginPostMainSpan() noexcept;
     void beginUIInitSpan() noexcept;
     AppStartupInstrumentationState *instrumentationState() noexcept;
+    bool isAppStartInProgress() noexcept;
 };
 }

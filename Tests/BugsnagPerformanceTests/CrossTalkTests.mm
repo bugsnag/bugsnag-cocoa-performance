@@ -10,6 +10,8 @@
 #import <objc/runtime.h>
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import <BugsnagPerformance/BugsnagPerformance.h>
+#import "BugsnagPerformanceSpan+Private.h"
+#import "IdGenerator.h"
 
 typedef void (^AppStartCallback)(BugsnagPerformanceSpan *);
 typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
@@ -209,13 +211,67 @@ static id hostMissingCrossTalkAPI = nil;
 - (void)testAddWillEndUIInitSpanCallbackV1 {
     NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"addWillEndUIInitSpanCallbackV1:" toSelector:@selector(addWillEndUIInitSpanCallback:)];
     XCTAssertNil(err);
-    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndUIInitSpanCallback:^(BugsnagPerformanceSpan *) {}];
+    
+    __block BOOL didCallWillEndUIInitSpan = NO;
+    __block BugsnagPerformanceSpan *actualSpan;
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndUIInitSpanCallback:^(BugsnagPerformanceSpan *span) {
+        didCallWillEndUIInitSpan = YES;
+        actualSpan = span;
+    }];
+    MetricsOptions metricsOptions;
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"a"
+                                                                        traceId:IdGenerator::generateTraceId()
+                                                                         spanId:IdGenerator::generateSpanId()
+                                                                       parentId:0
+                                                                      startTime:0
+                                                                     firstClass:BSGTriStateUnset
+                                                            samplingProbability:1.0
+                                                            attributeCountLimit:128
+                                                                 metricsOptions:metricsOptions
+                                                                   onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:span];
+    
+    XCTAssertTrue(didCallWillEndUIInitSpan);
+    XCTAssertEqual(actualSpan.spanId, span.spanId);
+    XCTAssertEqual(actualSpan.traceId.hi, span.traceId.hi);
+    XCTAssertEqual(actualSpan.traceId.lo, span.traceId.lo);
 }
 
 - (void)testAddWillEndViewLoadSpanCallbackV1 {
     NSError *err = [ExampleBugsnagPerformanceCrossTalkAPIClient mapAPINamed:@"addWillEndViewLoadSpanCallbackV1:" toSelector:@selector(addWillEndViewLoadSpanCallback:)];
     XCTAssertNil(err);
-    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndViewLoadSpanCallback:^(BugsnagPerformanceSpan *, UIViewController *) {}];
+    __block BOOL didCallWillEndViewLoadSpan = NO;
+    __block BugsnagPerformanceSpan *actualSpan;
+    __block UIViewController *actualViewController;
+    [ExampleBugsnagPerformanceCrossTalkAPIClient.sharedInstance addWillEndViewLoadSpanCallback:^(BugsnagPerformanceSpan *span, UIViewController *viewController) {
+        didCallWillEndViewLoadSpan = YES;
+        actualSpan = span;
+        actualViewController = viewController;
+    }];
+    
+    MetricsOptions metricsOptions;
+    BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:@"a"
+                                                                        traceId:IdGenerator::generateTraceId()
+                                                                         spanId:IdGenerator::generateSpanId()
+                                                                       parentId:0
+                                                                      startTime:0
+                                                                     firstClass:BSGTriStateUnset
+                                                            samplingProbability:1.0
+                                                            attributeCountLimit:128
+                                                                 metricsOptions:metricsOptions
+                                                                   onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                   onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+    UIViewController *viewController = [UIViewController new];
+    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndViewLoadSpan:span viewController:viewController];
+    
+    XCTAssertTrue(didCallWillEndViewLoadSpan);
+    XCTAssertEqual(actualSpan.spanId, span.spanId);
+    XCTAssertEqual(actualSpan.traceId.hi, span.traceId.hi);
+    XCTAssertEqual(actualSpan.traceId.lo, span.traceId.lo);
+    XCTAssertEqual(actualViewController, viewController);
 }
 
 - (void)testFindSpanForCategoryV1 {

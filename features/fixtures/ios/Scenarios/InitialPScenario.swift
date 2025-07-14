@@ -11,9 +11,9 @@ import BugsnagPerformance
 class InitialPScenario: Scenario {
     let initialDelayBeforeSpans = 5.0
 
-    override func configure() {
-        super.configure()
-        config.internal.initialRecurringWorkDelay = initialDelayBeforeSpans
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.initialRecurringWorkDelay = initialDelayBeforeSpans
     }
     override func run() {
         // Wait to receive an initial P value response.

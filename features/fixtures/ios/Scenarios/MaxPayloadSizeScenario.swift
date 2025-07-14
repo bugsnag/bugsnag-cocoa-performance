@@ -10,11 +10,11 @@ import BugsnagPerformance
 @objcMembers
 class MaxPayloadSizeScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.internal.maxPackageContentLength = 10
-        config.internal.autoTriggerExportOnBatchSize = 1
-        config.internal.performWorkInterval = 1
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.maxPackageContentLength = 10
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
+        bugsnagPerfConfig.internal.performWorkInterval = 1
     }
 
     override func run() {

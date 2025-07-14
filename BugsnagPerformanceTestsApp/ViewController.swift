@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  BugsnagPerformanceTestsApp
 //
-//  Created by Robert B on 12/04/2023.
+//  Created by Robert Bartoszewski on 12/04/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 

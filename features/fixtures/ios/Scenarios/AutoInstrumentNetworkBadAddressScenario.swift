@@ -10,9 +10,9 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkBadAddressScenario: Scenario {
 
-    override func configure() {
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {
@@ -23,6 +23,6 @@ class AutoInstrumentNetworkBadAddressScenario: Scenario {
     override func run() {
         // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
-        query(string: "/?status=200")
+        query(string: "/?status=201")
     }
 }

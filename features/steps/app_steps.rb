@@ -282,6 +282,11 @@ Then('a span array attribute {string} contains {int} elements') do |attribute, c
   Maze.check.true(array_contents.length() == count)
 end
 
+Then('a span array attribute {string} contains from {int} to {int} elements') do |attribute, count_low, count_high|
+  array_contents = get_array_attribute_contents(attribute)
+  Maze.check.true(array_contents.length() >= count_low && array_contents.length() <= count_high)
+end
+
 Then('a span named {string} is a child of span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
@@ -322,6 +327,13 @@ Then('a span named {string} ended after a span named {string}') do |name1, name2
   first_span = spans.find { |span| span['name'] == name1 }
   second_span = spans.find { |span| span['name'] == name2 }
   Maze.check.true(first_span['endTimeUnixNano'].to_i > second_span['endTimeUnixNano'].to_i)
+end
+
+Then('a span named {string} duration is equal or less than {float}') do |name, maxDuration|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
+  Maze.check.true(duration <= maxDuration)
 end
 
 When('I wait for exactly {int} span(s)') do |span_count|

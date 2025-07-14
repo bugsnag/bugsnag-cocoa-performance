@@ -23,6 +23,9 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
                std::shared_ptr<Batch> batch,
                FrameMetricsCollector *frameMetricsCollector,
                std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+               BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
+               BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                void (^onSpanStarted)()) noexcept
 : spanStackingHandler_(spanStackingHandler)
 , sampler_(sampler)
@@ -32,6 +35,9 @@ Tracer::Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
 , batch_(batch)
 , frameMetricsCollector_(frameMetricsCollector)
 , conditionTimeoutExecutor_(conditionTimeoutExecutor)
+, spanAttributesProvider_(spanAttributesProvider)
+, onSpanStartCallbacks_(onSpanStartCallbacks)
+, onSpanEndCallbacks_(onSpanEndCallbacks)
 , onSpanStarted_(onSpanStarted)
 {}
 
@@ -64,7 +70,6 @@ void Tracer::reprocessEarlySpans(void) {
             continue;
         }
         [span forceMutate:^() {
-            [span updateSamplingProbability:sampler_->getProbability()];
             callOnSpanEndCallbacks(span);
         }];
         if (span.state == SpanStateAborted) {
@@ -135,6 +140,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
                                                                        parentId:parentSpan.spanId
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
+                                                            samplingProbability:sampler_->getProbability()
                                                             attributeCountLimit:attributeCountLimit_
                                                                  metricsOptions:options.metricsOptions
                                                                    onSpanEndSet:onSpanEndSet
@@ -149,6 +155,9 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
     }
     [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
+    
+    callOnSpanStartCallbacks(span);
+    
     onSpanStarted_();
     return span;
 }
@@ -182,8 +191,6 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
         [span abortUnconditionally];
         return;
     }
-
-    [span updateSamplingProbability:sampler_->getProbability()];
 
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);
@@ -239,8 +246,22 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
         }
     }];
     this->conditionTimeoutExecutor_->sheduleTimeout(condition, timeout);
-    BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %d", span.name, timeout);
+    BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %f", span.name, timeout);
     return condition;
+}
+
+void Tracer::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) {
+    if(span == nil) {
+        return;
+    }
+
+    for (BugsnagPerformanceSpanStartCallback callback: [onSpanStartCallbacks_ objects]) {
+        @try {
+            callback(span);
+        } @catch(NSException *e) {
+            BSGLogError(@"Tracer::callOnSpanStartCallbacks: span onStart callback threw exception: %@", e);
+        }
+    }
 }
 
 void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
@@ -253,7 +274,7 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
     }
 
     CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-    for (BugsnagPerformanceSpanEndCallback callback: onSpanEndCallbacks_) {
+    for (BugsnagPerformanceSpanEndCallback callback: [onSpanEndCallbacks_ objects]) {
         BOOL shouldDiscardSpan = false;
         @try {
             shouldDiscardSpan = !callback(span);
@@ -341,9 +362,10 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
-    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod];
+    auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
     auto span = startSpan(name, options, BSGTriStateUnset);
     span.kind = SPAN_KIND_CLIENT;
+    [span internalSetMultipleAttributes:spanAttributesProvider_->initialNetworkSpanAttributes()];
     return span;
 }
 
@@ -403,7 +425,7 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
     [prewarmSpans_ removeAllObjects];
 }
 
-bool 
+bool
 Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
@@ -412,7 +434,7 @@ Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
             return false;
         case BSGTriStateUnset:
             return enabledMetrics_.rendering &&
-            !span.wasStartOrEndTimeProvided && 
+            !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }
 }

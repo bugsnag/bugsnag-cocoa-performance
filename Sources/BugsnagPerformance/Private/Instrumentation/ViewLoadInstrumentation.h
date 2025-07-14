@@ -14,14 +14,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ViewLoadInstrumentationState : NSObject
-@property (nonatomic) BOOL loadViewPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLoadPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL isMarkedAsPreloaded;
-@property (nonatomic, nullable, strong) NSDate *viewDidLoadEndTime;
 @end
 
 namespace bugsnag {
@@ -59,12 +51,12 @@ private:
     void onViewDidAppear(UIViewController *viewController) noexcept;
     void onViewWillDisappear(UIViewController *viewController) noexcept;
     void endOverallSpan(UIViewController *viewController) noexcept;
-    void endViewAppearingSpan(UIViewController *viewController, CFAbsoluteTime atTime) noexcept;
+    void endViewAppearingSpan(ViewLoadInstrumentationState *instrumentationState, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
 
-    static void setOverallSpan(UIViewController *viewController, BugsnagPerformanceSpan * _Nullable span) noexcept;
-    static BugsnagPerformanceSpan *getOverallSpan(UIViewController *viewController) noexcept;
+    static void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
+    static ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
 
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpanPhase() noexcept;

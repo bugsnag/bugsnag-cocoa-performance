@@ -10,14 +10,14 @@ import BugsnagPerformance
 @objcMembers
 class SamplingProbabilityZeroScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.internal.initialSamplingProbability = 0
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.initialSamplingProbability = 0
     }
     
-    override func startBugsnag() {
+    override func postLoad() {
+        super.postLoad()
         BugsnagPerformance.startSpan(name: "Pre-start").end()
-        super.startBugsnag()
     }
     
     override func run() {

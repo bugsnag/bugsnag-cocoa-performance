@@ -2,7 +2,7 @@
 //  FrameMetricsCollector.mm
 //  BugsnagPerformance
 //
-//  Created by Robert B on 23/08/2024.
+//  Created by Robert Bartoszewski on 23/08/2024.
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
@@ -32,6 +32,8 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 @property(nonatomic, readwrite) Boolean autoInstrumentRendering;
 @property(nonatomic, strong) FrozenFrameData *lastFrozenFrame;
 
+@property(nonatomic, strong) CADisplayLink *displayLink;
+
 @end
 
 @implementation FrameMetricsCollector
@@ -40,26 +42,23 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 {
     self = [super init];
     if (self) {
-        _totalFrames = 0;
-        _totalSlowFrames = 0;
-        _totalFrozenFrames = 0;
-        _isInForeground = true;
-        _justEnteredForeground = true;
-        _lastFrozenFrame = [FrozenFrameData root];
-        _frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
-        _autoInstrumentRendering = false;
+        [self resetData];
     }
     return self;
 }
 
 - (void)onAppEnteredBackground {
-    self.isInForeground = false;
+    if (self.autoInstrumentRendering) {
+        self.isInForeground = false;
+    }
 }
 
 - (void)onAppEnteredForeground {
-    self.isInForeground = true;
-    self.justEnteredForeground = true;
-    self.frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
+    if (self.autoInstrumentRendering) {
+        self.isInForeground = true;
+        self.justEnteredForeground = true;
+        self.frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
+    }
 }
 
 - (FrameMetricsSnapshot *)currentSnapshot {
@@ -77,7 +76,11 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 
 - (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
 
-- (void)earlySetup {}
+- (void)earlySetup {
+    self.autoInstrumentRendering = true;
+    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(didRenderFrame:)];
+    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
 
 - (void)configure:(BugsnagPerformanceConfiguration *)config {
     self.autoInstrumentRendering = config.enabledMetrics.rendering;
@@ -85,19 +88,38 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
 
 - (void)start {
     if (!self.autoInstrumentRendering) {
-        return;
+        [self abortFrameMetricsCollection];
     }
-    CADisplayLink *displayLink = [CADisplayLink displayLinkWithTarget:self
-                                                             selector:@selector(didRenderFrame:)];
-    [displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 }
 
 - (void)preStartSetup {}
 
 #pragma mark Private
 
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+- (void)resetData {
+    @synchronized (self) {
+        _totalFrames = 0;
+        _totalSlowFrames = 0;
+        _totalFrozenFrames = 0;
+        _isInForeground = true;
+        _justEnteredForeground = true;
+        _lastFrozenFrame = [FrozenFrameData root];
+        _frameTimestampAdjustment = [NSDate date].timeIntervalSinceReferenceDate - CACurrentMediaTime();
+        _autoInstrumentRendering = false;
+    }
+}
+
+- (void)abortFrameMetricsCollection {
+    [self.displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    [self resetData];
+}
+
 - (void)didRenderFrame:(CADisplayLink *)sender {
     @synchronized (self) {
+        if (!self.autoInstrumentRendering) {
+            return;
+        }
         if (!self.isInForeground) {
             return;
         }

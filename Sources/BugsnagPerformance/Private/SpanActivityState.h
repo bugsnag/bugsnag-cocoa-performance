@@ -2,7 +2,7 @@
 //  SpanActivityState.h
 //  BugsnagPerformance-iOS
 //
-//  Created by Robert B on 24/05/2023.
+//  Created by Robert Bartoszewski on 24/05/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 

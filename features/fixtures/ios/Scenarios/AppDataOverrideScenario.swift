@@ -10,11 +10,11 @@ import BugsnagPerformance
 @objcMembers
 class AppDataOverrideScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.serviceName = "com.bugsnag.AppDataOverrideScenario"
-        config.bundleVersion = "100"
-        config.appVersion = "42.0"
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.serviceName = "com.bugsnag.AppDataOverrideScenario"
+        bugsnagPerfConfig.bundleVersion = "100"
+        bugsnagPerfConfig.appVersion = "42.0"
     }
     
     override func run() {

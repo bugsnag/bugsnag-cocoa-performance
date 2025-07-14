@@ -167,7 +167,9 @@ void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
     if (firstViewName_ == nil) {
         firstViewName_ = name;
-        [appStartSpan_ internalSetAttribute:@"bugsnag.app_start.first_view_name" withValue:name];
+        if (isAppStartInProgress()) {
+            [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+        }
     }
 }
 
@@ -273,6 +275,11 @@ AppStartupInstrumentation::instrumentationState() noexcept {
     state.hasFirstView = firstViewName_ != nil;
     state.isInProgress = uiInitSpan_.isValid || uiInitSpan_.isBlocked;
     return state;
+}
+
+bool
+AppStartupInstrumentation::isAppStartInProgress() noexcept {
+    return appStartSpan_ != nil && (appStartSpan_.isValid || appStartSpan_.isBlocked);
 }
 
 #pragma mark -

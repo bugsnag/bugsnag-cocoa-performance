@@ -2,7 +2,7 @@
 //  FrozenFrameData.h
 //  BugsnagPerformance
 //
-//  Created by Robert B on 05/09/2024.
+//  Created by Robert Bartoszewski on 05/09/2024.
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 

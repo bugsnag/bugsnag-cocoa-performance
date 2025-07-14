@@ -10,12 +10,15 @@ import Foundation
 @objcMembers
 class AutoInstrumentNetworkNullURLScenario: Scenario {
 
-    override func configure() {
+    override func postLoad() {
+        super.postLoad()
         // Early phase span. Make sure it doesn't crash or generate a span
         ObjCURLSession.dataTask(with: nil).resume()
+    }
 
-        super.configure()
-        config.autoInstrumentNetworkRequests = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
     }
 
     func query(string: String) {
@@ -27,6 +30,6 @@ class AutoInstrumentNetworkNullURLScenario: Scenario {
         // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
         // Send an actual request to be captured
-        query(string: "?status=200")
+        query(string: "?status=203")
     }
 }

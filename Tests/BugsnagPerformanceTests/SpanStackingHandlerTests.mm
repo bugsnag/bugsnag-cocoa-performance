@@ -2,7 +2,7 @@
 //  SpanStackingHandlerTests.mm
 //  BugsnagPerformance-iOSTests
 //
-//  Created by Robert B on 25/05/2023.
+//  Created by Robert Bartoszewski on 25/05/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
@@ -24,6 +24,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
                                                parentId:IdGenerator::generateSpanId()
                                               startTime:SpanOptions().startTime
                                              firstClass:BSGTriStateNo
+                                    samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}

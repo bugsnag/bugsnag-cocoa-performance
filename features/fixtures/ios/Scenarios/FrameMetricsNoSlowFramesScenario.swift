@@ -11,9 +11,9 @@ import BugsnagPerformance
 @objcMembers
 class FrameMetricsNoSlowFramesScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.enabledMetrics.rendering = true
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.enabledMetrics.rendering = true
     }
     
     override func run() {

@@ -9,10 +9,10 @@ import BugsnagPerformance
 
 @objcMembers
 class ProbabilityExpiryScenario: Scenario {
-    override func configure() {
-        super.configure()
-        config.internal.probabilityRequestsPauseForSeconds = 0.1
-        config.internal.probabilityValueExpiresAfterSeconds = 0.1
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.internal.probabilityRequestsPauseForSeconds = 0.1
+        bugsnagPerfConfig.internal.probabilityValueExpiresAfterSeconds = 0.1
     }
 
     override func run() {

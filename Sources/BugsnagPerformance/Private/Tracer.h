@@ -19,6 +19,7 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "Instrumentation/AppStartupInstrumentationState.h"
+#import "BSGPrioritizedStore.h"
 
 #import <memory>
 
@@ -35,13 +36,15 @@ public:
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
            std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
+           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+           BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
+           BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
            void (^onSpanStarted)()) noexcept;
     ~Tracer() {};
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
-        onSpanEndCallbacks_ = config.onSpanEndCallbacks;
         attributeCountLimit_ = config.attributeCountLimit;
         enabledMetrics_ = [config.enabledMetrics clone];
     };
@@ -89,13 +92,15 @@ private:
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
+    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
-    BugsnagPerformanceEnabledMetrics *enabledMetrics_{nil};
+    BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
-    NSArray<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     NSUInteger attributeCountLimit_{128};
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
@@ -115,5 +120,6 @@ private:
     void reprocessEarlySpans(void);
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
+    void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span);
 };
 }

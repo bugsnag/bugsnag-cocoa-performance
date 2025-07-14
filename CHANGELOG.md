@@ -1,6 +1,75 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed issue where some Network spans were categorized as custom.
+  [448](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/448)
+
+## 1.14.0 (2025-06-16)
+
+### Bug fixes
+
+* Fixed issue where reported total CPU usage values were not normalized.
+  [444](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/444)
+
+### Enhancements
+
+* Set default endpoints based on API key. [441](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/441)
+
+* OnStart span callbacks can now be registered in the configuration. These callbacks are called on all spans.
+  [437](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/437)
+
+* Add plugin interface for future plugin development. [443](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/443)
+
+## 1.13.0 (2025-05-12)
+
+### Bug fixes
+
+* Fixed issue where a very small percentage of spans could be sent even though samplingProbability was set to 0.0.
+  [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
+
+* Fixed bugsnag.sampling.p attribute reporting to accurately reflect current sample rate.
+  [432](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/432)
+
+* Fixed a potential data race warning in `SystemInfoSampler`.
+  [431](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/431)
+  
+### Enhancements
+
+* Introduced `BugsnagPerformanceRemoteSpanContext` to allow cross-layer parenting of spans, along with easy encoding of `traceparent` headers.
+  [433](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/433)
+
+## 1.12.1 (2025-05-06)
+
+### Bug fixes
+
+* Removed strong ViewController references from instrumentation timeout which could hold them for up-to 10 seconds.
+  [428](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/428)
+
+## 1.12.0 (2025-04-24)
+
+### Bug fixes
+
+* Fixed issue where API Key override not was not reflected in `endpoint` when using `BugsnagPerformanceConfiguration`.
+  [423](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/423)
+
+* Added missing MARKETING_VERSION build setting to BugsnagPerformance-iOS. This is required for generating CFBundleShortVersionString in some situations.
+  [418](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/418)
+
+* Fixed issue where bugsnag.app_start.first_view_name was missing for app start spans.
+  [404](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/404)
+
+### Enhancements
+
+* Optionally capture and report CPU and Memory use on selected spans (opt-in using BugsnagPerformanceConfiguration.enabledMetrics)
+  [416](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/416)
+
+* Speculatively collect rendering metrics before Bugsnag is started
+  [405](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/405)
+
 ## 1.11.2 (2025-02-17)
 
 ### Bug fixes

@@ -33,6 +33,14 @@ typedef NS_ENUM(uint8_t, BSGTriState) {
  */
 @property(nonatomic) BSGTriState cpu;
 
+/**
+ * No = never include these metrics
+ * Yes = Always include these metrics, as long as the corresponding enabledMetrics configuration option is on
+ * Unset = Include metrics only if the span is first class and the corresponding enabledMetrics configuration option is on
+ * Default: Unset
+ */
+@property(nonatomic) BSGTriState memory;
+
 - (_Nonnull instancetype)clone;
 
 @end

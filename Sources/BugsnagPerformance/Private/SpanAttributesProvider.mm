@@ -2,7 +2,7 @@
 //  SpanAttributesProvider.mm
 //  BugsnagPerformance
 //
-//  Created by Robert B on 21/04/2023.
+//  Created by Robert Bartoszewski on 21/04/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
@@ -104,6 +104,19 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
     }
 }
 
+static uint64_t CFAbsoluteTimeToUTCNanos(CFAbsoluteTime time) {
+    return (uint64_t)((time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC);
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::initialNetworkSpanAttributes() noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::initialNetworkSpanAttributes");
+    auto attributes = [NSMutableDictionary new];
+    attributes[@"bugsnag.span.category"] = @"network";
+    attributes[@"http.url"] = @"unknown";
+    return attributes;
+}
+
 NSMutableDictionary *
 SpanAttributesProvider::networkSpanAttributes(NSURL *url,
                                               NSURLSessionTask *task,
@@ -118,7 +131,7 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
     }
     if (encounteredError != nil) {
         BSGLogTrace(@"SpanAttributesProvider::networkSpanAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
-        attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
+        [attributes addEntriesFromDictionary:internalErrorAttributes(encounteredError)];
     }
     attributes[@"http.flavor"] = getHTTPFlavour(metrics);
     attributes[@"http.method"] = getTaskRequest(task, nil).HTTPMethod;
@@ -140,6 +153,16 @@ SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encountere
     }
     if (encounteredError != nil) {
         BSGLogTrace(@"SpanAttributesProvider::networkSpanUrlAttributes: Caller encountered error \"%@\". Adding instrumentation_message attribute", encounteredError.description);
+        [attributes addEntriesFromDictionary:internalErrorAttributes(encounteredError)];
+    }
+    return attributes;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::internalErrorAttributes(NSError *encounteredError) noexcept {
+    BSGLogTrace(@"SpanAttributesProvider::errorAttributes");
+    auto attributes = [NSMutableDictionary new];
+    if (encounteredError != nil) {
         attributes[@"bugsnag.instrumentation_message"] = encounteredError.description;
     }
     return attributes;
@@ -197,5 +220,112 @@ NSMutableDictionary *
 SpanAttributesProvider::customSpanAttributes() noexcept {
     return @{
         @"bugsnag.span.category": @"custom",
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
+    auto process = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto mainThread = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto monitorThread = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto timestamps = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    uint64_t processSampleCount = 0;
+    double processTotal = 0;
+    uint64_t mainThreadSampleCount = 0;
+    double mainThreadTotal = 0;
+    uint64_t monitorThreadSampleCount = 0;
+    double monitorThreadTotal = 0;
+    for(auto sample: samples) {
+        if (!sample.hasValidData()) {
+            continue;
+        }
+        [timestamps addObject:@(CFAbsoluteTimeToUTCNanos(sample.sampledAt))];
+
+        if (sample.isProcessCPUPctValid()) {
+            processSampleCount++;
+            processTotal += sample.processCPUPct;
+            [process addObject:@(sample.processCPUPct)];
+        } else {
+            [process addObject:@(-1)];
+        }
+
+        if (sample.isMainThreadCPUPctValid()) {
+            mainThreadSampleCount++;
+            mainThreadTotal += sample.mainThreadCPUPct;
+            [mainThread addObject:@(sample.mainThreadCPUPct)];
+        } else {
+            [mainThread addObject:@(-1)];
+        }
+
+        if (sample.isMonitorThreadCPUPctValid()) {
+            monitorThreadSampleCount++;
+            monitorThreadTotal += sample.monitorThreadCPUPct;
+            [monitorThread addObject:@(sample.monitorThreadCPUPct)];
+        } else {
+            [monitorThread addObject:@(-1)];
+        }
+    }
+
+    NSMutableDictionary *result = [NSMutableDictionary new];
+
+    if (timestamps.count < 2 || processSampleCount == 0) {
+        return result;
+    }
+
+    result[@"bugsnag.system.cpu_measures_timestamps"] = timestamps;
+
+    if(processSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_total"] = process;
+        result[@"bugsnag.system.cpu_mean_total"] = @(processTotal / (double)processSampleCount);
+    }
+
+    if(mainThreadSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_main_thread"] = mainThread;
+        result[@"bugsnag.system.cpu_mean_main_thread"] = @(mainThreadTotal / (double)mainThreadSampleCount);
+    }
+
+    if(monitorThreadSampleCount > 0) {
+        result[@"bugsnag.system.cpu_measures_overhead"] = monitorThread;
+        result[@"bugsnag.system.cpu_mean_overhead"] = @(monitorThreadTotal / (double)monitorThreadSampleCount);
+    }
+
+    return result;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
+    auto memory = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    auto timestamps = [[NSMutableArray alloc] initWithCapacity:samples.size()];
+    uint64_t memorySampleCount = 0;
+    uint64_t memoryUseTotal = 0;
+    uint64_t memorySize = 0;
+
+    for(auto sample: samples) {
+        if (!sample.isSampledAtValid()) {
+            continue;
+        }
+
+        if (!sample.isPhysicalMemoryInUseValid()) {
+            // In this case we're only recording one metric, so no sense in recording just a failed reading.
+            continue;
+        }
+
+        memorySize = sample.physicalMemoryBytesTotal;
+        [timestamps addObject:@(CFAbsoluteTimeToUTCNanos(sample.sampledAt))];
+
+        memorySampleCount++;
+        memoryUseTotal += sample.physicalMemoryBytesInUse;
+        [memory addObject:@(sample.physicalMemoryBytesInUse)];
+    }
+
+    if (memorySampleCount < 2) {
+        return [NSMutableDictionary new];
+    }
+
+    return @{
+        @"bugsnag.system.memory.timestamps": timestamps,
+        @"bugsnag.system.memory.spaces.device.size": @(memorySize),
+        @"bugsnag.system.memory.spaces.device.used": memory,
+        @"bugsnag.system.memory.spaces.device.mean": @(memoryUseTotal / memorySampleCount),
     }.mutableCopy;
 }

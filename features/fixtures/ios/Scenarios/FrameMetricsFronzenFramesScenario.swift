@@ -11,10 +11,10 @@ import BugsnagPerformance
 @objcMembers
 class FrameMetricsFronzenFramesScenario: Scenario {
     
-    override func configure() {
-        super.configure()
-        config.enabledMetrics.rendering = true
-        config.internal.autoTriggerExportOnBatchSize = 3
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.enabledMetrics.rendering = true
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 3
     }
     
     override func run() {
@@ -29,6 +29,8 @@ class FrameMetricsFronzenFramesScenario: Scenario {
                         Thread.sleep(forTimeInterval: 1.0)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                             span.end()
+                            // Force sleep so that Browserstack doesn't prematurely shut down the app while BugsnagPerformanceImpl delays for sampling.
+                            Thread.sleep(forTimeInterval: 2)
                         }
                     }
                 }

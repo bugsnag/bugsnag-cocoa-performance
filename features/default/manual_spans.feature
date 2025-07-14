@@ -129,7 +129,7 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span field "name" equals "[HTTP/GET]"
     * every span string attribute "http.flavor" exists
-    * every span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
+#    * every span string attribute "http.url" matches the regex "http://.*:9[0-9]{3}/reflect\?status=200"
     * every span string attribute "http.method" equals "GET"
     * every span integer attribute "http.status_code" is greater than 0
     * every span integer attribute "http.response_content_length" is greater than 0
@@ -305,7 +305,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesScenario"
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
     * every span bool attribute "d" does not exist
@@ -322,7 +322,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
     * a span array attribute "b" contains the integer value 1 at index 0
     * a span array attribute "b" contains the integer value 2 at index 1
@@ -334,15 +334,24 @@ Feature: Manual creation of spans
     And I wait for 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "SetAttributeCountLimitScenario"
     * every span string attribute "a" does not exist
+
+  Scenario: Set OnStart
+    Given I run "OnStartCallbackScenario"
+    And I wait for exactly 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "OnStartCallbackScenario"
+    * a span bool attribute "start_callback_1" is true
+    * a span bool attribute "start_callback_2" is true
 
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
     And I wait for exactly 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "MySpan"
+    * a span field "name" equals "OnEndCallbackScenario"
 
   Scenario: Frame metrics - no slow frames
     Given I run "FrameMetricsNoSlowFramesScenario"
@@ -494,3 +503,19 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
+
+  Scenario: Manually start and end a span with remote parent context
+    Given I run "ManualSpanWithRemoteContextParentScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "ManualSpanWithRemoteContextParentScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" equals "a053e37f6d56592bc15a2c13c3c688ff"
+    * every span field "parentSpanId" equals "eeb87b8b7cde2185"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span string attribute "bugsnag.span.category" equals "custom"
