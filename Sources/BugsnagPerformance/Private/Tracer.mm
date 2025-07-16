@@ -98,7 +98,7 @@ Tracer::sweep() noexcept {
 }
 
 BugsnagPerformanceSpan *
-Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass) noexcept {
+Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept {
     BSGLogDebug(@"Tracer::startSpan(%@, opts, %d)", name, defaultFirstClass);
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
@@ -143,6 +143,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
                                                             samplingProbability:sampler_->getProbability()
                                                             attributeCountLimit:attributeCountLimit_
                                                                  metricsOptions:options.metricsOptions
+                                                             assignedConditions:assignedConditions
                                                                    onSpanEndSet:onSpanEndSet
                                                                    onSpanClosed:onSpanClosed
                                                                   onSpanBlocked:onSpanBlocked];
@@ -320,14 +321,15 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
 
 BugsnagPerformanceSpan *
 Tracer::startAppStartSpan(NSString *name,
-                        SpanOptions options) noexcept {
-    return startSpan(name, options, BSGTriStateUnset);
+                          SpanOptions options,
+                          NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept {
+    return startSpan(name, options, BSGTriStateUnset, assignedConditions);
 }
 
 BugsnagPerformanceSpan *
 Tracer::startCustomSpan(NSString *name,
                         SpanOptions options) noexcept {
-    return startSpan(name, options, BSGTriStateYes);
+    return startSpan(name, options, BSGTriStateYes, @[]);
 }
 
 BugsnagPerformanceSpan *
@@ -335,12 +337,15 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
-    BugsnagPerformanceSpanCondition *appStartupCondition = nil;
+    NSMutableArray<BugsnagPerformanceSpanCondition *> *assignedConditions = [NSMutableArray array];
     if (options.parentContext == nil && getAppStartupInstrumentationState_ != nil) {
         AppStartupInstrumentationState *appStartupState = getAppStartupInstrumentationState_();
         if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
             options.parentContext = appStartupState.uiInitSpan;
-            appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];
+            BugsnagPerformanceSpanCondition *appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];
+            if (appStartupCondition) {
+                [assignedConditions addObject:appStartupCondition];
+            }
         }
     }
     onViewLoadSpanStarted_(className);
@@ -350,12 +355,9 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGTriStateNo;
         }
     }
-    auto span = startSpan(name, options, BSGTriStateYes);
+    auto span = startSpan(name, options, BSGTriStateYes, assignedConditions);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
-    }
-    if (appStartupCondition) {
-        [span assignCondition:appStartupCondition];
     }
     return span;
 }
@@ -363,7 +365,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 BugsnagPerformanceSpan *
 Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
-    auto span = startSpan(name, options, BSGTriStateUnset);
+    auto span = startSpan(name, options, BSGTriStateUnset, @[]);
     span.kind = SPAN_KIND_CLIENT;
     [span internalSetMultipleAttributes:spanAttributesProvider_->initialNetworkSpanAttributes()];
     return span;
@@ -376,7 +378,7 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
     NSString *name = [NSString stringWithFormat:@"[ViewLoadPhase/%@]/%@", phase, className];
     SpanOptions options;
     options.parentContext = parentContext;
-    auto span = startSpan(name, options, BSGTriStateUnset);
+    auto span = startSpan(name, options, BSGTriStateUnset, @[]);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }
@@ -407,7 +409,7 @@ Tracer::createFrozenFrameSpan(NSTimeInterval startTime,
     options.startTime = startTime;
     options.parentContext = parentContext;
     options.makeCurrentContext = false;
-    auto span = startSpan(@"FrozenFrame", options, BSGTriStateNo);
+    auto span = startSpan(@"FrozenFrame", options, BSGTriStateNo, @[]);
     [span endWithAbsoluteTime:endTime];
 }
 

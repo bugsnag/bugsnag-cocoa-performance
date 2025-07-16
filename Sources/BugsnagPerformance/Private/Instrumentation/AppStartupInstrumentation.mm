@@ -187,10 +187,6 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
     didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
-    BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
-    if (appStartCondition) {
-        [uiInitSpan_ assignCondition:appStartCondition];
-    }
     [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
     if (firstViewName_ == nil) {
         [uiInitSpan_ blockWithTimeout:kFirstViewDelayThreshold];
@@ -210,7 +206,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     auto name = isColdLaunch_ ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = tracer_->startAppStartSpan(name, options);
+    appStartSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
@@ -227,7 +223,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     options.parentContext = appStartSpan_;
-    preMainSpan_ = tracer_->startAppStartSpan(name, options);
+    preMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [preMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
@@ -244,7 +240,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
     options.parentContext = appStartSpan_;
-    postMainSpan_ = tracer_->startAppStartSpan(name, options);
+    postMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [postMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
@@ -261,7 +257,12 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     SpanOptions options;
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
-    uiInitSpan_ = tracer_->startAppStartSpan(name, options);
+    NSMutableArray *assignedConditions = [NSMutableArray array];
+    BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
+    if (appStartCondition) {
+        [assignedConditions addObject:appStartCondition];
+    }
+    uiInitSpan_ = tracer_->startAppStartSpan(name, options, assignedConditions);
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 

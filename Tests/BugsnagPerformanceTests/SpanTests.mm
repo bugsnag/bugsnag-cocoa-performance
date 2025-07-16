@@ -38,6 +38,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                     samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
+                                     assignedConditions:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                            onSpanClosed:onEnded
                                           onSpanBlocked:onBlocked];
@@ -318,6 +319,7 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                          samplingProbability:1.0
                                          attributeCountLimit:5
                                               metricsOptions:metricsOptions
+                                          assignedConditions:@[]
                                                 onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                                 onSpanClosed:^(BugsnagPerformanceSpan *) {}
                                                onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];

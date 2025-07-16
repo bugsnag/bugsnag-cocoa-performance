@@ -59,9 +59,9 @@ public:
         getAppStartupInstrumentationState_ = getAppStartupInstrumentationState;
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass) noexcept;
+    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept;
 
-    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options, NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept;
 
     BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
 
