@@ -175,8 +175,8 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
     
     @synchronized (span) {
-        for (BugsnagPerformanceSpanCondition *condtion in span.assignedConditions) {
-            [condtion closeWithEndTime:span.endTime];
+        for (BugsnagPerformanceSpanCondition *condition in span.assignedConditions) {
+            [condition closeWithEndTime:span.endTime];
         }
     }
 

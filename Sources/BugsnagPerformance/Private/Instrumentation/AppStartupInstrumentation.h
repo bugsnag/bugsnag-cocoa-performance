@@ -30,7 +30,6 @@ public:
     void start() noexcept {}
 
     void didStartViewLoadSpan(NSString *name) noexcept;
-    AppStartupInstrumentationState *appStartupState() noexcept;
     void willCallMainFunction() noexcept;
     void abortAllSpans() noexcept;
 
