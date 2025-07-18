@@ -228,7 +228,7 @@ static id hostMissingCrossTalkAPI = nil;
                                                             samplingProbability:1.0
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
-                                                             assignedConditions:@[]
+                                                         conditionsToEndOnClose:@[]
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                   onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
@@ -262,7 +262,7 @@ static id hostMissingCrossTalkAPI = nil;
                                                             samplingProbability:1.0
                                                             attributeCountLimit:128
                                                                  metricsOptions:metricsOptions
-                                                             assignedConditions:@[]
+                                                         conditionsToEndOnClose:@[]
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                   onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];

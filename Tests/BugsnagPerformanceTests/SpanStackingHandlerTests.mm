@@ -27,7 +27,7 @@ static BugsnagPerformanceSpan *createSpan(std::shared_ptr<SpanStackingHandler> h
                                     samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
-                                     assignedConditions:@[]
+                                 conditionsToEndOnClose:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull span) {
         handler->onSpanClosed(span.spanId);

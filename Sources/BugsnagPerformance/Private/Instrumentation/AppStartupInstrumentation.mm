@@ -257,12 +257,12 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     SpanOptions options;
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
-    NSMutableArray *assignedConditions = [NSMutableArray array];
     BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
+    NSArray *conditionsToEndOnClose = @[];
     if (appStartCondition) {
-        [assignedConditions addObject:appStartCondition];
+        conditionsToEndOnClose = @[appStartCondition];
     }
-    uiInitSpan_ = tracer_->startAppStartSpan(name, options, assignedConditions);
+    uiInitSpan_ = tracer_->startAppStartSpan(name, options, conditionsToEndOnClose);
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 

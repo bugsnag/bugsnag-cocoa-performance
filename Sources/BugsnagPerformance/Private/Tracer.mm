@@ -98,7 +98,7 @@ Tracer::sweep() noexcept {
 }
 
 BugsnagPerformanceSpan *
-Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept {
+Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     BSGLogDebug(@"Tracer::startSpan(%@, opts, %d)", name, defaultFirstClass);
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
@@ -143,7 +143,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
                                                             samplingProbability:sampler_->getProbability()
                                                             attributeCountLimit:attributeCountLimit_
                                                                  metricsOptions:options.metricsOptions
-                                                             assignedConditions:assignedConditions
+                                                         conditionsToEndOnClose:conditionsToEndOnClose
                                                                    onSpanEndSet:onSpanEndSet
                                                                    onSpanClosed:onSpanClosed
                                                                   onSpanBlocked:onSpanBlocked];
@@ -175,7 +175,7 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
     
     @synchronized (span) {
-        for (BugsnagPerformanceSpanCondition *condition in span.assignedConditions) {
+        for (BugsnagPerformanceSpanCondition *condition in span.conditionsToEndOnClose) {
             [condition closeWithEndTime:span.endTime];
         }
     }
@@ -322,8 +322,8 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
 BugsnagPerformanceSpan *
 Tracer::startAppStartSpan(NSString *name,
                           SpanOptions options,
-                          NSArray<BugsnagPerformanceSpanCondition *> *assignedConditions) noexcept {
-    return startSpan(name, options, BSGTriStateUnset, assignedConditions);
+                          NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
+    return startSpan(name, options, BSGTriStateUnset, conditionsToEndOnClose);
 }
 
 BugsnagPerformanceSpan *
@@ -337,14 +337,14 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
                           SpanOptions options) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
-    NSMutableArray<BugsnagPerformanceSpanCondition *> *assignedConditions = [NSMutableArray array];
+    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
     if (options.parentContext == nil && getAppStartupInstrumentationState_ != nil) {
         AppStartupInstrumentationState *appStartupState = getAppStartupInstrumentationState_();
         if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
             options.parentContext = appStartupState.uiInitSpan;
             BugsnagPerformanceSpanCondition *appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];
             if (appStartupCondition) {
-                [assignedConditions addObject:appStartupCondition];
+                conditionsToEndOnClose = @[appStartupCondition];
             }
         }
     }
@@ -355,7 +355,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
             options.firstClass = BSGTriStateNo;
         }
     }
-    auto span = startSpan(name, options, BSGTriStateYes, assignedConditions);
+    auto span = startSpan(name, options, BSGTriStateYes, conditionsToEndOnClose);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }
