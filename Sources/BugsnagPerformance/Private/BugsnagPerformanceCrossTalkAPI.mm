@@ -88,7 +88,7 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
     }
 
     auto options = SpanOptions(optionsIn);
-    auto span = tracer->startSpan(name, options, BSGTriStateUnset);
+    auto span = tracer->startSpan(name, options, BSGTriStateUnset, @[]);
     return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 

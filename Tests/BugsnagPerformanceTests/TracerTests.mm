@@ -178,7 +178,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
     auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
     SpanOptions spanOptions;
-    auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes);
+    auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes, @[]);
     XCTAssertEqual(span.kind, SPAN_KIND_INTERNAL);
     XCTAssertEqualObjects(span.name, @"TestSpan");
     XCTAssertEqual(span.samplingProbability, expectedSamplingProbability);

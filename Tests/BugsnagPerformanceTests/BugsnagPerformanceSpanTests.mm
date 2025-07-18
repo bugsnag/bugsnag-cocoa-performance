@@ -23,6 +23,7 @@ static BugsnagPerformanceSpan *createSpan(TraceId traceId, SpanId spanId, double
                                     samplingProbability:samplingProbability
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
+                                 conditionsToEndOnClose:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
                                           onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
