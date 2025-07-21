@@ -12,6 +12,7 @@
 static const CGFloat endConditionTimeout = 0.1;
 
 @interface LoadingIndicatorView()
+@property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
 @property (nonatomic, readwrite) BOOL isLoading;
 @end
 
@@ -73,8 +74,9 @@ static const CGFloat endConditionTimeout = 0.1;
     if (!self.isLoading) {
         self.isLoading = YES;
 
-        // Traverse view tree and check for related states
-        // Start conditions
+        //Grab existing conditions array (oldConditions)
+        //Create new conditions for the new superview
+        //Cancel the oldConditions
     }
 }
 
@@ -82,6 +84,7 @@ static const CGFloat endConditionTimeout = 0.1;
     for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
         [condition closeWithEndTime:[NSDate dateWithTimeIntervalSinceNow:endConditionTimeout]];
     }
+    [self.conditions removeAllObjects];
 }
 
 @end

@@ -14,16 +14,8 @@
 IB_DESIGNABLE
 @interface LoadingIndicatorView : UIView
 
-@property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
 @property (nonatomic, readonly) BOOL isLoading;
 
-- (id)initWithFrame:(CGRect)frame;
-- (id)initWithCoder:(NSCoder *) coder;
-
 - (void)finishLoading;
-
-- (void)didMoveToSuperview;
-
-- (void)didMoveToWindow;
 
 @end

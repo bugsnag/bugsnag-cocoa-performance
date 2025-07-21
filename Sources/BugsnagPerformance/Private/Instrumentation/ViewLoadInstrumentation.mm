@@ -257,7 +257,13 @@ void ViewLoadInstrumentation::updateViewForViewController(UIViewController *view
         return;
     }
 
-    if (instrumentationState.view != viewController.view) {
+    UIView *currentView = instrumentationState.view;
+    if (currentView != viewController.view) {
+        if (currentView != nil) {
+            // Remove the old instrumentation state from the view
+            objc_setAssociatedObject(currentView, &kAssociatedStateView, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+
         instrumentationState.view = viewController.view;
         objc_setAssociatedObject(viewController.view, &kAssociatedStateView, instrumentationState, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
@@ -515,10 +521,9 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
         }
         [span end];
 
+        auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
         updateViewForViewController(self, instrumentationState);
 
-        auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
-        
         void (^endViewAppearingSpanIfNeeded)(ViewLoadInstrumentationState *) = ^void(ViewLoadInstrumentationState *state) {
             auto overallSpan = state.overallSpan;
             if (overallSpan.state == SpanStateOpen) {
