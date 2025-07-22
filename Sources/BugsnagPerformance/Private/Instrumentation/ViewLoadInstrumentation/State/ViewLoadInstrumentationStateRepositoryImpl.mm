@@ -11,6 +11,7 @@
 #import <objc/runtime.h>
 
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr int kAssociatedStateView = 0;
 
 using namespace bugsnag;
 
@@ -29,4 +30,21 @@ ViewLoadInstrumentationStateRepositoryImpl::getInstrumentationState(UIViewContro
         return nil;
     }
     return objc_getAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState);
+}
+
+void
+ViewLoadInstrumentationStateRepositoryImpl::setInstrumentationState(UIView *view, ViewLoadInstrumentationState * _Nullable state) noexcept {
+    if (view == nil) {
+        return;
+    }
+    objc_setAssociatedObject(view, &kAssociatedStateView, state,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+ViewLoadInstrumentationState *
+ViewLoadInstrumentationStateRepositoryImpl::getInstrumentationState(UIView *view) noexcept {
+    if (view == nil) {
+        return nil;
+    }
+    return objc_getAssociatedObject(view, &kAssociatedStateView);
 }

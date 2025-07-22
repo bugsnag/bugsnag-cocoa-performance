@@ -71,6 +71,23 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     lifecycleHandler_->onInstrumentationConfigured(isEnabled_, callback);
 }
 
+void ViewLoadInstrumentation::updateViewForViewController(UIViewController *viewController, ViewLoadInstrumentationState *instrumentationState) {
+    if (viewController == nil || instrumentationState == nil) {
+        return;
+    }
+
+    UIView *currentView = instrumentationState.view;
+    if (currentView != viewController.view) {
+        if (currentView != nil) {
+            // Remove the old instrumentation state from the view
+            objc_setAssociatedObject(currentView, &kAssociatedStateView, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+
+        instrumentationState.view = viewController.view;
+        objc_setAssociatedObject(viewController.view, &kAssociatedStateView, instrumentationState, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
+
 #pragma mark Helpers
 
 bool
@@ -97,6 +114,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
         }
         lifecycleHandler_->onLoadView(viewController,
                                       originalImplementation);
+        updateViewForViewController(viewController, state);
     };
     
     swizzlingCallbacks.viewDidLoadCallback = ^(UIViewController *viewController,
@@ -147,6 +165,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
         }
         lifecycleHandler_->onViewDidLayoutSubviews(viewController,
                                                    originalImplementation);
+        updateViewForViewController(viewController, state);
     };
     
     return swizzlingCallbacks;

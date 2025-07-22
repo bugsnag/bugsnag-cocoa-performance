@@ -18,6 +18,8 @@ public:
     
     void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
     ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
+    void setInstrumentationState(UIView *view, ViewLoadInstrumentationState * _Nullable state) noexcept;
+    ViewLoadInstrumentationState *getInstrumentationState(UIView *view) noexcept;
 };
 }
 
