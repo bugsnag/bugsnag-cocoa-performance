@@ -74,6 +74,7 @@
 		9691A9E12CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */; };
 		96986D9E2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */; };
 		96986DA02D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */; };
+		96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */; };
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
@@ -174,6 +175,7 @@
 		9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift; sourceTree = "<group>"; };
 		96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsSimpleConditionScenario.swift; sourceTree = "<group>"; };
 		96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsMultipleConditionsScenario.swift; sourceTree = "<group>"; };
+		96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsWithViewLoadScenario.swift; sourceTree = "<group>"; };
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
@@ -286,6 +288,7 @@
 				DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
+				96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */,
 				099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */,
 				CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */,
 				960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */,
@@ -505,6 +508,7 @@
 				098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */,
 				098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
+				96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */,
 				09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */,
 				09301DC12B63A65A000A7C12 /* ComplexViewScenario.swift in Sources */,
 				96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */,

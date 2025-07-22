@@ -21,6 +21,7 @@
 using namespace bugsnag;
 
 static constexpr CFTimeInterval kMaxDuration = 120;
+static constexpr CGFloat kFirstViewDelayThreshold = 1.5;
 
 static CFAbsoluteTime getProcessStartTime() noexcept;
 static bool isColdLaunch(void);
@@ -65,7 +66,9 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tra
 , spanAttributesProvider_(spanAttributesProvider)
 , didStartProcessAtTime_(getProcessStartTime())
 , isColdLaunch_(isColdLaunch())
-{}
+{
+    tracer_->setGetAppStartInstrumentationState([=]{ return instrumentationState(); });
+}
 
 void AppStartupInstrumentation::earlySetup() noexcept {
     if (!canInstallInstrumentation()) {
@@ -184,8 +187,11 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
 
     didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
-    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
     [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
+    if (firstViewName_ == nil) {
+        [uiInitSpan_ blockWithTimeout:kFirstViewDelayThreshold];
+    }
+    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
 }
 
 void
@@ -200,7 +206,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     auto name = isColdLaunch_ ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = tracer_->startAppStartSpan(name, options);
+    appStartSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
@@ -217,7 +223,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     options.parentContext = appStartSpan_;
-    preMainSpan_ = tracer_->startAppStartSpan(name, options);
+    preMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [preMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
@@ -234,7 +240,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     SpanOptions options;
     options.startTime = didCallMainFunctionAtTime_;
     options.parentContext = appStartSpan_;
-    postMainSpan_ = tracer_->startAppStartSpan(name, options);
+    postMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
     [postMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
@@ -251,8 +257,25 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     SpanOptions options;
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
-    uiInitSpan_ = tracer_->startAppStartSpan(name, options);
+    BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
+    NSArray *conditionsToEndOnClose = @[];
+    if (appStartCondition) {
+        conditionsToEndOnClose = @[appStartCondition];
+    }
+    uiInitSpan_ = tracer_->startAppStartSpan(name, options, conditionsToEndOnClose);
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+}
+
+AppStartupInstrumentationState *
+AppStartupInstrumentation::instrumentationState() noexcept {
+    auto state = [AppStartupInstrumentationState new];
+    state.appStartSpan = appStartSpan_;
+    state.preMainSpan = preMainSpan_;
+    state.postMainSpan = postMainSpan_;
+    state.uiInitSpan = uiInitSpan_;
+    state.hasFirstView = firstViewName_ != nil;
+    state.isInProgress = uiInitSpan_.isValid || uiInitSpan_.isBlocked;
+    return state;
 }
 
 bool

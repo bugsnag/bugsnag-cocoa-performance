@@ -308,6 +308,20 @@ Then('a span named {string} ended before a span named {string} started') do |nam
   Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['startTimeUnixNano'].to_i)
 end
 
+Then('a span named {string} ended at the same time as a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i == second_span['endTimeUnixNano'].to_i)
+end
+
+Then('a span named {string} ended before a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['endTimeUnixNano'].to_i)
+end
+
 Then('a span named {string} ended after a span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
