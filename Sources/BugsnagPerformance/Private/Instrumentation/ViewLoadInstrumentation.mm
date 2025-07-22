@@ -26,6 +26,7 @@
 using namespace bugsnag;
 
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr int kAssociatedStateView = 0;
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumentationState *);
@@ -43,6 +44,7 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewAppearingSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *subviewLayoutSpan;
 @property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
+@property (nonatomic, nullable, weak) UIView *view;
 @end
 
 @implementation ViewLoadInstrumentationState
@@ -250,6 +252,23 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
     }
 }
 
+void ViewLoadInstrumentation::updateViewForViewController(UIViewController *viewController, ViewLoadInstrumentationState *instrumentationState) {
+    if (viewController == nil || instrumentationState == nil) {
+        return;
+    }
+
+    UIView *currentView = instrumentationState.view;
+    if (currentView != viewController.view) {
+        if (currentView != nil) {
+            // Remove the old instrumentation state from the view
+            objc_setAssociatedObject(currentView, &kAssociatedStateView, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        }
+
+        instrumentationState.view = viewController.view;
+        objc_setAssociatedObject(viewController.view, &kAssociatedStateView, instrumentationState, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
+
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
 // NOLINTBEGIN(cppcoreguidelines-*)
@@ -372,6 +391,9 @@ ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
                 reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
             }
             [span end];
+
+            updateViewForViewController(self, instrumentationState);
+
         } else {
             if (loadView) {
                 reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
@@ -498,8 +520,10 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
         }
         [span end];
+
         auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
-        
+        updateViewForViewController(self, instrumentationState);
+
         void (^endViewAppearingSpanIfNeeded)(ViewLoadInstrumentationState *) = ^void(ViewLoadInstrumentationState *state) {
             auto overallSpan = state.overallSpan;
             if (overallSpan.state == SpanStateOpen) {
