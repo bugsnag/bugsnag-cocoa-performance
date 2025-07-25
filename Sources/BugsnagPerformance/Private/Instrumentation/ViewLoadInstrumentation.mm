@@ -243,10 +243,17 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
     if (isPreloaded) {
         auto viewType = BugsnagPerformanceViewTypeUIKit;
         auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
-        [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
-        [span updateStartTime: viewWillAppearStartTime];
-        [span internalSetMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
+        [span updateName: [NSString stringWithFormat:@"%@ (pre-load)", span.name]];
+        [span internalSetMultipleAttributes:spanAttributesProvider_->preloadViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
+        [span endWithEndTime:viewDidLoadEndTime];
+        
+        SpanOptions options;
+        auto presentationSpan = tracer_->startViewLoadSpan(viewType, className, options);
+        [presentationSpan internalSetMultipleAttributes:spanAttributesProvider_->presentingViewLoadSpanAttributes(className, viewType)];
+        [presentationSpan updateName: [NSString stringWithFormat:@"%@ (presenting)", presentationSpan.name]];
+        
+        instrumentationState.overallSpan = presentationSpan;
     }
 }
 
@@ -418,13 +425,13 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
             return;
         }
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
+        adjustSpanIfPreloaded(overallSpan, instrumentationState, [NSDate new], self);
         BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillAppear");
         instrumentationState.viewWillAppearPhaseSpanCreated = YES;
         if (viewWillAppear) {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
-        adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
         instrumentationState.viewAppearingSpan = viewAppearingSpan;
     });

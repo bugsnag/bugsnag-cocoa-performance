@@ -199,10 +199,19 @@ SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerfo
 }
 
 NSMutableDictionary *
-SpanAttributesProvider::preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+SpanAttributesProvider::preloadViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load",
-        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (pre-loaded)", className],
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (preload)", className],
+        @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::presentingViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load",
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (presentation)", className],
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
     }.mutableCopy;
 }
