@@ -110,25 +110,47 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"?");
 }
 
-- (void)testPreloadedViewLoadSpanAttributes {
+- (void)testPreloadViewLoadSpanAttributes {
     SpanAttributesProvider provider;
 
-    auto attributes = provider.preloadedViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
+    auto attributes = provider.preloadViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
     XCTAssertEqual(3U, attributes.count);
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
-    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (pre-loaded)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (preload)");
     XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"UIKit");
 
-    attributes = provider.preloadedViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeSwiftUI);
+    attributes = provider.preloadViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeSwiftUI);
     XCTAssertEqual(3U, attributes.count);
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
-    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (pre-loaded)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (preload)");
     XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"SwiftUI");
 
-    attributes = provider.preloadedViewLoadSpanAttributes(@"myView", (BugsnagPerformanceViewType)100);
+    attributes = provider.preloadViewLoadSpanAttributes(@"myView", (BugsnagPerformanceViewType)100);
     XCTAssertEqual(3U, attributes.count);
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
-    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (pre-loaded)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (preload)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"?");
+}
+
+- (void)testPresentingViewLoadSpanAttributes {
+    SpanAttributesProvider provider;
+
+    auto attributes = provider.presentingViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
+    XCTAssertEqual(3U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (presentation)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"UIKit");
+
+    attributes = provider.presentingViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeSwiftUI);
+    XCTAssertEqual(3U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (presentation)");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"SwiftUI");
+
+    attributes = provider.presentingViewLoadSpanAttributes(@"myView", (BugsnagPerformanceViewType)100);
+    XCTAssertEqual(3U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"view_load");
+    XCTAssertEqualObjects(attributes[@"bugsnag.view.name"], @"myView (presentation)");
     XCTAssertEqualObjects(attributes[@"bugsnag.view.type"], @"?");
 }
 
