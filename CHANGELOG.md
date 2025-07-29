@@ -3,6 +3,10 @@ Changelog
 
 ## TBD
 
+### Enhancements
+
+* Split Preload and Presentation phases of pre-loaded ViewLoads. [455](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/455)
+
 ### Bug fixes
 
 * Fixed issue where some Network spans were categorized as custom.

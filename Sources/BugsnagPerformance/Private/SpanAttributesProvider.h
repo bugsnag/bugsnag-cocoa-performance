@@ -25,7 +25,8 @@ public:
     NSMutableDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSMutableDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSMutableDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
-    NSMutableDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
+    NSMutableDictionary *preloadViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
+    NSMutableDictionary *presentingViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSMutableDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
     NSMutableDictionary *customSpanAttributes() noexcept;
 
