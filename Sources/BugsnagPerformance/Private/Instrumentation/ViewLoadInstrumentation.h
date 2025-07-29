@@ -13,7 +13,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr int kAssociatedStateView = 0;
+
 @interface ViewLoadInstrumentationState : NSObject
+  - (BugsnagPerformanceSpan* _Nullable) getOverallSpan;
 @end
 
 namespace bugsnag {
@@ -54,6 +58,7 @@ private:
     void endViewAppearingSpan(ViewLoadInstrumentationState *instrumentationState, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
+    void startLoadingPhase(UIViewController *viewController) noexcept;
 
     static void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
     static ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
@@ -76,6 +81,7 @@ private:
     std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
     std::recursive_mutex vcInitMutex_;
+    BugsnagPerformanceSpanCondition* _Nullable loadingPhaseCondition_;
 };
 }
 

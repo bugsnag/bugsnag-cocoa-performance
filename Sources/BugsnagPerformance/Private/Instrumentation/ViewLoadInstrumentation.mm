@@ -25,8 +25,6 @@
 
 using namespace bugsnag;
 
-static constexpr int kAssociatedViewLoadInstrumentationState = 0;
-static constexpr int kAssociatedStateView = 0;
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumentationState *);
@@ -38,11 +36,13 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 @property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
 @property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
 @property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
+@property (nonatomic) BOOL viewLoadingPhaseSpanCreated;
 @property (nonatomic) BOOL isMarkedAsPreloaded;
 @property (nonatomic, nullable, strong) NSDate *viewDidLoadEndTime;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *overallSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewAppearingSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *subviewLayoutSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *loadingPhaseSpan;
 @property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
 @property (nonatomic, nullable, weak) UIView *view;
 @end
@@ -53,6 +53,10 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
     if (self.onDealloc != nil) {
         self.onDealloc(self);
     }
+}
+
+-  (BugsnagPerformanceSpan*) getOverallSpan {
+    return self.overallSpan;
 }
 
 @end
@@ -159,6 +163,11 @@ void ViewLoadInstrumentation::endOverallSpan(UIViewController *viewController) n
     state.overallSpan = nil;
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndViewLoadSpan:span viewController:viewController];
 
+    // Also end data loading phase span if it was created
+    if (state.viewLoadingPhaseSpanCreated) {
+        [state.loadingPhaseSpan end];
+    }
+
     [span end];
 }
 
@@ -189,7 +198,11 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
     if (!isEnabled_) {
         return;
     }
-    
+
+    auto instrumentationState = getInstrumentationState(viewController);
+    if (instrumentationState != nil && instrumentationState.overallSpan != nil) {
+        this->loadingPhaseCondition_ = [instrumentationState.overallSpan blockWithTimeout:0.1];
+    }
 
     endOverallSpan(viewController);
 }
@@ -276,6 +289,16 @@ void ViewLoadInstrumentation::updateViewForViewController(UIViewController *view
     }
 }
 
+void ViewLoadInstrumentation::startLoadingPhase(UIViewController *viewController) noexcept {
+    if (!this->loadingPhaseCondition_.isActive) {
+        return;
+    }
+
+    auto instrumentationState = getInstrumentationState(viewController);
+    BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(viewController, @"viewDataLoading");
+    instrumentationState.viewLoadingPhaseSpanCreated = YES;
+    instrumentationState.loadingPhaseSpan = span;
+}
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
 // NOLINTBEGIN(cppcoreguidelines-*)
