@@ -9,6 +9,7 @@
 #import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpansPlugin.h>
 #import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpanQuery.h>
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
+#import <BugsnagPerformance/BugsnagPerformancePriority.h>
 #import <map>
 
 static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
