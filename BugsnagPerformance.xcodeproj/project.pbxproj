@@ -198,13 +198,13 @@
 		CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF7C5DF297A8E9100D47719 /* Gzip.h */; };
 		CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF7C5E0297A8E9100D47719 /* Gzip.m */; };
 		CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBF7C5E3297A963A00D47719 /* libz.tbd */; };
-		DA87DAEF2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m */; };
-		DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m */; };
+		DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */; };
+		DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */; };
+		DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */; };
 		DA8E5EE02E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		DA8E5EEB2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
-		DA8E5EFE2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; };
 		DA8E5F112E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m */; };
 /* End PBXBuildFile section */
@@ -527,7 +527,9 @@
 		CBF7C5DF297A8E9100D47719 /* Gzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gzip.h; sourceTree = "<group>"; };
 		CBF7C5E0297A8E9100D47719 /* Gzip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gzip.m; sourceTree = "<group>"; };
 		CBF7C5E3297A963A00D47719 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpansPlugin.m; sourceTree = "<group>"; };
+		DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansPlugin.mm; sourceTree = "<group>"; };
+		DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpanQuery.h; sourceTree = "<group>"; };
+		DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpanQuery.m; sourceTree = "<group>"; };
 		DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceNamedSpans.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA8E5EDF2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
@@ -1026,7 +1028,8 @@
 		DA8E5ECF2E2FC36B0049F7AB /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m */,
+				DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */,
+				DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */,
 			);
 			path = Public;
 			sourceTree = "<group>";
@@ -1042,6 +1045,7 @@
 			isa = PBXGroup;
 			children = (
 				DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */,
+				DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */,
 			);
 			path = BugsnagPerformanceNamedSpans;
 			sourceTree = "<group>";
@@ -1086,7 +1090,6 @@
 				963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
-				DA8E5EFE2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
@@ -1162,6 +1165,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */,
 				DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1595,7 +1599,6 @@
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
-				DA87DAEF2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
 				963726E02DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m in Sources */,
@@ -1652,7 +1655,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.m in Sources */,
+				DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */,
+				DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
