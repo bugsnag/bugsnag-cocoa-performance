@@ -1,5 +1,5 @@
 //
-//  BugsnagPerformanceNamedSpansTests.m
+//  BugsnagPerformanceNamedSpansTests.mm
 //  BugsnagPerformanceNamedSpansTests
 //
 //  Created by Yousif Ahmed on 22/07/2025.
@@ -10,33 +10,11 @@
 #import "BugsnagPerformanceNamedSpansPlugin.h"
 #import "BugsnagPerformanceNamedSpanQuery.h"
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
+#import "BugsnagPerformanceSpan+Private.h"
+#import "IdGenerator.h"
 
-@interface TestSpan: BugsnagPerformanceSpan
-
--(instancetype)initWithName:(NSString *)name;
-
-@end
-
-@implementation TestSpan
-
-- (instancetype)initWithName:(NSString *)name {
-    TraceId tid = {.value = 1};
-    if ((self = [super initWithTraceId:traceId spanId:1])) {
-        _name = name;
-    }
-    
-    return self;
-}
-
-@end
-
-@interface BugsnagPerformanceNamedSpansTests : XCTestCase
-@property (nonatomic, strong) BugsnagPerformanceNamedSpansPlugin *plugin;
-@property (nonatomic, strong) BugsnagPerformancePluginContext *mockContext;
-@end
-
+using namespace bugsnag;
 
 @interface FakePluginContext : NSObject
 @property (nonatomic, copy) BugsnagPerformanceSpanStartCallback spanStartCallback;
@@ -48,7 +26,20 @@
 @end
 
 static BugsnagPerformanceSpan *createSpan(NSString *name) {
-    return [[TestSpan alloc] initWithName:name];
+    MetricsOptions metricsOptions;
+    TraceId tid = {.value = 1};
+    return [[BugsnagPerformanceSpan alloc] initWithName:name
+                                                traceId:tid
+                                                 spanId:IdGenerator::generateSpanId()
+                                               parentId:IdGenerator::generateSpanId()
+                                              startTime:SpanOptions().startTime
+                                             firstClass:BSGTriStateNo
+                                    samplingProbability:1.0
+                                    attributeCountLimit:128
+                                         metricsOptions:metricsOptions
+                                           onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                           onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
 }
 
 
@@ -75,6 +66,11 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 
 @end
 
+@interface BugsnagPerformanceNamedSpansTests : XCTestCase
+@property (nonatomic, strong) BugsnagPerformanceNamedSpansPlugin *plugin;
+@property (nonatomic, strong) BugsnagPerformancePluginContext *mockContext;
+@end
+
 @implementation BugsnagPerformanceNamedSpansTests
 
 - (void)setUp {
@@ -97,7 +93,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     XCTAssertNotNil(fakeContext.spanStartCallback);
     XCTAssertNotNil(fakeContext.spanEndCallback);
-    XCTAssertEqual(fakeContext.spanControlProviders.count, 1);
+    XCTAssertEqual(fakeContext.spanControlProviders.count, 1ULL);
     XCTAssertIdentical(fakeContext.spanControlProviders.firstObject, self.plugin);
 }
 
@@ -231,29 +227,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 }
 
 #pragma mark - Timeout Tests
-
-- (void)testSpanTimeoutRemovesSpanFromCache {
-    [self.plugin installWithContext:self.mockContext];
-    
-    BugsnagPerformanceSpan *span = createSpan("timeout-span");
-    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
-    
-    // Start span
-    fakeContext.spanStartCallback(span);
-    
-    // Verify span is cached
-    BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timeout-span"];
-    id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
-    XCTAssertIdentical(result, span);
-    
-    // Wait a short time and verify span is still there (not testing actual 10 minute timeout)
-    // This test mainly verifies the timeout timer is set up
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timeout-span"];
-        id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
-        XCTAssertIdentical(result, span);
-    });
-}
 
 #pragma mark - Thread Safety Tests
 

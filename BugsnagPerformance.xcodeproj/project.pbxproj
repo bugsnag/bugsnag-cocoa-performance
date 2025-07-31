@@ -103,6 +103,9 @@
 		963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */; };
 		963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */; };
 		963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */; };
+		963828B92E3C0B9A00404F3A /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
+		963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -137,7 +140,6 @@
 		96F129312DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */; };
 		96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F417122E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h */; };
 		96F417162E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc in Sources */ = {isa = PBXBuildFile; fileRef = 96F417132E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc */; };
-		96F417192E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F417172E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests.m */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -204,12 +206,10 @@
 		DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */; };
 		DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */; };
 		DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */; };
-		DA8E5EE02E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		DA8E5EEB2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; };
-		DA8E5F112E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +262,27 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		963828982E3C0B9A00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
+		9638289A2E3C0B9A00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
+		963828C12E3C0BAC00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA8E5ED52E2FC3E80049F7AB;
+			remoteInfo = BugsnagPerformanceNamedSpans;
+		};
 		966DD5032A211D7F002030B2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
@@ -277,20 +298,6 @@
 			remoteInfo = BugsnagPerformanceTestsApp;
 		};
 		96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
-			remoteInfo = BugsnagPerformanceTestsApp;
-		};
-		DA8E5EE12E2FC3E80049F7AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DA8E5ED52E2FC3E80049F7AB;
-			remoteInfo = BugsnagPerformanceNamedSpans;
-		};
-		DA8E5EE32E2FC3E80049F7AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
 			proxyType = 1;
@@ -428,6 +435,7 @@
 		963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanControlProvider+Private.h"; sourceTree = "<group>"; };
 		963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPluginManager.h; sourceTree = "<group>"; };
 		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
+		963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -463,7 +471,6 @@
 		96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanTests.mm; sourceTree = "<group>"; };
 		96F417122E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpans.h; sourceTree = "<group>"; };
 		96F417132E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceNamedSpans.docc; sourceTree = "<group>"; };
-		96F417172E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpansTests.m; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -537,9 +544,8 @@
 		DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpanQuery.h; sourceTree = "<group>"; };
 		DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpanQuery.m; sourceTree = "<group>"; };
 		DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceNamedSpans.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA8E5EDF2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
-		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpansTests.m; sourceTree = "<group>"; };
+		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -596,6 +602,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		963828B82E3C0B9A00404F3A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				963828B92E3C0B9A00404F3A /* BugsnagPerformance.framework in Frameworks */,
+				963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415ED29E6ADC500AEE435 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -611,14 +626,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DA8E5EDC2E2FC3E80049F7AB /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DA8E5EE02E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -914,7 +921,7 @@
 				094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */,
 				09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */,
 				DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */,
-				DA8E5EDF2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests.xctest */,
+				963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -973,14 +980,6 @@
 			path = BugsnagPerformanceNamedSpans;
 			sourceTree = "<group>";
 		};
-		96F417182E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests */ = {
-			isa = PBXGroup;
-			children = (
-				96F417172E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests.m */,
-			);
-			path = BugsnagPerformanceNamedSpansTests;
-			sourceTree = "<group>";
-		};
 		C6D4AAD24D6356218C22BEBE = {
 			isa = PBXGroup;
 			children = (
@@ -993,7 +992,6 @@
 				094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
 				09D807F22B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
 				96F417142E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans */,
-				96F417182E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests */,
 				450CB5014AAED50046482044 /* Products */,
 				0122C25629019904002D243C /* Frameworks */,
 			);
@@ -1061,7 +1059,7 @@
 		DA8E5F002E2FCC100049F7AB /* BugsnagPerformanceNamedSpansTests */ = {
 			isa = PBXGroup;
 			children = (
-				DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m */,
+				DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */,
 			);
 			path = BugsnagPerformanceNamedSpansTests;
 			sourceTree = "<group>";
@@ -1277,6 +1275,26 @@
 			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		963828962E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 963828BB2E3C0B9A00404F3A /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */;
+			buildPhases = (
+				9638289B2E3C0B9A00404F3A /* Sources */,
+				963828B82E3C0B9A00404F3A /* Frameworks */,
+				963828BA2E3C0B9A00404F3A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				963828972E3C0B9A00404F3A /* PBXTargetDependency */,
+				963828992E3C0B9A00404F3A /* PBXTargetDependency */,
+				963828C22E3C0BAC00404F3A /* PBXTargetDependency */,
+			);
+			name = BugsnagPerformanceNamedSpansTests;
+			productName = "BugsnagPerformance-iOSTests";
+			productReference = 963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */;
@@ -1337,27 +1355,6 @@
 			productReference = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		DA8E5EDE2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DA8E5EF12E2FC3E80049F7AB /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */;
-			buildPhases = (
-				DA8E5EDB2E2FC3E80049F7AB /* Sources */,
-				DA8E5EDC2E2FC3E80049F7AB /* Frameworks */,
-				DA8E5EDD2E2FC3E80049F7AB /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				DA8E5EE22E2FC3E80049F7AB /* PBXTargetDependency */,
-				DA8E5EE42E2FC3E80049F7AB /* PBXTargetDependency */,
-			);
-			name = BugsnagPerformanceNamedSpansTests;
-			packageProductDependencies = (
-			);
-			productName = BugsnagPerformanceNamedSpansTests;
-			productReference = DA8E5EDF2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1396,6 +1393,9 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
+					963828962E3C0B9A00404F3A = {
+						DevelopmentTeam = 7W9PZ27Y5F;
+					};
 					96D415EF29E6ADC500AEE435 = {
 						CreatedOnToolsVersion = 14.2;
 						DevelopmentTeam = 7W9PZ27Y5F;
@@ -1409,12 +1409,6 @@
 						CreatedOnToolsVersion = 16.2;
 						DevelopmentTeam = 7W9PZ27Y5F;
 						ProvisioningStyle = Automatic;
-					};
-					DA8E5EDE2E2FC3E80049F7AB = {
-						CreatedOnToolsVersion = 16.2;
-						DevelopmentTeam = 7W9PZ27Y5F;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
 				};
 			};
@@ -1439,7 +1433,7 @@
 				094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
 				09D807F02B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
 				DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */,
-				DA8E5EDE2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpansTests */,
+				963828962E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1487,6 +1481,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		963828BA2E3C0B9A00404F3A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415EE29E6ADC500AEE435 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1498,13 +1499,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		DA8E5ED42E2FC3E80049F7AB /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DA8E5EDD2E2FC3E80049F7AB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1649,6 +1643,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9638289B2E3C0B9A00404F3A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415EC29E6ADC500AEE435 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1665,15 +1667,6 @@
 				96F417162E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc in Sources */,
 				DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */,
 				DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DA8E5EDB2E2FC3E80049F7AB /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				96F417192E3B8E7F00EABD8E /* BugsnagPerformanceNamedSpansTests.m in Sources */,
-				DA8E5F112E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1715,6 +1708,21 @@
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
 		};
+		963828972E3C0B9A00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = 963828982E3C0B9A00404F3A /* PBXContainerItemProxy */;
+		};
+		963828992E3C0B9A00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 9638289A2E3C0B9A00404F3A /* PBXContainerItemProxy */;
+		};
+		963828C22E3C0BAC00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */;
+			targetProxy = 963828C12E3C0BAC00404F3A /* PBXContainerItemProxy */;
+		};
 		966DD5042A211D7F002030B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
@@ -1729,16 +1737,6 @@
 			isa = PBXTargetDependency;
 			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
 			targetProxy = 96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */;
-		};
-		DA8E5EE22E2FC3E80049F7AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */;
-			targetProxy = DA8E5EE12E2FC3E80049F7AB /* PBXContainerItemProxy */;
-		};
-		DA8E5EE42E2FC3E80049F7AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
-			targetProxy = DA8E5EE32E2FC3E80049F7AB /* PBXContainerItemProxy */;
 		};
 		DA8E5EEA2E2FC3E80049F7AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1891,7 +1889,6 @@
 		094FA74B2B10EDE700112ED4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
@@ -1916,7 +1913,6 @@
 		094FA74C2B10EDE700112ED4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
@@ -2299,10 +2295,53 @@
 			};
 			name = Release;
 		};
+		963828BC2E3C0B9A00404F3A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_WARN_PEDANTIC = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+			};
+			name = Debug;
+		};
+		963828BD2E3C0B9A00404F3A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_WARN_PEDANTIC = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		96D4160229E6ADC600AEE435 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2334,7 +2373,6 @@
 		96D4160329E6ADC600AEE435 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2490,51 +2528,6 @@
 			};
 			name = Release;
 		};
-		DA8E5EF22E2FC3E80049F7AB /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpansTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BugsnagPerformanceTestsApp";
-			};
-			name = Debug;
-		};
-		DA8E5EF32E2FC3E80049F7AB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpansTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BugsnagPerformanceTestsApp";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2601,6 +2594,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		963828BB2E3C0B9A00404F3A /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				963828BC2E3C0B9A00404F3A /* Debug */,
+				963828BD2E3C0B9A00404F3A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2615,15 +2617,6 @@
 			buildConfigurations = (
 				DA8E5EEF2E2FC3E80049F7AB /* Debug */,
 				DA8E5EF02E2FC3E80049F7AB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DA8E5EF12E2FC3E80049F7AB /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DA8E5EF22E2FC3E80049F7AB /* Debug */,
-				DA8E5EF32E2FC3E80049F7AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

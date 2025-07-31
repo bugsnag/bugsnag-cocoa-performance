@@ -59,7 +59,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DA8E5EDE2E2FC3E80049F7AB"
+               BlueprintIdentifier = "963828962E3C0B9A00404F3A"
                BuildableName = "BugsnagPerformanceNamedSpansTests.xctest"
                BlueprintName = "BugsnagPerformanceNamedSpansTests"
                ReferencedContainer = "container:BugsnagPerformance.xcodeproj">
