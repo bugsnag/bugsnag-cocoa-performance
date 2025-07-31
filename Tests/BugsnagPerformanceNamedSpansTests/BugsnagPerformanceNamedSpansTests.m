@@ -7,22 +7,36 @@
 //
 
 #import <XCTest/XCTest.h>
-#import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpansPlugin.h>
-#import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpanQuery.h>
+#import "BugsnagPerformanceNamedSpansPlugin.h"
+#import "BugsnagPerformanceNamedSpanQuery.h"
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
+
+@interface TestSpan: BugsnagPerformanceSpan
+
+-(instancetype)initWithName:(NSString *)name;
+
+@end
+
+@implementation TestSpan
+
+- (instancetype)initWithName:(NSString *)name {
+    TraceId tid = {.value = 1};
+    if ((self = [super initWithTraceId:traceId spanId:1])) {
+        _name = name;
+    }
+    
+    return self;
+}
+
+@end
 
 @interface BugsnagPerformanceNamedSpansTests : XCTestCase
 @property (nonatomic, strong) BugsnagPerformanceNamedSpansPlugin *plugin;
 @property (nonatomic, strong) BugsnagPerformancePluginContext *mockContext;
 @end
 
-@interface FakeSpan : NSObject<BugsnagPerformanceSpanControl>
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, assign) BOOL isEnded;
-- (instancetype)initWithName:(NSString *)name;
-@end
 
 @interface FakePluginContext : NSObject
 @property (nonatomic, copy) BugsnagPerformanceSpanStartCallback spanStartCallback;
@@ -33,25 +47,10 @@
 - (void)addSpanControlProvider:(id<BugsnagPerformanceSpanControlProvider>)provider;
 @end
 
-@implementation FakeSpan
-
-- (instancetype)initWithName:(NSString *)name {
-    if (self = [super init]) {
-        _name = name;
-        _isEnded = NO;
-    }
-    return self;
+static BugsnagPerformanceSpan *createSpan(NSString *name) {
+    return [[TestSpan alloc] initWithName:name];
 }
 
-- (void)end {
-    self.isEnded = YES;
-}
-
-- (void)endWithEndTime:(NSDate *)endTime {
-    self.isEnded = YES;
-}
-
-@end
 
 @implementation FakePluginContext
 
@@ -112,7 +111,7 @@
 - (void)testSpanStartCallbackCachesSpan {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span = [[FakeSpan alloc] initWithName:@"test-span"];
+    BugsnagPerformanceSpan *span = createSpan(@"test-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     // Simulate span start
@@ -128,7 +127,7 @@
 - (void)testSpanEndCallbackRemovesSpanFromCache {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span = [[FakeSpan alloc] initWithName:@"test-span"];
+    BugsnagPerformanceSpan *span = createSpan(@"test-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     // Simulate span start and end
@@ -147,8 +146,8 @@
 - (void)testMultipleSpansWithSameName {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span1 = [[FakeSpan alloc] initWithName:@"test-span"];
-    FakeSpan *span2 = [[FakeSpan alloc] initWithName:@"test-span"];
+    BugsnagPerformanceSpan *span1 = createSpan(@"test-span");
+    BugsnagPerformanceSpan *span2 = createSpan(@"test-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     // Start first span
@@ -167,8 +166,8 @@
 - (void)testSpanEndOnlyRemovesCorrectSpan {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span1 = [[FakeSpan alloc] initWithName:@"test-span"];
-    FakeSpan *span2 = [[FakeSpan alloc] initWithName:@"test-span"];
+    BugsnagPerformanceSpan *span1 = createSpan(@"test-span");
+    BugsnagPerformanceSpan *span2 = createSpan(@"test-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     // Start first span
@@ -193,7 +192,7 @@
 - (void)testGetSpanControlsWithNamedSpanQuery {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span = [[FakeSpan alloc] initWithName:@"my-span"];
+    BugsnagPerformanceSpan *span = createSpan(@"my-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     fakeContext.spanStartCallback(span);
@@ -207,7 +206,7 @@
 - (void)testGetSpanControlsWithNonNamedSpanQuery {
     [self.plugin installWithContext:self.mockContext];
     
-    BugsnagPerformanceSpanQuery *query = [BugsnagPerformanceSpanQuery queryWithResultType:[FakeSpan class]];
+    BugsnagPerformanceSpanQuery *query = [BugsnagPerformanceSpanQuery queryWithResultType:[BugsnagPerformanceSpan class]];
     id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
     
     XCTAssertNil(result);
@@ -236,7 +235,7 @@
 - (void)testSpanTimeoutRemovesSpanFromCache {
     [self.plugin installWithContext:self.mockContext];
     
-    FakeSpan *span = [[FakeSpan alloc] initWithName:@"timeout-span"];
+    BugsnagPerformanceSpan *span = createSpan("timeout-span");
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
     
     // Start span
@@ -268,7 +267,7 @@
     dispatch_group_t group = dispatch_group_create();
     for (int i = 0; i < 10; i++) {
         dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            FakeSpan *span = [[FakeSpan alloc] initWithName:[NSString stringWithFormat:@"span-%d", i]];
+            BugsnagPerformanceSpan *span = createSpan([NSString stringWithFormat:@"span-%d", i]);
             [spans addObject:span];
             fakeContext.spanStartCallback(span);
         });
@@ -285,7 +284,7 @@
     }
     
     // End all spans concurrently
-    for (FakeSpan *span in spans) {
+    for (BugsnagPerformanceSpan *span in spans) {
         dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             fakeContext.spanEndCallback(span);
         });
