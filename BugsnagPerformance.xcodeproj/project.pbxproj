@@ -204,12 +204,12 @@
 		CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF7C5E0297A8E9100D47719 /* Gzip.m */; };
 		CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBF7C5E3297A963A00D47719 /* libz.tbd */; };
 		DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */; };
-		DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */; };
+		DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */; };
 		DA8E5EEB2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
-		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; };
+		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
