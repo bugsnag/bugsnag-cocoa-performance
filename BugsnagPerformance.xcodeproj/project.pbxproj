@@ -106,6 +106,7 @@
 		963828B92E3C0B9A00404F3A /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */; };
+		963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */ = {isa = PBXBuildFile; fileRef = 963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -436,6 +437,7 @@
 		963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPluginManager.h; sourceTree = "<group>"; };
 		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
 		963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpans.h; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -1050,6 +1052,7 @@
 		DA8E5EF92E2FC9AD0049F7AB /* BugsnagPerformanceNamedSpans */ = {
 			isa = PBXGroup;
 			children = (
+				963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */,
 				DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */,
 				DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */,
 			);
@@ -1174,6 +1177,7 @@
 				96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */,
 				DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */,
 				DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
+				963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

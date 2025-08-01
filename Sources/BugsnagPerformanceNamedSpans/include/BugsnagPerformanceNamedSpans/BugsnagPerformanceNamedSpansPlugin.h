@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 @interface BugsnagPerformanceNamedSpansPlugin: NSObject <BugsnagPerformancePlugin, BugsnagPerformanceSpanControlProvider>
 
 @end

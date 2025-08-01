@@ -9,6 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 @interface BugsnagPerformanceNamedSpanQuery : BugsnagPerformanceSpanQuery
 
 + (instancetype)queryWithName:(nonnull NSString *)name;
