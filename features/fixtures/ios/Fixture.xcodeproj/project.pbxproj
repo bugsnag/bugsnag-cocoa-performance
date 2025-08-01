@@ -101,6 +101,7 @@
 		DA58B7D62DF87EC500CB80A4 /* PluginInstallErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D52DF87EA900CB80A4 /* PluginInstallErrorScenario.swift */; };
 		DA85961E2DF718D100905922 /* PluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA85961D2DF718C800905922 /* PluginScenario.swift */; };
 		DA95ABF32E3A7E52001E6B0E /* NamedSpansPluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */; };
+		DAC7DD672E3CBED10091961A /* BugsnagPerformanceNamedSpans in Frameworks */ = {isa = PBXBuildFile; productRef = DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */; };
 		DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -216,6 +217,7 @@
 				01A414C82912CA18003152A4 /* Bugsnag in Frameworks */,
 				0983A17B2B14BB2000DDF4FF /* BugsnagPerformanceSwift in Frameworks */,
 				01FE4DC028E1AEDF00D1F239 /* BugsnagPerformance in Frameworks */,
+				DAC7DD672E3CBED10091961A /* BugsnagPerformanceNamedSpans in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,6 +399,7 @@
 				01FE4DBF28E1AEDF00D1F239 /* BugsnagPerformance */,
 				01A414C72912CA18003152A4 /* Bugsnag */,
 				0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */,
+				DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */,
 			);
 			productName = Fixture;
 			productReference = 01FE4DA528E1AEBD00D1F239 /* Fixture.app */;
@@ -795,6 +798,10 @@
 		0983A17A2B14BB2000DDF4FF /* BugsnagPerformanceSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BugsnagPerformanceSwift;
+		};
+		DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformanceNamedSpans;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
