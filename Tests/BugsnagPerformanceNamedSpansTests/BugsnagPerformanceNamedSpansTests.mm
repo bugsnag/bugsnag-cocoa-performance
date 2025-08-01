@@ -202,6 +202,11 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 - (void)testGetSpanControlsWithNonNamedSpanQuery {
     [self.plugin installWithContext:self.mockContext];
     
+    BugsnagPerformanceSpan *span = createSpan(@"my-span");
+    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
+    
+    fakeContext.spanStartCallback(span);
+    
     BugsnagPerformanceSpanQuery *query = [BugsnagPerformanceSpanQuery queryWithResultType:[BugsnagPerformanceSpan class]];
     id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
     
@@ -210,6 +215,11 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 
 - (void)testGetSpanControlsWithNonExistentSpanName {
     [self.plugin installWithContext:self.mockContext];
+    
+    BugsnagPerformanceSpan *span = createSpan(@"my-span");
+    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
+    
+    fakeContext.spanStartCallback(span);
     
     BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"non-existent"];
     id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
