@@ -244,14 +244,12 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     [self.plugin installWithContext:self.mockContext];
     
     FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
-    NSMutableArray *spans = [NSMutableArray new];
     
     // Create multiple spans concurrently
     dispatch_group_t group = dispatch_group_create();
     for (int i = 0; i < 10; i++) {
         dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             BugsnagPerformanceSpan *span = createSpan([NSString stringWithFormat:@"span-%d", i]);
-            [spans addObject:span];
             fakeContext.spanStartCallback(span);
         });
     }
@@ -260,10 +258,12 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
     
     // Verify all spans are cached
+    NSMutableArray *spans = [NSMutableArray new];
     for (int i = 0; i < 10; i++) {
         BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:[NSString stringWithFormat:@"span-%d", i]];
         id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertNotNil(result);
+        [spans addObject:result];
     }
     
     // End all spans concurrently
