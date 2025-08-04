@@ -211,6 +211,7 @@
 		DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -548,6 +549,7 @@
 		DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceNamedSpans.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
 		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
+		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1018,8 +1020,8 @@
 		DA8E5ECD2E2FC32C0049F7AB /* BugsnagPerformanceNamedSpans */ = {
 			isa = PBXGroup;
 			children = (
+				DA9BB1C92E40CBE4009A7D25 /* Private */,
 				DA8E5ECE2E2FC3520049F7AB /* include */,
-				DA8E5ED02E2FC3710049F7AB /* Private */,
 				DA8E5ECF2E2FC36B0049F7AB /* Public */,
 			);
 			path = BugsnagPerformanceNamedSpans;
@@ -1042,13 +1044,6 @@
 			path = Public;
 			sourceTree = "<group>";
 		};
-		DA8E5ED02E2FC3710049F7AB /* Private */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Private;
-			sourceTree = "<group>";
-		};
 		DA8E5EF92E2FC9AD0049F7AB /* BugsnagPerformanceNamedSpans */ = {
 			isa = PBXGroup;
 			children = (
@@ -1065,6 +1060,14 @@
 				DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */,
 			);
 			path = BugsnagPerformanceNamedSpansTests;
+			sourceTree = "<group>";
+		};
+		DA9BB1C92E40CBE4009A7D25 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */,
+			);
+			path = Private;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1175,6 +1178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */,
+				DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */,
 				DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */,
 				DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
 				963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */,

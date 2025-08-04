@@ -10,20 +10,30 @@
 #import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpanQuery.h>
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
-#import <map>
+#import "../Private/BugsnagPerformanceNamedSpansPlugin+Private.h"
 
 static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
-@interface BugsnagPerformanceNamedSpansPlugin () {
-    std::map<void *, dispatch_source_t> _spanTimeoutTimers;
-}
+@interface BugsnagPerformanceNamedSpansPlugin ()
 
 @property (nonatomic, strong) NSMutableDictionary *spansByName;
 
 @end
 
-
 @implementation BugsnagPerformanceNamedSpansPlugin
+
+#pragma mark - Initialization
+
+- (instancetype)init {
+    return [self initWithTimeoutInterval:kSpanTimeoutInterval];
+}
+
+- (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval {
+    if ((self = [super init])) {
+        _timeoutInterval = timeoutInterval;
+    }
+    return self;
+}
 
 #pragma mark BugsnagPerformancePlugin
 
@@ -43,7 +53,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
             
             blockSelf.spansByName[span.name] = span;
             
-            // Add a 10 minute timeout to remove the span from the cache if not ended
+            // Add timeout to remove the span from the cache if not ended
             void *key = (__bridge void *)span;
             dispatch_source_t timer = [blockSelf createSpanTimeoutTimer:span];
             blockSelf->_spanTimeoutTimers[key] = timer;
@@ -96,7 +106,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
                                                      dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
     
     dispatch_source_set_timer(timer,
-                             dispatch_time(DISPATCH_TIME_NOW, (int64_t)(kSpanTimeoutInterval * NSEC_PER_SEC)),
+                             dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.timeoutInterval * NSEC_PER_SEC)),
                              DISPATCH_TIME_FOREVER,
                              0);
     
