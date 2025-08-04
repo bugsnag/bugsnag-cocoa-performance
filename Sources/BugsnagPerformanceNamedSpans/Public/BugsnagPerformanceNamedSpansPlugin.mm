@@ -35,6 +35,12 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     __block BugsnagPerformanceNamedSpansPlugin *blockSelf = self;
     BugsnagPerformanceSpanStartCallback spanStartCallback = ^(BugsnagPerformanceSpan *span) {
         @synchronized (blockSelf) {
+            BugsnagPerformanceSpan *existingSpan = blockSelf.spansByName[span.name];
+            if (existingSpan) {
+                // If a span with the same name already exists, cancel the associated timeout
+                [blockSelf cancelSpanTimeout:existingSpan];
+            }
+            
             blockSelf.spansByName[span.name] = span;
             
             // Add a 10 minute timeout to remove the span from the cache if not ended
@@ -71,6 +77,18 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 #pragma mark Private
 
+- (BOOL)endNativeSpan:(BugsnagPerformanceSpan *)span {
+    @synchronized (self) {
+        // Remove span from cache if it exists
+        if ([self.spansByName objectForKey:span.name] == span) {
+            [self.spansByName removeObjectForKey:span.name];
+        }
+
+        [self cancelSpanTimeout:span];
+    }
+    return YES;
+}
+
 - (dispatch_source_t)createSpanTimeoutTimer:(BugsnagPerformanceSpan *)span {
     __weak BugsnagPerformanceNamedSpansPlugin *weakSelf = self;
     
@@ -90,25 +108,15 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     return timer;
 }
 
-#pragma clang diagnostic ignored "-Wdirect-ivar-access"
-- (BOOL)endNativeSpan:(BugsnagPerformanceSpan *)span {
+- (void)cancelSpanTimeout:(BugsnagPerformanceSpan *)span {
     void *key = (__bridge void *)span;
-
-    @synchronized (self) {
-        // Remove span from cache if it exists
-        if ([self.spansByName objectForKey:span.name] == span) {
-            [self.spansByName removeObjectForKey:span.name];
-        }
-
-        // Clean up timer for this span
-        auto& timerMap = _spanTimeoutTimers;
-        auto it = timerMap.find(key);
-        if (it != timerMap.end()) {
-            dispatch_source_cancel(it->second);
-            timerMap.erase(it);
-        }
+    auto& timerMap = _spanTimeoutTimers;
+    auto it = timerMap.find(key);
+    if (it != timerMap.end()) {
+        dispatch_source_cancel(it->second);
+        timerMap.erase(it);
     }
-    return YES;
 }
+
 
 @end
