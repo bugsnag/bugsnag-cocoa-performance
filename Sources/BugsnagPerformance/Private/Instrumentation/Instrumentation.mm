@@ -43,3 +43,7 @@ void Instrumentation::start() noexcept {
 void Instrumentation::abortAppStartupSpans() noexcept {
     appStartupInstrumentation_->abortAllSpans();
 }
+
+NSMutableArray<BugsnagPerformanceSpanCondition *> *Instrumentation::startLoadingPhase(UIView *loadingViewIndicator) noexcept {
+    return viewLoadInstrumentation_->startLoadingPhase(loadingViewIndicator);
+}
