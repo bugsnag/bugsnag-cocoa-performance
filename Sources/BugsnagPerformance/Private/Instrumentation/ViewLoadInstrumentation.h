@@ -13,11 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-static constexpr int kAssociatedViewLoadInstrumentationState = 0;
-static constexpr int kAssociatedStateView = 0;
-
 @interface ViewLoadInstrumentationState : NSObject
-  - (BugsnagPerformanceSpan* _Nullable) getOverallSpan;
 @end
 
 namespace bugsnag {
@@ -36,7 +32,8 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept {};
     void start() noexcept {}
-    
+    NSMutableArray<BugsnagPerformanceSpanCondition *> * startLoadingPhase(UIView *loadingIndicatorView) noexcept;
+
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;
     static std::vector<Class> viewControllerSubclasses(const char *image) noexcept;
@@ -58,7 +55,6 @@ private:
     void endViewAppearingSpan(ViewLoadInstrumentationState *instrumentationState, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
-    void startLoadingPhase(UIViewController *viewController) noexcept;
 
     static void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
     static ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
@@ -81,7 +77,6 @@ private:
     std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
     std::recursive_mutex vcInitMutex_;
-    BugsnagPerformanceSpanCondition* _Nullable loadingPhaseCondition_;
 };
 }
 

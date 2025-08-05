@@ -39,6 +39,8 @@ public:
     CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
 
+    NSMutableArray<BugsnagPerformanceSpanCondition *> *startLoadingPhase(UIView *loadingViewIndicator) noexcept;
+
 private:
     Instrumentation() = delete;
 

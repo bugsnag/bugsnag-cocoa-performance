@@ -439,6 +439,10 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
     }
 }
 
+NSMutableArray<BugsnagPerformanceSpanCondition *> * BugsnagPerformanceImpl::startLoadingPhase(UIView *loadingViewIndicator) noexcept {
+    return this->instrumentation_->startLoadingPhase(loadingViewIndicator);
+}
+
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
     batch_->allowDrain();

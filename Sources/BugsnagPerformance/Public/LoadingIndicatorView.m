@@ -9,11 +9,11 @@
 #import "ViewLoadInstrumentation.h"
 #import "LoadingIndicatorView.h"
 #import "Logging.h"
+#import "BugsnagPerformanceLibrary.h"
 
 #import <objc/runtime.h>
 
 static const CGFloat endConditionTimeout = 0.1;
-static const CGFloat conditionInitTimeout = 0.5;
 
 @interface LoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
@@ -77,24 +77,7 @@ static const CGFloat conditionInitTimeout = 0.5;
 
     if (!self.isLoading) {
         self.isLoading = YES;
-
-        NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
-        UIView *superview = self.superview;
-        while (superview != nil) {
-            ViewLoadInstrumentationState *associatedState = objc_getAssociatedObject(superview, &kAssociatedStateView);
-            if (associatedState != nil) {
-                // Start the phase
-
-                // Block the span
-                __strong BugsnagPerformanceSpan *parentSpan = [associatedState getOverallSpan];
-                if (parentSpan != nil) {
-                    BugsnagPerformanceSpanCondition* condition = [parentSpan blockWithTimeout:conditionInitTimeout];
-                    [condition upgrade];
-                    [newConditions addObject:condition];
-                }
-            }
-            superview = superview.superview;
-        }
+        auto newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startLoadingPhase(self);
 
         [self endAllConditions];
         self.conditions = newConditions;

@@ -25,6 +25,8 @@
 
 using namespace bugsnag;
 
+static constexpr int kAssociatedViewLoadInstrumentationState = 0;
+static constexpr int kAssociatedStateView = 0;
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumentationState *);
@@ -45,6 +47,7 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *loadingPhaseSpan;
 @property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
 @property (nonatomic, nullable, weak) UIView *view;
+@property (nonatomic, nullable) BugsnagPerformanceSpanCondition* loadingPhaseCondition;
 @end
 
 @implementation ViewLoadInstrumentationState
@@ -53,10 +56,6 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
     if (self.onDealloc != nil) {
         self.onDealloc(self);
     }
-}
-
--  (BugsnagPerformanceSpan*) getOverallSpan {
-    return self.overallSpan;
 }
 
 @end
@@ -201,7 +200,7 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
 
     auto instrumentationState = getInstrumentationState(viewController);
     if (instrumentationState != nil && instrumentationState.overallSpan != nil) {
-        this->loadingPhaseCondition_ = [instrumentationState.overallSpan blockWithTimeout:0.1];
+        instrumentationState.loadingPhaseCondition = [instrumentationState.overallSpan blockWithTimeout:0.1];
     }
 
     endOverallSpan(viewController);
@@ -282,15 +281,31 @@ void ViewLoadInstrumentation::updateViewForViewController(UIViewController *view
     }
 }
 
-void ViewLoadInstrumentation::startLoadingPhase(UIViewController *viewController) noexcept {
-    if (!this->loadingPhaseCondition_.isActive) {
-        return;
+NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::startLoadingPhase(UIView *loadingIndicatorView) noexcept {
+    NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
+    UIView *superview = loadingIndicatorView.superview;
+    while (superview != nil) {
+        ViewLoadInstrumentationState *associatedState = objc_getAssociatedObject(superview, &kAssociatedStateView);
+        if (associatedState != nil && associatedState.loadingPhaseCondition.isActive) {
+            UIViewController *viewController = objc_getAssociatedObject(associatedState, &kAssociatedViewLoadInstrumentationState);
+
+            // Start the phase
+            BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(viewController, @"viewDataLoading");
+            associatedState.viewLoadingPhaseSpanCreated = YES;
+            associatedState.loadingPhaseSpan = span;
+
+            // Block the span
+            __strong BugsnagPerformanceSpan *parentSpan = associatedState.overallSpan;
+            if (parentSpan != nil) {
+                BugsnagPerformanceSpanCondition* condition = [parentSpan blockWithTimeout:0.5];
+                [condition upgrade];
+                [newConditions addObject:condition];
+            }
+        }
+        superview = superview.superview;
     }
 
-    auto instrumentationState = getInstrumentationState(viewController);
-    BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(viewController, @"viewDataLoading");
-    instrumentationState.viewLoadingPhaseSpanCreated = YES;
-    instrumentationState.loadingPhaseSpan = span;
+    return newConditions;
 }
 
 // Suppress clang-tidy warnings about use of pointer arithmetic and free()
