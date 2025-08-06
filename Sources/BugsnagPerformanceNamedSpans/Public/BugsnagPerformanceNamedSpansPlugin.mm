@@ -62,7 +62,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     
     // Remove spans from the cache when ended
     BugsnagPerformanceSpanEndCallback spanEndCallback = ^(BugsnagPerformanceSpan *span) {
-        return [blockSelf endNativeSpan:span];
+        return [blockSelf didEndNativeSpan:span];
     };
     
     [context addOnSpanStartCallback:spanStartCallback priority:BugsnagPerformancePriorityHigh];
@@ -87,7 +87,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 #pragma mark Private
 
-- (BOOL)endNativeSpan:(BugsnagPerformanceSpan *)span {
+- (BOOL)didEndNativeSpan:(BugsnagPerformanceSpan *)span {
     @synchronized (self) {
         // Remove span from cache if it exists
         if ([self.spansByName objectForKey:span.name] == span) {
@@ -111,7 +111,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
                              0);
     
     dispatch_source_set_event_handler(timer, ^{
-        [weakSelf endNativeSpan:span];
+        [weakSelf didEndNativeSpan:span];
     });
     
     dispatch_resume(timer);
