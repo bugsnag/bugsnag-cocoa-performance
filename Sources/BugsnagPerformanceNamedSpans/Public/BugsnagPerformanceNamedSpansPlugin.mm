@@ -31,6 +31,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 - (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval {
     if ((self = [super init])) {
         _timeoutInterval = timeoutInterval;
+        _spansByName = [NSMutableDictionary new];
     }
     return self;
 }
@@ -39,8 +40,6 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 #pragma clang diagnostic ignored "-Wdirect-ivar-access"
 - (void)installWithContext:(BugsnagPerformancePluginContext *)context {
-    self.spansByName = [NSMutableDictionary new];
-    
     // Add spans to the cache when started
     __block BugsnagPerformanceNamedSpansPlugin *blockSelf = self;
     BugsnagPerformanceSpanStartCallback spanStartCallback = ^(BugsnagPerformanceSpan *span) {
