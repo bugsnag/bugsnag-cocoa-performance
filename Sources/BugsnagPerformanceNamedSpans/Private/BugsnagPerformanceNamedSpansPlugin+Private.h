@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 #import <BugsnagPerformanceNamedSpans/BugsnagPerformanceNamedSpansPlugin.h>
-#import <map>
+#import <unordered_map>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) NSTimeInterval timeoutInterval;
 
-@property (nonatomic, assign, readonly) std::map<void *, dispatch_source_t> spanTimeoutTimers;
+@property (nonatomic, assign, readonly) std::unordered_map<void *, dispatch_source_t> spanTimeoutTimers;
 
 @end
 
