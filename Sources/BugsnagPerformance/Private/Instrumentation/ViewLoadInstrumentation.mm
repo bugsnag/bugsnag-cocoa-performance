@@ -288,7 +288,7 @@ void ViewLoadInstrumentation::updateViewForViewController(UIViewController *view
     }
 }
 
-NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::startLoadingPhase(UIView *loadingIndicatorView) noexcept {
+NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::loadingIndicatorDidAppear(UIView *loadingIndicatorView) noexcept {
     NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
     UIView *superview = loadingIndicatorView.superview;
     while (superview != nil) {
@@ -296,10 +296,13 @@ NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::sta
         if (associatedState != nil && associatedState.loadingPhaseCondition.isActive) {
             UIViewController *viewController = objc_getAssociatedObject(associatedState, &kAssociatedViewLoadInstrumentationState);
 
-            // Start the phase
-            BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(viewController, @"viewDataLoading");
-            associatedState.viewLoadingPhaseSpanCreated = YES;
-            associatedState.loadingPhaseSpan = span;
+            if (!associatedState.viewLoadingPhaseSpanCreated) {
+                // Start the phase
+                BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(viewController, @"viewDataLoading");
+                associatedState.viewLoadingPhaseSpanCreated = YES;
+                associatedState.loadingPhaseSpan = span;
+                [associatedState.loadingPhaseCondition upgrade];
+            }
 
             // Block the span
             __strong BugsnagPerformanceSpan *parentSpan = associatedState.overallSpan;

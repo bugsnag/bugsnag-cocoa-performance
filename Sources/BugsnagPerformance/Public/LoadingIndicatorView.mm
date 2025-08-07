@@ -6,12 +6,9 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "ViewLoadInstrumentation.h"
 #import "LoadingIndicatorView.h"
 #import "Logging.h"
-#import "BugsnagPerformanceLibrary.h"
-
-#import <objc/runtime.h>
+#import "../Private/BugsnagPerformanceLibrary.h"
 
 static const CGFloat endConditionTimeout = 0.1;
 
@@ -77,7 +74,7 @@ static const CGFloat endConditionTimeout = 0.1;
 
     if (!self.isLoading) {
         self.isLoading = YES;
-        auto newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startLoadingPhase(self);
+        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorDidAppear(self);
 
         [self endAllConditions];
         self.conditions = newConditions;

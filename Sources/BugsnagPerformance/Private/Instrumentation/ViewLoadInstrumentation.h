@@ -32,7 +32,7 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept {};
     void start() noexcept {}
-    NSMutableArray<BugsnagPerformanceSpanCondition *> * startLoadingPhase(UIView *loadingIndicatorView) noexcept;
+    NSMutableArray<BugsnagPerformanceSpanCondition *> * loadingIndicatorDidAppear(UIView *loadingIndicatorView) noexcept;
 
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;

@@ -44,6 +44,6 @@ void Instrumentation::abortAppStartupSpans() noexcept {
     appStartupInstrumentation_->abortAllSpans();
 }
 
-NSMutableArray<BugsnagPerformanceSpanCondition *> *Instrumentation::startLoadingPhase(UIView *loadingViewIndicator) noexcept {
-    return viewLoadInstrumentation_->startLoadingPhase(loadingViewIndicator);
+NSMutableArray<BugsnagPerformanceSpanCondition *> *Instrumentation::loadingIndicatorDidAppear(UIView *loadingViewIndicator) noexcept {
+    return viewLoadInstrumentation_->loadingIndicatorDidAppear(loadingViewIndicator);
 }
