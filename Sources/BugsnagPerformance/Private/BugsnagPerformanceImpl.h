@@ -84,7 +84,7 @@ public:
         return [spanControlProvider_ getSpanControlsWithQuery:query];
     }
 
-    NSMutableArray<BugsnagPerformanceSpanCondition *> *loadingIndicatorDidAppear(UIView *loadingViewIndicator) noexcept;
+    NSMutableArray<BugsnagPerformanceSpanCondition *> *loadingIndicatorWasAdded(UIView *loadingViewIndicator) noexcept;
 
 private:
     std::shared_ptr<Persistence> persistence_;

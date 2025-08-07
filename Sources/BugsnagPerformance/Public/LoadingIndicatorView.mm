@@ -10,8 +10,6 @@
 #import "Logging.h"
 #import "../Private/BugsnagPerformanceLibrary.h"
 
-static const CGFloat endConditionTimeout = 0.1;
-
 @interface LoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
 @property (nonatomic, readwrite) BOOL isLoading;
@@ -74,7 +72,7 @@ static const CGFloat endConditionTimeout = 0.1;
 
     if (!self.isLoading) {
         self.isLoading = YES;
-        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorDidAppear(self);
+        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasAdded(self);
 
         [self endAllConditions];
         self.conditions = newConditions;
@@ -83,7 +81,7 @@ static const CGFloat endConditionTimeout = 0.1;
 
 - (void)endAllConditions {
     for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
-        [condition closeWithEndTime:[NSDate dateWithTimeIntervalSinceNow:endConditionTimeout]];
+        [condition closeWithEndTime:[NSDate now]];
     }
     [self.conditions removeAllObjects];
 }
