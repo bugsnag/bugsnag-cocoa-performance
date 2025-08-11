@@ -8,6 +8,9 @@ Changelog
 * Fixed issue where some Network spans were categorized as custom.
   [448](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/448)
 
+* Fixed zero padding of span and trace IDs in Crosstalk API.
+  [460](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/460)
+
 ## 1.14.0 (2025-06-16)
 
 ### Bug fixes
