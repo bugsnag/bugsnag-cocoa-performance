@@ -43,6 +43,8 @@ public:
                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     void onViewDidLayoutSubviews(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onLoadingStarted(ViewLoadInstrumentationState *state,
+                          UIViewController *viewController) noexcept;
     
 private:
     std::shared_ptr<ViewLoadEarlyPhaseHandler> earlyPhaseHandler_;
