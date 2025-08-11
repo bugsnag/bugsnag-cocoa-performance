@@ -32,7 +32,8 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept {};
     void start() noexcept {}
-    
+    NSMutableArray<BugsnagPerformanceSpanCondition *> * loadingIndicatorWasAdded(UIView *loadingIndicatorView) noexcept;
+
 private:
     static std::vector<const char *> imagesToInstrument() noexcept;
     static std::vector<Class> viewControllerSubclasses(const char *image) noexcept;
@@ -53,7 +54,7 @@ private:
     void endOverallSpan(UIViewController *viewController) noexcept;
     void endViewAppearingSpan(ViewLoadInstrumentationState *instrumentationState, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
-    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 
     static void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
     static ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;

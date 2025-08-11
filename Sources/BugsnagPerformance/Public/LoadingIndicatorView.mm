@@ -8,8 +8,7 @@
 
 #import "LoadingIndicatorView.h"
 #import "Logging.h"
-
-static const CGFloat endConditionTimeout = 0.1;
+#import "../Private/BugsnagPerformanceLibrary.h"
 
 @interface LoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
@@ -73,16 +72,16 @@ static const CGFloat endConditionTimeout = 0.1;
 
     if (!self.isLoading) {
         self.isLoading = YES;
+        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasAdded(self);
 
-        //Grab existing conditions array (oldConditions)
-        //Create new conditions for the new superview
-        //Cancel the oldConditions
+        [self endAllConditions];
+        self.conditions = newConditions;
     }
 }
 
 - (void)endAllConditions {
     for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
-        [condition closeWithEndTime:[NSDate dateWithTimeIntervalSinceNow:endConditionTimeout]];
+        [condition closeWithEndTime:[NSDate now]];
     }
     [self.conditions removeAllObjects];
 }
