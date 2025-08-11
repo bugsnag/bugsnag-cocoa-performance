@@ -79,14 +79,35 @@ ViewLoadSpanFactoryImpl::startViewDidLayoutSubviewsSpan(UIViewController *viewCo
     return startViewLoadPhaseSpan(viewController, parentContext, @"viewDidLayoutSubviews");
 }
 
+BugsnagPerformanceSpan *
+ViewLoadSpanFactoryImpl::startLoadingSpan(UIViewController *viewController,
+                                          BugsnagPerformanceSpanContext *parentContext,
+                                          NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
+    return startViewLoadPhaseSpan(viewController,
+                                  parentContext,
+                                  @"viewDataLoading",
+                                  conditionsToEndOnClose);
+}
+
 #pragma mark Helpers
 
 BugsnagPerformanceSpan *
-ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext, NSString *phase) noexcept {
+ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(UIViewController *viewController,
+                                                BugsnagPerformanceSpanContext *parentContext,
+                                                NSString *phase) noexcept {
+    return startViewLoadPhaseSpan(viewController, parentContext, phase, @[]);
+}
+
+BugsnagPerformanceSpan *
+ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(UIViewController *viewController,
+                                                BugsnagPerformanceSpanContext *parentContext,
+                                                NSString *phase,
+                                                NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     auto span = tracer_->startViewLoadPhaseSpan(name,
                                                 phase,
-                                                parentContext);
+                                                parentContext,
+                                                conditionsToEndOnClose);
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
     return span;
 }

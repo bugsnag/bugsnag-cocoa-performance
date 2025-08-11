@@ -13,6 +13,7 @@
 using namespace bugsnag;
 
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
+static constexpr CGFloat kLoadingBlockTimeout = 0.5;
 
 #pragma mark Lifecycle
 
@@ -132,7 +133,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
         }
         auto overallSpan = s.overallSpan;
         if (overallSpan.state == SpanStateOpen) {
-            endOverallSpan(s, viewController, subviewsDidLayoutAtTime);
+            endOverallSpan(s, strongViewController, subviewsDidLayoutAtTime);
         }
         endViewAppearingSpan(s, subviewsDidLayoutAtTime);
     };
@@ -153,6 +154,22 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
     });
 }
 
+void
+ViewLoadLifecycleHandlerImpl::onLoadingStarted(ViewLoadInstrumentationState *state,
+                      UIViewController *viewController) noexcept {
+    if (state.overallSpan == nil || state.loadingPhaseSpan != nil) {
+        return;
+    }
+    BugsnagPerformanceSpanCondition *condition = [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
+    [condition upgrade];
+
+    state.loadingPhaseSpan = spanFactory_->startLoadingSpan(viewController,
+                                                            state.overallSpan,
+                                                            @[condition]);
+    [state.loadingPhaseSpan blockWithTimeout:kLoadingBlockTimeout];
+    [state.loadingPhaseSpan end];
+}
+
 #pragma mark Helpers
 
 void
@@ -163,6 +180,13 @@ ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state
     }
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     [crosstalkAPI_ willEndViewLoadSpan:overallSpan viewController:viewController];
+    
+    if (state.loadingPhaseSpan != nil) {
+        // Adjust span start time to reflect the view appearing time
+        [state.loadingPhaseSpan updateStartTime:[NSDate now]];
+    } else {
+        [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
+    }
 
     [state.overallSpan endWithAbsoluteTime:atTime];
 }

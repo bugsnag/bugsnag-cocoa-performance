@@ -29,6 +29,7 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewWillLayoutSubviewsSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *subviewLayoutSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewDidLayoutSubviewsSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *loadingPhaseSpan;
 @property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
 
 @end

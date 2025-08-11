@@ -71,6 +71,36 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     lifecycleHandler_->onInstrumentationConfigured(isEnabled_, callback);
 }
 
+#pragma mark Loading indicator
+
+NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::loadingIndicatorWasAdded(UIView *loadingIndicatorView) noexcept {
+    NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
+
+    // Traverse the view hierarchy to find all affected superviews
+    UIView *superview = loadingIndicatorView.superview;
+    while (superview != nil) {
+        ViewLoadInstrumentationState *associatedState = objc_getAssociatedObject(superview, &kAssociatedStateView);
+        __strong UIViewController *viewController = associatedState.viewController;
+        if (associatedState != nil &&
+            associatedState.overallSpan.isValid &&
+            viewController != nil) {
+            lifecycleHandler_->onLoadingStarted(associatedState,
+                                                viewController);
+
+            // Block the span
+            __strong BugsnagPerformanceSpan *loadingSpan = associatedState.loadingPhaseSpan;
+            if (loadingSpan != nil) {
+                BugsnagPerformanceSpanCondition* condition = [loadingSpan blockWithTimeout:0.5];
+                [condition upgrade];
+                [newConditions addObject:condition];
+            }
+        }
+        superview = superview.superview;
+    }
+
+    return newConditions;
+}
+
 void ViewLoadInstrumentation::updateViewForViewController(UIViewController *viewController, ViewLoadInstrumentationState *instrumentationState) {
     if (viewController == nil || instrumentationState == nil) {
         return;

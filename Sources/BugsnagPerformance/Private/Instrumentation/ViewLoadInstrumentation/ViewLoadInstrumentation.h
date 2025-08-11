@@ -36,6 +36,8 @@ public:
     void preStartSetup() noexcept {};
     void start() noexcept {}
     
+    NSMutableArray<BugsnagPerformanceSpanCondition *> * loadingIndicatorWasAdded(UIView *loadingIndicatorView) noexcept;
+    
 private:
     std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<ViewLoadSwizzlingHandler> swizzlingHandler_;

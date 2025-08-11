@@ -28,12 +28,21 @@ public:
     BugsnagPerformanceSpan *startViewWillLayoutSubviewsSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept;
     BugsnagPerformanceSpan *startSubviewsLayoutSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept;
     BugsnagPerformanceSpan *startViewDidLayoutSubviewsSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept;
+    BugsnagPerformanceSpan *startLoadingSpan(UIViewController *viewController,
+                                             BugsnagPerformanceSpanContext *parentContext,
+                                             NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
     
 private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
-    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext, NSString *phase) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController,
+                                                   BugsnagPerformanceSpanContext *parentContext,
+                                                   NSString *phase) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController,
+                                                   BugsnagPerformanceSpanContext *parentContext,
+                                                   NSString *phase,
+                                                   NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
     
     ViewLoadSpanFactoryImpl() = delete;
 };

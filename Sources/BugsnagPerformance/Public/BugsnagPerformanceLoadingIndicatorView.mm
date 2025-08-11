@@ -6,17 +6,16 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "LoadingIndicatorView.h"
-#import "Logging.h"
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
+#import "../Private/Logging.h"
+#import "../Private/BugsnagPerformanceLibrary.h"
 
-static const CGFloat endConditionTimeout = 0.1;
-
-@interface LoadingIndicatorView()
+@interface BugsnagPerformanceLoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
 @property (nonatomic, readwrite) BOOL isLoading;
 @end
 
-@implementation LoadingIndicatorView
+@implementation BugsnagPerformanceLoadingIndicatorView
 
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -73,16 +72,16 @@ static const CGFloat endConditionTimeout = 0.1;
 
     if (!self.isLoading) {
         self.isLoading = YES;
+        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasAdded(self);
 
-        //Grab existing conditions array (oldConditions)
-        //Create new conditions for the new superview
-        //Cancel the oldConditions
+        [self endAllConditions];
+        self.conditions = newConditions;
     }
 }
 
 - (void)endAllConditions {
     for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
-        [condition closeWithEndTime:[NSDate dateWithTimeIntervalSinceNow:endConditionTimeout]];
+        [condition closeWithEndTime:[NSDate now]];
     }
     [self.conditions removeAllObjects];
 }

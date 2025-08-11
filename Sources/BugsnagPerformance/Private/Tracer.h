@@ -73,7 +73,8 @@ public:
 
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
                                                    NSString *phase,
-                                                   BugsnagPerformanceSpanContext *parentContext) noexcept;
+                                                   BugsnagPerformanceSpanContext *parentContext,
+                                                   NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
 

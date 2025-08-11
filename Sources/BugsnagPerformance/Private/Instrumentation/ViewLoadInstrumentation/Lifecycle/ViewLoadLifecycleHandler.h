@@ -28,6 +28,8 @@ public:
                                           ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
     virtual void onViewDidLayoutSubviews(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
+    virtual void onLoadingStarted(ViewLoadInstrumentationState *state,
+                                  UIViewController *viewController) noexcept = 0;
     virtual ~ViewLoadLifecycleHandler() {}
 };
 }
