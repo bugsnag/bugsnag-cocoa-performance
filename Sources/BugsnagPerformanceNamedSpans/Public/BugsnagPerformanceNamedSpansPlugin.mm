@@ -43,25 +43,12 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     // Add spans to the cache when started
     __block BugsnagPerformanceNamedSpansPlugin *blockSelf = self;
     BugsnagPerformanceSpanStartCallback spanStartCallback = ^(BugsnagPerformanceSpan *span) {
-        @synchronized (blockSelf) {
-            BugsnagPerformanceSpan *existingSpan = blockSelf.spansByName[span.name];
-            if (existingSpan) {
-                // If a span with the same name already exists, cancel the associated timeout
-                [blockSelf cancelSpanTimeout:existingSpan];
-            }
-            
-            blockSelf.spansByName[span.name] = span;
-            
-            // Add timeout to remove the span from the cache if not ended
-            void *key = (__bridge void *)span;
-            dispatch_source_t timer = [blockSelf createSpanTimeoutTimer:span];
-            blockSelf->_spanTimeoutTimers[key] = timer;
-        }
+        [blockSelf didStartSpan:span];
     };
     
     // Remove spans from the cache when ended
     BugsnagPerformanceSpanEndCallback spanEndCallback = ^(BugsnagPerformanceSpan *span) {
-        return [blockSelf didEndNativeSpan:span];
+        return [blockSelf didEndSpan:span];
     };
     
     [context addOnSpanStartCallback:spanStartCallback priority:BugsnagPerformancePriorityHigh];
@@ -86,7 +73,24 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 #pragma mark Private
 
-- (BOOL)didEndNativeSpan:(BugsnagPerformanceSpan *)span {
+- (void)didStartSpan:(BugsnagPerformanceSpan *)span {
+    @synchronized (self) {
+        BugsnagPerformanceSpan *existingSpan = self.spansByName[span.name];
+        if (existingSpan) {
+            // If a span with the same name already exists, cancel the associated timeout
+            [self cancelSpanTimeout:existingSpan];
+        }
+        
+        self.spansByName[span.name] = span;
+        
+        // Add timeout to remove the span from the cache if not ended
+        void *key = (__bridge void *)span;
+        dispatch_source_t timer = [self createSpanTimeoutTimer:span];
+        self->_spanTimeoutTimers[key] = timer;
+    }
+}
+
+- (BOOL)didEndSpan:(BugsnagPerformanceSpan *)span {
     @synchronized (self) {
         // Remove span from cache if it exists
         if ([self.spansByName objectForKey:span.name] == span) {
@@ -110,7 +114,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
                              0);
     
     dispatch_source_set_event_handler(timer, ^{
-        [weakSelf didEndNativeSpan:span];
+        [weakSelf didEndSpan:span];
     });
     
     dispatch_resume(timer);
