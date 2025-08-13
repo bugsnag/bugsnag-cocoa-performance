@@ -41,14 +41,24 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 - (void)installWithContext:(BugsnagPerformancePluginContext *)context {
     // Add spans to the cache when started
-    __block BugsnagPerformanceNamedSpansPlugin *blockSelf = self;
+    __weak BugsnagPerformanceNamedSpansPlugin *weakSelf = self;
     BugsnagPerformanceSpanStartCallback spanStartCallback = ^(BugsnagPerformanceSpan *span) {
-        [blockSelf didStartSpan:span];
+        __strong BugsnagPerformanceNamedSpansPlugin *strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return;
+        }
+        
+        [strongSelf didStartSpan:span];
     };
     
     // Remove spans from the cache when ended
     BugsnagPerformanceSpanEndCallback spanEndCallback = ^(BugsnagPerformanceSpan *span) {
-        return [blockSelf didEndSpan:span];
+        __strong BugsnagPerformanceNamedSpansPlugin *strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return YES;
+        }
+        
+        return [strongSelf didEndSpan:span];;
     };
     
     [context addOnSpanStartCallback:spanStartCallback priority:BugsnagPerformancePriorityHigh];
