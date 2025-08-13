@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) NSTimeInterval timeoutInterval;
 
-@property (nonatomic, assign, readonly) std::unordered_map<void *, dispatch_source_t> spanTimeoutTimers;
+@property (nonatomic, assign, readonly) std::shared_ptr<std::unordered_map<void *, dispatch_source_t>> spanTimeoutTimers;
 
 @end
 

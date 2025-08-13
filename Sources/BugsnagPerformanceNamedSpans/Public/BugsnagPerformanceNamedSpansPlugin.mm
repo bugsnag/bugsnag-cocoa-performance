@@ -32,13 +32,13 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     if ((self = [super init])) {
         _timeoutInterval = timeoutInterval;
         _spansByName = [NSMutableDictionary new];
+        _spanTimeoutTimers = std::make_shared<std::unordered_map<void *, dispatch_source_t>>();
     }
     return self;
 }
 
 #pragma mark BugsnagPerformancePlugin
 
-#pragma clang diagnostic ignored "-Wdirect-ivar-access"
 - (void)installWithContext:(BugsnagPerformancePluginContext *)context {
     // Add spans to the cache when started
     __block BugsnagPerformanceNamedSpansPlugin *blockSelf = self;
@@ -86,7 +86,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
         // Add timeout to remove the span from the cache if not ended
         void *key = (__bridge void *)span;
         dispatch_source_t timer = [self createSpanTimeoutTimer:span];
-        self->_spanTimeoutTimers[key] = timer;
+        (*self.spanTimeoutTimers)[key] = timer;
     }
 }
 
@@ -123,11 +123,10 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 
 - (void)cancelSpanTimeout:(BugsnagPerformanceSpan *)span {
     void *key = (__bridge void *)span;
-    auto& timerMap = _spanTimeoutTimers;
-    auto it = timerMap.find(key);
-    if (it != timerMap.end()) {
+    auto it = self.spanTimeoutTimers->find(key);
+    if (it != self.spanTimeoutTimers->end()) {
         dispatch_source_cancel(it->second);
-        timerMap.erase(it);
+        self.spanTimeoutTimers->erase(it);
     }
 }
 

@@ -261,8 +261,8 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timeout-span"];
     id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertIdentical(cachedSpan, span);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
     // Wait for timeout to trigger
     XCTestExpectation *timeoutExpectation = [self expectationWithDescription:@"Span timeout should remove span from cache"];
     
@@ -270,7 +270,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Check span is removed from cache after timeout interval
         id<BugsnagPerformanceSpanControl> stillCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertNil(stillCachedSpan);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 0UL);
+        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
         [timeoutExpectation fulfill];
     });
     
@@ -290,8 +290,8 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timer-span"];
     id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertIdentical(cachedSpan, span);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
     // End span (should cancel timeout timer and remove from cache)
     BOOL result = fakeContext.spanEndCallback(span);
     XCTAssertTrue(result);
@@ -299,7 +299,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     // Verify span is removed from cache
     id<BugsnagPerformanceSpanControl> removedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertNil(removedSpan);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 0UL);
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
 }
 
 - (void)testTimeoutTimerCancelledWhenNewSpanWithSameNameStarted {
@@ -317,23 +317,23 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertIdentical(cachedSpan, span1);
     
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
     // Wait for first span's timeout to almost elapse (0.15 seconds of 0.2 second timeout)
     XCTestExpectation *stagingExpectation = [self expectationWithDescription:@"Second span with same name should replace first span"];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // Verify first span's timer is still active
-        XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-        
+        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
         // Start second span with same name (should cancel first timer and create a new one)
         fakeContext.spanStartCallback(span2);
         
         // Verify second span replaced first span
         id<BugsnagPerformanceSpanControl> newCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertIdentical(newCachedSpan, span2);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-        
+        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
         [stagingExpectation fulfill];
     });
     
@@ -346,7 +346,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Verify second span is still cached
         id<BugsnagPerformanceSpanControl> stillCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertIdentical(stillCachedSpan, span2);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
+        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
         [timeoutExpectation fulfill];
     });
     
@@ -363,16 +363,16 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     
     // Start first span
     fakeContext.spanStartCallback(span1);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 1UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
+
     // Start second span with different name
     fakeContext.spanStartCallback(span2);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 2UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 2UL);
+
     // Start third span with different name
     fakeContext.spanStartCallback(span3);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 3UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 3UL);
+
     // Verify all spans are cached
     BugsnagPerformanceNamedSpanQuery *query1 = [BugsnagPerformanceNamedSpanQuery queryWithName:@"span-one"];
     BugsnagPerformanceNamedSpanQuery *query2 = [BugsnagPerformanceNamedSpanQuery queryWithName:@"span-two"];
@@ -385,8 +385,8 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     // End middle span - should only remove its timer
     BOOL result = fakeContext.spanEndCallback(span2);
     XCTAssertTrue(result);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 2UL);
-    
+    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 2UL);
+
     // Verify span2 is removed but span1 and span3 remain
     XCTAssertIdentical([self.plugin getSpanControlsWithQuery:query1], span1);
     XCTAssertNil([self.plugin getSpanControlsWithQuery:query2]);
@@ -399,7 +399,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Both remaining spans should be removed by timeout
         XCTAssertNil([self.plugin getSpanControlsWithQuery:query1]);
         XCTAssertNil([self.plugin getSpanControlsWithQuery:query3]);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers.size(), 0UL);
+        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
         [timeoutExpectation fulfill];
     });
     
