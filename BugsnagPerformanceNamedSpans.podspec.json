@@ -1,5 +1,5 @@
 {
-  "name": "BugsnagPerformance",
+  "name": "BugsnagPerformanceNamedSpans",
   "version": "1.15.0",
   "summary": "The Bugsnag performance monitoring framework for iOS.",
   "homepage": "https://github.com/bugsnag/bugsnag-cocoa-performance",
@@ -18,17 +18,12 @@
     "ios": "13.0"
   },
   "requires_arc": true,
-  "source_files": "Sources/BugsnagPerformance/{**/,}*.{m,h,mm,c,swift}",
-  "resource_bundles": {
-      "BugsnagPerformance": ["Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy"]
-  },
-  "public_header_files": "Sources/BugsnagPerformance/include/BugsnagPerformance/*.h",
+  "source_files": "Sources/BugsnagPerformanceNamedSpans/{**/,}*.{m,h,mm,c,swift}",
+  "public_header_files": "Sources/BugsnagPerformanceNamedSpans/include/BugsnagPerformanceNamedSpans/*.h",
   "prefix_header_file": false,
-  "frameworks": [
-    "SystemConfiguration",
-    "UIKit",
-    "CoreTelephony"
-  ],
+  "dependencies": {
+    "BugsnagPerformance": "1.15.0"
+  },
   "libraries": "c++",
   "pod_target_xcconfig": {
     "CLANG_CXX_LIBRARY": "libc++",

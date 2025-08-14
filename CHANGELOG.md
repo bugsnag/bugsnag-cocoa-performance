@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## 1.15.0 (2025-08-14)
+
+### Enhancements
+
+* Added BugsnagPerformanceNamedSpans module and plugin.
+  [457](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/457)
+
+### Bug fixes
+
+* Fixed issue where some Network spans were categorized as custom.
+  [448](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/448)
+
+* Don't send CPU data if cpu_mean_total is not available.
+  [451](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/451)
+
+* Fixed zero padding of span and trace IDs in Crosstalk API.
+  [460](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/460)
+
 ## 1.14.0 (2025-06-16)
 
 ### Bug fixes
