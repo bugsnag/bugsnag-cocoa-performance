@@ -100,6 +100,9 @@
 		CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBF62108291A4F47004BEE0B /* RetryScenario.swift */; };
 		DA58B7D42DF8365E00CB80A4 /* PluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */; };
 		DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */; };
+		DA95ABF52E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95ABF42E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift */; };
+		DAC7DD6C2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */; };
+		DAC7DD6D2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DADB14F72DDF852B0006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */; };
 /* End PBXBuildFile section */
 
@@ -111,6 +114,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				55A1B7CE2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Embed Frameworks */,
+				DAC7DD6D2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Embed Frameworks */,
 				55A1B7CC2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -218,6 +222,8 @@
 		CBF62108291A4F47004BEE0B /* RetryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryScenario.swift; sourceTree = "<group>"; };
 		DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginInstallErrorScenario.swift; sourceTree = "<group>"; };
+		DA95ABF42E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedSpansPluginScenario.swift; sourceTree = "<group>"; };
+		DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceNamedSpans.xcframework; path = ../../../BugsnagPerformanceNamedSpans.xcframework; sourceTree = "<group>"; };
 		DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -228,6 +234,7 @@
 			files = (
 				55A1B7CB2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Frameworks */,
 				55A1B7CD2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Frameworks */,
+				DAC7DD6C2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Frameworks */,
 				01A414C82912CA18003152A4 /* Bugsnag in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,6 +296,7 @@
 		01FE4DBE28E1AEDF00D1F239 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */,
 				55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */,
 				55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */,
 			);
@@ -298,9 +306,6 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */,
-				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
-				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */,
@@ -358,10 +363,14 @@
 				CBEC89442A4ED0590088A3CE /* MaxPayloadSizeScenario.swift */,
 				09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */,
 				09E9BDAE2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift */,
+				DA95ABF42E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift */,
 				09F025052BA08804007D9F73 /* ObjCURLSession.h */,
 				09F025062BA08804007D9F73 /* ObjCURLSession.m */,
 				098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */,
+				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
+				DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */,
+				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
 				96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */,
@@ -543,6 +552,7 @@
 				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
+				DA95ABF52E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift in Sources */,
 				0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,

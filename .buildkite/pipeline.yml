@@ -20,6 +20,7 @@ steps:
               upload:
                 - "BugsnagPerformance.xcframework.zip"
                 - "BugsnagPerformanceSwift.xcframework.zip"
+                - "BugsnagPerformanceNamedSpans.xcframework.zip"
 
       - label: "Carthage"
         timeout_in_minutes: 10
@@ -76,6 +77,7 @@ steps:
               download:
                 - "BugsnagPerformance.xcframework.zip"
                 - "BugsnagPerformanceSwift.xcframework.zip"
+                - "BugsnagPerformanceNamedSpans.xcframework.zip"
         artifact_paths:
           - features/fixtures/ios/output/bb_xcframework_ipa_url.txt
           - features/fixtures/ios/output/bs_xcframework_ipa_url.txt
