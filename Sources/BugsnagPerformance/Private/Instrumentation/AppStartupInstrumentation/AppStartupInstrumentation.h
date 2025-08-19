@@ -11,6 +11,7 @@
 #import "../../SpanAttributesProvider.h"
 #import "../../Tracer.h"
 #import "State/AppStartupInstrumentationState.h"
+#import "System/AppStartupInstrumentationSystemUtils.h"
 
 @class BugsnagPerformanceSpan;
 
@@ -21,7 +22,8 @@ class BugsnagPerformanceImpl;
 class AppStartupInstrumentation: public PhasedStartup {
 public:
     AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
-                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                              std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils) noexcept;
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept;
@@ -45,6 +47,7 @@ private:
     bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils_;
     CFAbsoluteTime didStartProcessAtTime_{0};
     CFAbsoluteTime didCallMainFunctionAtTime_{0};
     CFAbsoluteTime didBecomeActiveAtTime_{0};

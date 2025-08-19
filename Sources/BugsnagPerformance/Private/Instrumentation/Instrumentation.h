@@ -12,6 +12,7 @@
 #import "../Instrumentation/AppStartupInstrumentation/AppStartupInstrumentation.h"
 #import "../Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
 #import "../Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
+#import "../Instrumentation/AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
 
 namespace bugsnag {
 
@@ -20,7 +21,7 @@ public:
     Instrumentation(std::shared_ptr<Tracer> tracer,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider))
+    : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(tracer, spanAttributesProvider, std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
     , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
                                                                        spanAttributesProvider,

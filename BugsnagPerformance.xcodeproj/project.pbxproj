@@ -112,6 +112,9 @@
 		963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */; };
 		963829082E547D1A00404F3A /* ViewLoadInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */; };
 		9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */; };
+		9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */; };
+		9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */; };
+		963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -407,6 +410,9 @@
 		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
 		963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationState.h; sourceTree = "<group>"; };
 		963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadInstrumentationState.m; sourceTree = "<group>"; };
+		9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
+		9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtils.h; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -893,9 +899,10 @@
 		963829032E547BA400404F3A /* AppStartupInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
-				963829042E547C0700404F3A /* State */,
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				963829042E547C0700404F3A /* State */,
+				9638290B2E5487EC00404F3A /* System */,
 			);
 			path = AppStartupInstrumentation;
 			sourceTree = "<group>";
@@ -926,6 +933,16 @@
 				963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */,
 			);
 			path = State;
+			sourceTree = "<group>";
+		};
+		9638290B2E5487EC00404F3A /* System */ = {
+			isa = PBXGroup;
+			children = (
+				963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */,
+				9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */,
+				9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */,
+			);
+			path = System;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -1026,6 +1043,7 @@
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
+				9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */,
 				015836C4291264E0002F54C8 /* Version.h in Headers */,
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
 				96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */,
@@ -1095,6 +1113,7 @@
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
 				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 				CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */,
+				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1477,6 +1496,7 @@
 				1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */,
 				0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */,
 				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
+				9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */,
 				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
