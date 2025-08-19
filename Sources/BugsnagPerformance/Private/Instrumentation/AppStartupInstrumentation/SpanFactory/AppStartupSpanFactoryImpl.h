@@ -28,5 +28,7 @@ public:
 private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    
+    AppStartupSpanFactoryImpl() = delete;
 };
 }

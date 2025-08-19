@@ -47,18 +47,7 @@ private:
     bool isEnabled_{true};
     std::shared_ptr<AppStartupSpanFactory> spanFactory_;
     std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils_;
-    CFAbsoluteTime didStartProcessAtTime_{0};
-    CFAbsoluteTime didCallMainFunctionAtTime_{0};
-    CFAbsoluteTime didBecomeActiveAtTime_{0};
-    CFAbsoluteTime didFinishLaunchingAtTime_{0};
-    bool isColdLaunch_{false};
-    bool shouldRespondToAppDidFinishLaunching_{false};
-    bool shouldRespondToAppDidBecomeActive_{false};
-    BugsnagPerformanceSpan *appStartSpan_{nil};
-    BugsnagPerformanceSpan *preMainSpan_{nil};
-    BugsnagPerformanceSpan *postMainSpan_{nil};
-    BugsnagPerformanceSpan *uiInitSpan_{nil};
-    NSString *firstViewName_{nil};
+    AppStartupInstrumentationState *state_;
     std::mutex mutex_;
 
 private:

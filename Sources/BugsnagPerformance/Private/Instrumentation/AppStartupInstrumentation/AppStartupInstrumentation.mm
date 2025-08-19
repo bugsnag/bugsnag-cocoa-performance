@@ -53,9 +53,10 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupS
 : isEnabled_(true)
 , spanFactory_(spanFactory)
 , systemUtils_(systemUtils)
-, didStartProcessAtTime_(systemUtils->getProcessStartTime())
-, isColdLaunch_(systemUtils->isColdLaunch())
+, state_([AppStartupInstrumentationState new])
 {
+    state_.didStartProcessAtTime = systemUtils->getProcessStartTime();
+    state_.isColdLaunch = systemUtils->isColdLaunch();
     // TODO: Reintroduce
     // tracer_->setGetAppStartInstrumentationState([=]{ return instrumentationState(); });
 }
@@ -80,12 +81,12 @@ void AppStartupInstrumentation::willCallMainFunction() noexcept {
 
     beginAppStartSpan();
     beginPreMainSpan();
-    didCallMainFunctionAtTime_ = CFAbsoluteTimeGetCurrent();
-    [preMainSpan_ endWithAbsoluteTime:didCallMainFunctionAtTime_];
+    state_.didCallMainFunctionAtTime = CFAbsoluteTimeGetCurrent();
+    [state_.preMainSpan endWithAbsoluteTime:state_.didCallMainFunctionAtTime];
     beginPostMainSpan();
 
-    shouldRespondToAppDidBecomeActive_ = true;
-    shouldRespondToAppDidFinishLaunching_ = true;
+    state_.shouldRespondToAppDidBecomeActive = true;
+    state_.shouldRespondToAppDidFinishLaunching = true;
     CFNotificationCenterAddObserver(CFNotificationCenterGetLocalCenter(),
                                     this,
                                     didFinishLaunchingCallback,
@@ -111,30 +112,30 @@ void AppStartupInstrumentation::disable() noexcept {
 //        tracer_->cancelQueuedSpan(postMainSpan_);
 //        tracer_->cancelQueuedSpan(uiInitSpan_);
 //        tracer_->cancelQueuedSpan(appStartSpan_);
-        preMainSpan_ = nil;
-        postMainSpan_ = nil;
-        uiInitSpan_ = nil;
-        appStartSpan_ = nil;
+        state_.preMainSpan = nil;
+        state_.postMainSpan = nil;
+        state_.uiInitSpan = nil;
+        state_.appStartSpan = nil;
     }
 }
 
 CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
-    CFAbsoluteTime endTime = didFinishLaunchingAtTime_ > 0 ? didFinishLaunchingAtTime_ : CFAbsoluteTimeGetCurrent();
-    return endTime - didStartProcessAtTime_;
+    CFAbsoluteTime endTime = state_.didFinishLaunchingAtTime > 0 ? state_.didFinishLaunchingAtTime : CFAbsoluteTimeGetCurrent();
+    return endTime - state_.didStartProcessAtTime;
 }
 
 CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
-    if (didBecomeActiveAtTime_ == 0) {
+    if (state_.didBecomeActiveAtTime == 0) {
         return 0;
     }
-    return CFAbsoluteTimeGetCurrent() - didBecomeActiveAtTime_;
+    return CFAbsoluteTimeGetCurrent() - state_.didBecomeActiveAtTime;
 }
 
 void AppStartupInstrumentation::abortAllSpans() noexcept {
-    [preMainSpan_ abortUnconditionally];
-    [postMainSpan_ abortUnconditionally];
-    [uiInitSpan_ abortUnconditionally];
-    [appStartSpan_ abortUnconditionally];
+    [state_.preMainSpan abortUnconditionally];
+    [state_.postMainSpan abortUnconditionally];
+    [state_.uiInitSpan abortUnconditionally];
+    [state_.appStartSpan abortUnconditionally];
 }
 
 void
@@ -144,21 +145,21 @@ AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
         return;
     }
 
-    if (!shouldRespondToAppDidFinishLaunching_) {
+    if (!state_.shouldRespondToAppDidFinishLaunching) {
         return;
     }
-    shouldRespondToAppDidFinishLaunching_ = false;
+    state_.shouldRespondToAppDidFinishLaunching = false;
 
-    didFinishLaunchingAtTime_ = CFAbsoluteTimeGetCurrent();
-    [postMainSpan_ endWithAbsoluteTime:didFinishLaunchingAtTime_];
+    state_.didFinishLaunchingAtTime = CFAbsoluteTimeGetCurrent();
+    [state_.postMainSpan endWithAbsoluteTime:state_.didFinishLaunchingAtTime];
     beginUIInitSpan();
 
 }
 
 void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
-    if (firstViewName_ == nil) {
-        firstViewName_ = name;
+    if (state_.firstViewName == nil) {
+        state_.firstViewName = name;
         if (isAppStartInProgress()) {
             // TODO: Reintroduce
 //            [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
@@ -173,18 +174,18 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
         return;
     }
 
-    if (!shouldRespondToAppDidBecomeActive_) {
+    if (!state_.shouldRespondToAppDidBecomeActive) {
         return;
     }
-    shouldRespondToAppDidBecomeActive_ = false;
+    state_.shouldRespondToAppDidBecomeActive = false;
 
-    didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
-    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
-    [appStartSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
-    if (firstViewName_ == nil) {
-        [uiInitSpan_ blockWithTimeout:kFirstViewDelayThreshold];
+    state_.didBecomeActiveAtTime = CFAbsoluteTimeGetCurrent();
+    [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:state_.uiInitSpan];
+    [state_.appStartSpan endWithAbsoluteTime:state_.didBecomeActiveAtTime];
+    if (state_.firstViewName == nil) {
+        [state_.uiInitSpan blockWithTimeout:kFirstViewDelayThreshold];
     }
-    [uiInitSpan_ endWithAbsoluteTime:didBecomeActiveAtTime_];
+    [state_.uiInitSpan endWithAbsoluteTime:state_.didBecomeActiveAtTime];
 }
 
 void
@@ -192,13 +193,13 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     if (!isEnabled_) {
         return;
     }
-    if (appStartSpan_ != nullptr) {
+    if (state_.appStartSpan != nullptr) {
         return;
     }
 
-    appStartSpan_ = spanFactory_->startAppStartSpan(didStartProcessAtTime_,
-                                                    isColdLaunch_,
-                                                    firstViewName_);
+    state_.appStartSpan = spanFactory_->startAppStartSpan(state_.didStartProcessAtTime,
+                                                          state_.isColdLaunch,
+                                                          state_.firstViewName);
 }
 
 void
@@ -206,11 +207,11 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     if (!isEnabled_) {
         return;
     }
-    if (preMainSpan_ != nullptr) {
+    if (state_.preMainSpan != nullptr) {
         return;
     }
 
-    preMainSpan_ = spanFactory_->startPreMainSpan(didStartProcessAtTime_, appStartSpan_);
+    state_.preMainSpan = spanFactory_->startPreMainSpan(state_.didStartProcessAtTime, state_.appStartSpan);
 }
 
 void
@@ -218,11 +219,11 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     if (!isEnabled_) {
         return;
     }
-    if (postMainSpan_ != nullptr) {
+    if (state_.postMainSpan != nullptr) {
         return;
     }
 
-    postMainSpan_ = spanFactory_->startPostMainSpan(didCallMainFunctionAtTime_, appStartSpan_);
+    state_.postMainSpan = spanFactory_->startPostMainSpan(state_.didCallMainFunctionAtTime, state_.appStartSpan);
 }
 
 void
@@ -230,32 +231,33 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     if (!isEnabled_) {
         return;
     }
-    if (uiInitSpan_ != nullptr) {
+    if (state_.uiInitSpan != nullptr) {
         return;
     }
     
-    BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
+    BugsnagPerformanceSpanCondition *appStartCondition = [state_.appStartSpan blockWithTimeout:0.1];
     NSArray *conditionsToEndOnClose = @[];
     if (appStartCondition) {
         conditionsToEndOnClose = @[appStartCondition];
     }
 
-    uiInitSpan_ = spanFactory_->startUIInitSpan(didFinishLaunchingAtTime_, appStartSpan_, conditionsToEndOnClose);
+    state_.uiInitSpan = spanFactory_->startUIInitSpan(state_.didFinishLaunchingAtTime, state_.appStartSpan, conditionsToEndOnClose);
 }
 
 AppStartupInstrumentationState *
 AppStartupInstrumentation::instrumentationState() noexcept {
-    auto state = [AppStartupInstrumentationState new];
-    state.appStartSpan = appStartSpan_;
-    state.preMainSpan = preMainSpan_;
-    state.postMainSpan = postMainSpan_;
-    state.uiInitSpan = uiInitSpan_;
-    state.hasFirstView = firstViewName_ != nil;
-    state.isInProgress = uiInitSpan_.isValid || uiInitSpan_.isBlocked;
-    return state;
+//    auto state = [AppStartupInstrumentationState new];
+//    state.appStartSpan = appStartSpan_;
+//    state.preMainSpan = preMainSpan_;
+//    state.postMainSpan = postMainSpan_;
+//    state.uiInitSpan = uiInitSpan_;
+//    state.hasFirstView = firstViewName_ != nil;
+//    state.isInProgress = uiInitSpan_.isValid || uiInitSpan_.isBlocked;
+//    return state;
+    return state_;
 }
 
 bool
 AppStartupInstrumentation::isAppStartInProgress() noexcept {
-    return appStartSpan_ != nil && (appStartSpan_.isValid || appStartSpan_.isBlocked);
+    return state_.appStartSpan != nil && (state_.appStartSpan.isValid || state_.appStartSpan.isBlocked);
 }
