@@ -6,11 +6,11 @@
 //
 
 #import "NetworkInstrumentation.h"
-#import "NetworkInstrumentation/NSURLSession+Instrumentation.h"
-#import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
+#import "NSURLSession+Instrumentation.h"
+#import "NSURLSessionTask+Instrumentation.h"
 
-#import "../BugsnagPerformanceSpan+Private.h"
-#import "../SpanAttributesProvider.h"
+#import "../../BugsnagPerformanceSpan+Private.h"
+#import "../../SpanAttributesProvider.h"
 
 #import <objc/runtime.h>
 

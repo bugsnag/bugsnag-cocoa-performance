@@ -10,8 +10,8 @@
 #import "SpanAttributes.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
-#import "Instrumentation/NetworkInstrumentation.h"
-#import "Instrumentation/ViewLoadInstrumentation.h"
+#import "Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import <algorithm>

@@ -9,9 +9,9 @@
 #pragma once
 
 #import "../PhasedStartup.h"
-#import "../Instrumentation/AppStartupInstrumentation.h"
-#import "../Instrumentation/NetworkInstrumentation.h"
-#import "../Instrumentation/ViewLoadInstrumentation.h"
+#import "../Instrumentation/AppStartupInstrumentation/AppStartupInstrumentation.h"
+#import "../Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
+#import "../Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 
 namespace bugsnag {
 

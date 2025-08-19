@@ -7,10 +7,10 @@
 
 #import <Foundation/Foundation.h>
 #import <mutex>
-#import "../PhasedStartup.h"
-#import "../SpanAttributesProvider.h"
-#import "../Tracer.h"
-#import "AppStartupInstrumentationState.h"
+#import "../../PhasedStartup.h"
+#import "../../SpanAttributesProvider.h"
+#import "../../Tracer.h"
+#import "State/AppStartupInstrumentationState.h"
 
 @class BugsnagPerformanceSpan;
 

@@ -8,12 +8,12 @@
 #import "ViewLoadInstrumentation.h"
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
-#import "../BugsnagPerformanceSpan+Private.h"
-#import "../Tracer.h"
-#import "../Swizzle.h"
-#import "../Utils.h"
-#import "../BugsnagSwiftTools.h"
-#import "../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../BugsnagPerformanceSpan+Private.h"
+#import "../../Tracer.h"
+#import "../../Swizzle.h"
+#import "../../Utils.h"
+#import "../../BugsnagSwiftTools.h"
+#import "../../BugsnagPerformanceCrossTalkAPI.h"
 
 #import <objc/runtime.h>
 
@@ -27,33 +27,6 @@ using namespace bugsnag;
 
 static constexpr int kAssociatedViewLoadInstrumentationState = 0;
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
-
-typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumentationState *);
-
-@interface ViewLoadInstrumentationState ()
-@property (nonatomic) BOOL loadViewPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLoadPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL isMarkedAsPreloaded;
-@property (nonatomic, nullable, strong) NSDate *viewDidLoadEndTime;
-@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *overallSpan;
-@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewAppearingSpan;
-@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *subviewLayoutSpan;
-@property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
-@end
-
-@implementation ViewLoadInstrumentationState
-
-- (void)dealloc {
-    if (self.onDealloc != nil) {
-        self.onDealloc(self);
-    }
-}
-
-@end
 
 void ViewLoadInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     isEnabled_ = config.enableSwizzling;

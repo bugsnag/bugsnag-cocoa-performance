@@ -6,12 +6,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../Tracer.h"
-#import "../PhasedStartup.h"
-#import "../Sampler.h"
-#import "../NetworkHeaderInjector.h"
-#import "NetworkInstrumentation/NSURLSessionTask+Instrumentation.h"
-#import "NetworkInstrumentation/NetworkCommon.h"
+#import "../../Tracer.h"
+#import "../../PhasedStartup.h"
+#import "../../Sampler.h"
+#import "../../NetworkHeaderInjector.h"
+#import "NSURLSessionTask+Instrumentation.h"
+#import "NetworkCommon.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

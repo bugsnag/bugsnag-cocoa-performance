@@ -18,7 +18,7 @@
 #import "WeakSpansList.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
-#import "Instrumentation/AppStartupInstrumentationState.h"
+#import "Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationState.h"
 #import "BSGPrioritizedStore.h"
 
 #import <memory>

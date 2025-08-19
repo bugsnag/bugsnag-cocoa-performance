@@ -6,15 +6,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "../PhasedStartup.h"
-#import "../Tracer.h"
+#import "../../PhasedStartup.h"
+#import "../../Tracer.h"
+#import "State/ViewLoadInstrumentationState.h"
 
 #import <vector>
 
 NS_ASSUME_NONNULL_BEGIN
-
-@interface ViewLoadInstrumentationState : NSObject
-@end
 
 namespace bugsnag {
 class ViewLoadInstrumentation: public PhasedStartup {
