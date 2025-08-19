@@ -48,17 +48,16 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
 }
 
 
-AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
-                                                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                      std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils) noexcept
 : isEnabled_(true)
-, tracer_(tracer)
-, spanAttributesProvider_(spanAttributesProvider)
+, spanFactory_(spanFactory)
 , systemUtils_(systemUtils)
 , didStartProcessAtTime_(systemUtils->getProcessStartTime())
 , isColdLaunch_(systemUtils->isColdLaunch())
 {
-    tracer_->setGetAppStartInstrumentationState([=]{ return instrumentationState(); });
+    // TODO: Reintroduce
+    // tracer_->setGetAppStartInstrumentationState([=]{ return instrumentationState(); });
 }
 
 void AppStartupInstrumentation::earlySetup() noexcept {
@@ -106,10 +105,12 @@ void AppStartupInstrumentation::disable() noexcept {
     if (isEnabled_) {
         isEnabled_ = false;
         BSGLogDebug(@"AppStartupInstrumentation::disable(): Canceling app start spans");
-        tracer_->cancelQueuedSpan(preMainSpan_);
-        tracer_->cancelQueuedSpan(postMainSpan_);
-        tracer_->cancelQueuedSpan(uiInitSpan_);
-        tracer_->cancelQueuedSpan(appStartSpan_);
+        
+        // TODO: Reintroduce
+//        tracer_->cancelQueuedSpan(preMainSpan_);
+//        tracer_->cancelQueuedSpan(postMainSpan_);
+//        tracer_->cancelQueuedSpan(uiInitSpan_);
+//        tracer_->cancelQueuedSpan(appStartSpan_);
         preMainSpan_ = nil;
         postMainSpan_ = nil;
         uiInitSpan_ = nil;
@@ -159,7 +160,8 @@ AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
     if (firstViewName_ == nil) {
         firstViewName_ = name;
         if (isAppStartInProgress()) {
-            [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+            // TODO: Reintroduce
+//            [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
         }
     }
 }
@@ -194,11 +196,9 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
         return;
     }
 
-    auto name = isColdLaunch_ ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
-    SpanOptions options;
-    options.startTime = didStartProcessAtTime_;
-    appStartSpan_ = tracer_->startAppStartSpan(name, options, @[]);
-    [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
+    appStartSpan_ = spanFactory_->startAppStartSpan(didStartProcessAtTime_,
+                                                    isColdLaunch_,
+                                                    firstViewName_);
 }
 
 void
@@ -210,12 +210,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
         return;
     }
 
-    auto name = @"[AppStartPhase/App launching - pre main()]";
-    SpanOptions options;
-    options.startTime = didStartProcessAtTime_;
-    options.parentContext = appStartSpan_;
-    preMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
-    [preMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
+    preMainSpan_ = spanFactory_->startPreMainSpan(didStartProcessAtTime_, appStartSpan_);
 }
 
 void
@@ -227,12 +222,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
         return;
     }
 
-    auto name = @"[AppStartPhase/App launching - post main()]";
-    SpanOptions options;
-    options.startTime = didCallMainFunctionAtTime_;
-    options.parentContext = appStartSpan_;
-    postMainSpan_ = tracer_->startAppStartSpan(name, options, @[]);
-    [postMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
+    postMainSpan_ = spanFactory_->startPostMainSpan(didCallMainFunctionAtTime_, appStartSpan_);
 }
 
 void
@@ -243,18 +233,14 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     if (uiInitSpan_ != nullptr) {
         return;
     }
-
-    auto name = @"[AppStartPhase/UI init]";
-    SpanOptions options;
-    options.startTime = didFinishLaunchingAtTime_;
-    options.parentContext = appStartSpan_;
+    
     BugsnagPerformanceSpanCondition *appStartCondition = [appStartSpan_ blockWithTimeout:0.1];
     NSArray *conditionsToEndOnClose = @[];
     if (appStartCondition) {
         conditionsToEndOnClose = @[appStartCondition];
     }
-    uiInitSpan_ = tracer_->startAppStartSpan(name, options, conditionsToEndOnClose);
-    [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
+
+    uiInitSpan_ = spanFactory_->startUIInitSpan(didFinishLaunchingAtTime_, appStartSpan_, conditionsToEndOnClose);
 }
 
 AppStartupInstrumentationState *

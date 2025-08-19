@@ -115,6 +115,9 @@
 		9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */; };
 		9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */; };
 		963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */; };
+		963829142E54960F00404F3A /* AppStartupSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829132E54960400404F3A /* AppStartupSpanFactory.h */; };
+		963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */; };
+		963829182E54972C00404F3A /* AppStartupSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -413,6 +416,9 @@
 		9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
 		9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
 		963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtils.h; sourceTree = "<group>"; };
+		963829132E54960400404F3A /* AppStartupSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactory.h; sourceTree = "<group>"; };
+		963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactoryImpl.h; sourceTree = "<group>"; };
+		963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupSpanFactoryImpl.mm; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -899,6 +905,7 @@
 		963829032E547BA400404F3A /* AppStartupInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
+				963829122E5495E800404F3A /* SpanFactory */,
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
 				963829042E547C0700404F3A /* State */,
@@ -943,6 +950,16 @@
 				9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */,
 			);
 			path = System;
+			sourceTree = "<group>";
+		};
+		963829122E5495E800404F3A /* SpanFactory */ = {
+			isa = PBXGroup;
+			children = (
+				963829132E54960400404F3A /* AppStartupSpanFactory.h */,
+				963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */,
+				963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */,
+			);
+			path = SpanFactory;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -1088,6 +1105,7 @@
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
+				963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
 				963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
@@ -1099,6 +1117,7 @@
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */,
+				963829142E54960F00404F3A /* AppStartupSpanFactory.h in Headers */,
 				CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
 				1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */,
@@ -1512,6 +1531,7 @@
 				CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */,
 				0921F02C2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m in Sources */,
 				966634D72C8A365B004A934D /* FrameMetricsSnapshot.mm in Sources */,
+				963829182E54972C00404F3A /* AppStartupSpanFactoryImpl.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
