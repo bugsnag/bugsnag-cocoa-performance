@@ -76,6 +76,13 @@
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
+		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; };
+		1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */; };
+		1C68DB992E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */; };
+		1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */; };
+		1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */; };
+		1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */; };
+		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
@@ -361,6 +368,13 @@
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
+		1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanControl.h; sourceTree = "<group>"; };
+		1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceAppStartSpanControl+Private.h"; sourceTree = "<group>"; };
+		1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartSpanControl.mm; sourceTree = "<group>"; };
+		1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanQuery.h; sourceTree = "<group>"; };
+		1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartSpanQuery.mm; sourceTree = "<group>"; };
+		1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartTypePlugin.h; sourceTree = "<group>"; };
+		1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartTypePlugin.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -591,6 +605,9 @@
 		0122C21629019770002D243C /* BugsnagPerformance */ = {
 			isa = PBXGroup;
 			children = (
+				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
+				1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */,
+				1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */,
 				0122C21A29019770002D243C /* BugsnagPerformance.h */,
 				0122C21929019770002D243C /* BugsnagPerformanceConfiguration.h */,
 				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
@@ -615,6 +632,9 @@
 		0122C21B29019770002D243C /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
+				1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */,
+				1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */,
 				0122C21D29019770002D243C /* BugsnagPerformance.mm */,
 				0122C21C29019770002D243C /* BugsnagPerformanceConfiguration.mm */,
 				CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */,
@@ -633,6 +653,7 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */,
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
@@ -981,8 +1002,10 @@
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
 				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
 				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
+				1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */,
+				1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */,
 				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
 				964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */,
 				098FC8542D37A08D001B627D /* SystemInfoSampler.h in Headers */,
@@ -1018,8 +1041,10 @@
 				963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
+				1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */,
 				CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
+				1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */,
 				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
@@ -1215,7 +1240,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					B4A4A4DE1EA43C6C4D6D3894 = {
-						LastSwiftMigration = 1540;
+						LastSwiftMigration = 1640;
 					};
 				};
 			};
@@ -1367,6 +1392,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96F1292D2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm in Sources */,
+				1C68DB992E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm in Sources */,
 				CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */,
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
 				098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */,
@@ -1396,6 +1422,7 @@
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
 				963726E02DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m in Sources */,
 				098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */,
+				1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */,
 				963726C82DEAB1FC00C739E6 /* BugsnagPerformancePriority.m in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */,
@@ -1407,6 +1434,7 @@
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				963726BF2DE8D99E00C739E6 /* BugsnagPerformanceSpanQuery.m in Sources */,
 				CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */,
+				1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */,
 				0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */,
 				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
 				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,

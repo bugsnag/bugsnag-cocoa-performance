@@ -18,6 +18,7 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "BugsnagPerformanceAppStartTypePlugin.h"
 
 using namespace bugsnag;
 
@@ -141,7 +142,13 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
                                                    compositeProvider:spanControlProvider_
                                                 onSpanStartCallbacks:spanStartCallbacks_
                                                   onSpanEndCallbacks:spanEndCallbacks_];
-    
+
+    NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
+    BugsnagPerformanceAppStartTypePlugin *appStartTypePlugin =
+        [[BugsnagPerformanceAppStartTypePlugin alloc] initWithSpanStackingHandler:spanStackingHandler_];
+    [defaultPlugins addObject:appStartTypePlugin];
+    [pluginManager_ installPlugins:defaultPlugins];
+
     [pluginManager_ installPlugins:config.plugins];
     
     auto networkRequestCallback = config.networkRequestCallback;
