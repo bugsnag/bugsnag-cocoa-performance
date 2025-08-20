@@ -6,10 +6,10 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagPerformanceSpan.h"
-#import "BugsnagPerformanceSpan+Private.h"
-#import "BugsnagPerformanceAppStartSpanControl.h"
-#import "BugsnagPerformanceAppStartSpanControl+Private.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import "../Private/BugsnagPerformanceSpan+Private.h"
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
+#import "../Private/BugsnagPerformanceAppStartSpanControl+Private.h"
 
 static NSString * const AppStartNameAttribute = @"bugsnag.app_start.name";
 

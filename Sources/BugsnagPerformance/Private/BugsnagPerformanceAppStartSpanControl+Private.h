@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagPerformanceAppStartSpanControl.h"
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

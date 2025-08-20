@@ -605,7 +605,6 @@
 		0122C21629019770002D243C /* BugsnagPerformance */ = {
 			isa = PBXGroup;
 			children = (
-				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
 				1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */,
 				1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */,
 				0122C21A29019770002D243C /* BugsnagPerformance.h */,
@@ -632,7 +631,6 @@
 		0122C21B29019770002D243C /* Public */ = {
 			isa = PBXGroup;
 			children = (
-				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
 				1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */,
 				1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */,
 				0122C21D29019770002D243C /* BugsnagPerformance.mm */,
@@ -745,6 +743,8 @@
 				0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */,
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
+				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
+				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";

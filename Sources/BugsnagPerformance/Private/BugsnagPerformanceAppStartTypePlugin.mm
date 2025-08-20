@@ -7,10 +7,10 @@
 //
 
 #import "SpanStackingHandler.h"
-#import "BugsnagPerformanceSpanControl.h"
-#import "BugsnagPerformanceSpanQuery.h"
-#import "BugsnagPerformancePluginContext.h"
-#import "BugsnagPerformanceAppStartSpanControl.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpanControl.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
+#import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 #import "BugsnagPerformanceAppStartSpanControl+Private.h"
 #import "BugsnagPerformanceAppStartTypePlugin.h"
 #import "BugsnagPerformanceCrossTalkAPI.h"

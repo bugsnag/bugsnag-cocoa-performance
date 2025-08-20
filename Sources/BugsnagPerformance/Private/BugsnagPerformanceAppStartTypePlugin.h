@@ -7,8 +7,8 @@
 //
 
 #import "SpanStackingHandler.h"
-#import "BugsnagPerformancePlugin.h"
-#import "BugsnagPerformanceSpanControlProvider.h"
+#import <BugsnagPerformance/BugsnagPerformancePlugin.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -6,7 +6,7 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagPerformanceSpanQuery.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

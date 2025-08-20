@@ -6,8 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "BugsnagPerformanceAppStartSpanQuery.h"
-#import "BugsnagPerformanceAppStartSpanControl.h"
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanQuery.h>
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 
 @implementation BugsnagPerformanceAppStartSpanQuery
 + (instancetype)query {
