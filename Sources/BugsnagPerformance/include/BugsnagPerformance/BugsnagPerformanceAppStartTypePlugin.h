@@ -1,5 +1,5 @@
 //
-//  BugsnagPerformanceAppStartSpanControlProvider.h
+//  BugsnagPerformanceAppStartTypePlugin.h
 //  BugsnagPerformance
 //
 //  Created by Daria Bialobrzeska on 18/08/2025.
