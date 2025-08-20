@@ -109,7 +109,21 @@ void AppStartupInstrumentation::abortAllSpans() noexcept {
 AppStartupInstrumentationStateSnapshot *
 AppStartupInstrumentation::stateSnapshot() noexcept {
     return [AppStartupInstrumentationStateSnapshot snapshotWithAppStartSpan:state_.appStartSpan
-                                                                 uiInitSpan:state_.uiInitSpan isInProgress:state_.firstViewName != nil hasFirstView:state_.uiInitSpan.isValid || state_.uiInitSpan.isBlocked];
+                                                                 uiInitSpan:state_.uiInitSpan
+                                                               isInProgress:state_.appStartSpan.isValid || state_.appStartSpan.isBlocked
+                                                               hasFirstView:state_.firstViewName != nil];
+}
+
+CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
+    CFAbsoluteTime endTime = state_.didFinishLaunchingAtTime > 0 ? state_.didFinishLaunchingAtTime : CFAbsoluteTimeGetCurrent();
+    return endTime - state_.didStartProcessAtTime;
+}
+
+CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
+    if (state_.didBecomeActiveAtTime == 0) {
+        return 0;
+    }
+    return CFAbsoluteTimeGetCurrent() - state_.didBecomeActiveAtTime;
 }
 
 #pragma mark Helpers
@@ -163,16 +177,4 @@ AppStartupInstrumentation::didBecomeActiveCallback(CFNotificationCenterRef cente
     auto instance = (AppStartupInstrumentation *)observer;
     instance->onAppDidBecomeActive();
     CFNotificationCenterRemoveObserver(center, observer, name, nullptr);
-}
-
-CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
-    CFAbsoluteTime endTime = state_.didFinishLaunchingAtTime > 0 ? state_.didFinishLaunchingAtTime : CFAbsoluteTimeGetCurrent();
-    return endTime - state_.didStartProcessAtTime;
-}
-
-CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
-    if (state_.didBecomeActiveAtTime == 0) {
-        return 0;
-    }
-    return CFAbsoluteTimeGetCurrent() - state_.didBecomeActiveAtTime;
 }
