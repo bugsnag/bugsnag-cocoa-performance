@@ -18,7 +18,7 @@
 #import "WeakSpansList.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
-#import "Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationState.h"
+#import "Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
 #import "BSGPrioritizedStore.h"
 
 #import <memory>
@@ -55,7 +55,7 @@ public:
         onViewLoadSpanStarted_ = onViewLoadSpanStarted;
     }
     
-    void setGetAppStartInstrumentationState(std::function<AppStartupInstrumentationState *()> getAppStartupInstrumentationState) noexcept {
+    void setGetAppStartInstrumentationState(std::function<AppStartupInstrumentationStateSnapshot *()> getAppStartupInstrumentationState) noexcept {
         getAppStartupInstrumentationState_ = getAppStartupInstrumentationState;
     }
 
@@ -110,7 +110,7 @@ private:
     std::shared_ptr<Batch> batch_;
     void (^onSpanStarted_)(){ ^(){} };
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
-    std::function<AppStartupInstrumentationState *()> getAppStartupInstrumentationState_{ [](){ return nil; } };
+    std::function<AppStartupInstrumentationStateSnapshot *()> getAppStartupInstrumentationState_{ [](){ return nil; } };
 
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;

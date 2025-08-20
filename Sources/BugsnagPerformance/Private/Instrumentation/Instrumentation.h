@@ -14,6 +14,7 @@
 #import "../Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "../Instrumentation/AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
 #import "../Instrumentation/AppStartupInstrumentation/SpanFactory/AppStartupSpanFactoryImpl.h"
+#import "../Instrumentation/AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
 
 namespace bugsnag {
 
@@ -22,12 +23,14 @@ public:
     Instrumentation(std::shared_ptr<Tracer> tracer,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(std::make_shared<AppStartupSpanFactoryImpl>(tracer, spanAttributesProvider), std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
+    : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(std::make_shared<AppStartupLifecycleHandlerImpl>(std::make_shared<AppStartupSpanFactoryImpl>(tracer, spanAttributesProvider), spanAttributesProvider, tracer, std::make_shared<AppStartupInstrumentationSystemUtilsImpl>(), [BugsnagPerformanceCrossTalkAPI sharedInstance]), std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
     , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider))
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
                                                                        spanAttributesProvider,
                                                                        networkHeaderInjector))
-    {}
+    {
+        tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
+    }
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;

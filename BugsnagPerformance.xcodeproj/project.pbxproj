@@ -118,6 +118,11 @@
 		963829142E54960F00404F3A /* AppStartupSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829132E54960400404F3A /* AppStartupSpanFactory.h */; };
 		963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */; };
 		963829182E54972C00404F3A /* AppStartupSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */; };
+		9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */; };
+		9638291D2E54B4A200404F3A /* AppStartupLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */; };
+		9638291F2E54B4AB00404F3A /* AppStartupLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */; };
+		963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */; };
+		963829232E5542B500404F3A /* AppStartupInstrumentationStateSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -419,6 +424,11 @@
 		963829132E54960400404F3A /* AppStartupSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactory.h; sourceTree = "<group>"; };
 		963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactoryImpl.h; sourceTree = "<group>"; };
 		963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupSpanFactoryImpl.mm; sourceTree = "<group>"; };
+		9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupLifecycleHandler.h; sourceTree = "<group>"; };
+		9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
+		963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationStateSnapshot.h; sourceTree = "<group>"; };
+		963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStartupInstrumentationStateSnapshot.m; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -905,9 +915,10 @@
 		963829032E547BA400404F3A /* AppStartupInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
-				963829122E5495E800404F3A /* SpanFactory */,
 				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
 				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				963829192E54B46B00404F3A /* Lifecycle */,
+				963829122E5495E800404F3A /* SpanFactory */,
 				963829042E547C0700404F3A /* State */,
 				9638290B2E5487EC00404F3A /* System */,
 			);
@@ -919,6 +930,8 @@
 			children = (
 				96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */,
 				96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */,
+				963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */,
+				963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -960,6 +973,16 @@
 				963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */,
 			);
 			path = SpanFactory;
+			sourceTree = "<group>";
+		};
+		963829192E54B46B00404F3A /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */,
+				9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */,
+				9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */,
+			);
+			path = Lifecycle;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -1046,6 +1069,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9638291D2E54B4A200404F3A /* AppStartupLifecycleHandlerImpl.h in Headers */,
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
 				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				966634D52C8A3647004A934D /* FrameMetricsSnapshot.h in Headers */,
@@ -1130,6 +1154,8 @@
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
+				963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */,
+				9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */,
 				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 				CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */,
 				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
@@ -1485,6 +1511,7 @@
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
+				963829232E5542B500404F3A /* AppStartupInstrumentationStateSnapshot.m in Sources */,
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */,
@@ -1508,6 +1535,7 @@
 				963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,
 				963726C52DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.m in Sources */,
+				9638291F2E54B4AB00404F3A /* AppStartupLifecycleHandlerImpl.mm in Sources */,
 				09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
 				963726BF2DE8D99E00C739E6 /* BugsnagPerformanceSpanQuery.m in Sources */,

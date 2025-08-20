@@ -11,7 +11,8 @@
 #import "../../SpanAttributesProvider.h"
 #import "../../Tracer.h"
 #import "State/AppStartupInstrumentationState.h"
-#import "SpanFactory/AppStartupSpanFactory.h"
+#import "State/AppStartupInstrumentationStateSnapshot.h"
+#import "Lifecycle/AppStartupLifecycleHandler.h"
 #import "System/AppStartupInstrumentationSystemUtils.h"
 
 @class BugsnagPerformanceSpan;
@@ -22,7 +23,7 @@ class BugsnagPerformanceImpl;
 
 class AppStartupInstrumentation: public PhasedStartup {
 public:
-    AppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
+    AppStartupInstrumentation(std::shared_ptr<AppStartupLifecycleHandler> lifecycleHandler,
                               std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils) noexcept;
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
@@ -42,16 +43,21 @@ public:
     CFAbsoluteTime appStartDuration() noexcept;
 
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept;
+    
+    AppStartupInstrumentationStateSnapshot *stateSnapshot() noexcept;
 
 private:
     bool isEnabled_{true};
-    std::shared_ptr<AppStartupSpanFactory> spanFactory_;
+    std::shared_ptr<AppStartupLifecycleHandler> lifecycleHandler_;
     std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils_;
     AppStartupInstrumentationState *state_;
     std::mutex mutex_;
-
-private:
-    AppStartupInstrumentation() = delete;
+    
+    void onAppDidFinishLaunching() noexcept;
+    void onAppDidBecomeActive() noexcept;
+    
+    void startObservingNotifications() noexcept;
+    void stopObservingNotifications() noexcept;
 
     // Disable app startup instrumentation and cancel any already-created spans.
     void disable() noexcept;
@@ -67,14 +73,7 @@ private:
                                         CFNotificationName name,
                                         const void *object,
                                         CFDictionaryRef userInfo) noexcept;
-
-    void onAppDidFinishLaunching() noexcept;
-    void onAppDidBecomeActive() noexcept;
-    void beginAppStartSpan() noexcept;
-    void beginPreMainSpan() noexcept;
-    void beginPostMainSpan() noexcept;
-    void beginUIInitSpan() noexcept;
-    AppStartupInstrumentationState *instrumentationState() noexcept;
-    bool isAppStartInProgress() noexcept;
+    
+    AppStartupInstrumentation() = delete;
 };
 }

@@ -339,7 +339,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
     if (options.parentContext == nil && getAppStartupInstrumentationState_ != nil) {
-        AppStartupInstrumentationState *appStartupState = getAppStartupInstrumentationState_();
+        AppStartupInstrumentationStateSnapshot *appStartupState = getAppStartupInstrumentationState_();
         if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
             options.parentContext = appStartupState.uiInitSpan;
             BugsnagPerformanceSpanCondition *appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];

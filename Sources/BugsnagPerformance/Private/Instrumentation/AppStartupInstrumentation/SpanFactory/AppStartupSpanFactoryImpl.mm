@@ -9,6 +9,8 @@
 #import "AppStartupSpanFactoryImpl.h"
 #import "../../../Tracer.h"
 
+using namespace bugsnag;
+
 AppStartupSpanFactoryImpl::AppStartupSpanFactoryImpl(std::shared_ptr<Tracer> tracer,
                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
 : tracer_(tracer)
