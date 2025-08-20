@@ -9,6 +9,7 @@
 #import "../../PhasedStartup.h"
 #import "../../Tracer.h"
 #import "State/ViewLoadInstrumentationState.h"
+#import "SpanFactory/ViewLoadSpanFactory.h"
 
 #import <vector>
 
@@ -17,11 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 namespace bugsnag {
 class ViewLoadInstrumentation: public PhasedStartup {
 public:
-    ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer, std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
+                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                            std::shared_ptr<ViewLoadSpanFactory> spanFactory) noexcept
     : isEnabled_(true)
     , isEarlySpanPhase_(true)
     , tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
+    , spanFactory_(spanFactory)
     , earlySpans_([NSMutableArray new])
     {}
 
@@ -66,6 +70,7 @@ private:
     bool isEnabled_{true};
     bool swizzleViewLoadPreMain_{true};
     std::shared_ptr<Tracer> tracer_;
+    std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
     std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;

@@ -139,11 +139,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
         return;
     }
 
-    auto viewType = BugsnagPerformanceViewTypeUIKit;
-    auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
-    SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(viewType, name, options);
-    [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
+    auto span = spanFactory_->startOverallViewLoadSpan(viewController);
 
     if (isEarlySpanPhase_) {
         markEarlySpan(span);
@@ -221,12 +217,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         instrumentationState.isMarkedAsPreloaded = true;
         [span endWithEndTime:viewDidLoadEndTime];
         
-        SpanOptions options;
-        auto presentationSpan = tracer_->startViewLoadSpan(viewType, className, options);
-        [presentationSpan internalSetMultipleAttributes:spanAttributesProvider_->presentingViewLoadSpanAttributes(className, viewType)];
-        [presentationSpan updateName: [NSString stringWithFormat:@"%@ (presenting)", presentationSpan.name]];
-        
-        instrumentationState.overallSpan = presentationSpan;
+        instrumentationState.overallSpan = spanFactory_->startPreloadedPresentingSpan(viewController);
     }
 }
 
@@ -311,25 +302,6 @@ ViewLoadInstrumentation::isClassObserved(Class cls) noexcept {
     return (*result).second;
 }
 
-BugsnagPerformanceSpan *
-ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept {
-    if (!canCreateSpans(viewController)) {
-        return nullptr;
-    }
-    auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
-    auto instrumentationState = getInstrumentationState(viewController);
-    auto span = tracer_->startViewLoadPhaseSpan(name,
-                                                phase,
-                                                instrumentationState.overallSpan);
-    [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
-
-    if (isEarlySpanPhase_) {
-        markEarlySpan(span);
-    }
-
-    return span;
-}
-
 void
 ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
     __block SEL selector = @selector(loadView);
@@ -347,7 +319,8 @@ ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
             }
             Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
             onLoadView(self);
-            BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"loadView");
+            BugsnagPerformanceSpan *span = spanFactory_->startLoadViewSpan(self,
+                                                                           instrumentationState.overallSpan);
             if (loadView) {
                 reinterpret_cast<void (*)(id, SEL)>(loadView)(self, selector);
             }
@@ -374,7 +347,8 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
         }
         
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLoad");
+        BugsnagPerformanceSpan *span = spanFactory_->startViewDidLoadSpan(self,
+                                                                          instrumentationState.overallSpan);
         instrumentationState.viewDidLoadPhaseSpanCreated = YES;
         if (viewDidLoad) {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLoad)(self, selector);
@@ -399,13 +373,15 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
         }
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         adjustSpanIfPreloaded(overallSpan, instrumentationState, [NSDate new], self);
-        BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillAppear");
+        BugsnagPerformanceSpan *span = spanFactory_->startViewWillAppearSpan(self,
+                                                                             instrumentationState.overallSpan);
         instrumentationState.viewWillAppearPhaseSpanCreated = YES;
         if (viewWillAppear) {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
-        BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
+        BugsnagPerformanceSpan *viewAppearingSpan = spanFactory_->startViewAppearingSpan(self,
+                                                                                         instrumentationState.overallSpan);
         instrumentationState.viewAppearingSpan = viewAppearingSpan;
     });
 }
@@ -423,7 +399,8 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
             return;
         }
         endViewAppearingSpan(instrumentationState, CFAbsoluteTimeGetCurrent());
-        BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidAppear");
+        BugsnagPerformanceSpan *span = spanFactory_->startViewDidAppearSpan(self,
+                                                                            instrumentationState.overallSpan);
         instrumentationState.viewDidAppearPhaseSpanCreated = YES;
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
         if (viewDidAppear) {
@@ -447,13 +424,15 @@ ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
             return;
         }
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewWillLayoutSubviews");
+        BugsnagPerformanceSpan *span = spanFactory_->startViewWillLayoutSubviewsSpan(self,
+                                                                                     instrumentationState.overallSpan);
         instrumentationState.viewWillLayoutSubviewsPhaseSpanCreated = YES;
         if (viewWillLayoutSubviews) {
             reinterpret_cast<void (*)(id, SEL)>(viewWillLayoutSubviews)(self, selector);
         }
         [span end];
-        BugsnagPerformanceSpan *subviewLayoutSpan = startViewLoadPhaseSpan(self, @"Subview layout");
+        BugsnagPerformanceSpan *subviewLayoutSpan = spanFactory_->startSubviewsLayoutSpan(self,
+                                                                                          instrumentationState.overallSpan);
         instrumentationState.subviewLayoutSpan = subviewLayoutSpan;
     });
 }
@@ -472,7 +451,8 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
         }
         endSubviewsLayoutSpan(self);
         Trace(@"%@   -[%s %s]", self, class_getName(cls), sel_getName(selector));
-        BugsnagPerformanceSpan *span = startViewLoadPhaseSpan(self, @"viewDidLayoutSubviews");
+        BugsnagPerformanceSpan *span = spanFactory_->startViewDidLayoutSubviewsSpan(self,
+                                                                                    instrumentationState.overallSpan);
         instrumentationState.viewDidLayoutSubviewsPhaseSpanCreated = YES;
         if (viewDidLayoutSubviews) {
             reinterpret_cast<void (*)(id, SEL)>(viewDidLayoutSubviews)(self, selector);
