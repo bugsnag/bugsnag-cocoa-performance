@@ -129,6 +129,11 @@
 		9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */; };
 		963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */; };
 		963829342E5614D200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */; };
+		963829362E5623E200404F3A /* ViewLoadSwizzlingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */; };
+		963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */; };
+		9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */; };
+		9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */; };
+		9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -441,6 +446,11 @@
 		9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtils.h; sourceTree = "<group>"; };
 		963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
 		963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingHandler.h; sourceTree = "<group>"; };
+		963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingHandlerImpl.h; sourceTree = "<group>"; };
+		963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSwizzlingHandlerImpl.mm; sourceTree = "<group>"; };
+		9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingCallbacks.h; sourceTree = "<group>"; };
+		9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadSwizzlingCallbacks.m; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -1015,6 +1025,11 @@
 				9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */,
 				963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */,
 				963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */,
+				9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */,
+				9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */,
+				963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */,
+				963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */,
+				963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -1175,6 +1190,7 @@
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
+				963829362E5623E200404F3A /* ViewLoadSwizzlingHandler.h in Headers */,
 				963829272E55E5C500404F3A /* ViewLoadSpanFactory.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
 				1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */,
@@ -1185,11 +1201,13 @@
 				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
+				9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */,
 				966634DA2C8A39B1004A934D /* FrozenFrameData.h in Headers */,
 				968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
+				963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */,
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
 				963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */,
 				9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */,
@@ -1542,6 +1560,7 @@
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
+				9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */,
 				96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */,
 				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				966634D32C8909D9004A934D /* FrameMetricsCollector.mm in Sources */,
@@ -1554,6 +1573,7 @@
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */,
+				9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
 				09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */,

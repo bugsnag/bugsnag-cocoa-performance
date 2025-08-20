@@ -11,6 +11,7 @@
 #import "State/ViewLoadInstrumentationState.h"
 #import "SpanFactory/ViewLoadSpanFactory.h"
 #import "System/ViewLoadInstrumentationSystemUtils.h"
+#import "System/ViewLoadSwizzlingHandler.h"
 
 #import <vector>
 
@@ -22,13 +23,15 @@ public:
     ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
                             std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                             std::shared_ptr<ViewLoadSpanFactory> spanFactory,
-                            std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils) noexcept
+                            std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils,
+                            std::shared_ptr<ViewLoadSwizzlingHandler> swizzlingHandler) noexcept
     : isEnabled_(true)
     , isEarlySpanPhase_(true)
     , tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , systemUtils_(systemUtils)
+    , swizzlingHandler_(swizzlingHandler)
     , earlySpans_([NSMutableArray new])
     {}
 
@@ -38,23 +41,15 @@ public:
     void preStartSetup() noexcept {};
     void start() noexcept {}
     
-private:    
-    void instrument(Class cls) noexcept;
-    void instrumentLoadView(Class cls) noexcept;
-    void instrumentViewDidLoad(Class cls) noexcept;
-    void instrumentViewWillAppear(Class cls) noexcept;
-    void instrumentViewDidAppear(Class cls) noexcept;
-    void instrumentViewWillDisappear(Class cls) noexcept;
-    void instrumentViewWillLayoutSubviews(Class cls) noexcept;
-    void instrumentViewDidLayoutSubviews(Class cls) noexcept;
-
+private:
     void onLoadView(UIViewController *viewController) noexcept;
     void onViewDidAppear(UIViewController *viewController) noexcept;
     void onViewWillDisappear(UIViewController *viewController) noexcept;
     void endOverallSpan(UIViewController *viewController) noexcept;
     void endViewAppearingSpan(ViewLoadInstrumentationState *instrumentationState, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(UIViewController *viewController) noexcept;
-    BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController, NSString *phase) noexcept;
+    
+    ViewLoadSwizzlingCallbacks *createViewLoadSwizzlingCallbacks() noexcept;
 
     static void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
     static ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
@@ -62,7 +57,6 @@ private:
     void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
     void endEarlySpanPhase() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;
-    bool isClassObserved(Class cls) noexcept;
     void adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *instrumentationState, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept;
     NSString *nameForViewController(UIViewController *viewController) noexcept;
 
@@ -71,13 +65,12 @@ private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
     std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;
+    std::shared_ptr<ViewLoadSwizzlingHandler> swizzlingHandler_;
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
-    std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::atomic<bool> isEarlySpanPhase_{true};
     std::recursive_mutex earlySpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
-    std::recursive_mutex vcInitMutex_;
 };
 }
 

@@ -17,6 +17,7 @@
 #import "ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "ViewLoadInstrumentation/SpanFactory/ViewLoadSpanFactoryImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
+#import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
 
 namespace bugsnag {
 
@@ -26,7 +27,7 @@ public:
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(std::make_shared<AppStartupLifecycleHandlerImpl>(std::make_shared<AppStartupSpanFactoryImpl>(tracer, spanAttributesProvider), spanAttributesProvider, tracer, std::make_shared<AppStartupInstrumentationSystemUtilsImpl>(), [BugsnagPerformanceCrossTalkAPI sharedInstance]), std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
-    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider, std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider), std::make_shared<ViewLoadInstrumentationSystemUtilsImpl>()))
+    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider, std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider), std::make_shared<ViewLoadInstrumentationSystemUtilsImpl>(), std::make_shared<ViewLoadSwizzlingHandlerImpl>()))
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
                                                                        spanAttributesProvider,
                                                                        networkHeaderInjector))
