@@ -39,9 +39,9 @@ void ViewLoadInstrumentation::earlySetup() noexcept {
     }
     
     if (swizzleViewLoadPreMain_) {
-        for (auto image : imagesToInstrument()) {
+        for (auto image : systemUtils_->imagesToInstrument()) {
             Trace(@"Instrumenting %s", image);
-            for (auto cls : viewControllerSubclasses(image)) {
+            for (auto cls : systemUtils_->viewControllerSubclasses(image)) {
                 Trace(@" - %s", class_getName(cls));
                 classToIsObserved_[cls] = true;
                 instrument(cls);
@@ -219,60 +219,6 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         
         instrumentationState.overallSpan = spanFactory_->startPreloadedPresentingSpan(viewController);
     }
-}
-
-
-// Suppress clang-tidy warnings about use of pointer arithmetic and free()
-// NOLINTBEGIN(cppcoreguidelines-*)
-
-std::vector<const char *>
-ViewLoadInstrumentation::imagesToInstrument() noexcept {
-    std::vector<const char *> images;
-    auto appPath = NSBundle.mainBundle.bundlePath.UTF8String;
-    auto count = 0U;
-    auto names = objc_copyImageNames(&count);
-    if (names) {
-        for (auto i = 0U; i < count; i++) {
-            // Instrument all images within the app bundle
-            if (strstr(names[i], appPath)
-#if TARGET_OS_SIMULATOR
-                // and those loaded from BUILT_PRODUCTS_DIR, because Xcode
-                // doesn't embed them when building for the Simulator.
-                || strstr(names[i], "/DerivedData/")
-#endif
-                ) {
-                images.push_back(names[i]);
-            }
-        }
-        free(names);
-    }
-    return images;
-}
-
-std::vector<Class>
-ViewLoadInstrumentation::viewControllerSubclasses(const char *image) noexcept {
-    std::vector<Class> classes;
-    auto count = 0U;
-    auto names = objc_copyClassNamesForImage(image, &count);
-    if (names) {
-        for (unsigned int i = 0; i < count; i++) {
-            auto cls = objc_getClass(names[i]);
-            if (cls && isViewControllerSubclass((Class)cls)) {
-                classes.push_back(cls);
-            }
-        }
-        free(names);
-    }
-    return classes;
-}
-
-bool
-ViewLoadInstrumentation::isViewControllerSubclass(Class cls) noexcept {
-    const auto root = [UIViewController class];
-    while (cls && cls != root) {
-        cls = class_getSuperclass(cls);
-    }
-    return cls != nil;
 }
 
 bool

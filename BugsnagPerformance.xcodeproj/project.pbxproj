@@ -126,6 +126,9 @@
 		963829272E55E5C500404F3A /* ViewLoadSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829262E55E5B900404F3A /* ViewLoadSpanFactory.h */; };
 		963829292E55E5DB00404F3A /* ViewLoadSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829282E55E5D100404F3A /* ViewLoadSpanFactoryImpl.h */; };
 		9638292B2E55E5E800404F3A /* ViewLoadSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */; };
+		9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */; };
+		963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */; };
+		963829342E5614D200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -435,6 +438,9 @@
 		963829262E55E5B900404F3A /* ViewLoadSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactory.h; sourceTree = "<group>"; };
 		963829282E55E5D100404F3A /* ViewLoadSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactoryImpl.h; sourceTree = "<group>"; };
 		9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSpanFactoryImpl.mm; sourceTree = "<group>"; };
+		9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtils.h; sourceTree = "<group>"; };
+		963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
+		963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -947,6 +953,7 @@
 			children = (
 				963829252E55E59600404F3A /* SpanFactory */,
 				963829062E547CFF00404F3A /* State */,
+				9638292C2E56145200404F3A /* System */,
 				0122C22D29019770002D243C /* ViewLoadInstrumentation.h */,
 				0122C22F29019770002D243C /* ViewLoadInstrumentation.mm */,
 			);
@@ -1000,6 +1007,16 @@
 				9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */,
 			);
 			path = SpanFactory;
+			sourceTree = "<group>";
+		};
+		9638292C2E56145200404F3A /* System */ = {
+			isa = PBXGroup;
+			children = (
+				9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */,
+				963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */,
+				963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */,
+			);
+			path = System;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -1098,6 +1115,7 @@
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
+				9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
 				963829292E55E5DB00404F3A /* ViewLoadSpanFactoryImpl.h in Headers */,
@@ -1178,6 +1196,7 @@
 				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
 				CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */,
 				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
+				963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1526,6 +1545,7 @@
 				96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */,
 				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				966634D32C8909D9004A934D /* FrameMetricsCollector.mm in Sources */,
+				963829342E5614D200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm in Sources */,
 				963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,

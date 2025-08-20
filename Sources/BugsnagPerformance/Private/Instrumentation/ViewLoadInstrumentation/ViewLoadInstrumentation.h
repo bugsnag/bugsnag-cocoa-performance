@@ -10,6 +10,7 @@
 #import "../../Tracer.h"
 #import "State/ViewLoadInstrumentationState.h"
 #import "SpanFactory/ViewLoadSpanFactory.h"
+#import "System/ViewLoadInstrumentationSystemUtils.h"
 
 #import <vector>
 
@@ -20,12 +21,14 @@ class ViewLoadInstrumentation: public PhasedStartup {
 public:
     ViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
                             std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                            std::shared_ptr<ViewLoadSpanFactory> spanFactory) noexcept
+                            std::shared_ptr<ViewLoadSpanFactory> spanFactory,
+                            std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils) noexcept
     : isEnabled_(true)
     , isEarlySpanPhase_(true)
     , tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
+    , systemUtils_(systemUtils)
     , earlySpans_([NSMutableArray new])
     {}
 
@@ -35,11 +38,7 @@ public:
     void preStartSetup() noexcept {};
     void start() noexcept {}
     
-private:
-    static std::vector<const char *> imagesToInstrument() noexcept;
-    static std::vector<Class> viewControllerSubclasses(const char *image) noexcept;
-    static bool isViewControllerSubclass(Class subclass) noexcept;
-    
+private:    
     void instrument(Class cls) noexcept;
     void instrumentLoadView(Class cls) noexcept;
     void instrumentViewDidLoad(Class cls) noexcept;
@@ -71,6 +70,7 @@ private:
     bool swizzleViewLoadPreMain_{true};
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
+    std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
     std::map<Class, bool> classToIsObserved_{};
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;

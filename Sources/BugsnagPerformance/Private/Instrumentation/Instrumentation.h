@@ -9,13 +9,14 @@
 #pragma once
 
 #import "../PhasedStartup.h"
-#import "../Instrumentation/AppStartupInstrumentation/AppStartupInstrumentation.h"
-#import "../Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
-#import "../Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
-#import "../Instrumentation/AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
-#import "../Instrumentation/AppStartupInstrumentation/SpanFactory/AppStartupSpanFactoryImpl.h"
-#import "../Instrumentation/AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
-#import "../Instrumentation/ViewLoadInstrumentation/SpanFactory/ViewLoadSpanFactoryImpl.h"
+#import "AppStartupInstrumentation/AppStartupInstrumentation.h"
+#import "NetworkInstrumentation/NetworkInstrumentation.h"
+#import "AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
+#import "AppStartupInstrumentation/SpanFactory/AppStartupSpanFactoryImpl.h"
+#import "AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
+#import "ViewLoadInstrumentation/ViewLoadInstrumentation.h"
+#import "ViewLoadInstrumentation/SpanFactory/ViewLoadSpanFactoryImpl.h"
+#import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
 
 namespace bugsnag {
 
@@ -25,7 +26,7 @@ public:
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(std::make_shared<AppStartupLifecycleHandlerImpl>(std::make_shared<AppStartupSpanFactoryImpl>(tracer, spanAttributesProvider), spanAttributesProvider, tracer, std::make_shared<AppStartupInstrumentationSystemUtilsImpl>(), [BugsnagPerformanceCrossTalkAPI sharedInstance]), std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
-    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider, std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider)))
+    , viewLoadInstrumentation_(std::make_shared<ViewLoadInstrumentation>(tracer, spanAttributesProvider, std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider), std::make_shared<ViewLoadInstrumentationSystemUtilsImpl>()))
     , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
                                                                        spanAttributesProvider,
                                                                        networkHeaderInjector))
