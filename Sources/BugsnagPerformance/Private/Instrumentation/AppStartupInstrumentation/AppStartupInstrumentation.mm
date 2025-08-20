@@ -108,10 +108,7 @@ void AppStartupInstrumentation::abortAllSpans() noexcept {
 
 AppStartupInstrumentationStateSnapshot *
 AppStartupInstrumentation::stateSnapshot() noexcept {
-    return [AppStartupInstrumentationStateSnapshot snapshotWithAppStartSpan:state_.appStartSpan
-                                                                 uiInitSpan:state_.uiInitSpan
-                                                               isInProgress:state_.appStartSpan.isValid || state_.appStartSpan.isBlocked
-                                                               hasFirstView:state_.firstViewName != nil];
+    return [state_ createSnapshot];
 }
 
 CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {

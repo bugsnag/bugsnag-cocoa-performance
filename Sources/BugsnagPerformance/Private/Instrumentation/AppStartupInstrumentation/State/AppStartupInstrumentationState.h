@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
+#import "AppStartupInstrumentationStateSnapshot.h"
+
 @interface AppStartupInstrumentationState: NSObject
 @property (nonatomic, strong) BugsnagPerformanceSpan *appStartSpan;
 @property (nonatomic, strong) BugsnagPerformanceSpan *preMainSpan;
@@ -23,4 +25,7 @@
 @property (nonatomic) BOOL isColdLaunch;
 @property (nonatomic) BOOL shouldRespondToAppDidFinishLaunching;
 @property (nonatomic) BOOL shouldRespondToAppDidBecomeActive;
+
+- (AppStartupInstrumentationStateSnapshot *)createSnapshot;
+
 @end

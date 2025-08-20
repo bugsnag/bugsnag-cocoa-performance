@@ -6,6 +6,15 @@
 //
 
 #import "AppStartupInstrumentationState.h"
+#import "../../../BugsnagPerformanceSpan+Private.h"
 
 @implementation AppStartupInstrumentationState
+
+- (AppStartupInstrumentationStateSnapshot *)createSnapshot {
+    return [AppStartupInstrumentationStateSnapshot snapshotWithAppStartSpan:self.appStartSpan
+                                                                 uiInitSpan:self.uiInitSpan
+                                                               isInProgress:self.appStartSpan.isValid || self.appStartSpan.isBlocked
+                                                               hasFirstView:self.firstViewName != nil];
+}
+
 @end
