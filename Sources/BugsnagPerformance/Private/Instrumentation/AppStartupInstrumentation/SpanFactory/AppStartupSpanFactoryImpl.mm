@@ -16,7 +16,6 @@ AppStartupSpanFactoryImpl::AppStartupSpanFactoryImpl(std::shared_ptr<Tracer> tra
 : tracer_(tracer)
 , spanAttributesProvider_(spanAttributesProvider) {}
 
-
 BugsnagPerformanceSpan *
 AppStartupSpanFactoryImpl::startAppStartSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept {
     auto name = isColdLaunch ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";

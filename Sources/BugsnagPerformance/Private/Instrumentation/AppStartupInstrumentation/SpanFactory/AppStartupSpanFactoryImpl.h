@@ -10,7 +10,6 @@
 #import "../../../SpanAttributesProvider.h"
 #import "../../../Tracer.h"
 
-
 namespace bugsnag {
 
 class AppStartupSpanFactoryImpl: public AppStartupSpanFactory {

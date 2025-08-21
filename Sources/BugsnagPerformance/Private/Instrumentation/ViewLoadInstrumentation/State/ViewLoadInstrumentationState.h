@@ -9,6 +9,7 @@
 @class ViewLoadInstrumentationState;
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -16,17 +17,17 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 
 @interface ViewLoadInstrumentationState : NSObject
 
-@property (nonatomic) BOOL loadViewPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLoadPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidAppearPhaseSpanCreated;
-@property (nonatomic) BOOL viewWillLayoutSubviewsPhaseSpanCreated;
-@property (nonatomic) BOOL viewDidLayoutSubviewsPhaseSpanCreated;
 @property (nonatomic) BOOL isMarkedAsPreloaded;
-@property (nonatomic, nullable, strong) NSDate *viewDidLoadEndTime;
+@property (nonatomic, nullable, weak) UIViewController *viewController;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *overallSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *loadViewSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewDidLoadSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewWillAppearSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewAppearingSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewDidAppearSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewWillLayoutSubviewsSpan;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *subviewLayoutSpan;
+@property (nonatomic, nullable, strong) BugsnagPerformanceSpan *viewDidLayoutSubviewsSpan;
 @property (nonatomic, nullable) ViewLoadInstrumentationStateOnDeallocCallback onDealloc;
 
 @end

@@ -134,6 +134,9 @@
 		9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */; };
 		9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */; };
 		9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */; };
+		963829412E5726DF00404F3A /* ViewLoadLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */; };
+		963829432E57537100404F3A /* ViewLoadLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */; };
+		963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -451,6 +454,9 @@
 		963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSwizzlingHandlerImpl.mm; sourceTree = "<group>"; };
 		9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingCallbacks.h; sourceTree = "<group>"; };
 		9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadSwizzlingCallbacks.m; sourceTree = "<group>"; };
+		963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLifecycleHandler.h; sourceTree = "<group>"; };
+		963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -961,6 +967,7 @@
 		963829052E547C2900404F3A /* ViewLoadInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
+				9638293F2E5726C400404F3A /* Lifecycle */,
 				963829252E55E59600404F3A /* SpanFactory */,
 				963829062E547CFF00404F3A /* State */,
 				9638292C2E56145200404F3A /* System */,
@@ -1032,6 +1039,16 @@
 				963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */,
 			);
 			path = System;
+			sourceTree = "<group>";
+		};
+		9638293F2E5726C400404F3A /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */,
+				963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */,
+				963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */,
+			);
+			path = Lifecycle;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -1125,6 +1142,7 @@
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */,
 				963726DD2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h in Headers */,
+				963829412E5726DF00404F3A /* ViewLoadLifecycleHandler.h in Headers */,
 				963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
@@ -1171,6 +1189,7 @@
 				966634D12C8909BB004A934D /* FrameMetricsCollector.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
 				09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */,
+				963829432E57537100404F3A /* ViewLoadLifecycleHandlerImpl.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
 				098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */,
@@ -1557,6 +1576,7 @@
 				098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
 				9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */,
+				963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
