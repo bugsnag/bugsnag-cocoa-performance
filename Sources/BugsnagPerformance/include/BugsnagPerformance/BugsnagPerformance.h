@@ -20,6 +20,7 @@
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -55,6 +55,7 @@
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		09F3F52A2D6C72B300BAA0A3 /* CPUMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */; };
 		09F3F52C2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */; };
+		1C7852A02E57198500BB8E2D /* LoadingIndicatorViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */; };
 		55A1B7CB2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; };
 		55A1B7CC2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55A1B7CD2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */; };
@@ -173,6 +174,7 @@
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPUMetricsScenario.swift; sourceTree = "<group>"; };
 		09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
+		1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewScenario.swift; sourceTree = "<group>"; };
 		55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformance.xcframework; path = ../../../BugsnagPerformance.xcframework; sourceTree = "<group>"; };
 		55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -300,9 +302,6 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
-				DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */,
-				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
-				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				96A25F3E2D6BC9BF00A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */,
@@ -348,6 +347,7 @@
 				0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */,
 				0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
+				1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
 				96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
@@ -364,7 +364,10 @@
 				09F025052BA08804007D9F73 /* ObjCURLSession.h */,
 				09F025062BA08804007D9F73 /* ObjCURLSession.m */,
 				098C3B2C2C523EC5006F9886 /* OnEndCallbackScenario.swift */,
+				DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */,
 				CBE615F629A4C1F0000E72D8 /* ParentSpanScenario.swift */,
+				DA58B7D72DF97D7200CB80A4 /* PluginInstallErrorScenario.swift */,
+				DA58B7D32DF8365E00CB80A4 /* PluginScenario.swift */,
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
 				96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */,
@@ -554,6 +557,7 @@
 				09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */,
 				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
 				098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */,
+				1C7852A02E57198500BB8E2D /* LoadingIndicatorViewScenario.swift in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,

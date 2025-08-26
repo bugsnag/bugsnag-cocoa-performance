@@ -184,6 +184,9 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     instrumentationState.overallSpan = span;
 
     setInstrumentationState(viewController, instrumentationState);
+
+    NSLog(@"[DARIA_LOG] updateViewForViewController onLoadView");
+    updateViewForViewController(viewController, instrumentationState);
 }
 
 void
@@ -192,14 +195,25 @@ ViewLoadInstrumentation::onViewDidAppear(UIViewController *viewController) noexc
         return;
     }
 
+    NSLog(@"[DARIA_LOG] ViewLoadInstrumentation onViewDidAppear");
     auto instrumentationState = getInstrumentationState(viewController);
     if (instrumentationState != nil && instrumentationState.overallSpan != nil) {
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation overall span not ended yet");
         if (instrumentationState.loadingPhaseSpan != nil) {
+            NSLog(@"[DARIA_LOG] ViewLoadInstrumentation loading phase span was created already");
             // Adjust span start time to reflect the view appearing time
-            [instrumentationState.loadingPhaseSpan updateStartTime:[NSDate now]];
+            if (@available(iOS 13.0, *)) {
+                [instrumentationState.loadingPhaseSpan updateStartTime:[NSDate now]];
+            } else {
+                [instrumentationState.loadingPhaseSpan updateStartTime:[[NSDate alloc] init]];
+            }
         } else {
-            [instrumentationState.overallSpan blockWithTimeout:0.1];
+            NSLog(@"[DARIA_LOG] ViewLoadInstrumentation loading phase not created yet");
+            [instrumentationState.overallSpan blockWithTimeout:0.3];
         }
+
+        NSLog(@"[DARIA_LOG] updateViewForViewController onViewDidAppear");
+        updateViewForViewController(viewController, instrumentationState);
     }
 
     endOverallSpan(viewController);
@@ -271,33 +285,46 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
 }
 
 void ViewLoadInstrumentation::updateViewForViewController(UIViewController *viewController, ViewLoadInstrumentationState *instrumentationState) {
+    NSLog(@"[DARIA_LOG] ViewLoadInstrumentation updateViewForViewController");
     if (viewController == nil || instrumentationState == nil) {
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation all is nil");
         return;
     }
 
     UIView *currentView = instrumentationState.view;
+    NSLog(@"[DARIA_LOG] ViewLoadInstrumentation view type is %@", currentView.class);
     if (currentView != viewController.view) {
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation current view changed");
         if (currentView != nil) {
+            NSLog(@"[DARIA_LOG] ViewLoadInstrumentation current view not nil");
             // Remove the old instrumentation state from the view
             objc_setAssociatedObject(currentView, &kAssociatedStateView, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
 
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation update associated view");
         instrumentationState.view = viewController.view;
         objc_setAssociatedObject(viewController.view, &kAssociatedStateView, instrumentationState, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
 }
 
 NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::loadingIndicatorWasAdded(UIView *loadingIndicatorView) noexcept {
+    NSLog(@"[DARIA_LOG] ViewLoadInstrumentation loadingIndicatorWasAdded");
     NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
 
     // Traverse the view hierarchy to find all affected superviews
-    UIView *superview = loadingIndicatorView.superview;
+    UIView *superview = loadingIndicatorView;
     while (superview != nil) {
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation superView not nil");
         ViewLoadInstrumentationState *associatedState = objc_getAssociatedObject(superview, &kAssociatedStateView);
+
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation state nil? %d", (int)(associatedState != nil));
+        NSLog(@"[DARIA_LOG] ViewLoadInstrumentation span valid? %d", (int)(associatedState.overallSpan.isValid));
         if (associatedState != nil && associatedState.overallSpan.isValid) {
+            NSLog(@"[DARIA_LOG] ViewLoadInstrumentation state valid");
             UIViewController *viewController = objc_getAssociatedObject(associatedState, &kAssociatedViewLoadInstrumentationState);
 
             if (!associatedState.viewLoadingPhaseSpanCreated) {
+                NSLog(@"[DARIA_LOG] ViewLoadInstrumentation span not created yet");
                 // block overall span
                 BugsnagPerformanceSpanCondition* overallSpanCondition = [associatedState.overallSpan blockWithTimeout:0.5];
                 [overallSpanCondition upgrade];
@@ -309,14 +336,18 @@ NSMutableArray<BugsnagPerformanceSpanCondition *> * ViewLoadInstrumentation::loa
 
                 [span blockWithTimeout:0.1]; // will be properly locked below
                 [span end];
+
+                NSLog(@"[DARIA_LOG] ViewLoadInstrumentation phase span created");
             }
 
             // Block the span
             __strong BugsnagPerformanceSpan *parentSpan = associatedState.loadingPhaseSpan;
             if (parentSpan != nil) {
+                NSLog(@"[DARIA_LOG] ViewLoadInstrumentation loading phase span not nil");
                 BugsnagPerformanceSpanCondition* condition = [parentSpan blockWithTimeout:0.5];
                 [condition upgrade];
                 [newConditions addObject:condition];
+                NSLog(@"[DARIA_LOG] ViewLoadInstrumentation loading phase span blocked");
             }
         }
         superview = superview.superview;
@@ -448,6 +479,7 @@ ViewLoadInstrumentation::instrumentLoadView(Class cls) noexcept {
             }
             [span end];
 
+            NSLog(@"[DARIA_LOG] updateViewForViewController instrumentLoadView");
             updateViewForViewController(self, instrumentationState);
 
         } else {
@@ -479,6 +511,10 @@ ViewLoadInstrumentation::instrumentViewDidLoad(Class cls) noexcept {
         }
         [span end];
         instrumentationState.viewDidLoadEndTime = span.endTime;
+
+
+        NSLog(@"[DARIA_LOG] updateViewForViewController instrumentViewDidLoad");
+        updateViewForViewController(self, instrumentationState);
     });
 }
 
@@ -505,6 +541,9 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
         [span end];
         BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing", @[]);
         instrumentationState.viewAppearingSpan = viewAppearingSpan;
+
+        NSLog(@"[DARIA_LOG] updateViewForViewController instrumentViewWillAppear");
+        updateViewForViewController(self, instrumentationState);
     });
 }
 
@@ -529,6 +568,9 @@ ViewLoadInstrumentation::instrumentViewDidAppear(Class cls) noexcept {
         }
         [span end];
         onViewDidAppear(self);
+
+        NSLog(@"[DARIA_LOG] updateViewForViewController instrumentViewDidAppear");
+        updateViewForViewController(self, instrumentationState);
     });
 }
 
@@ -553,6 +595,9 @@ ViewLoadInstrumentation::instrumentViewWillLayoutSubviews(Class cls) noexcept {
         [span end];
         BugsnagPerformanceSpan *subviewLayoutSpan = startViewLoadPhaseSpan(self, @"Subview layout", @[]);
         instrumentationState.subviewLayoutSpan = subviewLayoutSpan;
+
+        NSLog(@"[DARIA_LOG] updateViewForViewController instrumentViewWillLayoutSubviews");
+        updateViewForViewController(self, instrumentationState);
     });
 }
 
@@ -578,6 +623,7 @@ ViewLoadInstrumentation::instrumentViewDidLayoutSubviews(Class cls) noexcept {
         [span end];
 
         auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
+        NSLog(@"[DARIA_LOG] updateViewForViewController instrumentViewDidLayoutSubviews");
         updateViewForViewController(self, instrumentationState);
 
         void (^endViewAppearingSpanIfNeeded)(ViewLoadInstrumentationState *) = ^void(ViewLoadInstrumentationState *state) {

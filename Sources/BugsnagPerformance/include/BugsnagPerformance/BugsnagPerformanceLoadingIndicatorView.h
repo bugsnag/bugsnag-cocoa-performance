@@ -1,5 +1,5 @@
 //
-//  LoadingIndicatorView.h
+//  BugsnagPerformanceLoadingIndicatorView.h
 //  BugsnagPerformance
 //
 //  Created by Daria Bialobrzeska on 17/07/2025.
@@ -9,13 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-#import "BugsnagPerformanceSpanCondition.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 
-IB_DESIGNABLE
-@interface LoadingIndicatorView : UIView
+NS_ASSUME_NONNULL_BEGIN
+
+OBJC_EXPORT
+IB_DESIGNABLE @interface BugsnagPerformanceLoadingIndicatorView : UIView
 
 @property (nonatomic, readonly) BOOL isLoading;
 
 - (void)finishLoading;
 
 @end
+
+NS_ASSUME_NONNULL_END
