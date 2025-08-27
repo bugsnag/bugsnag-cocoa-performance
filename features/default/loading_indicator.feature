@@ -2,11 +2,11 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: SimpleStopLoadingIndicatorViewScenario
     Given I run "SimpleStopLoadingIndicatorViewScenario"
-    And I wait for 8 spans
+    And I wait for 17 spans
     And I wait for 2 seconds
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
-    And I invoke "step2"
-    And I wait for 10 spans
+    And I invoke "finishLoading"
+    And I wait for 19 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"

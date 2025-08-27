@@ -18,9 +18,6 @@ class SimpleStopLoadingIndicatorViewScenario: Scenario {
         super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
         bugsnagPerfConfig.autoInstrumentViewControllers = true
-        bugsnagPerfConfig.viewControllerInstrumentationCallback = {
-            !($0 is ViewController)
-        }
     }
     
     func finishLoading() {
