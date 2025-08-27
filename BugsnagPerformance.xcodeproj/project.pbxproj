@@ -76,6 +76,8 @@
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
+		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
+		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
@@ -409,6 +411,8 @@
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
+		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
+		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -709,6 +713,8 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				1C7852A32E5F697D00BB8E2D /* SpanContext.mm */,
+				1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */,
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
@@ -1133,6 +1139,7 @@
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
 				964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */,
 				963726C62DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.h in Headers */,
+				1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				966634D12C8909BB004A934D /* FrameMetricsCollector.h in Headers */,
@@ -1630,6 +1637,7 @@
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
+				1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */,
