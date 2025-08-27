@@ -55,13 +55,13 @@
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		09F3F52A2D6C72B300BAA0A3 /* CPUMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */; };
 		09F3F52C2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */; };
-		1C7852A02E57198500BB8E2D /* LoadingIndicatorViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */; };
 		55A1B7CB2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; };
 		55A1B7CC2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55A1B7CD2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */; };
 		55A1B7CE2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
+		963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
 		966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */; };
@@ -174,11 +174,11 @@
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPUMetricsScenario.swift; sourceTree = "<group>"; };
 		09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
-		1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewScenario.swift; sourceTree = "<group>"; };
 		55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformance.xcframework; path = ../../../BugsnagPerformance.xcframework; sourceTree = "<group>"; };
 		55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
+		963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleStopLoadingIndicatorViewScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
 		966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsFronzenFramesScenario.swift; sourceTree = "<group>"; };
@@ -347,7 +347,6 @@
 				0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */,
 				0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
-				1C78529F2E57198500BB8E2D /* LoadingIndicatorViewScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
 				96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
@@ -377,6 +376,7 @@
 				09E045602C98649D003882D3 /* SetAttributeCountLimitScenario.swift */,
 				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
 				09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */,
+				963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */,
 				96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */,
 				96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
@@ -515,6 +515,7 @@
 				96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */,
+				963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
@@ -557,7 +558,6 @@
 				09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */,
 				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
 				098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */,
-				1C7852A02E57198500BB8E2D /* LoadingIndicatorViewScenario.swift in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,
