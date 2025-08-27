@@ -62,6 +62,7 @@
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		962CE7FD2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */; };
+		963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
 		966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */; };
@@ -179,6 +180,7 @@
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanConditionsBlockedSpanScenario.swift; sourceTree = "<group>"; };
+		963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleStopLoadingIndicatorViewScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
 		966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsFronzenFramesScenario.swift; sourceTree = "<group>"; };
@@ -377,6 +379,7 @@
 				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
 				09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */,
 				962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */,
+				963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */,
 				96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */,
 				96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
@@ -515,6 +518,7 @@
 				96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */,
+				963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,

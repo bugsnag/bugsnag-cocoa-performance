@@ -336,6 +336,13 @@ Then('a span named {string} duration is equal or less than {float}') do |name, m
   Maze.check.true(duration <= maxDuration)
 end
 
+Then('a span named {string} duration is equal or greater than {float}') do |name, minDuration|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
+  Maze.check.true(duration >= minDuration)
+end
+
 When('I wait for exactly {int} span(s)') do |span_count|
   assert_received_exactly_spans span_count, Maze::Server.list_for('traces')
 end
