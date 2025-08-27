@@ -41,7 +41,7 @@ static NSString * const AppStartNameAttribute = @"bugsnag.app_start.name";
         } else {
             NSString *typeStr = type;
             // Original span name should be in format "[AppStart/$platform$type]"
-            NSString *newName = [NSString stringWithFormat:@"%@%@", span.name, typeStr];
+            NSString *newName = [NSString stringWithFormat:@"%@%@", self.spanPreviousName, typeStr];
             [span updateName:newName];
         }
         [span setAttribute:AppStartNameAttribute withValue:type];
