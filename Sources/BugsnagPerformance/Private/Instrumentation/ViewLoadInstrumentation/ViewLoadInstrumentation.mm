@@ -113,9 +113,12 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        auto state = [ViewLoadInstrumentationState new];
-        state.viewController = viewController;
-        setInstrumentationState(viewController, state);
+        auto state = getInstrumentationState(viewController);
+        if (state == nil) {
+            state = [ViewLoadInstrumentationState new];
+            state.viewController = viewController;
+            setInstrumentationState(viewController, state);
+        }
         lifecycleHandler_->onLoadView(state,
                                       viewController,
                                       originalImplementation);
