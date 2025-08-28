@@ -13,6 +13,7 @@
 #import "BugsnagPerformanceSpan+Private.h"
 #import "IdGenerator.h"
 #import "BugsnagPerformanceSpanCondition+Private.h"
+#import "BugsnagPerformanceSpanContext+Private.h"
 #import <memory>
 
 using namespace bugsnag;
@@ -26,7 +27,7 @@ using namespace bugsnag;
 
 - (void)testUnset {
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
-    XCTAssertNil(objcOptions.parentContext);
+    XCTAssertEqual(objcOptions.parentContext, [BugsnagPerformanceSpanContext defaultContext]);
     XCTAssertNil(objcOptions.startTime);
     XCTAssertTrue(objcOptions.makeCurrentContext);
     XCTAssertEqual(objcOptions.firstClass, BSGTriStateUnset);
@@ -35,7 +36,7 @@ using namespace bugsnag;
 - (void)testConversionDefaults {
     BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
     SpanOptions cOptions(objcOptions);
-    XCTAssertNil(cOptions.parentContext);
+    XCTAssertEqual(cOptions.parentContext, [BugsnagPerformanceSpanContext defaultContext]);
     XCTAssertTrue(isnan(cOptions.startTime));
     XCTAssertTrue(cOptions.makeCurrentContext);
     XCTAssertEqual(cOptions.firstClass, BSGTriStateUnset);
