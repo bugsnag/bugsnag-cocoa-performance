@@ -14,17 +14,6 @@ using namespace bugsnag;
 
 static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
-ViewLoadLifecycleHandlerImpl::ViewLoadLifecycleHandlerImpl(std::shared_ptr<Tracer> tracer,
-                                                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                                           std::shared_ptr<ViewLoadSpanFactory> spanFactory,
-                                                           BugsnagPerformanceCrossTalkAPI *crosstalkAPI) noexcept
-: tracer_(tracer)
-, spanAttributesProvider_(spanAttributesProvider)
-, spanFactory_(spanFactory)
-, crosstalkAPI_(crosstalkAPI)
-, isEarlyPhase_(true)
-, earlyStates_([NSMutableArray new]) {}
-
 #pragma mark Lifecycle
 
 void
@@ -33,9 +22,14 @@ ViewLoadLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled, __null
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onLoadView(ViewLoadInstrumentationState *state,
-                                         UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onLoadView(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
+    if (state == nil) {
+        state = [ViewLoadInstrumentationState new];
+        state.viewController = viewController;
+        repository_->setInstrumentationState(viewController, state);
+    }
     if (state.loadViewSpan != nil) {
         originalImplementation();
         return;
@@ -50,9 +44,9 @@ ViewLoadLifecycleHandlerImpl::onLoadView(ViewLoadInstrumentationState *state,
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onViewDidLoad(ViewLoadInstrumentationState *state,
-                                            UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onViewDidLoad(UIViewController *viewController,
                                             ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
     if (state.overallSpan == nil || state.viewDidLoadSpan != nil) {
         originalImplementation();
         return;
@@ -65,9 +59,9 @@ ViewLoadLifecycleHandlerImpl::onViewDidLoad(ViewLoadInstrumentationState *state,
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onViewWillAppear(ViewLoadInstrumentationState *state,
-                                               UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onViewWillAppear(UIViewController *viewController,
                                                ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     if (overallSpan == nil || state.viewWillAppearSpan != nil) {
         originalImplementation();
@@ -83,9 +77,9 @@ ViewLoadLifecycleHandlerImpl::onViewWillAppear(ViewLoadInstrumentationState *sta
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onViewDidAppear(ViewLoadInstrumentationState *state,
-                                              UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
                                               ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
     if (state.overallSpan == nil || state.viewDidAppearSpan != nil) {
         originalImplementation();
         return;
@@ -99,9 +93,9 @@ ViewLoadLifecycleHandlerImpl::onViewDidAppear(ViewLoadInstrumentationState *stat
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onViewWillLayoutSubviews(ViewLoadInstrumentationState *state,
-                                                       UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onViewWillLayoutSubviews(UIViewController *viewController,
                                                        ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
     if (state.overallSpan == nil || state.viewWillLayoutSubviewsSpan != nil) {
         originalImplementation();
         return;
@@ -115,9 +109,9 @@ ViewLoadLifecycleHandlerImpl::onViewWillLayoutSubviews(ViewLoadInstrumentationSt
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(ViewLoadInstrumentationState *state,
-                                                      UIViewController *viewController,
+ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewController,
                                                       ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
     if (state.overallSpan == nil || state.viewDidLayoutSubviewsSpan != nil) {
         originalImplementation();
         return;

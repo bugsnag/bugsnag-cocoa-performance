@@ -8,6 +8,12 @@
 
 #import "Instrumentation.h"
 
+#import "ViewLoadInstrumentation/SpanFactory/ViewLoadSpanFactoryImpl.h"
+#import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
+#import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
+#import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
+
 using namespace bugsnag;
 
 void Instrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
@@ -51,9 +57,11 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
     auto systemUtils = std::make_shared<ViewLoadInstrumentationSystemUtilsImpl>();
     auto swizzlingHandler = std::make_shared<ViewLoadSwizzlingHandlerImpl>();
     auto spanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider);
+    auto repository = std::make_shared<ViewLoadInstrumentationStateRepositoryImpl>();
     auto lifecycleHandler = std::make_shared<ViewLoadLifecycleHandlerImpl>(tracer,
                                                                            spanAttributesProvider,
                                                                            spanFactory,
+                                                                           repository,
                                                                            [BugsnagPerformanceCrossTalkAPI sharedInstance]);
     
     return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, lifecycleHandler);

@@ -47,9 +47,6 @@ private:
     
     ViewLoadSwizzlingCallbacks *createViewLoadSwizzlingCallbacks() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;
-
-    void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept;
-    ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept;
 };
 }
 

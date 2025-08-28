@@ -15,11 +15,6 @@
 #import "AppStartupInstrumentation/SpanFactory/AppStartupSpanFactoryImpl.h"
 #import "AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
 #import "ViewLoadInstrumentation/ViewLoadInstrumentation.h"
-#import "ViewLoadInstrumentation/SpanFactory/ViewLoadSpanFactoryImpl.h"
-#import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
-#import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
-#import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
-#import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
 
 std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
                                                                        std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);

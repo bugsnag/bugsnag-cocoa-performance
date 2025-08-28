@@ -8,6 +8,7 @@
 
 #import "ViewLoadLifecycleHandler.h"
 #import "../SpanFactory/ViewLoadSpanFactory.h"
+#import "../State/ViewLoadInstrumentationStateRepository.h"
 #import "../../../Tracer.h"
 #import "../../../BugsnagPerformanceCrossTalkAPI.h"
 
@@ -20,32 +21,35 @@ public:
     ViewLoadLifecycleHandlerImpl(std::shared_ptr<Tracer> tracer,
                                  std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                  std::shared_ptr<ViewLoadSpanFactory> spanFactory,
-                                 BugsnagPerformanceCrossTalkAPI *crosstalkAPI) noexcept;
+                                 std::shared_ptr<ViewLoadInstrumentationStateRepository> repository,
+                                 BugsnagPerformanceCrossTalkAPI *crosstalkAPI) noexcept
+    : tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider)
+    , spanFactory_(spanFactory)
+    , repository_(repository)
+    , crosstalkAPI_(crosstalkAPI)
+    , isEarlyPhase_(true)
+    , earlyStates_([NSMutableArray new]) {}
     
     void onInstrumentationConfigured(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept;
-    void onLoadView(ViewLoadInstrumentationState *state,
-                            UIViewController *viewController,
-                            ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onViewDidLoad(ViewLoadInstrumentationState *state,
-                               UIViewController *viewController,
-                               ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onViewWillAppear(ViewLoadInstrumentationState *state,
-                                  UIViewController *viewController,
+    void onLoadView(UIViewController *viewController,
+                    ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onViewDidLoad(UIViewController *viewController,
+                       ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onViewWillAppear(UIViewController *viewController,
+                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onViewDidAppear(UIViewController *viewController,
+                         ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onViewWillLayoutSubviews(UIViewController *viewController,
                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onViewDidAppear(ViewLoadInstrumentationState *state,
-                                 UIViewController *viewController,
+    void onViewDidLayoutSubviews(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onViewWillLayoutSubviews(ViewLoadInstrumentationState *state,
-                                          UIViewController *viewController,
-                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onViewDidLayoutSubviews(ViewLoadInstrumentationState *state,
-                                         UIViewController *viewController,
-                                         ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     
 private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
+    std::shared_ptr<ViewLoadInstrumentationStateRepository> repository_;
     BugsnagPerformanceCrossTalkAPI *crosstalkAPI_;
     
     std::recursive_mutex earlyPhaseMutex_;

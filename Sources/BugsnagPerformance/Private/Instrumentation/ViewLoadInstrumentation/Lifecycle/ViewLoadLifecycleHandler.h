@@ -16,23 +16,17 @@ namespace bugsnag {
 class ViewLoadLifecycleHandler {
 public:
     virtual void onInstrumentationConfigured(bool isEnabled, BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept = 0;
-    virtual void onLoadView(ViewLoadInstrumentationState *state,
-                            UIViewController *viewController,
+    virtual void onLoadView(UIViewController *viewController,
                             ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onViewDidLoad(ViewLoadInstrumentationState *state,
-                               UIViewController *viewController,
+    virtual void onViewDidLoad(UIViewController *viewController,
                                ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onViewWillAppear(ViewLoadInstrumentationState *state,
-                                  UIViewController *viewController,
+    virtual void onViewWillAppear(UIViewController *viewController,
                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onViewDidAppear(ViewLoadInstrumentationState *state,
-                                 UIViewController *viewController,
+    virtual void onViewDidAppear(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onViewWillLayoutSubviews(ViewLoadInstrumentationState *state,
-                                          UIViewController *viewController,
+    virtual void onViewWillLayoutSubviews(UIViewController *viewController,
                                           ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onViewDidLayoutSubviews(ViewLoadInstrumentationState *state,
-                                         UIViewController *viewController,
+    virtual void onViewDidLayoutSubviews(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
     virtual ~ViewLoadLifecycleHandler() {}
 };

@@ -15,8 +15,6 @@
 #import "../../BugsnagSwiftTools.h"
 #import "../../BugsnagPerformanceCrossTalkAPI.h"
 
-#import <objc/runtime.h>
-
 #if 0
 #define Trace NSLog
 #else
@@ -24,8 +22,6 @@
 #endif
 
 using namespace bugsnag;
-
-static constexpr int kAssociatedViewLoadInstrumentationState = 0;
 
 #pragma mark Phased startup
 
@@ -75,20 +71,6 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     lifecycleHandler_->onInstrumentationConfigured(isEnabled_, callback);
 }
 
-#pragma mark State
-
-ViewLoadInstrumentationState *ViewLoadInstrumentation::getInstrumentationState(UIViewController *viewController) noexcept {
-    if (viewController != nil) {
-        return objc_getAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState);
-    }
-    return nil;
-}
-
-void ViewLoadInstrumentation::setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState *state) noexcept {
-    objc_setAssociatedObject(viewController, &kAssociatedViewLoadInstrumentationState, state,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 #pragma mark Helpers
 
 bool
@@ -113,14 +95,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        auto state = getInstrumentationState(viewController);
-        if (state == nil) {
-            state = [ViewLoadInstrumentationState new];
-            state.viewController = viewController;
-            setInstrumentationState(viewController, state);
-        }
-        lifecycleHandler_->onLoadView(state,
-                                      viewController,
+        lifecycleHandler_->onLoadView(viewController,
                                       originalImplementation);
     };
     
@@ -130,9 +105,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        ViewLoadInstrumentationState *state = getInstrumentationState(viewController);
-        lifecycleHandler_->onViewDidLoad(state,
-                                         viewController,
+        lifecycleHandler_->onViewDidLoad(viewController,
                                          originalImplementation);
     };
     
@@ -142,9 +115,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        ViewLoadInstrumentationState *state = getInstrumentationState(viewController);
-        lifecycleHandler_->onViewWillAppear(state,
-                                            viewController,
+        lifecycleHandler_->onViewWillAppear(viewController,
                                             originalImplementation);
     };
     
@@ -154,9 +125,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        ViewLoadInstrumentationState *state = getInstrumentationState(viewController);
-        lifecycleHandler_->onViewDidAppear(state,
-                                           viewController,
+        lifecycleHandler_->onViewDidAppear(viewController,
                                            originalImplementation);
     };
     
@@ -166,9 +135,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        ViewLoadInstrumentationState *state = getInstrumentationState(viewController);
-        lifecycleHandler_->onViewWillLayoutSubviews(state,
-                                                    viewController,
+        lifecycleHandler_->onViewWillLayoutSubviews(viewController,
                                                     originalImplementation);
     };
     
@@ -178,9 +145,7 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
             originalImplementation();
             return;
         }
-        ViewLoadInstrumentationState *state = getInstrumentationState(viewController);
-        lifecycleHandler_->onViewDidLayoutSubviews(state,
-                                                   viewController,
+        lifecycleHandler_->onViewDidLayoutSubviews(viewController,
                                                    originalImplementation);
     };
     
