@@ -7,6 +7,7 @@
 //
 
 #import "ViewLoadLifecycleHandler.h"
+#import "ViewLoadEarlyPhaseHandler.h"
 #import "../SpanFactory/ViewLoadSpanFactory.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
 #import "../../../Tracer.h"
@@ -18,18 +19,16 @@ namespace bugsnag {
 
 class ViewLoadLifecycleHandlerImpl: public ViewLoadLifecycleHandler {
 public:
-    ViewLoadLifecycleHandlerImpl(std::shared_ptr<Tracer> tracer,
+    ViewLoadLifecycleHandlerImpl(std::shared_ptr<ViewLoadEarlyPhaseHandler> earlyPhaseHandler,
                                  std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                  std::shared_ptr<ViewLoadSpanFactory> spanFactory,
                                  std::shared_ptr<ViewLoadInstrumentationStateRepository> repository,
                                  BugsnagPerformanceCrossTalkAPI *crosstalkAPI) noexcept
-    : tracer_(tracer)
+    : earlyPhaseHandler_(earlyPhaseHandler)
     , spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , repository_(repository)
-    , crosstalkAPI_(crosstalkAPI)
-    , isEarlyPhase_(true)
-    , earlyStates_([NSMutableArray new]) {}
+    , crosstalkAPI_(crosstalkAPI) {}
     
     void onInstrumentationConfigured(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept;
     void onLoadView(UIViewController *viewController,
@@ -46,21 +45,13 @@ public:
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     
 private:
-    std::shared_ptr<Tracer> tracer_;
+    std::shared_ptr<ViewLoadEarlyPhaseHandler> earlyPhaseHandler_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
     std::shared_ptr<ViewLoadInstrumentationStateRepository> repository_;
     BugsnagPerformanceCrossTalkAPI *crosstalkAPI_;
     
-    std::recursive_mutex earlyPhaseMutex_;
-    std::atomic<bool> isEarlyPhase_{true};
-    NSMutableArray<ViewLoadInstrumentationState *> * _Nullable earlyStates_;
-    
     std::mutex spanMutex_;
-    
-    void markEarlyStateIfNeeded(ViewLoadInstrumentationState *state) noexcept;
-    void markEarlyState(ViewLoadInstrumentationState *state) noexcept;
-    void endEarlyPhase(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept;
     
     void endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController) noexcept;
     void endViewAppearingSpan(ViewLoadInstrumentationState *state, CFAbsoluteTime atTime) noexcept;

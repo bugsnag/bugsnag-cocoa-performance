@@ -13,6 +13,7 @@
 #import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
 #import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/ViewLoadEarlyPhaseHandlerImpl.h"
 
 using namespace bugsnag;
 
@@ -58,7 +59,8 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
     auto swizzlingHandler = std::make_shared<ViewLoadSwizzlingHandlerImpl>();
     auto spanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(tracer, spanAttributesProvider);
     auto repository = std::make_shared<ViewLoadInstrumentationStateRepositoryImpl>();
-    auto lifecycleHandler = std::make_shared<ViewLoadLifecycleHandlerImpl>(tracer,
+    auto earlyPhaseHandler = std::make_shared<ViewLoadEarlyPhaseHandlerImpl>(tracer);
+    auto lifecycleHandler = std::make_shared<ViewLoadLifecycleHandlerImpl>(earlyPhaseHandler,
                                                                            spanAttributesProvider,
                                                                            spanFactory,
                                                                            repository,

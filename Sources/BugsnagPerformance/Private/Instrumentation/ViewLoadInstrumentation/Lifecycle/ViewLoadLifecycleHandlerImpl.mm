@@ -18,7 +18,7 @@ static constexpr CGFloat kViewWillAppearPreloadedDelayThreshold = 1.0;
 
 void
 ViewLoadLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept {
-    endEarlyPhase(isEnabled, callback);
+    earlyPhaseHandler_->onEarlyPhaseEnded(isEnabled, callback);
 }
 
 void
@@ -34,7 +34,8 @@ ViewLoadLifecycleHandlerImpl::onLoadView(UIViewController *viewController,
         originalImplementation();
         return;
     }
-    markEarlyStateIfNeeded(state);
+    
+    earlyPhaseHandler_->onNewStateCreated(state);
     state.overallSpan = spanFactory_->startOverallViewLoadSpan(viewController);
     
     state.loadViewSpan = spanFactory_->startLoadViewSpan(viewController,
@@ -149,46 +150,6 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
 }
 
 #pragma mark Helpers
-
-void
-ViewLoadLifecycleHandlerImpl::markEarlyStateIfNeeded(ViewLoadInstrumentationState *state) noexcept {
-    if (isEarlyPhase_) {
-        markEarlyState(state);
-    }
-}
-
-void
-ViewLoadLifecycleHandlerImpl::markEarlyState(ViewLoadInstrumentationState *state) noexcept {
-    std::lock_guard<std::recursive_mutex> guard(earlyPhaseMutex_);
-    [earlyStates_ addObject:state];
-}
-
-void
-ViewLoadLifecycleHandlerImpl::endEarlyPhase(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept {
-    std::lock_guard<std::recursive_mutex> guard(earlyPhaseMutex_);
-    BugsnagPerformanceViewControllerInstrumentationCallback vcCallback = callback;
-    if (vcCallback == nullptr) {
-        vcCallback = ^(UIViewController *){
-            return YES;
-        };
-    }
-    for (ViewLoadInstrumentationState *state: earlyStates_) {
-        UIViewController *viewController = state.viewController;
-        if (!isEnabled || (viewController != nil && !vcCallback(viewController))) {
-            tracer_->cancelQueuedSpan(state.overallSpan);
-            tracer_->cancelQueuedSpan(state.loadViewSpan);
-            tracer_->cancelQueuedSpan(state.viewDidLoadSpan);
-            tracer_->cancelQueuedSpan(state.viewWillAppearSpan);
-            tracer_->cancelQueuedSpan(state.viewAppearingSpan);
-            tracer_->cancelQueuedSpan(state.viewDidAppearSpan);
-            tracer_->cancelQueuedSpan(state.viewWillLayoutSubviewsSpan);
-            tracer_->cancelQueuedSpan(state.subviewLayoutSpan);
-            tracer_->cancelQueuedSpan(state.viewDidLayoutSubviewsSpan);
-        }
-    }
-    earlyStates_ = nil;
-    isEarlyPhase_ = false;
-}
 
 void
 ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController) noexcept {
