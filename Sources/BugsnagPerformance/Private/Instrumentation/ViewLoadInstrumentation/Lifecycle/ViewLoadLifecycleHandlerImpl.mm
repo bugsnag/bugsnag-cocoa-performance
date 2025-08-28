@@ -90,7 +90,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
                                                                    state.overallSpan);
     originalImplementation();
     [state.viewDidAppearSpan end];
-    endOverallSpan(state, viewController);
+    endOverallSpan(state, viewController, CFAbsoluteTimeGetCurrent());
 }
 
 void
@@ -124,10 +124,15 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
     [state.viewDidLayoutSubviewsSpan end];
     auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
     
+    __block __weak UIViewController *weakViewController = viewController;
     void (^endViewAppearingSpanIfNeeded)(ViewLoadInstrumentationState *) = ^void(ViewLoadInstrumentationState *s) {
+        __strong UIViewController *strongViewController = weakViewController;
+        if (strongViewController == nil) {
+            return;
+        }
         auto overallSpan = s.overallSpan;
         if (overallSpan.state == SpanStateOpen) {
-            [overallSpan endWithAbsoluteTime:subviewsDidLayoutAtTime];
+            endOverallSpan(s, viewController, subviewsDidLayoutAtTime);
         }
         endViewAppearingSpan(s, subviewsDidLayoutAtTime);
     };
@@ -135,7 +140,6 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
     // If the overall span still hasn't ended when the ViewController is deallocated, use the time from viewDidLayoutSubviews
     state.onDealloc = endViewAppearingSpanIfNeeded;
     
-    __block __weak UIViewController *weakViewController = viewController;
     __block __weak ViewLoadInstrumentationState *weakState = state;
     // If the overall span still hasn't ended after 10 seconds, use the time from viewDidLayoutSubviews
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -152,7 +156,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
 #pragma mark Helpers
 
 void
-ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController) noexcept {
+ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController, CFAbsoluteTime atTime) noexcept {
     std::lock_guard<std::mutex> guard(spanMutex_);
     if (state.overallSpan == nil || !state.overallSpan.isValid) {
         return;
@@ -160,7 +164,7 @@ ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     [crosstalkAPI_ willEndViewLoadSpan:overallSpan viewController:viewController];
 
-    [state.overallSpan end];
+    [state.overallSpan endWithAbsoluteTime:atTime];
 }
 
 void

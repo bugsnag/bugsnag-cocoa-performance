@@ -53,7 +53,7 @@ private:
     
     std::mutex spanMutex_;
     
-    void endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController) noexcept;
+    void endOverallSpan(ViewLoadInstrumentationState *state, UIViewController *viewController, CFAbsoluteTime atTime) noexcept;
     void endViewAppearingSpan(ViewLoadInstrumentationState *state, CFAbsoluteTime atTime) noexcept;
     void endSubviewsLayoutSpan(ViewLoadInstrumentationState *state) noexcept;
     
