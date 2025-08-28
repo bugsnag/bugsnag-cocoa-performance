@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-#import "BugsnagPerformanceSpanCondition.h"
+#import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 
 IB_DESIGNABLE
 @interface BugsnagPerformanceLoadingIndicatorView : UIView

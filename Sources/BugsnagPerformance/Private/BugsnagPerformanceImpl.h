@@ -10,6 +10,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -84,7 +85,8 @@ public:
         return [spanControlProvider_ getSpanControlsWithQuery:query];
     }
 
-    NSMutableArray<BugsnagPerformanceSpanCondition *> *loadingIndicatorWasAdded(UIView *loadingViewIndicator) noexcept;
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
+    void loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
 
 private:
     std::shared_ptr<Persistence> persistence_;

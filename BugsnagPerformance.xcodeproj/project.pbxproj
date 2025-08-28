@@ -95,6 +95,7 @@
 		962CE7DD2E60987600380522 /* ViewLoadEarlyPhaseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7DC2E60986300380522 /* ViewLoadEarlyPhaseHandler.h */; };
 		962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7DE2E60987A00380522 /* ViewLoadEarlyPhaseHandlerImpl.h */; };
 		962CE7E12E60988800380522 /* ViewLoadEarlyPhaseHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7E02E60988500380522 /* ViewLoadEarlyPhaseHandlerImpl.mm */; };
+		962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */; };
 		962D7B342C7DEDD0004330E4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962D7B332C7DEDD0004330E4 /* QuartzCore.framework */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		963726BB2DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726B92DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -423,6 +424,7 @@
 		962CE7DC2E60986300380522 /* ViewLoadEarlyPhaseHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadEarlyPhaseHandler.h; sourceTree = "<group>"; };
 		962CE7DE2E60987A00380522 /* ViewLoadEarlyPhaseHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadEarlyPhaseHandlerImpl.h; sourceTree = "<group>"; };
 		962CE7E02E60988500380522 /* ViewLoadEarlyPhaseHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadEarlyPhaseHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceLoadingIndicatorView+Private.h"; sourceTree = "<group>"; };
 		962D7B332C7DEDD0004330E4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		963726B82DE8D97000C739E6 /* BugsnagPerformanceSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanControl.h; sourceTree = "<group>"; };
@@ -740,6 +742,7 @@
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
+				962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */,
 				963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */,
 				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
 				963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */,
@@ -1206,6 +1209,7 @@
 				96F1292B2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
+				962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
 				962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */,
 				964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */,

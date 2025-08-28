@@ -22,6 +22,7 @@
     if (self)
     {
         self.conditions = [NSMutableArray array];
+        self.isLoading = YES;
     }
     return self;
 }
@@ -31,33 +32,29 @@
     if (self)
     {
         self.conditions = [NSMutableArray array];
+        self.isLoading = YES;
     }
     return self;
 }
 
 - (void)dealloc {
-    [self endAllConditions];
+    [self didBecomeInactive];
 }
+
+#pragma mark Public interface
 
 - (void)finishLoading {
-    if (!self.isLoading) {
-        BSGLogDebug(@"LoadingIndicatorView is not loading, ignoring finishLoading call.");
-        return;
-    }
-
-    // TODO track starting/stopping condition so it could be done only once
+    [self didBecomeInactive];
     self.isLoading = NO;
-    BSGLogDebug(@"User finished loading, ending all conditions.");
-    [self endAllConditions];
 }
 
+#pragma mark UIView
 
 - (void)didMoveToWindow {
     [super didMoveToWindow];
 
     if (self.window == nil) {
-        // If the view is removed from the window, end all conditions.
-        [self endAllConditions];
+        [self didBecomeInactive];
     }
 }
 
@@ -65,25 +62,45 @@
     [super didMoveToSuperview];
 
     if (self.superview == nil) {
-        // If the view is removed from the superview, end all conditions.
-        [self endAllConditions];
+        [self didBecomeInactive];
         return;
     }
-
-    if (!self.isLoading) {
-        self.isLoading = YES;
-        NSMutableArray<BugsnagPerformanceSpanCondition*>* newConditions = BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasAdded(self);
-
-        [self endAllConditions];
-        self.conditions = newConditions;
-    }
+    
+    [self didBecomeActive];
 }
 
-- (void)endAllConditions {
+#pragma mark Private interface
+
+- (void)addCondition:(BugsnagPerformanceSpanCondition *)condition {
+    [self.conditions addObject:condition];
+}
+
+- (void)addConditions:(NSArray<BugsnagPerformanceSpanCondition *> *)conditions {
+    [self.conditions addObjectsFromArray:conditions];
+}
+
+- (void)closeAllConditions {
+    auto currentDate = [NSDate date];
     for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
-        [condition closeWithEndTime:[NSDate now]];
+        [condition closeWithEndTime:currentDate];
     }
     [self.conditions removeAllObjects];
+}
+
+#pragma mark Helpers
+
+- (void)didBecomeInactive {
+    if (!self.isLoading) {
+        return;
+    }
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasRemoved(self);
+}
+
+- (void)didBecomeActive {
+    if (!self.isLoading) {
+        return;
+    }
+    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasAdded(self);
 }
 
 @end

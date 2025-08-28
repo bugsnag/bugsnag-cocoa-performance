@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 #import "../State/ViewLoadInstrumentationState.h"
 #import "../System/ViewLoadSwizzlingCallbacks.h"
 
@@ -28,8 +29,8 @@ public:
                                           ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
     virtual void onViewDidLayoutSubviews(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
-    virtual void onLoadingStarted(ViewLoadInstrumentationState *state,
-                                  UIViewController *viewController) noexcept = 0;
+    virtual void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
+    virtual void onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
     virtual ~ViewLoadLifecycleHandler() {}
 };
 }

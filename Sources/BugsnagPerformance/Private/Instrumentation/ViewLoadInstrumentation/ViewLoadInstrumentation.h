@@ -36,7 +36,8 @@ public:
     void preStartSetup() noexcept {};
     void start() noexcept {}
     
-    NSMutableArray<BugsnagPerformanceSpanCondition *> * loadingIndicatorWasAdded(UIView *loadingIndicatorView) noexcept;
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept;
+    void loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept;
     
 private:
     std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;

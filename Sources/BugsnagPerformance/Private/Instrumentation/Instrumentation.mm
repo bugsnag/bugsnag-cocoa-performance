@@ -68,7 +68,3 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
     
     return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, lifecycleHandler);
 }
-
-NSMutableArray<BugsnagPerformanceSpanCondition *> *Instrumentation::loadingIndicatorWasAdded(UIView *loadingViewIndicator) noexcept {
-    return viewLoadInstrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
-}

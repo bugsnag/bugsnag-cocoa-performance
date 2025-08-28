@@ -446,8 +446,12 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
     }
 }
 
-NSMutableArray<BugsnagPerformanceSpanCondition *> * BugsnagPerformanceImpl::loadingIndicatorWasAdded(UIView *loadingViewIndicator) noexcept {
-    return this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
+void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
+    this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
+}
+
+void BugsnagPerformanceImpl::loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
+    this->instrumentation_->loadingIndicatorWasRemoved(loadingViewIndicator);
 }
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {

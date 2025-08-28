@@ -8,6 +8,8 @@
 
 #pragma once
 
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
+
 #import "../PhasedStartup.h"
 #import "AppStartupInstrumentation/AppStartupInstrumentation.h"
 #import "NetworkInstrumentation/NetworkInstrumentation.h"
@@ -47,7 +49,8 @@ public:
     CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
 
-    NSMutableArray<BugsnagPerformanceSpanCondition *> *loadingIndicatorWasAdded(UIView *loadingViewIndicator) noexcept;
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept { viewLoadInstrumentation_->loadingIndicatorWasAdded(loadingViewIndicator); }
+    void loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept { viewLoadInstrumentation_->loadingIndicatorWasRemoved(loadingViewIndicator); }
 
 private:
     Instrumentation() = delete;

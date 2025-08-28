@@ -43,8 +43,8 @@ public:
                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     void onViewDidLayoutSubviews(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
-    void onLoadingStarted(ViewLoadInstrumentationState *state,
-                          UIViewController *viewController) noexcept;
+    void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
+    void onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
     
 private:
     std::shared_ptr<ViewLoadEarlyPhaseHandler> earlyPhaseHandler_;
@@ -61,6 +61,7 @@ private:
     
     void adjustSpanIfPreloaded(BugsnagPerformanceSpan *span, ViewLoadInstrumentationState *state, NSDate *viewWillAppearStartTime, UIViewController *viewController) noexcept;
     
+    void onLoadingStarted(UIViewController *viewController) noexcept;
     ViewLoadLifecycleHandlerImpl() = delete;
 };
 }
