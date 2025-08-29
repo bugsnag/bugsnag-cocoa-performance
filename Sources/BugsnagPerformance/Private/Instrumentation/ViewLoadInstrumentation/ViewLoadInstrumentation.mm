@@ -78,10 +78,6 @@ ViewLoadInstrumentation::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndic
     lifecycleHandler_->onLoadingIndicatorWasAdded(loadingIndicatorView);
 }
 
-void
-ViewLoadInstrumentation::loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept {
-    lifecycleHandler_->onLoadingIndicatorWasRemoved(loadingIndicatorView);
-}
 
 #pragma mark Helpers
 

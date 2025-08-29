@@ -30,7 +30,6 @@ public:
     virtual void onViewDidLayoutSubviews(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
     virtual void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
-    virtual void onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
     virtual ~ViewLoadLifecycleHandler() {}
 };
 }

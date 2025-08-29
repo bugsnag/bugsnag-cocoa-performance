@@ -50,7 +50,6 @@ public:
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
 
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept { viewLoadInstrumentation_->loadingIndicatorWasAdded(loadingViewIndicator); }
-    void loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept { viewLoadInstrumentation_->loadingIndicatorWasRemoved(loadingViewIndicator); }
 
 private:
     Instrumentation() = delete;

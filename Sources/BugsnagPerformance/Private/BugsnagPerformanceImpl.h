@@ -86,7 +86,6 @@ public:
     }
 
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
-    void loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
 
 private:
     std::shared_ptr<Persistence> persistence_;

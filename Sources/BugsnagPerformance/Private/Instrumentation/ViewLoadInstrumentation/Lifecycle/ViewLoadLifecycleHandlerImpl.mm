@@ -43,6 +43,7 @@ ViewLoadLifecycleHandlerImpl::onLoadView(UIViewController *viewController,
                                                          state.overallSpan);
     originalImplementation();
     [state.loadViewSpan end];
+    updateViewIfNeeded(state, viewController);
 }
 
 void
@@ -58,6 +59,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidLoad(UIViewController *viewController,
                                                                state.overallSpan);
     originalImplementation();
     [state.viewDidLoadSpan end];
+    updateViewIfNeeded(state, viewController);
 }
 
 void
@@ -74,6 +76,7 @@ ViewLoadLifecycleHandlerImpl::onViewWillAppear(UIViewController *viewController,
                                                                      state.overallSpan);
     originalImplementation();
     [state.viewWillAppearSpan end];
+    updateViewIfNeeded(state, viewController);
     state.viewAppearingSpan = spanFactory_->startViewAppearingSpan(viewController,
                                                                    state.overallSpan);
 }
@@ -91,6 +94,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
                                                                    state.overallSpan);
     originalImplementation();
     [state.viewDidAppearSpan end];
+    updateViewIfNeeded(state, viewController);
     endOverallSpan(state, viewController, CFAbsoluteTimeGetCurrent());
 }
 
@@ -106,6 +110,7 @@ ViewLoadLifecycleHandlerImpl::onViewWillLayoutSubviews(UIViewController *viewCon
                                                                                      state.overallSpan);
     originalImplementation();
     [state.viewWillLayoutSubviewsSpan end];
+    updateViewIfNeeded(state, viewController);
     state.subviewLayoutSpan = spanFactory_->startSubviewsLayoutSpan(viewController,
                                                                     state.overallSpan);
 }
@@ -123,6 +128,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
                                                                                    state.overallSpan);
     originalImplementation();
     [state.viewDidLayoutSubviewsSpan end];
+    updateViewIfNeeded(state, viewController);
     auto subviewsDidLayoutAtTime = CFAbsoluteTimeGetCurrent();
     
     __block __weak UIViewController *weakViewController = viewController;
@@ -159,38 +165,16 @@ ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasAdded(BugsnagPerformanceLoadi
     if (loadingIndicator == nil) {
         return;
     }
-//    NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
-//
-//    // Traverse the view hierarchy to find all affected superviews
-//    UIView *superview = loadingIndicatorView.superview;
-//    while (superview != nil) {
-//        ViewLoadInstrumentationState *associatedState = repository_->getInstrumentationState(superview);
-//        __strong UIViewController *viewController = associatedState.viewController;
-//        if (associatedState != nil &&
-//            associatedState.overallSpan.isValid &&
-//            viewController != nil) {
-//            lifecycleHandler_->onLoadingStarted(viewController);
-//
-//            // Block the span
-//            __strong BugsnagPerformanceSpan *loadingSpan = associatedState.loadingPhaseSpan;
-//            if (loadingSpan != nil) {
-//                BugsnagPerformanceSpanCondition* condition = [loadingSpan blockWithTimeout:0.5];
-//                [condition upgrade];
-//                [newConditions addObject:condition];
-//            }
-//        }
-//        superview = superview.superview;
-//    }
-//
-//    return newConditions;
+    loadingIndicatorsHandler_->onLoadingIndicatorWasAdded(loadingIndicator);
 }
 
-void
-ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
-    if (loadingIndicator == nil) {
-        return;
-    }
-}
+//void
+//ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
+//    if (loadingIndicator == nil) {
+//        return;
+//    }
+//    loadingIndicatorsHandler_->onLoadingIndicatorWasRemoved(loadingIndicator);
+//}
 
 #pragma mark Helpers
 
@@ -251,17 +235,43 @@ ViewLoadLifecycleHandlerImpl::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
 }
 
 void
-ViewLoadLifecycleHandlerImpl::onLoadingStarted(UIViewController *viewController) noexcept {
-    auto state = repository_->getInstrumentationState(viewController);
-    if (state.overallSpan == nil || state.loadingPhaseSpan != nil) {
+ViewLoadLifecycleHandlerImpl::updateViewIfNeeded(ViewLoadInstrumentationState *state, UIViewController *viewController) noexcept {
+    if (state == nil || viewController == nil) {
         return;
     }
-    BugsnagPerformanceSpanCondition *condition = [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
-    [condition upgrade];
 
-    state.loadingPhaseSpan = spanFactory_->startLoadingSpan(viewController,
-                                                            state.overallSpan,
-                                                            @[condition]);
-    [state.loadingPhaseSpan blockWithTimeout:kLoadingBlockTimeout];
-    [state.loadingPhaseSpan end];
+    UIView *currentView = state.view;
+    if (currentView != viewController.view) {
+        if (currentView != nil) {
+            repository_->setInstrumentationState(currentView, nil);
+        }
+
+        state.view = viewController.view;
+        repository_->setInstrumentationState(viewController.view, state);
+        loadingIndicatorsHandler_->onViewControllerUpdatedView(viewController);
+    }
+}
+
+BugsnagPerformanceSpanCondition *
+ViewLoadLifecycleHandlerImpl::onLoadingStarted(UIViewController *viewController) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
+    if (state.overallSpan == nil) {
+        return nil;
+    }
+    bool spanWasCreated = false;
+    if (state.loadingPhaseSpan == nil) {
+        BugsnagPerformanceSpanCondition *condition = [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
+        [condition upgrade];
+
+        state.loadingPhaseSpan = spanFactory_->startLoadingSpan(viewController,
+                                                                state.overallSpan,
+                                                                @[condition]);
+        spanWasCreated = true;
+    }
+    auto loadingCondition = [state.loadingPhaseSpan blockWithTimeout:kLoadingBlockTimeout];
+    [loadingCondition upgrade];
+    if (spanWasCreated) {
+        [state.loadingPhaseSpan end];
+    }
+    return loadingCondition;
 }

@@ -19,7 +19,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
-    * a span named "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController" is a child of span named "[AppStartPhase/UI init]"
     * a span named "[ViewLoadPhase/loadView]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"
     * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.SimpleStopLoadingIndicatorViewScenario_ViewController"

@@ -93,7 +93,7 @@
     if (!self.isLoading) {
         return;
     }
-    BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->loadingIndicatorWasRemoved(self);
+    [self closeAllConditions];
 }
 
 - (void)didBecomeActive {

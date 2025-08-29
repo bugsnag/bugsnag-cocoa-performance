@@ -450,9 +450,6 @@ void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingI
     this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
 }
 
-void BugsnagPerformanceImpl::loadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
-    this->instrumentation_->loadingIndicatorWasRemoved(loadingViewIndicator);
-}
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
