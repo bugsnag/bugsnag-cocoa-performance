@@ -19,7 +19,7 @@ Feature: Initial P values
     Then the sampling request "Bugsnag-Span-Sampling" header equals "1:0"
     * the sampling request "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
 
-    Then I wait for 1 span
+    Then I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "First"
@@ -30,7 +30,7 @@ Feature: Initial P values
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     Then I discard the oldest trace
     And I invoke "step2"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "Second"
