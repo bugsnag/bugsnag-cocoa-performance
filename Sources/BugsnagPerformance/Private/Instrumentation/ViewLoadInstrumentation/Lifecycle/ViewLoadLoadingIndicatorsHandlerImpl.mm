@@ -40,7 +40,7 @@ NSArray<BugsnagPerformanceSpanCondition *> *
 ViewLoadLoadingIndicatorsHandlerImpl::createConditions(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
     NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
 
-    UIView *view = loadingIndicator.superview;
+    UIView *view = loadingIndicator;
     while (view != nil) {
         ViewLoadInstrumentationState *state = repository_->getInstrumentationState(view);
         __strong UIViewController *viewController = state.viewController;
@@ -50,7 +50,9 @@ ViewLoadLoadingIndicatorsHandlerImpl::createConditions(BugsnagPerformanceLoading
             
             if (onLoadingCallback) {
                 auto condition = onLoadingCallback(viewController);
-                [newConditions addObject:condition];
+                if (condition != nil) {
+                    [newConditions addObject:condition];
+                }
             }
         }
         view = view.superview;
@@ -62,8 +64,10 @@ void
 ViewLoadLoadingIndicatorsHandlerImpl::searchForLoadingIndicators(UIView *view) noexcept {
     if ([view isKindOfClass:[BugsnagPerformanceLoadingIndicatorView class]]) {
         auto loadingIndicator = (BugsnagPerformanceLoadingIndicatorView *)view;
-        auto newConditions = createConditions(loadingIndicator);
-        updateIndicatorsConditions(loadingIndicator, newConditions);
+        if (loadingIndicator.isLoading) {
+            auto newConditions = createConditions(loadingIndicator);
+            updateIndicatorsConditions(loadingIndicator, newConditions);
+        }
     }
     for (UIView *subview in view.subviews) {
         searchForLoadingIndicators(subview);

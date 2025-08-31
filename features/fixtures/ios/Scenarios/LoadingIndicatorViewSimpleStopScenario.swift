@@ -1,5 +1,5 @@
 //
-//  SimpleStopLoadingIndicatorViewScenario.swift
+//  LoadingIndicatorViewSimpleStopScenario.swift
 //  Fixture
 //
 //  Created by Robert Bartoszewski on 27/08/2025.
@@ -10,9 +10,9 @@ import BugsnagPerformance
 import UIKit
 
 @objcMembers
-class SimpleStopLoadingIndicatorViewScenario: Scenario {
+class LoadingIndicatorViewSimpleStopScenario: Scenario {
     
-    var viewController: SimpleStopLoadingIndicatorViewScenario_ViewController?
+    var viewController: LoadingIndicatorViewSimpleStopScenario_ViewController?
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
@@ -25,23 +25,22 @@ class SimpleStopLoadingIndicatorViewScenario: Scenario {
     }
 
     override func run() {
-        viewController = SimpleStopLoadingIndicatorViewScenario_ViewController()
+        viewController = LoadingIndicatorViewSimpleStopScenario_ViewController()
         UIApplication.shared.windows[0].rootViewController!.present(
             viewController!, animated: true)
     }
 }
 
-class SimpleStopLoadingIndicatorViewScenario_ViewController: UIViewController {
+class LoadingIndicatorViewSimpleStopScenario_ViewController: UIViewController {
     
-    var loadingIndicator: BugsnagPerformanceLoadingIndicatorView?
+    var loadingIndicator: BugsnagPerformanceLoadingIndicatorView!
 
     override func loadView() {
-        self.loadingIndicator = BugsnagPerformanceLoadingIndicatorView()
-        view = UIView()
-        view.addSubview(loadingIndicator!)
+        loadingIndicator = BugsnagPerformanceLoadingIndicatorView()
+        view = loadingIndicator
     }
     
     func finishLoading() {
-        loadingIndicator?.finishLoading()
+        loadingIndicator.finishLoading()
     }
 }
