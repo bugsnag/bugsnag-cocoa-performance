@@ -9,8 +9,8 @@ Changelog
 
 ### Bug fixes
 
-* Fixed issue where some Network spans were categorized as custom.
-  [448](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/448)
+* Fixed an issue preventing spans that have ended but are still blocked to be blocked with another condition.
+  [471](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/471)
 
 ## 1.14.0 (2025-06-16)
 
