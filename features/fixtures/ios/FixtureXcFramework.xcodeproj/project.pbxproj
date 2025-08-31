@@ -61,10 +61,10 @@
 		55A1B7CE2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
-		962CE7FD2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */; };
 		962CE7F62E62242500380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7F42E62242500380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */; };
 		962CE7F82E62242500380522 /* LoadingIndicatorViewSimpleStopScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7F52E62242500380522 /* LoadingIndicatorViewSimpleStopScenario.swift */; };
-		963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */; };
+		962CE7FD2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */; };
+		962CE8012E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8002E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
 		9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */; };
 		966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */; };
@@ -181,10 +181,10 @@
 		55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
-		962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanConditionsBlockedSpanScenario.swift; sourceTree = "<group>"; };
 		962CE7F42E62242500380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewSimpleRemoveScenario.swift; sourceTree = "<group>"; };
 		962CE7F52E62242500380522 /* LoadingIndicatorViewSimpleStopScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewSimpleStopScenario.swift; sourceTree = "<group>"; };
-		963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleStopLoadingIndicatorViewScenario.swift; sourceTree = "<group>"; };
+		962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanConditionsBlockedSpanScenario.swift; sourceTree = "<group>"; };
+		962CE8002E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewNestedViewStopScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
 		9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNavigationViewLoadScenario.swift; sourceTree = "<group>"; };
 		966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsFronzenFramesScenario.swift; sourceTree = "<group>"; };
@@ -353,6 +353,7 @@
 				0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */,
 				0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
+				962CE8002E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */,
 				962CE7F42E62242500380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */,
 				962CE7F52E62242500380522 /* LoadingIndicatorViewSimpleStopScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
@@ -385,7 +386,6 @@
 				094F41E52C4A84D6008162A4 /* SetAttributesScenario.swift */,
 				09E0455E2C94662B003882D3 /* SetAttributesWithLimitsScenario.swift */,
 				962CE7FC2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift */,
-				963829482E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift */,
 				96986DA22D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift */,
 				96986DA12D506B8F00A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986DA32D506B8F00A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
@@ -526,7 +526,6 @@
 				96986DA52D506B8F00A44C34 /* SpanConditionsConditionTimedOutScenario.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,
 				DA58B7D82DF97D7200CB80A4 /* PluginInstallErrorScenario.swift in Sources */,
-				963829492E5F341F00404F3A /* SimpleStopLoadingIndicatorViewScenario.swift in Sources */,
 				0983A1792B14B20C00DDF4FF /* AutoInstrumentSwiftUIScenario.swift in Sources */,
 				CBF62109291A4F47004BEE0B /* RetryScenario.swift in Sources */,
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
@@ -572,6 +571,7 @@
 				098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
+				962CE8012E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */,
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,
 				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,
 			);

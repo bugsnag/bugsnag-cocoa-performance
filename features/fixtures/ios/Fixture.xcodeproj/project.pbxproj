@@ -61,9 +61,10 @@
 		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
-		962CE7FB2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FA2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift */; };
 		962CE7EE2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7ED2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift */; };
 		962CE7F12E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7EC2E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */; };
+		962CE7FB2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FA2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift */; };
+		962CE7FF2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7FE2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */; };
 		964735CB2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
 		964B785D2D504D4800FF077D /* SpanConditionsConditionTimedOutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964B785C2D504D4800FF077D /* SpanConditionsConditionTimedOutScenario.swift */; };
 		9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */; };
@@ -165,9 +166,10 @@
 		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
-		962CE7FA2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanConditionsBlockedSpanScenario.swift; sourceTree = "<group>"; };
 		962CE7EC2E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewSimpleRemoveScenario.swift; sourceTree = "<group>"; };
 		962CE7ED2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewSimpleStopScenario.swift; sourceTree = "<group>"; };
+		962CE7FA2E64F0BD00380522 /* SpanConditionsBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanConditionsBlockedSpanScenario.swift; sourceTree = "<group>"; };
+		962CE7FE2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewNestedViewStopScenario.swift; sourceTree = "<group>"; };
 		964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
 		964B785C2D504D4800FF077D /* SpanConditionsConditionTimedOutScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsConditionTimedOutScenario.swift; sourceTree = "<group>"; };
 		9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentTabViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				0988B5382CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift */,
 				0988B5362CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift */,
 				CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */,
+				962CE7FE2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift */,
 				962CE7EC2E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */,
 				962CE7ED2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift */,
 				09DA59A42A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift */,
@@ -505,6 +508,7 @@
 				966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */,
 				09E9BDAF2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift in Sources */,
 				099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */,
+				962CE7FF2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */,
 				097FFC0B2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift in Sources */,
 				01FE4DAB28E1AEBD00D1F239 /* SceneDelegate.swift in Sources */,
 				960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */,

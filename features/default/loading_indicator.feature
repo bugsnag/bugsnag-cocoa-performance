@@ -86,3 +86,172 @@ Feature: LoadingIndicator view to mark data loading phase
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
+  Scenario: LoadingIndicatorViewNestedViewStopScenario - stop inner, outer, child
+    Given I run "LoadingIndicatorViewNestedViewStopScenario"
+    And I wait for 25 spans
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingParentInner"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingParentOuter"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingChild"
+    And I wait for 29 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 3.0
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
+  Scenario: LoadingIndicatorViewNestedViewStopScenario - stop child, inner, outer
+    Given I run "LoadingIndicatorViewNestedViewStopScenario"
+    And I wait for 25 spans
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingChild"
+    And I wait for 27 spans
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    And I invoke "finishLoadingParentInner"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    And I invoke "finishLoadingParentOuter"
+    And I wait for 29 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 1.0
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
+  Scenario: LoadingIndicatorViewNestedViewStopScenario - stop outer, child, inner
+    Given I run "LoadingIndicatorViewNestedViewStopScenario"
+    And I wait for 25 spans
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingParentOuter"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I invoke "finishLoadingChild"
+    And I wait for 27 spans
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    And I wait for 1 second
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    And I invoke "finishLoadingParentInner"
+    And I wait for 29 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
+    * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 2.0
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
