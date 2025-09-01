@@ -214,7 +214,7 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
     if(span == nil || timeout <= 0) {
         return nil;
     }
-    if (span.state != SpanStateOpen) {
+    if (span.state != SpanStateOpen && !span.isBlocked) {
         BSGLogDebug(@"Tracer::onSpanBlocked: span %@ has state %d, so ignoring", span.name, span.state);
         return nil;
     }

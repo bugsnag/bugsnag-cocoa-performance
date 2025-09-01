@@ -504,6 +504,21 @@ Feature: Manual creation of spans
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
 
+  Scenario: Span Conditions - blocking blocked ended span
+    Given I run "SpanConditionsBlockedSpanScenario"
+    And I wait for 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan1"
+    * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan2"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsBlockedSpanScenarioSpan1" ended after a span named "SpanConditionsBlockedSpanScenarioSpan2"
+
   Scenario: Manually start and end a span with remote parent context
     Given I run "ManualSpanWithRemoteContextParentScenario"
     And I wait for 1 span
