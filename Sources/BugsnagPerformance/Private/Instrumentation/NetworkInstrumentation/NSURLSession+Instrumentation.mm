@@ -6,9 +6,9 @@
 //
 
 #import "NSURLSession+Instrumentation.h"
-#import "BSGURLSessionPerformanceProxy.h"
+#import "System/Proxy/BSGURLSessionPerformanceProxy.h"
 #import "../../Swizzle.h"
-#import "BSGPerformanceSharedSessionProxy.h"
+#import "System/Proxy/BSGPerformanceSharedSessionProxy.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;

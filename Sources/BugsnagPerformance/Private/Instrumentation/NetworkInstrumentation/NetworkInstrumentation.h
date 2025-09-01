@@ -11,16 +11,11 @@
 #import "../../Sampler.h"
 #import "../../NetworkHeaderInjector.h"
 #import "State/NetworkInstrumentationStateRepository.h"
+#import "System/BSGURLSessionPerformanceDelegate.h"
 #import "NSURLSessionTask+Instrumentation.h"
 #import "NetworkCommon.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-@interface BSGURLSessionPerformanceDelegate : NSObject
-- (instancetype) initWithTracer:(std::shared_ptr<Tracer>)tracer
-         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider
-                     repository:(std::shared_ptr<NetworkInstrumentationStateRepository>)repository;
-@end
 
 namespace bugsnag {
 class Tracer;

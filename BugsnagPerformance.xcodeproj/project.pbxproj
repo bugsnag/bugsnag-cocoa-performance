@@ -98,6 +98,8 @@
 		962CE8082E651A0100380522 /* NetworkInstrumentationStateRepository.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8072E6519F800380522 /* NetworkInstrumentationStateRepository.h */; };
 		962CE80A2E651A0C00380522 /* NetworkInstrumentationStateRepositoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8092E651A0700380522 /* NetworkInstrumentationStateRepositoryImpl.h */; };
 		962CE80C2E651A1600380522 /* NetworkInstrumentationStateRepositoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE80B2E651A1300380522 /* NetworkInstrumentationStateRepositoryImpl.mm */; };
+		962CE80F2E6521F800380522 /* BSGURLSessionPerformanceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */; };
+		962CE8112E65224300380522 /* BSGURLSessionPerformanceDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */; };
 		962D7B342C7DEDD0004330E4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962D7B332C7DEDD0004330E4 /* QuartzCore.framework */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		963726BB2DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726B92DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -429,6 +431,8 @@
 		962CE8072E6519F800380522 /* NetworkInstrumentationStateRepository.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationStateRepository.h; sourceTree = "<group>"; };
 		962CE8092E651A0700380522 /* NetworkInstrumentationStateRepositoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationStateRepositoryImpl.h; sourceTree = "<group>"; };
 		962CE80B2E651A1300380522 /* NetworkInstrumentationStateRepositoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkInstrumentationStateRepositoryImpl.mm; sourceTree = "<group>"; };
+		962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceDelegate.h; sourceTree = "<group>"; };
+		962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGURLSessionPerformanceDelegate.mm; sourceTree = "<group>"; };
 		962D7B332C7DEDD0004330E4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		963726B82DE8D97000C739E6 /* BugsnagPerformanceSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanControl.h; sourceTree = "<group>"; };
@@ -965,6 +969,27 @@
 			path = State;
 			sourceTree = "<group>";
 		};
+		962CE80D2E6521DD00380522 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */,
+				962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */,
+				962CE8122E6523A600380522 /* Proxy */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		962CE8122E6523A600380522 /* Proxy */ = {
+			isa = PBXGroup;
+			children = (
+				968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */,
+				968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */,
+				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
+				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
+			);
+			path = Proxy;
+			sourceTree = "<group>";
+		};
 		963726C42DEAB14D00C739E6 /* SpanControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1137,18 +1162,15 @@
 		CB34771929068C350033759C /* NetworkInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
-				962CE8022E6519C500380522 /* State */,
+				CBA22C982A03EA300066A2C1 /* NetworkCommon.h */,
 				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
 				0122C22A29019770002D243C /* NetworkInstrumentation.mm */,
-				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
-				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
-				968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */,
-				968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */,
-				CBA22C982A03EA300066A2C1 /* NetworkCommon.h */,
 				CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */,
 				CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */,
 				CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */,
 				CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */,
+				962CE8022E6519C500380522 /* State */,
+				962CE80D2E6521DD00380522 /* System */,
 			);
 			path = NetworkInstrumentation;
 			sourceTree = "<group>";
@@ -1273,6 +1295,7 @@
 				968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
+				962CE80F2E6521F800380522 /* BSGURLSessionPerformanceDelegate.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
 				963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */,
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
@@ -1626,6 +1649,7 @@
 				9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */,
 				963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
+				962CE8112E65224300380522 /* BSGURLSessionPerformanceDelegate.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
 				9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */,
