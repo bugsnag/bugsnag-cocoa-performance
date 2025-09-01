@@ -12,32 +12,27 @@
 #import "../../BugsnagPerformanceSpan+Private.h"
 #import "../../SpanAttributesProvider.h"
 
-#import <objc/runtime.h>
-
 using namespace bugsnag;
-
-static const int associatedSpan = 0;
-static const void *associatedNetworkSpanKey = &associatedSpan;
 
 @interface BSGURLSessionPerformanceDelegate () <NSURLSessionTaskDelegate, BSGPhasedStartup>
 
 @property(readwrite,nonatomic) BOOL isEnabled;
 @property(readonly,nonatomic) std::shared_ptr<Tracer> tracer;
 @property(readonly,nonatomic) std::shared_ptr<SpanAttributesProvider> spanAttributesProvider;
+@property(readonly,nonatomic) std::shared_ptr<NetworkInstrumentationStateRepository> repository;
 @property(readwrite,strong,nonatomic) NSString *baseEndpointStr;
-
-- (instancetype) initWithTracer:(std::shared_ptr<Tracer>)tracer
-         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider;
 
 @end
 
 @implementation BSGURLSessionPerformanceDelegate
 
 - (instancetype) initWithTracer:(std::shared_ptr<Tracer>)tracer
-         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider {
+         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider
+                     repository:(std::shared_ptr<NetworkInstrumentationStateRepository>)repository {
     if ((self = [super init]) != nil) {
         _tracer = tracer;
         _spanAttributesProvider = spanAttributesProvider;
+        _repository = repository;
     }
     return self;
 }
@@ -91,7 +86,7 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         return;
     }
 
-    auto span = (BugsnagPerformanceSpan *)objc_getAssociatedObject(task, associatedNetworkSpanKey);
+    auto span = self.repository->getInstrumentationState(task).overallSpan;
     if (!span) {
         BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: No associated task found", session.class, task.class, request.URL);
         return;
@@ -99,27 +94,12 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
 
     BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Ending span with time %@", session.class, task.class, request.URL, metrics.taskInterval.endDate);
 
-    objc_setAssociatedObject(self, associatedNetworkSpanKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     [span internalSetMultipleAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
     [span endWithEndTime:metrics.taskInterval.endDate];
+    self.repository->setInstrumentationState(task, nil);
 }
 
 @end
-
-NetworkInstrumentation::NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                               std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-: isEnabled_(true)
-, isEarlySpansPhase_(true)
-, tracer_(tracer)
-, spanAttributesProvider_(spanAttributesProvider)
-, networkHeaderInjector_(networkHeaderInjector)
-, earlySpans_([NSMutableArray new])
-, delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer_
-                                              spanAttributesProvider:spanAttributesProvider_])
-, checkIsEnabled_(^() { return isEnabled_; })
-, onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
-{}
 
 void NetworkInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     [delegate_ earlyConfigure:config];
@@ -293,8 +273,9 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
         }
         if (span != nil) {
-            objc_setAssociatedObject(task, associatedNetworkSpanKey, span,
-                                     OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            auto state = [NetworkInstrumentationState new];
+            state.overallSpan = span;
+            repository_->setInstrumentationState(task, state);
             if (isEarlySpansPhase_) {
                 markEarlySpan(span);
             }

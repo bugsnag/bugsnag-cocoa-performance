@@ -19,6 +19,10 @@
 std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
                                                                        std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
 
+std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<Tracer> tracer,
+                                                                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
+
 namespace bugsnag {
 
 class Instrumentation: public PhasedStartup {
@@ -28,9 +32,7 @@ public:
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(std::make_shared<AppStartupInstrumentation>(std::make_shared<AppStartupLifecycleHandlerImpl>(std::make_shared<AppStartupSpanFactoryImpl>(tracer, spanAttributesProvider), spanAttributesProvider, tracer, std::make_shared<AppStartupInstrumentationSystemUtilsImpl>(), [BugsnagPerformanceCrossTalkAPI sharedInstance]), std::make_shared<AppStartupInstrumentationSystemUtilsImpl>()))
     , viewLoadInstrumentation_(createViewLoadInstrumentation(tracer, spanAttributesProvider))
-    , networkInstrumentation_(std::make_shared<NetworkInstrumentation>(tracer,
-                                                                       spanAttributesProvider,
-                                                                       networkHeaderInjector))
+    , networkInstrumentation_(createNetworkInstrumentation(tracer, spanAttributesProvider, networkHeaderInjector))
     {
         tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
     }

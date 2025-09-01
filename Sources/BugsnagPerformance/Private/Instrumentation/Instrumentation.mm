@@ -14,6 +14,7 @@
 #import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadEarlyPhaseHandlerImpl.h"
+#import "NetworkInstrumentation/State/NetworkInstrumentationStateRepositoryImpl.h"
 
 using namespace bugsnag;
 
@@ -67,4 +68,14 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
                                                                            [BugsnagPerformanceCrossTalkAPI sharedInstance]);
     
     return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, lifecycleHandler);
+}
+
+std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<Tracer> tracer,
+                                                                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) {
+    auto repository = std::make_shared<NetworkInstrumentationStateRepositoryImpl>();
+    return std::make_shared<NetworkInstrumentation>(tracer,
+                                                    spanAttributesProvider,
+                                                    networkHeaderInjector,
+                                                    repository);
 }

@@ -10,12 +10,16 @@
 #import "../../PhasedStartup.h"
 #import "../../Sampler.h"
 #import "../../NetworkHeaderInjector.h"
+#import "State/NetworkInstrumentationStateRepository.h"
 #import "NSURLSessionTask+Instrumentation.h"
 #import "NetworkCommon.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGURLSessionPerformanceDelegate : NSObject
+- (instancetype) initWithTracer:(std::shared_ptr<Tracer>)tracer
+         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider
+                     repository:(std::shared_ptr<NetworkInstrumentationStateRepository>)repository;
 @end
 
 namespace bugsnag {
@@ -25,7 +29,22 @@ class NetworkInstrumentation: public PhasedStartup {
 public:
     NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                           std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept;
+                           std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
+                           std::shared_ptr<NetworkInstrumentationStateRepository> repository) noexcept
+    : isEnabled_(true)
+    , isEarlySpansPhase_(true)
+    , tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider)
+    , networkHeaderInjector_(networkHeaderInjector)
+    , repository_(repository)
+    , earlySpans_([NSMutableArray new])
+    , delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer_
+                                                  spanAttributesProvider:spanAttributesProvider_
+                                                              repository:repository])
+    , checkIsEnabled_(^() { return isEnabled_; })
+    , onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
+    {}
+    
     virtual ~NetworkInstrumentation() {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
@@ -43,6 +62,7 @@ private:
     bool isEnabled_{true};
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
     BSGURLSessionPerformanceDelegate * _Nullable delegate_;
     BSGSessionTaskResumeCallback onSessionTaskResume_;
     BSGIsEnabledCallback checkIsEnabled_;
