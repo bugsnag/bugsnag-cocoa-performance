@@ -12,8 +12,8 @@
 #import "../../NetworkHeaderInjector.h"
 #import "State/NetworkInstrumentationStateRepository.h"
 #import "System/BSGURLSessionPerformanceDelegate.h"
-#import "NSURLSessionTask+Instrumentation.h"
-#import "NetworkCommon.h"
+#import "System/NetworkInstrumentationSystemUtils.h"
+#import "System/NetworkSwizzlingHandler.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,17 +25,20 @@ public:
     NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                            std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
-                           std::shared_ptr<NetworkInstrumentationStateRepository> repository) noexcept
-    : isEnabled_(true)
-    , isEarlySpansPhase_(true)
-    , tracer_(tracer)
+                           std::shared_ptr<NetworkInstrumentationStateRepository> repository,
+                           std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
+                           std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler,
+                           BSGURLSessionPerformanceDelegate *delegate) noexcept
+    : tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
     , networkHeaderInjector_(networkHeaderInjector)
     , repository_(repository)
+    , systemUtils_(systemUtils)
+    , swizzlingHandler_(swizzlingHandler)
+    , delegate_(delegate)
+    , isEnabled_(true)
+    , isEarlySpansPhase_(true)
     , earlySpans_([NSMutableArray new])
-    , delegate_([[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer_
-                                                  spanAttributesProvider:spanAttributesProvider_
-                                                              repository:repository])
     , checkIsEnabled_(^() { return isEnabled_; })
     , onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
     {}
@@ -58,6 +61,8 @@ private:
     std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
+    std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils_;
+    std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler_;
     BSGURLSessionPerformanceDelegate * _Nullable delegate_;
     BSGSessionTaskResumeCallback onSessionTaskResume_;
     BSGIsEnabledCallback checkIsEnabled_;

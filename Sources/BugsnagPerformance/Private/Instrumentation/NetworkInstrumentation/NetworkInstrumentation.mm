@@ -6,8 +6,6 @@
 //
 
 #import "NetworkInstrumentation.h"
-#import "NSURLSession+Instrumentation.h"
-#import "NSURLSessionTask+Instrumentation.h"
 
 #import "../../BugsnagPerformanceSpan+Private.h"
 #import "../../SpanAttributesProvider.h"
@@ -27,8 +25,15 @@ void NetworkInstrumentation::earlySetup() noexcept {
         return;
     }
 
-    bsg_installNSURLSessionPerformance(delegate_, checkIsEnabled_);
-    bsg_installNSURLSessionTaskPerformance(onSessionTaskResume_);
+    swizzlingHandler_->instrumentSession(delegate_, checkIsEnabled_);
+    
+    // We must do this in a separate thread to avoid a potential mutex deadlock with
+    // Apple's com.apple.network.connections queue during early app startup.
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+        for (Class cls in systemUtils_->taskClassesToInstrument()) {
+            swizzlingHandler_->instrumentTask(cls, onSessionTaskResume_);
+        }
+    });
 }
 
 void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {

@@ -15,6 +15,9 @@
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadEarlyPhaseHandlerImpl.h"
 #import "NetworkInstrumentation/State/NetworkInstrumentationStateRepositoryImpl.h"
+#import "NetworkInstrumentation/System/BSGURLSessionPerformanceDelegate.h"
+#import "NetworkInstrumentation/System/NetworkInstrumentationSystemUtilsImpl.h"
+#import "NetworkInstrumentation/System/NetworkSwizzlingHandlerImpl.h"
 
 using namespace bugsnag;
 
@@ -74,8 +77,16 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
                                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                                                      std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) {
     auto repository = std::make_shared<NetworkInstrumentationStateRepositoryImpl>();
+    auto systemUtils = std::make_shared<NetworkInstrumentationSystemUtilsImpl>();
+    auto swizzlingHandler = std::make_shared<NetworkSwizzlingHandlerImpl>();
+    auto delegate = [[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer
+                                                      spanAttributesProvider:spanAttributesProvider
+                                                                  repository:repository];
     return std::make_shared<NetworkInstrumentation>(tracer,
                                                     spanAttributesProvider,
                                                     networkHeaderInjector,
-                                                    repository);
+                                                    repository,
+                                                    systemUtils,
+                                                    swizzlingHandler,
+                                                    delegate);
 }
