@@ -16,7 +16,9 @@ namespace bugsnag {
 class ViewLoadSpanFactoryImpl: public ViewLoadSpanFactory {
 public:
     ViewLoadSpanFactoryImpl(std::shared_ptr<Tracer> tracer,
-                              std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept;
+                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    : tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider) {}
     
     BugsnagPerformanceSpan *startOverallViewLoadSpan(UIViewController *viewController) noexcept;
     BugsnagPerformanceSpan *startPreloadedPresentingSpan(UIViewController *viewController) noexcept;

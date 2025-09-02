@@ -10,6 +10,7 @@
 #import "NetworkEarlyPhaseHandler.h"
 #import "../../../SpanAttributesProvider.h"
 #import "../State/NetworkInstrumentationStateRepository.h"
+#import "../SpanFactory/NetworkSpanFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,18 +18,21 @@ namespace bugsnag {
 
 class NetworkLifecycleHandlerImpl: public NetworkLifecycleHandler {
 public:
-    NetworkLifecycleHandlerImpl(std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
-                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+    NetworkLifecycleHandlerImpl(std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                                std::shared_ptr<NetworkSpanFactory> spanFactory,
+                                std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
                                 std::shared_ptr<NetworkInstrumentationStateRepository> repository) noexcept
-    : earlyPhaseHandler_(earlyPhaseHandler)
-    , spanAttributesProvider_(spanAttributesProvider)
+    : spanAttributesProvider_(spanAttributesProvider)
+    , spanFactory_(spanFactory)
+    , earlyPhaseHandler_(earlyPhaseHandler)
     , repository_(repository) {}
     
     void onInstrumentationConfigured(bool isEnabled, BugsnagPerformanceNetworkRequestCallback callback) noexcept;
     
 private:
-    std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::shared_ptr<NetworkSpanFactory> spanFactory_;
+    std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler_;
     std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
     
     void updateStateInfo(NetworkInstrumentationState *state,

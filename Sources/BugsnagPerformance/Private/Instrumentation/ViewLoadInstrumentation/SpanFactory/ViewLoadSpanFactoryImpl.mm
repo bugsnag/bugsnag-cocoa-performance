@@ -12,11 +12,6 @@
 
 using namespace bugsnag;
 
-ViewLoadSpanFactoryImpl::ViewLoadSpanFactoryImpl(std::shared_ptr<Tracer> tracer,
-                                                 std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-: tracer_(tracer)
-, spanAttributesProvider_(spanAttributesProvider) {}
-
 BugsnagPerformanceSpan *
 ViewLoadSpanFactoryImpl::startOverallViewLoadSpan(UIViewController *viewController) noexcept {
     auto viewType = BugsnagPerformanceViewTypeUIKit;
