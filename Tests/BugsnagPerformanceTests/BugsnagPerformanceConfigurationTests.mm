@@ -67,7 +67,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     NSString *hubKey = @"00000abcdef1234567890abcdef12345";
     auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:hubKey];
     XCTAssertEqualObjects(config.endpoint.absoluteString,
-        @"https://00000abcdef1234567890abcdef12345.otlp.insighthub.smartbear.com/v1/traces");
+        @"https://00000abcdef1234567890abcdef12345.otlp.bugsnag.smartbear.com/v1/traces");
 }
 
 - (void)testUpdatingAPIKeyUpdatesEndpointToHubURL {
@@ -78,7 +78,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     [config setApiKey:hubKey];
     XCTAssertEqualObjects(config.apiKey, hubKey);
     XCTAssertEqualObjects(config.endpoint.absoluteString,
-        @"https://00000abcdef1234567890abcdef12345.otlp.insighthub.smartbear.com/v1/traces");
+        @"https://00000abcdef1234567890abcdef12345.otlp.bugsnag.smartbear.com/v1/traces");
 }
 
 - (void)testCustomEndpointStillOverridesHubLogic {
