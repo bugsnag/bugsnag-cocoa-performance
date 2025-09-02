@@ -106,6 +106,12 @@
 		962CE81F2E66D23600380522 /* NetworkInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */; };
 		962CE8212E66D24200380522 /* NetworkInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */; };
 		962CE8232E66D25100380522 /* NetworkInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */; };
+		962CE8262E67188700380522 /* NetworkEarlyPhaseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */; };
+		962CE8282E67189800380522 /* NetworkEarlyPhaseHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */; };
+		962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */; };
+		962CE82C2E67376300380522 /* NetworkLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */; };
+		962CE82E2E673A9400380522 /* NetworkLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */; };
+		962CE8302E673A9900380522 /* NetworkLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */; };
 		962D7B342C7DEDD0004330E4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962D7B332C7DEDD0004330E4 /* QuartzCore.framework */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		963726BB2DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726B92DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -441,6 +447,12 @@
 		962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationSystemUtils.h; sourceTree = "<group>"; };
 		962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
 		962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkEarlyPhaseHandler.h; sourceTree = "<group>"; };
+		962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkEarlyPhaseHandlerImpl.h; sourceTree = "<group>"; };
+		962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkEarlyPhaseHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkLifecycleHandler.h; sourceTree = "<group>"; };
+		962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
 		962D7B332C7DEDD0004330E4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		963726B82DE8D97000C739E6 /* BugsnagPerformanceSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanControl.h; sourceTree = "<group>"; };
@@ -999,6 +1011,19 @@
 			path = Proxy;
 			sourceTree = "<group>";
 		};
+		962CE8242E67185D00380522 /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */,
+				962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */,
+				962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */,
+				962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */,
+				962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */,
+				962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
 		963726C42DEAB14D00C739E6 /* SpanControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -1171,6 +1196,7 @@
 		CB34771929068C350033759C /* NetworkInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
+				962CE8242E67185D00380522 /* Lifecycle */,
 				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
 				0122C22A29019770002D243C /* NetworkInstrumentation.mm */,
 				962CE8022E6519C500380522 /* State */,
@@ -1240,6 +1266,7 @@
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */,
 				1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */,
+				962CE8262E67188700380522 /* NetworkEarlyPhaseHandler.h in Headers */,
 				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
 				962CE7D02E60766E00380522 /* ViewLoadInstrumentationStateRepositoryImpl.h in Headers */,
 				964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */,
@@ -1247,6 +1274,7 @@
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */,
 				96F1292B2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h in Headers */,
+				962CE8282E67189800380522 /* NetworkEarlyPhaseHandlerImpl.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
@@ -1255,6 +1283,7 @@
 				963726C62DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
+				962CE82C2E67376300380522 /* NetworkLifecycleHandler.h in Headers */,
 				962CE81F2E66D23600380522 /* NetworkInstrumentationSystemUtils.h in Headers */,
 				963829082E547D1A00404F3A /* ViewLoadInstrumentationState.h in Headers */,
 				966634D12C8909BB004A934D /* FrameMetricsCollector.h in Headers */,
@@ -1311,6 +1340,7 @@
 				9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */,
 				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
 				963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */,
+				962CE82E2E673A9400380522 /* NetworkLifecycleHandlerImpl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1676,6 +1706,7 @@
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
 				09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */,
+				962CE8302E673A9900380522 /* NetworkLifecycleHandlerImpl.mm in Sources */,
 				968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */,
 				964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
@@ -1708,6 +1739,7 @@
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				962CE8062E6519E200380522 /* NetworkInstrumentationState.m in Sources */,
+				962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,

@@ -51,7 +51,7 @@ void NetworkInstrumentation::configure(BugsnagPerformanceConfiguration *config) 
         networkRequestCallback_ = (BugsnagPerformanceNetworkRequestCallback _Nonnull)networkRequestCallback;
     }
     propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;
-    endEarlySpansPhase();
+    lifecycleHandler_->onInstrumentationConfigured(isEnabled_, networkRequestCallback_);
 }
 
 void NetworkInstrumentation::preStartSetup() noexcept {
@@ -61,61 +61,6 @@ void NetworkInstrumentation::preStartSetup() noexcept {
 void NetworkInstrumentation::start() noexcept {
     BSGLogTrace(@"NetworkInstrumentation::start()");
     [delegate_ start];
-}
-
-void NetworkInstrumentation::markEarlySpan(BugsnagPerformanceSpan *span) noexcept {
-    BSGLogTrace(@"NetworkInstrumentation::markEarlySpan() for %@", span.name);
-    std::lock_guard<std::mutex> guard(earlySpansMutex_);
-    [earlySpans_ addObject:span];
-}
-
-static bool didVetoTracing(NSURL * _Nullable originalUrl,
-                           BugsnagPerformanceNetworkRequestInfo * _Nullable info) noexcept {
-    // A user changing the request URL to nil signals a veto
-    bool userVetoedTracing = originalUrl != nil && info.url == nil;
-    if (userVetoedTracing) {
-        BSGLogDebug(@"User vetoed tracing on %@", originalUrl);
-        return true;
-    }
-    BSGLogTrace(@"User did not veto tracing on %@", originalUrl);
-    return false;
-}
-
-void NetworkInstrumentation::endEarlySpansPhase() noexcept {
-    BSGLogDebug(@"NetworkInstrumentation::endEarlySpansPhase");
-    std::lock_guard<std::mutex> guard(earlySpansMutex_);
-    isEarlySpansPhase_ = false;
-    auto spans = earlySpans_;
-    earlySpans_ = nil;
-
-    if (!isEnabled_) {
-        for (BugsnagPerformanceSpan *span: spans) {
-            [span abortUnconditionally];
-        }
-    }
-
-    for (BugsnagPerformanceSpan *span: spans) {
-        auto info = [BugsnagPerformanceNetworkRequestInfo new];
-        NSString *urlString = [span getAttribute:spanAttributesProvider_->httpUrlAttributeKey()];
-        NSURL *originalUrl = [NSURL URLWithString:urlString];
-        info.url = originalUrl;
-        bool userVetoedTracing = false;
-        if (networkRequestCallback_) {
-            // We have to check again because the real callback might not have been set initially.
-            info = networkRequestCallback_(info);
-            userVetoedTracing = didVetoTracing(originalUrl, info);
-        }
-        if (userVetoedTracing) {
-            tracer_->cancelQueuedSpan(span);
-        } else if (info.url == nil) {
-            // We couldn't get the request URL, so the metrics phase won't happen either.
-            // As a fallback, make it end the span when it gets dropped and destroyed.
-            BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
-            [span endOnDestroy];
-        } else {
-            [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
-        }
-    }
 }
 
 bool NetworkInstrumentation::canTraceTask(NSURLSessionTask *task) noexcept {
@@ -172,7 +117,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
     if (networkRequestCallback_) {
         info = networkRequestCallback_(info);
         BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: URL after callback is %@", info.url);
-        userVetoedTracing = didVetoTracing(req.URL, info);
+//        userVetoedTracing = didVetoTracing(req.URL, info);
     }
 
     BugsnagPerformanceSpan *span = nil;
@@ -194,9 +139,7 @@ void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noe
             auto state = [NetworkInstrumentationState new];
             state.overallSpan = span;
             repository_->setInstrumentationState(task, state);
-            if (isEarlySpansPhase_) {
-                markEarlySpan(span);
-            }
+//            earlyPhaseHandler_->onNewStateCreated(state);
         }
     }
 

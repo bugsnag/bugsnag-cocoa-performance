@@ -14,6 +14,7 @@
 #import "System/BSGURLSessionPerformanceDelegate.h"
 #import "System/NetworkInstrumentationSystemUtils.h"
 #import "System/NetworkSwizzlingHandler.h"
+#import "Lifecycle/NetworkLifecycleHandler.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,6 +29,7 @@ public:
                            std::shared_ptr<NetworkInstrumentationStateRepository> repository,
                            std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
                            std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler,
+                           std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler,
                            BSGURLSessionPerformanceDelegate *delegate) noexcept
     : tracer_(tracer)
     , spanAttributesProvider_(spanAttributesProvider)
@@ -35,10 +37,9 @@ public:
     , repository_(repository)
     , systemUtils_(systemUtils)
     , swizzlingHandler_(swizzlingHandler)
+    , lifecycleHandler_(lifecycleHandler)
     , delegate_(delegate)
     , isEnabled_(true)
-    , isEarlySpansPhase_(true)
-    , earlySpans_([NSMutableArray new])
     , checkIsEnabled_(^() { return isEnabled_; })
     , onSessionTaskResume_(^(NSURLSessionTask *task) { NSURLSessionTask_resume(task); })
     {}
@@ -52,8 +53,6 @@ public:
     void start() noexcept;
 
 private:
-    void markEarlySpan(BugsnagPerformanceSpan *span) noexcept;
-    void endEarlySpansPhase() noexcept;
     void NSURLSessionTask_resume(NSURLSessionTask *task) noexcept;
     bool canTraceTask(NSURLSessionTask *task) noexcept;
 
@@ -63,12 +62,10 @@ private:
     std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
     std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler_;
+    std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler_;
     BSGURLSessionPerformanceDelegate * _Nullable delegate_;
     BSGSessionTaskResumeCallback onSessionTaskResume_;
     BSGIsEnabledCallback checkIsEnabled_;
-    std::atomic<bool> isEarlySpansPhase_{true};
-    std::mutex earlySpansMutex_;
-    NSMutableArray<BugsnagPerformanceSpan *> * _Nullable earlySpans_;
     NSSet<NSRegularExpression *> * _Nullable propagateTraceParentToUrlsMatching_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
