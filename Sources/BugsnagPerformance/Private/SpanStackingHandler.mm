@@ -86,9 +86,13 @@ BugsnagPerformanceSpan *
 SpanStackingHandler::findSpanForCategory(NSString *categoryName) {
     std::lock_guard<std::mutex> guard(mutex_);
     std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
+    BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory");
     while (state != nullptr) {
+        BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory state not nil");
         if (state->span.state == SpanStateOpen) {
+            BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory span is open, name: %@", state->span.name);
             if ([state->span hasAttribute:@"bugsnag.span.category" withValue:categoryName]) {
+                BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory span has needed category");
                 return state->span;
             }
         }

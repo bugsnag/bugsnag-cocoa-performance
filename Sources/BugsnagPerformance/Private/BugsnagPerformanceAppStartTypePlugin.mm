@@ -8,7 +8,7 @@
 
 #import "SpanStackingHandler.h"
 #import <BugsnagPerformance/BugsnagPerformanceSpanControl.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpanQuery.h>
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanQuery.h>
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 #import "BugsnagPerformanceAppStartSpanControl+Private.h"
@@ -40,7 +40,7 @@
 #pragma mark BugsnagPerformanceSpanControlProvider
 
 - (__nullable id<BugsnagPerformanceSpanControl>)getSpanControlsWithQuery:(BugsnagPerformanceSpanQuery *)query {
-    if ([query isKindOfClass:[BugsnagPerformanceAppStartSpanControl class]]) {
+    if ([query isKindOfClass:[BugsnagPerformanceAppStartSpanQuery class]]) {
         @synchronized (self) {
             if (self.spanStackingHandler == nullptr) {
                 return nil;

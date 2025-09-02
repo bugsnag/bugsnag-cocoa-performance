@@ -17,8 +17,8 @@ class ViewController: UIViewController {
 //                                            "renderingMetrics": "true"
 //                                         ])
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    func setFixture(fixture: Fixture) {
+        self.fixture = fixture
         fixture.start()
     }
 }

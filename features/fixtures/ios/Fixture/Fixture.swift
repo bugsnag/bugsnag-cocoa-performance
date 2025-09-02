@@ -71,6 +71,26 @@ class Fixture: NSObject, CommandReceiver {
         }
     }
 
+    func processSavedStartupConfig() -> UIViewController? {
+        let startupConfig = StartupConfiguration(configFile: nil)
+        if !startupConfig.loadStartupConfig() {
+            return nil
+        }
+
+        let scenarioClass: AnyClass = NSClassFromString("Fixture.\(startupConfig.scenarioName)")!
+        let scenarioInstance = (scenarioClass as! Scenario.Type).init(fixtureConfig: fixtureConfig) as Scenario?
+        if scenarioInstance == nil {
+            return nil
+        }
+        scenarioInstance?.setInitialBugsnagConfiguration()
+        scenarioInstance?.applyStartupConfig(startupConfig: startupConfig)
+        scenarioInstance?.startBugsnag()
+
+        logInfo("DARIA_LOG Loaded scenario class: \(String(describing: scenarioClass))")
+
+        return scenarioInstance?.customViewController()
+    }
+
     func beginReceivingCommands(fixtureConfig: FixtureConfig) {
         readyToReceiveCommand = true
         commandReaderThread = CommandReaderThread(fixtureConfig: fixtureConfig, commandReceiver: self)

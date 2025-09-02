@@ -388,3 +388,18 @@ Then('the span named {string} is the parent of every span named {string}') do |s
 
   childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
 end
+
+When("I relaunch the app after shutdown") do
+  max_attempts = 20
+  attempts = 0
+  manager = Maze::Api::Appium::AppManager.new
+  state = manager.state
+  until (attempts >= max_attempts) || state == :not_running
+    attempts += 1
+    state = manager.state
+    sleep 0.5
+  end
+  $logger.warn "App state #{state} instead of not_running after 10s" unless state == :not_running
+
+  manager.activate
+end
