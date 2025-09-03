@@ -84,15 +84,14 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
     auto swizzlingHandler = std::make_shared<NetworkSwizzlingHandlerImpl>();
     auto earlyPhaseHandler = std::make_shared<NetworkEarlyPhaseHandlerImpl>(tracer, spanAttributesProvider);
     auto spanFactory = std::make_shared<NetworkSpanFactoryImpl>(tracer, spanAttributesProvider);
-    auto lifecycleHandler = std::make_shared<NetworkLifecycleHandlerImpl>(spanAttributesProvider,
+    auto lifecycleHandler = std::make_shared<NetworkLifecycleHandlerImpl>(tracer,
+                                                                          spanAttributesProvider,
                                                                           spanFactory,
                                                                           earlyPhaseHandler,
                                                                           systemUtils,
                                                                           repository,
                                                                           networkHeaderInjector);
-    auto delegate = [[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer
-                                                      spanAttributesProvider:spanAttributesProvider
-                                                                  repository:repository];
+    auto delegate = [[BSGURLSessionPerformanceDelegate alloc] initWithLifecycleHandler:lifecycleHandler];
     return std::make_shared<NetworkInstrumentation>(systemUtils,
                                                     swizzlingHandler,
                                                     lifecycleHandler,

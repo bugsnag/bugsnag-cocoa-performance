@@ -8,7 +8,7 @@
 
 #import "NetworkLifecycleHandler.h"
 #import "NetworkEarlyPhaseHandler.h"
-#import "../../../SpanAttributesProvider.h"
+#import "../../../Tracer.h"
 #import "../State/NetworkInstrumentationStateRepository.h"
 #import "../SpanFactory/NetworkSpanFactory.h"
 #import "../System/NetworkInstrumentationSystemUtils.h"
@@ -18,13 +18,15 @@ namespace bugsnag {
 
 class NetworkLifecycleHandlerImpl: public NetworkLifecycleHandler {
 public:
-    NetworkLifecycleHandlerImpl(std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+    NetworkLifecycleHandlerImpl(std::shared_ptr<Tracer> tracer,
+                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                 std::shared_ptr<NetworkSpanFactory> spanFactory,
                                 std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
                                 std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
                                 std::shared_ptr<NetworkInstrumentationStateRepository> repository,
                                 std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : spanAttributesProvider_(spanAttributesProvider)
+    : tracer_(tracer)
+    , spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , earlyPhaseHandler_(earlyPhaseHandler)
     , systemUtils_(systemUtils)
@@ -33,8 +35,12 @@ public:
     
     void onInstrumentationConfigured(bool isEnabled, BugsnagPerformanceNetworkRequestCallback callback) noexcept;
     void onTaskResume(NSURLSessionTask *task) noexcept;
+    void onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
+                                          NSURLSessionTaskMetrics *metrics,
+                                          NSString *ignoreBaseEndpoint) noexcept;
     
 private:
+    std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<NetworkSpanFactory> spanFactory_;
     std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler_;
@@ -59,6 +65,10 @@ private:
                                                                    NSError *error) noexcept;
     
     void endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept;
+    
+    bool shouldRecordFinishedTask(NSURLSessionTask *task,
+                                  NSString *ignoreBaseEndpoint,
+                                  NSError **error) noexcept;
     
     NetworkLifecycleHandlerImpl() = delete;
 };

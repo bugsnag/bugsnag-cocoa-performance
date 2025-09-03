@@ -11,22 +11,16 @@
 @interface BSGURLSessionPerformanceDelegate ()
 
 @property(readwrite,nonatomic) BOOL isEnabled;
-@property(readonly,nonatomic) std::shared_ptr<Tracer> tracer;
-@property(readonly,nonatomic) std::shared_ptr<SpanAttributesProvider> spanAttributesProvider;
-@property(readonly,nonatomic) std::shared_ptr<NetworkInstrumentationStateRepository> repository;
+@property(readonly,nonatomic) std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler;
 @property(readwrite,strong,nonatomic) NSString *baseEndpointStr;
 
 @end
 
 @implementation BSGURLSessionPerformanceDelegate
 
-- (instancetype) initWithTracer:(std::shared_ptr<Tracer>)tracer
-         spanAttributesProvider:(std::shared_ptr<SpanAttributesProvider>)spanAttributesProvider
-                     repository:(std::shared_ptr<NetworkInstrumentationStateRepository>)repository {
+- (instancetype) initWithLifecycleHandler:(std::shared_ptr<NetworkLifecycleHandler>)lifecycleHandler {
     if ((self = [super init]) != nil) {
-        _tracer = tracer;
-        _spanAttributesProvider = spanAttributesProvider;
-        _repository = repository;
+        _lifecycleHandler = lifecycleHandler;
     }
     return self;
 }
@@ -62,39 +56,9 @@ API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0)) {
         return;
     }
 
-    NSError *errorFromGetRequest = nil;
-    auto request = getTaskRequest(task, &errorFromGetRequest);
-    auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
-
-    if (task.error != nil) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task error [%@] so not recording span", session.class, task.class, request.URL, task.error);
-        return;
-    }
-    if (task.response == nil) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task response is nil so not recording span", session.class, task.class, request.URL);
-        return;
-    }
-    if (httpResponse.statusCode == 0) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Task response status code is 0 so not recording span", session.class, task.class, request.URL);
-        return;
-    }
-
-    if (self.baseEndpointStr.length > 0 && [request.URL.absoluteString hasPrefix:self.baseEndpointStr]) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Has base endpoint %@ so not recording span", session.class, task.class, request.URL, self.baseEndpointStr);
-        return;
-    }
-
-    auto span = self.repository->getInstrumentationState(task).overallSpan;
-    if (!span) {
-        BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: No associated task found", session.class, task.class, request.URL);
-        return;
-    }
-
-    BSGLogTrace(@"NetworkInstrumentation.URLSession:%@ task:%@ didFinishCollectingMetrics for url [%@]: Ending span with time %@", session.class, task.class, request.URL, metrics.taskInterval.endDate);
-
-    [span internalSetMultipleAttributes:self.spanAttributesProvider->networkSpanAttributes(nil, task, metrics, errorFromGetRequest)];
-    [span endWithEndTime:metrics.taskInterval.endDate];
-    self.repository->setInstrumentationState(task, nil);
+    self.lifecycleHandler->onTaskDidFinishCollectingMetrics(task,
+                                                            metrics,
+                                                            self.baseEndpointStr);
 }
 
 @end

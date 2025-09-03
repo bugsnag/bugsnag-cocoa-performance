@@ -40,6 +40,26 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
     networkHeaderInjector_->injectTraceParentIfMatches(task, state.overallSpan);
 }
 
+void
+NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
+                                                              NSURLSessionTaskMetrics *metrics,
+                                                              NSString *ignoreBaseEndpoint) noexcept {
+    auto state = repository_->getInstrumentationState(task);
+    if (state.overallSpan == nil) {
+        return;
+    }
+    NSError *error = nil;
+    if (!shouldRecordFinishedTask(task, ignoreBaseEndpoint, &error)) {
+        tracer_->cancelQueuedSpan(state.overallSpan);
+        repository_->setInstrumentationState(task, nil);
+        return;
+    }
+    
+    [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(nil, task, metrics, error)];
+    [state.overallSpan endWithEndTime:metrics.taskInterval.endDate];
+    repository_->setInstrumentationState(task, nil);
+}
+
 #pragma mark Helpers
 
 void
@@ -127,4 +147,27 @@ NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationStat
         // As a fallback, make it end the span when it gets dropped and destroyed.
         [state.overallSpan endOnDestroy];
     }
+}
+
+bool
+NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
+                                                      NSString *ignoreBaseEndpoint,
+                                                      NSError **error) noexcept {
+    if (task.error != nil) {
+        return false;
+    }
+    if (task.response == nil) {
+        return false;
+    }
+    auto request = systemUtils_->taskRequest(task, error);
+    auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
+
+    if (httpResponse.statusCode == 0) {
+        return false;
+    }
+
+    if (ignoreBaseEndpoint.length > 0 && [request.URL.absoluteString hasPrefix:ignoreBaseEndpoint]) {
+        return false;
+    }
+    return true;
 }
