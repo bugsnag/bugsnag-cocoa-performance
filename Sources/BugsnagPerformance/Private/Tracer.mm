@@ -389,8 +389,9 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
-        [span abortIfOpen];
+        [span abortUnconditionally];
         batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
+        [blockedSpans_ removeObject:span];
     }
 }
 

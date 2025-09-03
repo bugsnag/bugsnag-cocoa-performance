@@ -32,7 +32,5 @@ public:
 
     NSMutableDictionary *cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
     NSMutableDictionary *memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
-
-    static NSString *httpUrlAttributeKey();
 };
 }

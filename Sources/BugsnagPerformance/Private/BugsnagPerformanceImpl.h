@@ -25,7 +25,7 @@
 #import "PhasedStartup.h"
 #import "Instrumentation/Instrumentation.h"
 #import "ResourceAttributes.h"
-#import "NetworkHeaderInjector.h"
+#import "Instrumentation/NetworkInstrumentation/System/NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
