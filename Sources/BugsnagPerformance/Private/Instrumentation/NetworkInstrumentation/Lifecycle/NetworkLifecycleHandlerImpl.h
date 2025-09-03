@@ -43,7 +43,7 @@ private:
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
     
-    void updateStateInfo(NetworkInstrumentationState *state);
+    void updateState(NetworkInstrumentationState *state);
     
     bool didVetoTracing(NSURL *originalUrl,
                         BugsnagPerformanceNetworkRequestInfo *info) noexcept;
@@ -57,6 +57,8 @@ private:
                                                                    NSString *httpMethod,
                                                                    NSURL *originalUrl,
                                                                    NSError *error) noexcept;
+    
+    void endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept;
     
     NetworkLifecycleHandlerImpl() = delete;
 };

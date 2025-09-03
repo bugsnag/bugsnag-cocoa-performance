@@ -47,12 +47,7 @@ NetworkEarlyPhaseHandlerImpl::updateEarlyStatesOnPhaseEnd(NetworkEarlyPhaseHandl
         callback(state);
         if (state.hasBeenVetoed) {
             tracer_->cancelQueuedSpan(state.overallSpan);
-        } else if (state.url == nil) {
-            // We couldn't get the request URL, so the metrics phase won't happen either.
-            // As a fallback, make it end the span when it gets dropped and destroyed.
-            [state.overallSpan endOnDestroy];
-        } else {
-            [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(state.url, nil)];
         }
+        [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(state.url, nil)];
     }
 }

@@ -16,7 +16,7 @@ NetworkLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled,
                                                          BugsnagPerformanceNetworkRequestCallback callback) noexcept {
     networkRequestCallback_ = callback;
     NetworkEarlyPhaseHandlerStateCallback stateCallback = ^(NetworkInstrumentationState *state) {
-        updateStateInfo(state);
+        updateState(state);
     };
     earlyPhaseHandler_->onEarlyPhaseEnded(isEnabled, stateCallback);
 }
@@ -37,19 +37,13 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
                                                    req.HTTPMethod,
                                                    req.URL,
                                                    errorFromGetRequest);
-    if (state.url == nil) {
-        // We couldn't get the request URL, so the metrics phase won't happen either.
-        // As a fallback, make it end the span when it gets dropped and destroyed.
-        [state.overallSpan endOnDestroy];
-    }
-
     networkHeaderInjector_->injectTraceParentIfMatches(task, state.overallSpan);
 }
 
 #pragma mark Helpers
 
 void
-NetworkLifecycleHandlerImpl::updateStateInfo(NetworkInstrumentationState *state) {
+NetworkLifecycleHandlerImpl::updateState(NetworkInstrumentationState *state) {
     NSURL *originalUrl = state.url;
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = state.url;
@@ -60,6 +54,7 @@ NetworkLifecycleHandlerImpl::updateStateInfo(NetworkInstrumentationState *state)
     }
     state.url = info.url;
     state.hasBeenVetoed = hasBeenVetoed;
+    endSpanOnDestroyIfNeeded(state);
 }
 
 bool
@@ -112,7 +107,7 @@ NetworkLifecycleHandlerImpl::initializeStateAndSaveIfNotVetoed(NSURLSessionTask 
                                                                NSError *error) noexcept {
     auto state = [NetworkInstrumentationState new];
     state.url = originalUrl;
-    updateStateInfo(state);
+    updateState(state);
     if (!state.hasBeenVetoed) {
         state.overallSpan = spanFactory_->startOverallNetworkSpan(httpMethod, state.url, error);
         repository_->setInstrumentationState(task, state);
@@ -120,4 +115,16 @@ NetworkLifecycleHandlerImpl::initializeStateAndSaveIfNotVetoed(NSURLSessionTask 
         return state;
     }
     return nil;
+}
+
+void
+NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept {
+    if (state.overallSpan == nil) {
+        return;
+    }
+    if (state.url == nil) {
+        // We couldn't get the request URL, so the metrics phase won't happen either.
+        // As a fallback, make it end the span when it gets dropped and destroyed.
+        [state.overallSpan endOnDestroy];
+    }
 }
