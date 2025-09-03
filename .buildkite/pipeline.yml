@@ -168,6 +168,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests"
         depends_on:
@@ -201,6 +205,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "XcFramework E2E Tests"
     steps:
@@ -234,6 +242,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS XcFramework 13 E2E Tests"
         depends_on:
@@ -267,6 +279,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling disabled E2E Tests"
     steps:
@@ -300,6 +316,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests swizzling disabled"
         depends_on:
@@ -332,6 +352,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling premain E2E Tests"
     steps:
@@ -366,6 +390,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests swizzling premain"
         depends_on:
@@ -399,6 +427,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - label: 'Conditionally trigger full set of tests'
     agents:
