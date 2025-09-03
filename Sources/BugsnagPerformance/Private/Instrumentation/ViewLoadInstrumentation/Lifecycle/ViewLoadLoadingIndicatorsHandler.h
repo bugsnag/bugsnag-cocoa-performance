@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef BugsnagPerformanceSpanCondition *(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *viewController);
+typedef BugsnagPerformanceSpanCondition * _Nullable(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *viewController);
 
 namespace bugsnag {
 

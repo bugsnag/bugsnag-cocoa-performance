@@ -49,7 +49,7 @@ ViewLoadLoadingIndicatorsHandlerImpl::createConditions(BugsnagPerformanceLoading
             viewController != nil) {
             
             if (onLoadingCallback) {
-                auto condition = onLoadingCallback(viewController);
+                BugsnagPerformanceSpanCondition *condition = onLoadingCallback(viewController);
                 if (condition != nil) {
                     [newConditions addObject:condition];
                 }
