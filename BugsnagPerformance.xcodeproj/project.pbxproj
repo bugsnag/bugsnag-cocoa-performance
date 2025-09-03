@@ -796,8 +796,6 @@
 				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
 				965FBD142DF24D3100D6BACB /* Logging.h */,
 				098FC8772D3E8D43001B627D /* Metrics.h */,
-				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
-				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
 				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
 				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
 				CB04969529150D860097E526 /* OtlpPackage.h */,
@@ -995,6 +993,8 @@
 			children = (
 				962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */,
 				962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */,
+				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
+				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
 				962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */,
 				962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */,
 				962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */,

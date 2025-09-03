@@ -10,8 +10,6 @@
 #import "../../../SpanAttributesProvider.h"
 #import "../../../Tracer.h"
 
-NS_ASSUME_NONNULL_BEGIN
-
 namespace bugsnag {
 
 class NetworkSpanFactoryImpl: public NetworkSpanFactory {
@@ -22,8 +20,11 @@ public:
     , spanAttributesProvider_(spanAttributesProvider) {}
     
     BugsnagPerformanceSpan *startOverallNetworkSpan(NSString *httpMethod,
-                                                    NSURL * _Nullable url,
-                                                    NSError * _Nullable error) noexcept;
+                                                    NSURL *url,
+                                                    NSError *error) noexcept;
+    
+    BugsnagPerformanceSpan *startInternalErrorSpan(NSString *httpMethod,
+                                                   NSError *error) noexcept;
     
 private:
     std::shared_ptr<Tracer> tracer_;
@@ -32,5 +33,3 @@ private:
     NetworkSpanFactoryImpl() = delete;
 };
 }
-
-NS_ASSUME_NONNULL_END

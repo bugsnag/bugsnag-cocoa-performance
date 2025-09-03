@@ -13,5 +13,7 @@ namespace bugsnag {
 class NetworkInstrumentationSystemUtilsImpl: public NetworkInstrumentationSystemUtils {
 public:
     NSArray<Class> *taskClassesToInstrument() noexcept;
+    NSURLRequest *taskRequest(NSURLSessionTask *task, NSError **error) noexcept;
+    NSURLRequest *taskCurrentRequest(NSURLSessionTask *task, NSError **error) noexcept;
 };
 }

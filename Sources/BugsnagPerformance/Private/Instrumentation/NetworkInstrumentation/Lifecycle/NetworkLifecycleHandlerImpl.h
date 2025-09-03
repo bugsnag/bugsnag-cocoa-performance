@@ -11,8 +11,8 @@
 #import "../../../SpanAttributesProvider.h"
 #import "../State/NetworkInstrumentationStateRepository.h"
 #import "../SpanFactory/NetworkSpanFactory.h"
-
-NS_ASSUME_NONNULL_BEGIN
+#import "../System/NetworkInstrumentationSystemUtils.h"
+#import "../System/NetworkHeaderInjector.h"
 
 namespace bugsnag {
 
@@ -21,28 +21,43 @@ public:
     NetworkLifecycleHandlerImpl(std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                 std::shared_ptr<NetworkSpanFactory> spanFactory,
                                 std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
-                                std::shared_ptr<NetworkInstrumentationStateRepository> repository) noexcept
+                                std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
+                                std::shared_ptr<NetworkInstrumentationStateRepository> repository,
+                                std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , earlyPhaseHandler_(earlyPhaseHandler)
-    , repository_(repository) {}
+    , systemUtils_(systemUtils)
+    , repository_(repository)
+    , networkHeaderInjector_(networkHeaderInjector) {}
     
     void onInstrumentationConfigured(bool isEnabled, BugsnagPerformanceNetworkRequestCallback callback) noexcept;
+    void onTaskResume(NSURLSessionTask *task) noexcept;
     
 private:
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<NetworkSpanFactory> spanFactory_;
     std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler_;
+    std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
+    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
+    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
     
-    void updateStateInfo(NetworkInstrumentationState *state,
-                         BugsnagPerformanceNetworkRequestCallback callback);
+    void updateStateInfo(NetworkInstrumentationState *state);
     
-    bool didVetoTracing(NSURL * _Nullable originalUrl,
-                        BugsnagPerformanceNetworkRequestInfo * _Nullable info) noexcept;
+    bool didVetoTracing(NSURL *originalUrl,
+                        BugsnagPerformanceNetworkRequestInfo *info) noexcept;
+    
+    bool canTraceTask(NSURLSessionTask *task) noexcept;
+    
+    void reportInternalErrorSpan(NSString *httpMethod,
+                                 NSError *error) noexcept;
+    
+    NetworkInstrumentationState *initializeStateAndSaveIfNotVetoed(NSURLSessionTask *task,
+                                                                   NSString *httpMethod,
+                                                                   NSURL *originalUrl,
+                                                                   NSError *error) noexcept;
     
     NetworkLifecycleHandlerImpl() = delete;
 };
 }
-
-NS_ASSUME_NONNULL_END

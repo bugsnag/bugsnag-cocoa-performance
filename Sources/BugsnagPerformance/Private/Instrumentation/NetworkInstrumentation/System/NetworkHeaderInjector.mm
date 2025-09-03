@@ -7,7 +7,7 @@
 //
 
 #import "NetworkHeaderInjector.h"
-#import "Utils.h"
+#import "../../../Utils.h"
 
 void NetworkHeaderInjector::configure(BugsnagPerformanceConfiguration *config) noexcept {
     propagateTraceParentToUrlsMatching_ = config.tracePropagationUrls;

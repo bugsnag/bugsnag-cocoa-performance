@@ -15,6 +15,7 @@
 #import "AppStartupInstrumentation/SpanFactory/AppStartupSpanFactoryImpl.h"
 #import "AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
 #import "ViewLoadInstrumentation/ViewLoadInstrumentation.h"
+#import "NetworkInstrumentation/System/NetworkHeaderInjector.h"
 
 std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
                                                                        std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);

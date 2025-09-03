@@ -63,85 +63,10 @@ void NetworkInstrumentation::start() noexcept {
     [delegate_ start];
 }
 
-bool NetworkInstrumentation::canTraceTask(NSURLSessionTask *task) noexcept {
-    NSURLRequest *req = getTaskCurrentRequest(task, nil);
-    if (req == nil) {
-        BSGLogTrace(@"Task %@ has nil request but we still want to trace it and report an error", task.class);
-        return true;
-    }
-
-    NSURL *url = req.URL;
-    if (url == nil) {
-        BSGLogTrace(@"Task %@ request has nil URL but we still want to trace it and report an error", task.class);
-        return true;
-    }
-
-    if ([url.scheme isEqualToString:@"file"]) {
-        BSGLogTrace(@"Task %@ has forbidden file scheme in URL %@, so we won't trace it", task.class, url);
-        // Don't track local activity.
-        return false;
-    }
-
-    return true;
-}
-
 void NetworkInstrumentation::NSURLSessionTask_resume(NSURLSessionTask *task) noexcept {
     if (!isEnabled_) {
         BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Not enabled (task was %@)", task.class);
         return;
     }
-
-    if (!canTraceTask(task)) {
-        BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Task %@ not traceable", task.class);
-        return;
-    }
-
-    NSError *errorFromGetRequest = nil;
-    auto req = getTaskRequest(task, &errorFromGetRequest);
-    auto info = [BugsnagPerformanceNetworkRequestInfo new];
-    info.url = req.URL;
-    if (info.url == nil) {
-        BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Not fully tracing task with null URL");
-        SpanOptions options;
-        options.makeCurrentContext = false;
-        auto span = tracer_->startNetworkSpan(req.HTTPMethod, options);
-        if (errorFromGetRequest) {
-            [span internalSetMultipleAttributes:spanAttributesProvider_->internalErrorAttributes(errorFromGetRequest)];
-        }
-        [span end];
-        
-        return;
-    }
-    BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: Got request from task %@ with req %@, URL %@ and error %@", task.class, req, info.url, errorFromGetRequest);
-    bool userVetoedTracing = false;
-    if (networkRequestCallback_) {
-        info = networkRequestCallback_(info);
-        BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: URL after callback is %@", info.url);
-//        userVetoedTracing = didVetoTracing(req.URL, info);
-    }
-
-    BugsnagPerformanceSpan *span = nil;
-
-    if (!userVetoedTracing) {
-        BSGLogDebug(@"NetworkInstrumentation::NSURLSessionTask_resume: Tracing task %@, url %@", task.class, info.url);
-        SpanOptions options;
-        options.makeCurrentContext = false;
-        span = tracer_->startNetworkSpan(req.HTTPMethod, options);
-        if (info.url == nil) {
-            // We couldn't get the request URL, so the metrics phase won't happen either.
-            // As a fallback, make it end the span when it gets dropped and destroyed.
-            BSGLogTrace(@"NetworkInstrumentation::NSURLSessionTask_resume: info.url is nil, so we will end on destroy");
-            [span endOnDestroy];
-        } else {
-            [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, errorFromGetRequest)];
-        }
-        if (span != nil) {
-            auto state = [NetworkInstrumentationState new];
-            state.overallSpan = span;
-            repository_->setInstrumentationState(task, state);
-//            earlyPhaseHandler_->onNewStateCreated(state);
-        }
-    }
-
-    networkHeaderInjector_->injectTraceParentIfMatches(task, span);
+    lifecycleHandler_->onTaskResume(task);
 }

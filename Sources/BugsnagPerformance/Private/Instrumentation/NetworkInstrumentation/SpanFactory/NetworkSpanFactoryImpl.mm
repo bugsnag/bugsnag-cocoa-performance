@@ -15,8 +15,16 @@ NetworkSpanFactoryImpl::startOverallNetworkSpan(NSString *httpMethod,
     SpanOptions options;
     options.makeCurrentContext = false;
     auto span = tracer_->startNetworkSpan(httpMethod, options);
-    if (url != nil) {
-        [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(url, error)];
-    }
+    [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(url, error)];
+    return span;
+}
+
+BugsnagPerformanceSpan *
+NetworkSpanFactoryImpl::startInternalErrorSpan(NSString *httpMethod,
+                                               NSError *error) noexcept {
+    SpanOptions options;
+    options.makeCurrentContext = false;
+    auto span = tracer_->startNetworkSpan(httpMethod, options);
+    [span internalSetMultipleAttributes:spanAttributesProvider_->internalErrorAttributes(error)];
     return span;
 }

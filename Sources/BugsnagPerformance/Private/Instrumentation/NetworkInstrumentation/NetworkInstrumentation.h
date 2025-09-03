@@ -9,7 +9,6 @@
 #import "../../Tracer.h"
 #import "../../PhasedStartup.h"
 #import "../../Sampler.h"
-#import "../../NetworkHeaderInjector.h"
 #import "State/NetworkInstrumentationStateRepository.h"
 #import "System/BSGURLSessionPerformanceDelegate.h"
 #import "System/NetworkInstrumentationSystemUtils.h"
@@ -23,19 +22,11 @@ class Tracer;
 
 class NetworkInstrumentation: public PhasedStartup {
 public:
-    NetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                           std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
-                           std::shared_ptr<NetworkInstrumentationStateRepository> repository,
-                           std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
+    NetworkInstrumentation(std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
                            std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler,
                            std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler,
                            BSGURLSessionPerformanceDelegate *delegate) noexcept
-    : tracer_(tracer)
-    , spanAttributesProvider_(spanAttributesProvider)
-    , networkHeaderInjector_(networkHeaderInjector)
-    , repository_(repository)
-    , systemUtils_(systemUtils)
+    : systemUtils_(systemUtils)
     , swizzlingHandler_(swizzlingHandler)
     , lifecycleHandler_(lifecycleHandler)
     , delegate_(delegate)
@@ -54,12 +45,8 @@ public:
 
 private:
     void NSURLSessionTask_resume(NSURLSessionTask *task) noexcept;
-    bool canTraceTask(NSURLSessionTask *task) noexcept;
 
     bool isEnabled_{true};
-    std::shared_ptr<Tracer> tracer_;
-    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
-    std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
     std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<NetworkSwizzlingHandler> swizzlingHandler_;
     std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler_;
@@ -67,7 +54,6 @@ private:
     BSGSessionTaskResumeCallback onSessionTaskResume_;
     BSGIsEnabledCallback checkIsEnabled_;
     NSSet<NSRegularExpression *> * _Nullable propagateTraceParentToUrlsMatching_;
-    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
 };
 }

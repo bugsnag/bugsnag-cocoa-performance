@@ -9,6 +9,7 @@
 #import "NetworkInstrumentationSystemUtilsImpl.h"
 
 #import "../../../Swizzle.h"
+#import "../../../Utils.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;
@@ -39,4 +40,14 @@ NetworkInstrumentationSystemUtilsImpl::taskClassesToInstrument() noexcept {
     [session finishTasksAndInvalidate];
 
     return classes;
+}
+
+NSURLRequest *
+NetworkInstrumentationSystemUtilsImpl::taskRequest(NSURLSessionTask *task, NSError **error) noexcept {
+    return getTaskRequest(task, error);
+}
+
+NSURLRequest *
+NetworkInstrumentationSystemUtilsImpl::taskCurrentRequest(NSURLSessionTask *task, NSError **error) noexcept {
+    return getTaskCurrentRequest(task, error);
 }

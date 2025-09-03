@@ -15,6 +15,8 @@ namespace bugsnag {
 class NetworkInstrumentationSystemUtils {
 public:
     virtual NSArray<Class> *taskClassesToInstrument() noexcept = 0;
+    virtual NSURLRequest *taskRequest(NSURLSessionTask *task, NSError **error) noexcept = 0;
+    virtual NSURLRequest *taskCurrentRequest(NSURLSessionTask *task, NSError **error) noexcept = 0;
     virtual ~NetworkInstrumentationSystemUtils() {}
 };
 }

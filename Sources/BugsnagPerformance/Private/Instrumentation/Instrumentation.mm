@@ -87,15 +87,13 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
     auto lifecycleHandler = std::make_shared<NetworkLifecycleHandlerImpl>(spanAttributesProvider,
                                                                           spanFactory,
                                                                           earlyPhaseHandler,
-                                                                          repository);
+                                                                          systemUtils,
+                                                                          repository,
+                                                                          networkHeaderInjector);
     auto delegate = [[BSGURLSessionPerformanceDelegate alloc] initWithTracer:tracer
                                                       spanAttributesProvider:spanAttributesProvider
                                                                   repository:repository];
-    return std::make_shared<NetworkInstrumentation>(tracer,
-                                                    spanAttributesProvider,
-                                                    networkHeaderInjector,
-                                                    repository,
-                                                    systemUtils,
+    return std::make_shared<NetworkInstrumentation>(systemUtils,
                                                     swizzlingHandler,
                                                     lifecycleHandler,
                                                     delegate);
