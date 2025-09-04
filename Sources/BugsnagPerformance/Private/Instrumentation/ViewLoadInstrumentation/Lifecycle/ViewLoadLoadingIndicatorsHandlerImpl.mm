@@ -28,6 +28,11 @@ ViewLoadLoadingIndicatorsHandlerImpl::onViewControllerUpdatedView(UIViewControll
     searchForLoadingIndicators(viewController.view);
 }
 
+void
+ViewLoadLoadingIndicatorsHandlerImpl::setOnLoadingCallback(ViewLoadLoadingIndicatorsHandlerOnLoadingCallback callback) noexcept {
+    callback_ = callback;
+}
+
 #pragma mark Helpers
 
 void
@@ -48,8 +53,8 @@ ViewLoadLoadingIndicatorsHandlerImpl::createConditions(BugsnagPerformanceLoading
             state.overallSpan.isValid &&
             viewController != nil) {
             
-            if (onLoadingCallback) {
-                BugsnagPerformanceSpanCondition *condition = onLoadingCallback(viewController);
+            if (callback_) {
+                BugsnagPerformanceSpanCondition *condition = callback_(viewController);
                 if (condition != nil) {
                     [newConditions addObject:condition];
                 }

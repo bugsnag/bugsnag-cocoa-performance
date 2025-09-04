@@ -32,9 +32,9 @@ public:
     , repository_(repository)
     , loadingIndicatorsHandler_(loadingIndicatorsHandler)
     , crosstalkAPI_(crosstalkAPI) {
-        loadingIndicatorsHandler->onLoadingCallback = ^BugsnagPerformanceSpanCondition *(UIViewController *viewController) {
+        loadingIndicatorsHandler->setOnLoadingCallback(^BugsnagPerformanceSpanCondition *(UIViewController *viewController) {
             return onLoadingStarted(viewController);
-        };
+        });
     }
     
     void onInstrumentationConfigured(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept;

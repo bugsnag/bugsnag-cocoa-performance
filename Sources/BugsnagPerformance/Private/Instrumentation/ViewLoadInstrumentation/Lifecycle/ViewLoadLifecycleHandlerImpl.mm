@@ -189,7 +189,7 @@ ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state
     
     if (state.loadingPhaseSpan != nil) {
         // Adjust span start time to reflect the view appearing time
-        [state.loadingPhaseSpan updateStartTime:[NSDate now]];
+        [state.loadingPhaseSpan updateStartTime:[NSDate date]];
     } else {
         [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
     }

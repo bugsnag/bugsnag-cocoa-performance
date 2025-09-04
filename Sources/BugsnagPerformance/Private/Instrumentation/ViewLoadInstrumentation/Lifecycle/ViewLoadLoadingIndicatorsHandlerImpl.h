@@ -21,10 +21,12 @@ public:
     
     void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
     void onViewControllerUpdatedView(UIViewController *viewController) noexcept;
+    void setOnLoadingCallback(ViewLoadLoadingIndicatorsHandlerOnLoadingCallback callback) noexcept;
     
 private:
     std::shared_ptr<ViewLoadInstrumentationStateRepository> repository_;
     std::mutex mutex_;
+    _Nullable ViewLoadLoadingIndicatorsHandlerOnLoadingCallback callback_;
     
     void updateIndicatorsConditions(BugsnagPerformanceLoadingIndicatorView *loadingIndicator,
                                     NSArray<BugsnagPerformanceSpanCondition *> *conditions) noexcept;

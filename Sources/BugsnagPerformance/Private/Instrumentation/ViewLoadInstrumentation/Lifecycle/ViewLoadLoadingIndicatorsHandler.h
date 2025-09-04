@@ -8,9 +8,9 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
-NS_ASSUME_NONNULL_BEGIN
+typedef BugsnagPerformanceSpanCondition *_Nullable(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *_Nonnull viewController);
 
-typedef BugsnagPerformanceSpanCondition * _Nullable(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *viewController);
+NS_ASSUME_NONNULL_BEGIN
 
 namespace bugsnag {
 
@@ -18,7 +18,7 @@ class ViewLoadLoadingIndicatorsHandler {
 public:
     virtual void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
     virtual void onViewControllerUpdatedView(UIViewController *viewController) noexcept = 0;
-    ViewLoadLoadingIndicatorsHandlerOnLoadingCallback onLoadingCallback;
+    virtual void setOnLoadingCallback(ViewLoadLoadingIndicatorsHandlerOnLoadingCallback callback) noexcept = 0;
     virtual ~ViewLoadLoadingIndicatorsHandler() {}
 };
 }
