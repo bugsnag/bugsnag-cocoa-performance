@@ -42,6 +42,21 @@ using namespace bugsnag;
     XCTAssertEqual(cOptions.firstClass, BSGTriStateUnset);
 }
 
+- (void)testSettingParentContext {
+    BugsnagPerformanceSpanOptions *objcOptions = [BugsnagPerformanceSpanOptions new];
+    XCTAssertEqual(objcOptions.parentContext, [BugsnagPerformanceSpanContext defaultContext]);
+    [objcOptions setParentContext:nil];
+    XCTAssertNil(objcOptions.parentContext);
+
+    SpanOptions cOptions(objcOptions);
+    XCTAssertNil(objcOptions.parentContext);
+
+    SpanOptions cOptions2;
+    XCTAssertEqual(cOptions2.parentContext, [BugsnagPerformanceSpanContext defaultContext]);
+    cOptions2.parentContext = nil;
+    XCTAssertNil(cOptions2.parentContext);
+}
+
 - (void)testConversion {
     MetricsOptions metricsOptions;
     metricsOptions.rendering = BSGTriStateNo;

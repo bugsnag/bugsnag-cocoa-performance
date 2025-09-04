@@ -522,16 +522,14 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span with nil parent context
     Given I run "ManualSpanWithContextParentNilScenario"
-    And I wait for 1 span
+    And I wait for 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * every span field "name" equals "ManualSpanWithContextParentNilScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
-    * every span field "parentSpanId" does not exist
-    * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span string attribute "bugsnag.span.category" equals "custom"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ManualSpanWithContextParentNilScenario"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.name" equals "ManualSpanWithContextParentSet"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.name" equals "ShouldNotBeParentSpan"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" is null
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.parentSpanId" is null
