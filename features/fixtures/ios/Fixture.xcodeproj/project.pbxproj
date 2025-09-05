@@ -59,6 +59,7 @@
 		09F23AC12CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */; };
 		09F3F5282D6C728300BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */; };
 		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
+		1C7852A62E5FA7DF00BB8E2D /* ManualSpanWithContextParentNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		964735CB2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
@@ -161,6 +162,7 @@
 		09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario2.swift; sourceTree = "<group>"; };
 		09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
 		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
+		1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithContextParentNilScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		964735CA2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */,
+				1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
 				098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */,
 				01E3F99028F46B6700003F44 /* ManualViewLoadScenario.swift */,
@@ -485,6 +488,7 @@
 				96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */,
 				09637A3C2B0607F300F4F776 /* Logging.swift in Sources */,
 				9657A89B2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift in Sources */,
+				1C7852A62E5FA7DF00BB8E2D /* ManualSpanWithContextParentNilScenario.swift in Sources */,
 				96986DA02D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift in Sources */,
 				01D3A7E028F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift in Sources */,
 				96986D9E2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift in Sources */,
