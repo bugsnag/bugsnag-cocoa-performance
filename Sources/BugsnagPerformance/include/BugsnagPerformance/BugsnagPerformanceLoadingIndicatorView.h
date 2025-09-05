@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
 
-#import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
+NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 IB_DESIGNABLE
 @interface BugsnagPerformanceLoadingIndicatorView : UIView
 
@@ -19,3 +19,5 @@ IB_DESIGNABLE
 - (void)finishLoading;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -8,9 +8,11 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
-typedef BugsnagPerformanceSpanCondition *_Nullable(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *_Nonnull viewController);
+@class BugsnagPerformanceSpanCondition;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef BugsnagPerformanceSpanCondition *_Nullable(^ ViewLoadLoadingIndicatorsHandlerOnLoadingCallback)(UIViewController *_Nonnull viewController);
 
 namespace bugsnag {
 
