@@ -21,8 +21,6 @@ static NSDictionary *accessTechnologyMappingDictionary();
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
 
-NSString *SpanAttributesProvider::httpUrlAttributeKey() {return @"http.url";};
-
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {

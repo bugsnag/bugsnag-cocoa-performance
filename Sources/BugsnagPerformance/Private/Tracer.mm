@@ -10,8 +10,8 @@
 #import "SpanAttributes.h"
 #import "Utils.h"
 #import "BugsnagPerformanceSpan+Private.h"
-#import "Instrumentation/NetworkInstrumentation.h"
-#import "Instrumentation/ViewLoadInstrumentation.h"
+#import "Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
+#import "Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import <algorithm>
@@ -339,7 +339,7 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
     if (options.parentContext == nil && getAppStartupInstrumentationState_ != nil) {
-        AppStartupInstrumentationState *appStartupState = getAppStartupInstrumentationState_();
+        AppStartupInstrumentationStateSnapshot *appStartupState = getAppStartupInstrumentationState_();
         if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
             options.parentContext = appStartupState.uiInitSpan;
             BugsnagPerformanceSpanCondition *appStartupCondition = [appStartupState.uiInitSpan blockWithTimeout:0.1];
@@ -388,8 +388,9 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
     BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
-        [span abortIfOpen];
+        [span abortUnconditionally];
         batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
+        [blockedSpans_ removeObject:span];
     }
 }
 
