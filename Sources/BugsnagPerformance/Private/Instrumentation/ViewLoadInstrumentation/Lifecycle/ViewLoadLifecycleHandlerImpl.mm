@@ -134,9 +134,6 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
     __block __weak UIViewController *weakViewController = viewController;
     void (^endViewAppearingSpanIfNeeded)(ViewLoadInstrumentationState *) = ^void(ViewLoadInstrumentationState *s) {
         __strong UIViewController *strongViewController = weakViewController;
-        if (strongViewController == nil) {
-            return;
-        }
         auto overallSpan = s.overallSpan;
         if (overallSpan.state == SpanStateOpen) {
             endOverallSpan(s, strongViewController, subviewsDidLayoutAtTime);
