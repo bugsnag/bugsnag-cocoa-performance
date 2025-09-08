@@ -446,6 +446,11 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
     }
 }
 
+void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
+    this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
+}
+
+
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
     batch_->allowDrain();
@@ -610,7 +615,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
-    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
+    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext, @[]);
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }

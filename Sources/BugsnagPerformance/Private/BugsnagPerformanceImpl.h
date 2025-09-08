@@ -10,6 +10,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -83,6 +84,8 @@ public:
     id<BugsnagPerformanceSpanControl> getSpanControls(BugsnagPerformanceSpanQuery *query) noexcept {
         return [spanControlProvider_ getSpanControlsWithQuery:query];
     }
+
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
 
 private:
     std::shared_ptr<Persistence> persistence_;

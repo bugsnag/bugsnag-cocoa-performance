@@ -374,11 +374,12 @@ Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
 BugsnagPerformanceSpan *
 Tracer::startViewLoadPhaseSpan(NSString *className,
                                NSString *phase,
-                               BugsnagPerformanceSpanContext *parentContext) noexcept {
+                               BugsnagPerformanceSpanContext *parentContext,
+                               NSArray<BugsnagPerformanceSpanCondition*> *conditionsToEndOnClose) noexcept {
     NSString *name = [NSString stringWithFormat:@"[ViewLoadPhase/%@]/%@", phase, className];
     SpanOptions options;
     options.parentContext = parentContext;
-    auto span = startSpan(name, options, BSGTriStateUnset, @[]);
+    auto span = startSpan(name, options, BSGTriStateUnset, conditionsToEndOnClose);
     if (willDiscardPrewarmSpans_) {
         markPrewarmSpan(span);
     }

@@ -72,7 +72,7 @@ Feature: Automatic instrumentation spans
     * a span named "[ViewLoadPhase/Subview layout]/Fixture.ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
-    * a span named "[ViewLoad/UIKit]/Fixture.ViewController" ended before a span named "[AppStartPhase/UI init]"
+    * a span named "[ViewLoad/UIKit]/Fixture.ViewController" ended at the same time as a span named "[AppStartPhase/UI init]"
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario"

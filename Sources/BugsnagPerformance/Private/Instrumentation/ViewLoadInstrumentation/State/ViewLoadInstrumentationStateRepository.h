@@ -17,6 +17,8 @@ class ViewLoadInstrumentationStateRepository {
 public:
     virtual void setInstrumentationState(UIViewController *viewController, ViewLoadInstrumentationState * _Nullable state) noexcept = 0;
     virtual ViewLoadInstrumentationState *getInstrumentationState(UIViewController *viewController) noexcept = 0;
+    virtual void setInstrumentationState(UIView *view, ViewLoadInstrumentationState * _Nullable state) noexcept = 0;
+    virtual ViewLoadInstrumentationState *getInstrumentationState(UIView *view) noexcept = 0;
     virtual ~ViewLoadInstrumentationStateRepository() {}
 };
 }

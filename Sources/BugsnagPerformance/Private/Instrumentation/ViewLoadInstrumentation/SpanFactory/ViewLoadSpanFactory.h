@@ -11,6 +11,7 @@
 
 @class BugsnagPerformanceSpan;
 @class BugsnagPerformanceSpanContext;
+@class BugsnagPerformanceSpanCondition;
 
 namespace bugsnag {
 
@@ -26,6 +27,9 @@ public:
     virtual BugsnagPerformanceSpan *startViewWillLayoutSubviewsSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
     virtual BugsnagPerformanceSpan *startSubviewsLayoutSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
     virtual BugsnagPerformanceSpan *startViewDidLayoutSubviewsSpan(UIViewController *viewController, BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startLoadingSpan(UIViewController *viewController,
+                                                     BugsnagPerformanceSpanContext *parentContext,
+                                                     NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
     virtual ~ViewLoadSpanFactory() {}
 };
 }

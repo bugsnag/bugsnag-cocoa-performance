@@ -71,6 +71,14 @@ ViewLoadInstrumentation::configure(BugsnagPerformanceConfiguration *config) noex
     lifecycleHandler_->onInstrumentationConfigured(isEnabled_, callback);
 }
 
+#pragma mark Loading indicator
+
+void
+ViewLoadInstrumentation::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept {
+    lifecycleHandler_->onLoadingIndicatorWasAdded(loadingIndicatorView);
+}
+
+
 #pragma mark Helpers
 
 bool

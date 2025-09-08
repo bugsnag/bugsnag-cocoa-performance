@@ -36,6 +36,8 @@ public:
     void preStartSetup() noexcept {};
     void start() noexcept {}
     
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept;
+    
 private:
     std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<ViewLoadSwizzlingHandler> swizzlingHandler_;
@@ -47,6 +49,8 @@ private:
     
     ViewLoadSwizzlingCallbacks *createViewLoadSwizzlingCallbacks() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;
+
+    void updateViewForViewController(UIViewController *viewController, ViewLoadInstrumentationState *instrumentationState);
 };
 }
 
