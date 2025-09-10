@@ -522,7 +522,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span with nil parent context
     Given I run "ManualSpanWithContextParentNilScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:3"
