@@ -467,7 +467,7 @@ steps:
             run: maze-runner-bs
             service-ports: true
             command:
-              - "--app=@build/bs_ipa_url_benchmarks.txt"
+              - "--app=@build_benchmarks/bs_ipa_url_benchmarks.txt"
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
@@ -502,13 +502,13 @@ steps:
             run: maze-runner-bb
             service-ports: true
             command:
-              - "--app=@build/bb_ipa_url_benchmarks.txt"
+              - "--app=@build_benchmarks/bb_ipa_url_benchmarks.txt"
               - "--device=IOS_13"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default"
+              - "features/benchmarks"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"

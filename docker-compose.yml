@@ -34,6 +34,7 @@ services:
       - "9000-9499:9340"
     volumes:
       - ./features/fixtures/ios/output:/app/build
+      - ./features/fixtures/benchmarks/output:/app/build_benchmarks
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - /var/run/docker.sock:/var/run/docker.sock
@@ -47,6 +48,7 @@ services:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
       - ./features/fixtures/ios/output:/app/build
+      - ./features/fixtures/benchmarks/output:/app/build_benchmarks
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - ./reports/:/app/reports/
