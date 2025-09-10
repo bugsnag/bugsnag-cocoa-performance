@@ -81,7 +81,7 @@ class BenchmarkRunner {
         logInfo("Reporting metrics for suite \"\(String(describing: suite))\"")
         guard let startTime = startTime else { return }
         var metrics: [String: String] = [:]
-        metrics["timestamp"] = "\(nanoseconds(date: startTime))"
+        metrics["timestamp"] = formatTimestamp(startTime)
         metrics["benchmark"] = String(describing: type(of: suite!))
             .replacingOccurrences(of: "Fixture.", with: "")
         args?.forEach { metrics["\($0)"] = "true" }
@@ -127,9 +127,13 @@ class BenchmarkRunner {
         return args.split(separator: ",").map(String.init)
     }
     
-    func nanoseconds(date: Date) -> Int {
-        let calendar = Calendar.current
-        let duration = calendar.dateComponents([.nanosecond], from: date)
-        return duration.nanosecond ?? 0
+    func formatTimestamp(_ date: Date) -> String {
+        var options = ISO8601DateFormatter.Options.withInternetDateTime.union(ISO8601DateFormatter.Options.withFractionalSeconds)
+        return ISO8601DateFormatter
+            .string(
+                from: date,
+                timeZone: TimeZone(secondsFromGMT: 0)!,
+                formatOptions: options
+            )
     }
 }

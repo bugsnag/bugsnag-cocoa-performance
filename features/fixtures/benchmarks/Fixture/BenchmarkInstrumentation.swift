@@ -14,12 +14,7 @@ class BenchmarkInstrumentation {
     private enum Phase {
         case idle, excluded, measured
     }
-    
-    private struct BenchmarkSample {
-        let date: Date
-        let cpuSample: CPUSample?
-    }
-    
+
     private let cpuSampler = CPUSampler()
     
     private var phase: Phase = .idle {
@@ -27,6 +22,7 @@ class BenchmarkInstrumentation {
             currentPhaseStart = clock_gettime_nsec_np(CLOCK_MONOTONIC)
         }
     }
+    
     private var currentPhaseStart: UInt64 = 0
     private var currentCpuSample: CPUSample?
     
@@ -35,7 +31,6 @@ class BenchmarkInstrumentation {
     private var iterations = 0
     private var cpuUse = 0.0
 
-    
     func startExcludedTime() {
         guard phase != .excluded else { return }
         endCurrentPhase()
