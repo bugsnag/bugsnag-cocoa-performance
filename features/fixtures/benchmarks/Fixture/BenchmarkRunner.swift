@@ -124,7 +124,7 @@ class BenchmarkRunner {
     }
     
     func splitArgs(args: String) -> [String] {
-        return args.split(separator: ",").map(String.init)
+        return args.split(separator: " ").map(String.init)
     }
     
     func formatTimestamp(_ date: Date) -> String {
