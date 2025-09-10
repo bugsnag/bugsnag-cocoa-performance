@@ -55,7 +55,7 @@ class Fixture: NSObject, CommandReceiver {
     var readyToReceiveCommand = false
     var commandReaderThread: CommandReaderThread?
     var fixtureConfig: FixtureConfig = FixtureConfig(mazeRunnerBaseAddress: defaultMazeRunnerURL)
-    let benchmarkRunner = BenchmarkRunner();
+    let benchmarkRunner = BenchmarkRunner()
     var suite: Suite? = nil
     var args = ""
 
@@ -68,6 +68,7 @@ class Fixture: NSObject, CommandReceiver {
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadMazeRunnerAddress { address in
                 self.fixtureConfig = FixtureConfig(mazeRunnerBaseAddress: address)
+                self.benchmarkRunner.fixtureConfig = self.fixtureConfig
                 self.beginReceivingCommands(fixtureConfig: self.fixtureConfig)
             }
         }
@@ -90,10 +91,13 @@ class Fixture: NSObject, CommandReceiver {
             switch command.action {
             case "run_suite":
                 self.loadSuite(suiteName: command.args["suite"] as! String)
-                self.args = command.args["args"] as? String ?? ""
+                self.args = command.args["arguments"] as? String ?? ""
                 self.runLoadedSuite {
                     self.terminateApp()
                 }
+                self.readyToReceiveCommand = true
+                break
+            case "noop":
                 self.readyToReceiveCommand = true
                 break
             default:

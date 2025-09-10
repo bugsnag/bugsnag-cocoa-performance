@@ -30,6 +30,7 @@ class BenchmarkRunner {
         startTime = Date()
         args = splitArgs(args: argsString)
         
+        logInfo("Starting suite \"\(String(describing: suite))\" with args \"\(args)\"")
         warmUp()
         coolDown()
         
@@ -38,13 +39,16 @@ class BenchmarkRunner {
     }
     
     func warmUp() {
+        logInfo("Starting warmUp for suite \"\(String(describing: suite))\"")
         suite.startBugsnag(args: args ?? [])
         let warmupConfig = SuiteConfig(numberOfIterations: Constants.numberOfWarmupIterations)
         suite.configure(warmupConfig)
         suite.run()
+        logInfo("Finished warmUp for suite \"\(String(describing: suite))\"")
     }
     
     func performMeasuredRuns() {
+        logInfo("Starting measured runs for suite \"\(String(describing: suite))\"")
         let measurementConfig = SuiteConfig(
             numberOfIterations: Constants.numberOfMeasurementIterations
         )
@@ -59,6 +63,7 @@ class BenchmarkRunner {
             recordMeasurement(instrumentation.finalMeasurement())
             coolDown()
         }
+        logInfo("Finished measured runs for suite \"\(String(describing: suite))\"")
     }
     
     func coolDown() {
@@ -73,10 +78,12 @@ class BenchmarkRunner {
     }
     
     func reportMetrics(completion: @escaping () -> Void) {
+        logInfo("Reporting metrics for suite \"\(String(describing: suite))\"")
         guard let startTime = startTime else { return }
         var metrics: [String: String] = [:]
         metrics["timestamp"] = "\(nanoseconds(date: startTime))"
-        metrics["benchmark"] = String(describing: suite)
+        metrics["benchmark"] = String(describing: type(of: suite!))
+            .replacingOccurrences(of: "Fixture.", with: "")
         args?.forEach { metrics["\($0)"] = "true" }
         
         metrics["totalTimeTaken"] = "\(totalMeasuredTime + totalExcludedTime)"
@@ -93,6 +100,8 @@ class BenchmarkRunner {
             metrics["cpuUse.\(runNr)"] = "\(measurement.cpuUse)"
         }
         
+        logInfo("Measurements recorded \(measurements)")
+        
         var request = URLRequest(url: fixtureConfig!.metricsURL)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -103,7 +112,13 @@ class BenchmarkRunner {
         }
         request.httpBody = jsonData
 
-        URLSession.shared.dataTask(with: request, completionHandler: { _, _, _ in
+        logInfo("Sending measurements to url \(fixtureConfig!.metricsURL.absoluteString)")
+        URLSession.shared.dataTask(with: request, completionHandler: { _, _, error in
+            if let error {
+                logInfo("Sending measurements failed with error \(error)")
+            } else {
+                logInfo("Measurements sent successfully")
+            }
             completion()
         }).resume()
     }

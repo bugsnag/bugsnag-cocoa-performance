@@ -16,7 +16,7 @@ static inline NSTimeInterval timeValToTimeInterval(time_value_t value) {
 }
 
 NSTimeInterval taskTime() {
-    mach_port_t thread = 0;
+    mach_port_t thread = mach_thread_self();
     thread_basic_info_data_t threadBasicInfo;
     mach_msg_type_number_t count = THREAD_BASIC_INFO_COUNT;
     auto status = thread_info(thread, THREAD_BASIC_INFO, (thread_info_t)&threadBasicInfo, &count);
