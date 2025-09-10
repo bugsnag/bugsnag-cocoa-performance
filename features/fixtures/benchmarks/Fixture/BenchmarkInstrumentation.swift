@@ -5,6 +5,8 @@
 //  Created by Robert Bartoszewski on 09/09/2025.
 //
 
+import Foundation
+
 
 
 class BenchmarkInstrumentation {
@@ -20,38 +22,45 @@ class BenchmarkInstrumentation {
     
     private let cpuSampler = CPUSampler()
     
-    private var phase: Phase = .idle
+    private var phase: Phase = .idle {
+        didSet {
+            currentPhaseStart = clock_gettime_nsec_np(CLOCK_MONOTONIC)
+        }
+    }
+    private var currentPhaseStart: UInt64 = 0
+    private var currentCpuSample: CPUSample?
+    
+    private var excludedTime: UInt64 = 0
+    private var measuredTime: UInt64 = 0
     private var iterations = 0
-    
-    private var excludedTimeStartSamples: [BenchmarkSample] = []
-    private var excludedTimeEndSamples: [BenchmarkSample] = []
-    
-    private var measuredTimeStartSamples: [BenchmarkSample] = []
-    private var measuredTimeEndSamples: [BenchmarkSample] = []
+    private var cpuUse = 0.0
+
     
     func startExcludedTime() {
         guard phase != .excluded else { return }
         endCurrentPhase()
-        excludedTimeStartSamples.append(recordSample())
         phase = .excluded
     }
     
     func endExcludedTime() {
         guard phase == .excluded else { return }
-        excludedTimeEndSamples.append(recordSample())
+        excludedTime += clock_gettime_nsec_np(CLOCK_MONOTONIC) - currentPhaseStart
         phase = .idle
     }
     
     func startMeasuredTime() {
         guard phase != .measured else { return }
         endCurrentPhase()
-        measuredTimeStartSamples.append(recordSample())
+        currentCpuSample = cpuSampler.recordSample()
         phase = .measured
     }
     
     func endMeasuredTime() {
         guard phase == .measured else { return }
-        measuredTimeEndSamples.append(recordSample())
+        measuredTime += clock_gettime_nsec_np(CLOCK_MONOTONIC) - currentPhaseStart
+        if let cpuSample = currentCpuSample {
+            cpuUse += cpuSampler.recordSample()?.usage(since: cpuSample) ?? 0
+        }
         phase = .idle
     }
     
@@ -60,34 +69,10 @@ class BenchmarkInstrumentation {
     }
     
     func finalMeasurement() -> BenchmarkMeasurement {
-        var excludedTime = 0
-        excludedTimeStartSamples.enumerated().forEach { (index, sample) in
-            guard index < excludedTimeEndSamples.count else {
-                return
-            }
-            let startSample = sample
-            let endSample = excludedTimeEndSamples[index]
-            excludedTime += nanoseconds(from: startSample.date, to: endSample.date)
-        }
-        
-        var measuredTime = 0
-        var cpuUse = 0.0
-        measuredTimeStartSamples.enumerated().forEach { (index, sample) in
-            guard index < measuredTimeEndSamples.count else {
-                return
-            }
-            let startSample = sample
-            let endSample = measuredTimeEndSamples[index]
-            measuredTime += nanoseconds(from: startSample.date, to: endSample.date)
-            if let startCPUSample = startSample.cpuSample, let endCPUSample = endSample.cpuSample {
-                cpuUse += endCPUSample.usage(since: startCPUSample)
-            }
-        }
-        
-        return BenchmarkMeasurement(
-            timeTaken: measuredTime + excludedTime,
-            excludedTime: excludedTime,
-            measuredTime: measuredTime,
+        BenchmarkMeasurement(
+            timeTaken: Int(measuredTime + excludedTime),
+            excludedTime: Int(excludedTime),
+            measuredTime: Int(measuredTime),
             iterations: iterations,
             cpuUse: cpuUse
         )
@@ -101,10 +86,6 @@ class BenchmarkInstrumentation {
             endMeasuredTime()
         default: break
         }
-    }
-    
-    private func recordSample() -> BenchmarkSample {
-        BenchmarkSample(date: Date(), cpuSample: cpuSampler.recordSample())
     }
     
     private func nanoseconds(from fromDate: Date, to toDate: Date) -> Int {
