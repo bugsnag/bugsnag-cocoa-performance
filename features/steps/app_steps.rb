@@ -34,6 +34,10 @@ When('I run {string}') do |scenario_name|
   run_command("run_scenario", { scenario: scenario_name })
 end
 
+When('I run {string} configured as {string}') do |suite_name, args|
+  run_command("run_suite", { suite: suite_name, arguments: args})
+end
+
 When('I load scenario {string}') do |scenario_name|
   run_command("load_scenario", { scenario: scenario_name })
 end
