@@ -9,6 +9,9 @@ Changelog
 
 ### Bug fixes
 
+* Fixed an issue allowing conditions to change spans endDate to an earlier date.
+  [478](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/478)
+
 * Fixed an issue preventing spans that have ended but are still blocked to be blocked with another condition.
   [471](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/471)
 
