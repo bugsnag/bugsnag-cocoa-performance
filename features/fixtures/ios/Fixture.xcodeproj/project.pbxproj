@@ -78,6 +78,9 @@
 		9691A9E12CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */; };
 		96986D9E2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */; };
 		96986DA02D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */; };
+		969EE0E22E784E6400600F63 /* ConditionsBasicScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0E02E784E6400600F63 /* ConditionsBasicScenario.swift */; };
+		969EE0E32E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */; };
+		969EE0E92E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0E82E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift */; };
 		96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */; };
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
@@ -183,6 +186,9 @@
 		9691A9E02CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift; sourceTree = "<group>"; };
 		96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsSimpleConditionScenario.swift; sourceTree = "<group>"; };
 		96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpanConditionsMultipleConditionsScenario.swift; sourceTree = "<group>"; };
+		969EE0E02E784E6400600F63 /* ConditionsBasicScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionsBasicScenario.swift; sourceTree = "<group>"; };
+		969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionsOverrideEndTimeBackwardsScenario.swift; sourceTree = "<group>"; };
+		969EE0E82E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionsBlockingBlockedEndedSpanScenario.swift; sourceTree = "<group>"; };
 		96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsWithViewLoadScenario.swift; sourceTree = "<group>"; };
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
@@ -320,6 +326,9 @@
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
 				09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */,
+				969EE0E02E784E6400600F63 /* ConditionsBasicScenario.swift */,
+				969EE0E82E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift */,
+				969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */,
 				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 				09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */,
 				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
@@ -477,12 +486,15 @@
 				09E045612C98649D003882D3 /* SetAttributeCountLimitScenario.swift in Sources */,
 				962CE7EE2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift in Sources */,
 				962CE7F12E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift in Sources */,
+				969EE0E92E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift in Sources */,
 				09637A432B0617FE00F4F776 /* MazeRunnerCommand.swift in Sources */,
 				09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */,
 				966634E22C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift in Sources */,
 				9691A9DF2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift in Sources */,
 				09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
+				969EE0E22E784E6400600F63 /* ConditionsBasicScenario.swift in Sources */,
+				969EE0E32E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift in Sources */,
 				09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */,
 				96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */,
 				09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */,

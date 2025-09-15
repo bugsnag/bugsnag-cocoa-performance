@@ -2,7 +2,7 @@
 //  FixedSamplingProbabilityZeroScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 23/08/2024.
+//  Created by Robert Bartoszewski on 23/08/2024.
 //
 
 import BugsnagPerformance

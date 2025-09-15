@@ -2,7 +2,7 @@
 //  ManualSpanWithRemoteContextParentScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 08/05/2025.
+//  Created by Robert Bartoszewski on 08/05/2025.
 //
 
 import Bugsnag

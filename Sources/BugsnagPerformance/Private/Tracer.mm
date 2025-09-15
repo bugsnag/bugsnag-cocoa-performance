@@ -220,7 +220,7 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
     }
     BugsnagPerformanceSpanCondition *condition = [BugsnagPerformanceSpanCondition conditionWithSpan:span onClosedCallback:^(BugsnagPerformanceSpanCondition *c, CFAbsoluteTime endTime) {
         __strong BugsnagPerformanceSpan *strongSpan = c.span;
-        if (strongSpan.state == SpanStateEnded) {
+        if (strongSpan.state == SpanStateEnded && endTime > strongSpan.endAbsTime) {
             [strongSpan markEndAbsoluteTime:endTime];
         }
     } onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *c) {

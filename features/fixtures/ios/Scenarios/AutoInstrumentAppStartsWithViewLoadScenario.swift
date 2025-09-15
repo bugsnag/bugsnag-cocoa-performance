@@ -2,7 +2,7 @@
 //  AutoInstrumentAppStartsWithViewLoadScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 20/02/2025.
+//  Created by Robert Bartoszewski on 20/02/2025.
 //
 
 import BugsnagPerformance

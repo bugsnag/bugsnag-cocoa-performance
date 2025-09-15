@@ -2,7 +2,7 @@
 //  AutoInstrumentNetworkSharedSessionInvalidateScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 26/10/2024.
+//  Created by Robert Bartoszewski on 26/10/2024.
 //
 
 import Foundation

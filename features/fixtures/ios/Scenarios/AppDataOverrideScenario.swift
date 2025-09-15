@@ -2,7 +2,7 @@
 //  AppDataOverrideScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 16/08/2024.
+//  Created by Robert Bartoszewski on 16/08/2024.
 //
 
 import BugsnagPerformance

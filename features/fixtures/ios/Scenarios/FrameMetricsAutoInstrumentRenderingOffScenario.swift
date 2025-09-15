@@ -2,7 +2,7 @@
 //  FrameMetricsAutoInstrumentRenderingOffScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 26/09/2024.
+//  Created by Robert Bartoszewski on 26/09/2024.
 //
 
 import Bugsnag
