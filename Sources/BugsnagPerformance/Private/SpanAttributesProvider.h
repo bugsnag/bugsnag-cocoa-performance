@@ -22,6 +22,7 @@ public:
     
     NSMutableDictionary *internalErrorAttributes(NSError *encounteredError) noexcept;
     
+    NSMutableDictionary *initialAppStartSpanAttributes() noexcept;
     NSMutableDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSMutableDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSMutableDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;

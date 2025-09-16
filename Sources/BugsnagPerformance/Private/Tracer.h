@@ -20,6 +20,11 @@
 #import "ConditionTimeoutExecutor.h"
 #import "Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
 #import "BSGPrioritizedStore.h"
+#import "SpanFactory/Plain/PlainSpanFactoryImpl.h"
+#import "SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
+#import "SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
+#import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
+#import "SpanFactory/ViewLoad/ViewLoadSpanFactoryCallbacks.h"
 
 #import <memory>
 
@@ -31,21 +36,43 @@ namespace bugsnag {
  */
 class Tracer: public PhasedStartup {
 public:
-    Tracer(std::shared_ptr<SpanStackingHandler> spanContextStack,
+    Tracer(std::shared_ptr<SpanStackingHandler> spanStackingHandler,
            std::shared_ptr<Sampler> sampler,
            std::shared_ptr<Batch> batch,
            FrameMetricsCollector *frameMetricsCollector,
            std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
-           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+           std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
+           std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory,
+           std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory,
            BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
            BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
-           void (^onSpanStarted)()) noexcept;
+           void (^onSpanStarted)()) noexcept
+    : spanStackingHandler_(spanStackingHandler)
+    , sampler_(sampler)
+    , prewarmSpans_([NSMutableArray new])
+    , blockedSpans_([NSMutableArray new])
+    , potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
+    , batch_(batch)
+    , frameMetricsCollector_(frameMetricsCollector)
+    , conditionTimeoutExecutor_(conditionTimeoutExecutor)
+    , plainSpanFactory_(plainSpanFactory)
+    , viewLoadSpanFactory_(viewLoadSpanFactory)
+    , networkSpanFactory_(networkSpanFactory)
+    , onSpanStartCallbacks_(onSpanStartCallbacks)
+    , onSpanEndCallbacks_(onSpanEndCallbacks)
+    , onSpanStarted_(onSpanStarted)
+    {
+        plainSpanFactory_->setup(createPlainSpanFactoryCallbacks());
+        viewLoadSpanFactory_->setup(createViewLoadSpanFactoryCallbacks());
+    }
+    
+    
     ~Tracer() {};
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
-        attributeCountLimit_ = config.attributeCountLimit;
+        plainSpanFactory_->setAttributeCountLimit(config.attributeCountLimit);
         enabledMetrics_ = [config.enabledMetrics clone];
     };
     void preStartSetup() noexcept;
@@ -60,8 +87,6 @@ public:
     }
 
     BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
-
-    BugsnagPerformanceSpan *startAppStartSpan(NSString *name, SpanOptions options, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 
     BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
 
@@ -93,7 +118,9 @@ private:
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     FrameMetricsCollector *frameMetricsCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
-    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
+    std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
+    std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
@@ -102,7 +129,6 @@ private:
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
-    NSUInteger attributeCountLimit_{128};
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
     // but span abort/end are idempotent so it doesn't matter.
@@ -113,6 +139,8 @@ private:
     std::function<void(NSString *)> onViewLoadSpanStarted_{ [](NSString *){} };
     std::function<AppStartupInstrumentationStateSnapshot *()> getAppStartupInstrumentationState_{ [](){ return nil; } };
 
+    PlainSpanFactoryCallbacks *createPlainSpanFactoryCallbacks() noexcept;
+    ViewLoadSpanFactoryCallbacks *createViewLoadSpanFactoryCallbacks() noexcept;
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
     void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanEndSet(BugsnagPerformanceSpan *span);

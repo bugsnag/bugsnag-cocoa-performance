@@ -9,7 +9,7 @@
 #import "../../PhasedStartup.h"
 #import "../../Tracer.h"
 #import "State/ViewLoadInstrumentationState.h"
-#import "SpanFactory/ViewLoadSpanFactory.h"
+#import "../../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "System/ViewLoadInstrumentationSystemUtils.h"
 #import "System/ViewLoadSwizzlingHandler.h"
 #import "Lifecycle/ViewLoadLifecycleHandler.h"

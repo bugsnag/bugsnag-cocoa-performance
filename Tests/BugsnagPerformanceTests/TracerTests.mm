@@ -8,6 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import "Tracer.h"
+#import "AppStartupSpanFactoryImpl.h"
+#import "ViewLoadSpanFactoryImpl.h"
+#import "NetworkSpanFactoryImpl.h"
 
 using namespace bugsnag;
 
@@ -25,6 +28,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto earlyConfig = [BSGEarlyConfiguration new];
     earlyConfig.appWasLaunchedPreWarmed = YES;
     auto config = newConfig();
+    
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
     auto frameMetricsCollector = [FrameMetricsCollector new];
@@ -34,7 +38,23 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto batch = std::make_shared<Batch>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -52,6 +72,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto earlyConfig = [BSGEarlyConfiguration new];
     earlyConfig.appWasLaunchedPreWarmed = YES;
     auto config = newConfig();
+    
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
@@ -61,7 +82,23 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -79,6 +116,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto earlyConfig = [BSGEarlyConfiguration new];
     earlyConfig.appWasLaunchedPreWarmed = NO;
     auto config = newConfig();
+    
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
@@ -88,7 +126,23 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -106,6 +160,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto earlyConfig = [BSGEarlyConfiguration new];
     earlyConfig.appWasLaunchedPreWarmed = NO;
     auto config = newConfig();
+    
     auto stackingHandler = std::make_shared<SpanStackingHandler>();
     auto sampler = std::make_shared<Sampler>();
     sampler->setProbability(1.0);
@@ -115,7 +170,23 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
     tracer->earlyConfigure(earlyConfig);
     tracer->earlySetup();
     tracer->configure(config);
@@ -139,7 +210,24 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
+    
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(@"GET", spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
@@ -157,7 +245,24 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
+    
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(nil, spanOptions);
     XCTAssertEqual(span.kind, SPAN_KIND_CLIENT);
@@ -176,7 +281,24 @@ static BugsnagPerformanceConfiguration *newConfig() {
     auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
     auto spanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
     auto spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
-    auto tracer = std::make_shared<Tracer>(stackingHandler, sampler, batch, frameMetricsCollector, conditionTimeoutExecutor, spanAttributesProvider, spanStartCallbacks, spanEndCallbacks, ^(){});
+    
+    auto plainSpanFactory = std::make_shared<PlainSpanFactoryImpl>(sampler, stackingHandler, spanAttributesProvider);
+    auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    
+    auto tracer = std::make_shared<Tracer>(stackingHandler,
+                                           sampler,
+                                           batch,
+                                           frameMetricsCollector,
+                                           conditionTimeoutExecutor,
+                                           plainSpanFactory,
+                                           viewLoadSpanFactory,
+                                           networkSpanFactory,
+                                           spanStartCallbacks,
+                                           spanEndCallbacks,
+                                           ^(){});
+    
     SpanOptions spanOptions;
     auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes, @[]);
     XCTAssertEqual(span.kind, SPAN_KIND_INTERNAL);

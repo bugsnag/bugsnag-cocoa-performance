@@ -44,20 +44,27 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanStackingHandler_(std::make_shared<SpanStackingHandler>())
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
-, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , sampler_(std::make_shared<Sampler>())
+, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
 , spanEndCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new])
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, spanAttributesProvider_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
+, plainSpanFactory_(std::make_shared<PlainSpanFactoryImpl>(sampler_, spanStackingHandler_, spanAttributesProvider_))
+, appStartupSpanFactory_(std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, viewLoadSpanFactory_(std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, networkSpanFactory_(std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, plainSpanFactory_, viewLoadSpanFactory_, networkSpanFactory_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 , instrumentation_(std::make_shared<Instrumentation>(tracer_,
+                                                     appStartupSpanFactory_,
+                                                     viewLoadSpanFactory_,
+                                                     networkSpanFactory_,
                                                      spanAttributesProvider_,
                                                      networkHeaderInjector_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])

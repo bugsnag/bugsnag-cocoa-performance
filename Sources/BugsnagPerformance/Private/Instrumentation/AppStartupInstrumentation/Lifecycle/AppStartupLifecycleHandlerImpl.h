@@ -7,7 +7,7 @@
 //
 
 #import "AppStartupLifecycleHandler.h"
-#import "../SpanFactory/AppStartupSpanFactory.h"
+#import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"
 #import "../../../SpanAttributesProvider.h"
 #import "../../../BugsnagPerformanceCrossTalkAPI.h"

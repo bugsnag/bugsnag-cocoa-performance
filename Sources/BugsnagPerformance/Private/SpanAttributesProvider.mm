@@ -175,6 +175,13 @@ SpanAttributesProvider::appStartPhaseSpanAttributes(NSString *phase) noexcept {
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::initialAppStartSpanAttributes() noexcept {
+    return @{
+        @"bugsnag.span.category": @"app_start",
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept {
     NSMutableDictionary *attributes = @{
         @"bugsnag.span.category": @"app_start",

@@ -9,7 +9,7 @@
 #import "ViewLoadLifecycleHandler.h"
 #import "ViewLoadEarlyPhaseHandler.h"
 #import "ViewLoadLoadingIndicatorsHandler.h"
-#import "../SpanFactory/ViewLoadSpanFactory.h"
+#import "../../../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
 #import "../../../Tracer.h"
 #import "../../../BugsnagPerformanceCrossTalkAPI.h"

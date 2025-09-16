@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../../SpanOptions.h"
 
 @class BugsnagPerformanceSpan;
 @class BugsnagPerformanceSpanContext;
@@ -16,7 +17,11 @@ namespace bugsnag {
 
 class AppStartupSpanFactory {
 public:
-    virtual BugsnagPerformanceSpan *startAppStartSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startAppStartSpan(NSString *name,
+                                                      SpanOptions options,
+                                                      NSDictionary *attributes,
+                                                      NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startAppStartOverallSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept = 0;
     virtual BugsnagPerformanceSpan *startPreMainSpan(CFAbsoluteTime startTime, BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
     virtual BugsnagPerformanceSpan *startPostMainSpan(CFAbsoluteTime startTime, BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
     virtual BugsnagPerformanceSpan *startUIInitSpan(CFAbsoluteTime startTime,
