@@ -7,16 +7,16 @@
 //
 
 #import "NetworkSpanFactory.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../Tracer.h"
+#import "../../SpanAttributesProvider.h"
+#import "../Plain/PlainSpanFactory.h"
 
 namespace bugsnag {
 
 class NetworkSpanFactoryImpl: public NetworkSpanFactory {
 public:
-    NetworkSpanFactoryImpl(std::shared_ptr<Tracer> tracer,
+    NetworkSpanFactoryImpl(std::shared_ptr<PlainSpanFactory> plainSpanFactory,
                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-    : tracer_(tracer)
+    : plainSpanFactory_(plainSpanFactory)
     , spanAttributesProvider_(spanAttributesProvider) {}
     
     BugsnagPerformanceSpan *startOverallNetworkSpan(NSString *httpMethod,
@@ -26,8 +26,12 @@ public:
     BugsnagPerformanceSpan *startInternalErrorSpan(NSString *httpMethod,
                                                    NSError *error) noexcept;
     
+    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod,
+                                             const SpanOptions &options,
+                                             NSDictionary *attributes) noexcept;
+    
 private:
-    std::shared_ptr<Tracer> tracer_;
+    std::shared_ptr<PlainSpanFactory> plainSpanFactory_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
     NetworkSpanFactoryImpl() = delete;

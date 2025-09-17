@@ -7,7 +7,7 @@
 //
 
 #import "AppStartupLifecycleHandlerImpl.h"
-#import "../SpanFactory/AppStartupSpanFactory.h"
+#import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../../../SpanAttributesProvider.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
 
@@ -119,9 +119,9 @@ AppStartupLifecycleHandlerImpl::beginAppStartSpan(AppStartupInstrumentationState
         return;
     }
 
-    state.appStartSpan = spanFactory_->startAppStartSpan(state.didStartProcessAtTime,
-                                                         state.isColdLaunch,
-                                                         state.firstViewName);
+    state.appStartSpan = spanFactory_->startAppStartOverallSpan(state.didStartProcessAtTime,
+                                                                state.isColdLaunch,
+                                                                state.firstViewName);
 }
 
 void

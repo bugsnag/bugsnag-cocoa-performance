@@ -7,8 +7,8 @@
 //
 
 #import "ViewLoadSpanFactoryImpl.h"
-#import "../../../Tracer.h"
-#import "../../../BugsnagSwiftTools.h"
+#import "../../Tracer.h"
+#import "../../BugsnagSwiftTools.h"
 
 using namespace bugsnag;
 
@@ -17,9 +17,7 @@ ViewLoadSpanFactoryImpl::startOverallViewLoadSpan(UIViewController *viewControll
     auto viewType = BugsnagPerformanceViewTypeUIKit;
     auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(viewType, name, options);
-    [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
-    return span;
+    return startViewLoadSpan(viewType, name, nil, options, @{});
 }
 
 BugsnagPerformanceSpan *
@@ -28,10 +26,8 @@ ViewLoadSpanFactoryImpl::startPreloadedPresentingSpan(UIViewController *viewCont
     auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     
     SpanOptions options;
-    auto span = tracer_->startViewLoadSpan(viewType, className, options);
-    [span internalSetMultipleAttributes:spanAttributesProvider_->presentingViewLoadSpanAttributes(className, viewType)];
-    [span updateName: [NSString stringWithFormat:@"%@ (presenting)", span.name]];
-    return span;
+    auto attributes = spanAttributesProvider_->presentingViewLoadSpanAttributes(className, viewType);
+    return startViewLoadSpan(viewType, className, @"(presenting)", options, attributes);
 }
 
 BugsnagPerformanceSpan *
@@ -84,6 +80,68 @@ ViewLoadSpanFactoryImpl::startLoadingSpan(UIViewController *viewController,
                                   conditionsToEndOnClose);
 }
 
+BugsnagPerformanceSpan *
+ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
+                                           NSString *className,
+                                           NSString *suffix,
+                                           const SpanOptions &options,
+                                           NSDictionary *attributes) noexcept {
+    NSString *type = getBugsnagPerformanceViewTypeName(viewType);
+    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
+    SpanOptions spanOptions(options);
+    if (options.parentContext == nil && callbacks_.getViewLoadParentSpan != nil) {
+        BugsnagPerformanceSpan *parentSpan = callbacks_.getViewLoadParentSpan();
+        if (parentSpan != nil) {
+            spanOptions.parentContext = parentSpan;
+            BugsnagPerformanceSpanCondition *parentSpanCondition = [parentSpan blockWithTimeout:0.1];
+            if (parentSpanCondition) {
+                conditionsToEndOnClose = @[parentSpanCondition];
+            }
+        }
+    }
+    NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
+    if (suffix) {
+        name = [NSString stringWithFormat:@"%@ %@", name, suffix];
+    }
+    if (options.firstClass == BSGTriStateUnset) {
+        if (callbacks_.isViewLoadInProgress != nil && callbacks_.isViewLoadInProgress()) {
+            spanOptions.firstClass = BSGTriStateNo;
+        }
+    }
+    auto spanAttributes = spanAttributesProvider_->viewLoadSpanAttributes(className, viewType);
+    [spanAttributes addEntriesFromDictionary:attributes];
+    auto span = plainSpanFactory_->startSpan(name,
+                                             spanOptions,
+                                             BSGTriStateYes,
+                                             spanAttributes,
+                                             conditionsToEndOnClose);
+    if (callbacks_.onViewLoadSpanStarted != nil) {
+        callbacks_.onViewLoadSpanStarted(span, className);
+    }
+    return span;
+}
+
+BugsnagPerformanceSpan *
+ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(NSString *className,
+                                                BugsnagPerformanceSpanContext *parentContext,
+                                                NSString *phase,
+                                                NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
+    auto attributes = spanAttributesProvider_->viewLoadPhaseSpanAttributes(className,
+                                                                           phase);
+    NSString *name = [NSString stringWithFormat:@"[ViewLoadPhase/%@]/%@", phase, className];
+    SpanOptions options;
+    options.parentContext = parentContext;
+    auto span = plainSpanFactory_->startSpan(name,
+                                             options,
+                                             BSGTriStateUnset,
+                                             attributes,
+                                             conditionsToEndOnClose);
+    if (callbacks_.onViewLoadPhaseSpanStarted != nil) {
+        callbacks_.onViewLoadPhaseSpanStarted(span);
+    }
+    return span;
+}
+
 #pragma mark Helpers
 
 BugsnagPerformanceSpan *
@@ -98,11 +156,6 @@ ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(UIViewController *viewController
                                                 BugsnagPerformanceSpanContext *parentContext,
                                                 NSString *phase,
                                                 NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
-    auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
-    auto span = tracer_->startViewLoadPhaseSpan(name,
-                                                phase,
-                                                parentContext,
-                                                conditionsToEndOnClose);
-    [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
-    return span;
+    auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
+    return startViewLoadPhaseSpan(className, parentContext, phase, conditionsToEndOnClose);
 }

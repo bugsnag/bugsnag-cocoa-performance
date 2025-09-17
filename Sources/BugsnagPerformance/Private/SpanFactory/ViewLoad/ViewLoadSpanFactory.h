@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+
+#import "../../SpanOptions.h"
 
 @class BugsnagPerformanceSpan;
 @class BugsnagPerformanceSpanContext;
@@ -30,6 +33,11 @@ public:
     virtual BugsnagPerformanceSpan *startLoadingSpan(UIViewController *viewController,
                                                      BugsnagPerformanceSpanContext *parentContext,
                                                      NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
+                                                      NSString *className,
+                                                      NSString *suffix,
+                                                      const SpanOptions &options,
+                                                      NSDictionary *attributes) noexcept = 0;
     virtual ~ViewLoadSpanFactory() {}
 };
 }

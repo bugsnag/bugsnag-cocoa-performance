@@ -7,17 +7,17 @@
 //
 
 #import "ViewLoadSpanFactory.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../Tracer.h"
-
+#import "../../SpanAttributesProvider.h"
+#import "../Plain/PlainSpanFactory.h"
+#import "ViewLoadSpanFactoryCallbacks.h"
 
 namespace bugsnag {
 
 class ViewLoadSpanFactoryImpl: public ViewLoadSpanFactory {
 public:
-    ViewLoadSpanFactoryImpl(std::shared_ptr<Tracer> tracer,
+    ViewLoadSpanFactoryImpl(std::shared_ptr<PlainSpanFactory> plainSpanFactory,
                             std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-    : tracer_(tracer)
+    : plainSpanFactory_(plainSpanFactory)
     , spanAttributesProvider_(spanAttributesProvider) {}
     
     BugsnagPerformanceSpan *startOverallViewLoadSpan(UIViewController *viewController) noexcept;
@@ -34,9 +34,22 @@ public:
                                              BugsnagPerformanceSpanContext *parentContext,
                                              NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
     
+    BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
+                                              NSString *className,
+                                              NSString *suffix,
+                                              const SpanOptions &options,
+                                              NSDictionary *attributes) noexcept;
+    BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
+                                                   BugsnagPerformanceSpanContext *parentContext,
+                                                   NSString *phase,
+                                                   NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
+    
+    void setup(ViewLoadSpanFactoryCallbacks *callbacks) noexcept { callbacks_ = callbacks; }
+    
 private:
-    std::shared_ptr<Tracer> tracer_;
+    std::shared_ptr<PlainSpanFactory> plainSpanFactory_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    ViewLoadSpanFactoryCallbacks *callbacks_;
     
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(UIViewController *viewController,
                                                    BugsnagPerformanceSpanContext *parentContext,

@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "../../SpanOptions.h"
 
 @class BugsnagPerformanceSpan;
 
@@ -19,6 +20,9 @@ public:
                                                             NSError *error) noexcept = 0;
     virtual BugsnagPerformanceSpan *startInternalErrorSpan(NSString *httpMethod,
                                                            NSError *error) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod,
+                                                     const SpanOptions &options,
+                                                     NSDictionary *attributes) noexcept = 0;
     virtual ~NetworkSpanFactory() {}
 };
 }
