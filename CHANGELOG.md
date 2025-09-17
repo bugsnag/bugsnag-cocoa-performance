@@ -9,6 +9,9 @@ Changelog
 
 ### Bug fixes
 
+* Fixed an issue causing onSpanStart callbacks being called before all initial attributes have been set.
+  [479](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/479)
+
 * Fixed an issue allowing conditions to change spans endDate to an earlier date.
   [478](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/478)
 
