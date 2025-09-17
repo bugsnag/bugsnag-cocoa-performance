@@ -13,7 +13,7 @@ using namespace bugsnag;
 
 BugsnagPerformanceSpan *
 PlainSpanFactoryImpl::startSpan(NSString *name,
-                                SpanOptions options,
+                                const SpanOptions &options,
                                 BSGTriState defaultFirstClass,
                                 NSDictionary *attributes,
                                 NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
@@ -27,7 +27,7 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
 
 BugsnagPerformanceSpan *
 PlainSpanFactoryImpl::startSpan(NSString *name,
-                                SpanOptions options,
+                                const SpanOptions &options,
                                 BSGTriState defaultFirstClass,
                                 SpanKind kind,
                                 NSDictionary *attributes,

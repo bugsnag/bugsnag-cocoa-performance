@@ -9,7 +9,7 @@
 #import "../../BugsnagPerformanceSpan+Private.h"
 
 typedef void (^OnSpanStartCallback)(BugsnagPerformanceSpan * _Nonnull,
-                                    SpanOptions options);
+                                    const SpanOptions &options);
 
 @interface PlainSpanFactoryCallbacks : NSObject
 

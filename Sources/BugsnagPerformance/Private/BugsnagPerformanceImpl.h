@@ -158,7 +158,6 @@ private:
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
-    void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
     NSMutableArray<BugsnagPerformanceSpan *> *
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
     bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;

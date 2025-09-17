@@ -52,7 +52,7 @@ AppStartupSpanFactoryImpl::startUIInitSpan(CFAbsoluteTime startTime,
 
 BugsnagPerformanceSpan *
 AppStartupSpanFactoryImpl::startAppStartSpan(NSString *name,
-                                             SpanOptions options,
+                                             const SpanOptions &options,
                                              NSDictionary *attributes,
                                              NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     auto spanAttributes = spanAttributesProvider_->initialAppStartSpanAttributes();

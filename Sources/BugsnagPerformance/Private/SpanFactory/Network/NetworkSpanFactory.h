@@ -21,7 +21,7 @@ public:
     virtual BugsnagPerformanceSpan *startInternalErrorSpan(NSString *httpMethod,
                                                            NSError *error) noexcept = 0;
     virtual BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod,
-                                                     SpanOptions options,
+                                                     const SpanOptions &options,
                                                      NSDictionary *attributes) noexcept = 0;
     virtual ~NetworkSpanFactory() {}
 };

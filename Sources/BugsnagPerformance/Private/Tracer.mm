@@ -75,7 +75,10 @@ Tracer::sweep() noexcept {
 }
 
 BugsnagPerformanceSpan *
-Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
+Tracer::startSpan(NSString *name,
+                  const SpanOptions &options,
+                  BSGTriState defaultFirstClass,
+                  NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     return plainSpanFactory_->startSpan(name, options, defaultFirstClass, @{}, conditionsToEndOnClose);
 }
 
@@ -237,14 +240,14 @@ void Tracer::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
 
 BugsnagPerformanceSpan *
 Tracer::startCustomSpan(NSString *name,
-                        SpanOptions options) noexcept {
+                        const SpanOptions &options) noexcept {
     return startSpan(name, options, BSGTriStateYes, @[]);
 }
 
 BugsnagPerformanceSpan *
 Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                           NSString *className,
-                          SpanOptions options) noexcept {
+                          const SpanOptions &options) noexcept {
     return viewLoadSpanFactory_->startViewLoadSpan(viewType,
                                                    className,
                                                    nil,
@@ -253,7 +256,8 @@ Tracer::startViewLoadSpan(BugsnagPerformanceViewType viewType,
 }
 
 BugsnagPerformanceSpan *
-Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
+Tracer::startNetworkSpan(NSString *httpMethod,
+                         const SpanOptions &options) noexcept {
     return networkSpanFactory_->startNetworkSpan(httpMethod, options, @{});
 }
 
@@ -289,7 +293,7 @@ PlainSpanFactoryCallbacks *
 Tracer::createPlainSpanFactoryCallbacks() noexcept {
     __block auto blockThis = this;
     auto callbacks = [PlainSpanFactoryCallbacks new];
-    callbacks.onSpanStarted = ^(BugsnagPerformanceSpan * _Nonnull span, SpanOptions options) {
+    callbacks.onSpanStarted = ^(BugsnagPerformanceSpan * _Nonnull span, const SpanOptions &options) {
         if (blockThis->shouldInstrumentRendering(span)) {
             span.startFramerateSnapshot = [blockThis->frameMetricsCollector_ currentSnapshot];
         }

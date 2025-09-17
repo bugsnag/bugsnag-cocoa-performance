@@ -36,7 +36,7 @@ public:
     virtual BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                                       NSString *className,
                                                       NSString *suffix,
-                                                      SpanOptions options,
+                                                      const SpanOptions &options,
                                                       NSDictionary *attributes) noexcept = 0;
     virtual ~ViewLoadSpanFactory() {}
 };

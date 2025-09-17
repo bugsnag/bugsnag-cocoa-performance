@@ -30,7 +30,9 @@ NetworkSpanFactoryImpl::startInternalErrorSpan(NSString *httpMethod,
 }
 
 BugsnagPerformanceSpan *
-NetworkSpanFactoryImpl::startNetworkSpan(NSString *httpMethod, SpanOptions options, NSDictionary *attributes) noexcept {
+NetworkSpanFactoryImpl::startNetworkSpan(NSString *httpMethod,
+                                         const SpanOptions &options,
+                                         NSDictionary *attributes) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
     NSMutableDictionary *spanAttributes = spanAttributesProvider_->initialNetworkSpanAttributes();
     [spanAttributes addEntriesFromDictionary:attributes];

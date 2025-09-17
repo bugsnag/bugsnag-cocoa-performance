@@ -27,7 +27,7 @@ public:
                                                    NSError *error) noexcept;
     
     BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod,
-                                             SpanOptions options,
+                                             const SpanOptions &options,
                                              NSDictionary *attributes) noexcept;
     
 private:

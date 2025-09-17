@@ -20,7 +20,7 @@ public:
     , spanAttributesProvider_(spanAttributesProvider) {}
     
     BugsnagPerformanceSpan *startAppStartSpan(NSString *name,
-                                              SpanOptions options,
+                                              const SpanOptions &options,
                                               NSDictionary *attributes,
                                               NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
     BugsnagPerformanceSpan *startAppStartOverallSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept;

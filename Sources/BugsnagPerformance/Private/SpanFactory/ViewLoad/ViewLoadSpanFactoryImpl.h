@@ -37,7 +37,7 @@ public:
     BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                               NSString *className,
                                               NSString *suffix,
-                                              SpanOptions options,
+                                              const SpanOptions &options,
                                               NSDictionary *attributes) noexcept;
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
                                                    BugsnagPerformanceSpanContext *parentContext,

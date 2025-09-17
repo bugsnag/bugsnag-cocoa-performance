@@ -18,7 +18,7 @@ namespace bugsnag {
 class AppStartupSpanFactory {
 public:
     virtual BugsnagPerformanceSpan *startAppStartSpan(NSString *name,
-                                                      SpanOptions options,
+                                                      const SpanOptions &options,
                                                       NSDictionary *attributes,
                                                       NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
     virtual BugsnagPerformanceSpan *startAppStartOverallSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept = 0;

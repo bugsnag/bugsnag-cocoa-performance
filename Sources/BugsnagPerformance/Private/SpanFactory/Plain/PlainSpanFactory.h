@@ -18,12 +18,12 @@ namespace bugsnag {
 class PlainSpanFactory {
 public:
     virtual BugsnagPerformanceSpan *startSpan(NSString *name,
-                                              SpanOptions options,
+                                              const SpanOptions &options,
                                               BSGTriState defaultFirstClass,
                                               NSDictionary *attributes,
                                               NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
     virtual BugsnagPerformanceSpan *startSpan(NSString *name,
-                                              SpanOptions options,
+                                              const SpanOptions &options,
                                               BSGTriState defaultFirstClass,
                                               SpanKind kind,
                                               NSDictionary *attributes,

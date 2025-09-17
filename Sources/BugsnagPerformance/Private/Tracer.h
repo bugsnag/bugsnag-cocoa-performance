@@ -86,15 +86,15 @@ public:
         getAppStartupInstrumentationState_ = getAppStartupInstrumentationState;
     }
 
-    BugsnagPerformanceSpan *startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
+    BugsnagPerformanceSpan *startSpan(NSString *name, const SpanOptions &options, BSGTriState defaultFirstClass, NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 
-    BugsnagPerformanceSpan *startCustomSpan(NSString *name, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startCustomSpan(NSString *name, const SpanOptions &options) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                               NSString *className,
-                                              SpanOptions options) noexcept;
+                                              const SpanOptions &options) noexcept;
 
-    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept;
+    BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, const SpanOptions &options) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
                                                    NSString *phase,

@@ -84,14 +84,15 @@ BugsnagPerformanceSpan *
 ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                            NSString *className,
                                            NSString *suffix,
-                                           SpanOptions options,
+                                           const SpanOptions &options,
                                            NSDictionary *attributes) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
+    SpanOptions spanOptions(options);
     if (options.parentContext == nil && callbacks_.getViewLoadParentSpan != nil) {
         BugsnagPerformanceSpan *parentSpan = callbacks_.getViewLoadParentSpan();
         if (parentSpan != nil) {
-            options.parentContext = parentSpan;
+            spanOptions.parentContext = parentSpan;
             BugsnagPerformanceSpanCondition *parentSpanCondition = [parentSpan blockWithTimeout:0.1];
             if (parentSpanCondition) {
                 conditionsToEndOnClose = @[parentSpanCondition];
@@ -104,13 +105,13 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     }
     if (options.firstClass == BSGTriStateUnset) {
         if (callbacks_.isViewLoadInProgress != nil && callbacks_.isViewLoadInProgress()) {
-            options.firstClass = BSGTriStateNo;
+            spanOptions.firstClass = BSGTriStateNo;
         }
     }
     auto spanAttributes = spanAttributesProvider_->viewLoadSpanAttributes(className, viewType);
     [spanAttributes addEntriesFromDictionary:attributes];
     auto span = plainSpanFactory_->startSpan(name,
-                                             options,
+                                             spanOptions,
                                              BSGTriStateYes,
                                              spanAttributes,
                                              conditionsToEndOnClose);
