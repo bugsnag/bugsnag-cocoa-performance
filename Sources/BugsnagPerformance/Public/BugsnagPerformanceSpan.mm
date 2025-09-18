@@ -267,7 +267,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 - (void)internalSetAttribute:(NSString *)attributeName withValue:(id)value {
     @synchronized (self) {
         if (!self.isMutable) {
-            BSGLogError(@"Called setAttribute, but span %llu (%@) is immutable", self.spanId, self.name);
+            BSGLogError(@"Called setAttribute (%@=%@), but span %llu (%@) is immutable", attributeName, value, self.spanId, self.name);
             return;
         }
         if(value == nil) {
@@ -281,7 +281,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes {
     @synchronized (self) {
         if (!self.isMutable) {
-            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable", self.spanId, self.name);
+            BSGLogError(@"Called setMultipleAttributes (%@), but span %llu (%@) is immutable", attributes, self.spanId, self.name);
             return;
         }
         [self.attributes addEntriesFromDictionary:attributes];

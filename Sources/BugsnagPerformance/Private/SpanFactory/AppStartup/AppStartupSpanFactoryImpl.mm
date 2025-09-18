@@ -22,7 +22,7 @@ AppStartupSpanFactoryImpl::startAppStartOverallSpan(CFAbsoluteTime startTime, bo
     SpanOptions options;
     options.startTime = startTime;
     auto attributes = spanAttributesProvider_->appStartSpanAttributes(firstViewName, isColdLaunch);
-    NSLog(@"DARIA_LOG AppStartupSpanFactoryImpl::startAppStartOverallSpan created");
+    NSLog(@"DARIA_LOG AppStartupSpanFactoryImpl::startAppStartOverallSpan created with attributes: %@", attributes);
     return startAppStartSpan(name, options, attributes, @[]);
 }
 
