@@ -86,8 +86,6 @@ class Fixture: NSObject, CommandReceiver {
         scenarioInstance?.applyStartupConfig(startupConfig: startupConfig)
         scenarioInstance?.startBugsnag()
 
-        logInfo("DARIA_LOG Loaded scenario class: \(String(describing: scenarioClass))")
-
         return scenarioInstance?.customViewController()
     }
 

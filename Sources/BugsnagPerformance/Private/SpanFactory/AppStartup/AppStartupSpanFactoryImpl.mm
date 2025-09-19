@@ -17,12 +17,10 @@ using namespace bugsnag;
 
 BugsnagPerformanceSpan *
 AppStartupSpanFactoryImpl::startAppStartOverallSpan(CFAbsoluteTime startTime, bool isColdLaunch, NSString *firstViewName) noexcept {
-    NSLog(@"DARIA_LOG AppStartupSpanFactoryImpl::startAppStartOverallSpan");
     auto name = isColdLaunch ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
     SpanOptions options;
     options.startTime = startTime;
     auto attributes = spanAttributesProvider_->appStartSpanAttributes(firstViewName, isColdLaunch);
-    NSLog(@"DARIA_LOG AppStartupSpanFactoryImpl::startAppStartOverallSpan created with attributes: %@", attributes);
     return startAppStartSpan(name, options, attributes, @[]);
 }
 
