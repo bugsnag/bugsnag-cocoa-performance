@@ -29,6 +29,7 @@ SpanStackingHandler::push(BugsnagPerformanceSpan *span) {
     os_activity_scope_state_s activityState;
     os_activity_t activity = os_activity_create("BSGSpanContext", OS_ACTIVITY_CURRENT, OS_ACTIVITY_FLAG_DEFAULT);
     os_activity_id_t activityId = os_activity_get_identifier(activity, nil);
+    NSLog(@"DARIA_LOG SPAN STACKING HANDLER: Created activity with id: %llu, parent id: %llu, for span: %@", activityId, parentActivityId, span.name);
     os_activity_scope_enter(activity, &activityState);
     
     auto newState = std::make_shared<SpanActivityState>(span, activityState, activityId, parentActivityId);
@@ -98,9 +99,9 @@ BugsnagPerformanceSpan *
 SpanStackingHandler::findSpanForCategory(NSString *categoryName) {
     std::lock_guard<std::mutex> guard(mutex_);
     std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
-    BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory");
+    BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory, check for activity id: %llu", currentActivityId());
     while (state != nullptr) {
-        BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory state not nil");
+        BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory state not nil for activityId: %llu", state->activityId);
         if (state->span.state == SpanStateOpen) {
             BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory span is open, name: %@", state->span.name);
             if ([state->span hasAttribute:@"bugsnag.span.category" withValue:categoryName]) {
@@ -110,7 +111,7 @@ SpanStackingHandler::findSpanForCategory(NSString *categoryName) {
         }
         state = spanStateForActivity(state->parentActivityId);
     }
-    BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory state is nil");
+    BSGLogError("DARIA_LOG SpanStackingHandler::findSpanForCategory end");
     return nil;
 }
 
@@ -119,19 +120,18 @@ SpanStackingHandler::sweep(SpanId spanId) {
     BSGLogError("DARIA_LOG SpanStackingHandler::sweep");
     std::shared_ptr<SpanActivityState> state = spanStateForSpan(spanId);
     while (state != nullptr) {
-        BSGLogError("DARIA_LOG SpanStackingHandler::sweep state not nil");
+        BSGLogError("DARIA_LOG SpanStackingHandler::sweep checking state for span: %@", state->span.name);
         if ((state->span != nullptr && state->span.state == SpanStateOpen && !(state->isDumped))) {
             BSGLogError("DARIA_LOG SpanStackingHandler::sweep span is still open or not dumped");
             return;
         }
         if (currentActivityId() == state->activityId) {
             os_activity_scope_leave(&(state->activityState));
-            BSGLogError("DARIA_LOG SpanStackingHandler::sweep left activity scope for activityId: %llu", state->activityId);
         }
         if (state->childSpansCount <= 0) {
-            spanIdToSpanState_.erase(state->spanId);
-            activityIdToSpanState_.erase(state->activityId);
-            BSGLogError("DARIA_LOG SpanStackingHandler::sweep erased spanId: %llu and activityId: %llu", state->spanId, state->activityId);
+            //spanIdToSpanState_.erase(state->spanId);
+            //activityIdToSpanState_.erase(state->activityId);
+            BSGLogError("DARIA_LOG SpanStackingHandler::sweep erased span: %@", state->span.name);
         }
         state = spanStateForActivity(state->parentActivityId);
     }
@@ -142,7 +142,7 @@ SpanStackingHandler::removeSpan(SpanId spanId) {
     BSGLogError("DARIA_LOG SpanStackingHandler::removeSpan for spanId: %llu", spanId);
     std::shared_ptr<SpanActivityState> state = spanStateForSpan(spanId);
     if (state != nullptr && state->parentActivityId != 0) {
-        BSGLogError("DARIA_LOG SpanStackingHandler::removeSpan found parentActivityId: %llu", state->parentActivityId);
+        BSGLogError("DARIA_LOG SpanStackingHandler::removeSpan for span %@", state->span.name);
         std::shared_ptr<SpanActivityState> parentState = spanStateForActivity(state->parentActivityId);
         if (parentState != nullptr) {
             parentState->childSpansCount--;
@@ -153,7 +153,6 @@ SpanStackingHandler::removeSpan(SpanId spanId) {
 
 std::shared_ptr<SpanActivityState>
 SpanStackingHandler::spanStateForSpan(SpanId spanId) {
-    BSGLogError("DARIA_LOG SpanStackingHandler::spanStateForSpan for spanId: %llu", spanId);
     auto result = spanIdToSpanState_.find(spanId);
     if (result == spanIdToSpanState_.end()) {
         return 0;
@@ -163,7 +162,6 @@ SpanStackingHandler::spanStateForSpan(SpanId spanId) {
 
 std::shared_ptr<SpanActivityState>
 SpanStackingHandler::spanStateForActivity(os_activity_id_t activityId) {
-    BSGLogError("DARIA_LOG SpanStackingHandler::spanStateForActivity for activityId: %llu", activityId);
     auto result = activityIdToSpanState_.find(activityId);
     if (result == activityIdToSpanState_.end()) {
         return nullptr;

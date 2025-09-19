@@ -46,7 +46,7 @@ Feature: Plugins
   Scenario: App start type plugin correctly changes the span name
     Given I run "AppStartTypeScenario"
     Then I relaunch the app after shutdown
-    And I load scenario "AppStartTypeScenario"
+#    And I load scenario "AppStartTypeScenario"
     And I wait for 6 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

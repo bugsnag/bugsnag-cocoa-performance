@@ -40,6 +40,7 @@ class AppStartTypeScenario_ViewController: UIViewController {
         logInfo("DARIA_LOG: AppStartTypeScenario_ViewController init")
         super.init(nibName: nil, bundle: nil)
 
+        logInfo("DARIA_LOG: AppStartTypeScenario_ViewController TRY TO SET NAME INIT")
         let query = BugsnagPerformanceAppStartSpanQuery()
         let spanControl = BugsnagPerformance.getSpanControls(with: query) as! BugsnagPerformanceAppStartSpanControl?
         spanControl?.setType("customType")
@@ -58,6 +59,11 @@ class AppStartTypeScenario_ViewController: UIViewController {
         label.textAlignment = .center
         label.text = String(describing: type(of: self))
         view = label
+
+//        logInfo("DARIA_LOG: AppStartTypeScenario_ViewController TRY TO SET NAME LOADVIEW")
+//        let query = BugsnagPerformanceAppStartSpanQuery()
+//        let spanControl = BugsnagPerformance.getSpanControls(with: query) as! BugsnagPerformanceAppStartSpanControl?
+//        spanControl?.setType("customType")
 
         logInfo("DARIA_LOG: AppStartTypeScenario_ViewController loadView done")
     }
