@@ -16,16 +16,15 @@
 #import "BugsnagPerformanceCrossTalkAPI.h"
 
 @interface BugsnagPerformanceAppStartTypePlugin()
-@property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
+@property (nonatomic) GetAppStartInstrumentationStateSnapshot getAppStartInstrumentationState;
 @end
 
 @implementation BugsnagPerformanceAppStartTypePlugin
 
-- (instancetype)initWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>)spanStackingHandler {
-    if ((self = [super init])) {
-        _spanStackingHandler = spanStackingHandler;
+- (void)setGetAppStartInstrumentationStateCallback:(GetAppStartInstrumentationStateSnapshot)callback {
+    @synchronized (self) {
+        self.getAppStartInstrumentationState = callback;
     }
-    return self;
 }
 
 #pragma mark BugsnagPerformancePlugin
@@ -42,11 +41,15 @@
 - (__nullable id<BugsnagPerformanceSpanControl>)getSpanControlsWithQuery:(BugsnagPerformanceSpanQuery *)query {
     if ([query isKindOfClass:[BugsnagPerformanceAppStartSpanQuery class]]) {
         @synchronized (self) {
-            if (self.spanStackingHandler == nullptr) {
+            if (self.getAppStartInstrumentationState == nullptr) {
                 return nil;
             }
 
-            BugsnagPerformanceSpan *appStartSpan = self.spanStackingHandler->findSpanForCategory(@"app_start");
+            BugsnagPerformanceSpan *appStartSpan;
+            AppStartupInstrumentationStateSnapshot *snapshot = self.getAppStartInstrumentationState();
+            if (snapshot.isInProgress) {
+                appStartSpan = snapshot.appStartSpan;
+            }
             if (appStartSpan == nil) {
                 return nil;
             }
