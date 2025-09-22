@@ -55,6 +55,7 @@
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		09F3F52A2D6C72B300BAA0A3 /* CPUMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */; };
 		09F3F52C2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */; };
+		1CA34CAB2E81A09F00512E2F /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */; };
 		55A1B7CB2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; };
 		55A1B7CC2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55A1B7CD2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */; };
@@ -180,6 +181,7 @@
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		09F3F5292D6C72B300BAA0A3 /* CPUMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CPUMetricsScenario.swift; sourceTree = "<group>"; };
 		09F3F52B2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
+		1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
 		55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformance.xcframework; path = ../../../BugsnagPerformance.xcframework; sourceTree = "<group>"; };
 		55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 		01FE4DA728E1AEBD00D1F239 /* Fixture */ = {
 			isa = PBXGroup;
 			children = (
+				1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */,
 				01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */,
 				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
 				CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */,
@@ -586,6 +589,7 @@
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,
 				969EE0E72E784E7A00600F63 /* ConditionsBasicScenario.swift in Sources */,
 				CBE615F729A4C1F0000E72D8 /* ParentSpanScenario.swift in Sources */,
+				1CA34CAB2E81A09F00512E2F /* StartupConfiguration.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
