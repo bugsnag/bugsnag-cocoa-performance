@@ -199,6 +199,23 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     XCTAssertIdentical(result, span);
 }
 
+- (void)testGetSpanControlsWithNonConstantStringNamedSpanQuery {
+    [self.plugin installWithContext:self.mockContext];
+    
+    BugsnagPerformanceSpan *span = createSpan(@"my-span");
+    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
+    
+    fakeContext.spanStartCallback(span);
+    NSMutableString *name = [NSMutableString string];
+    [name appendString:@"my-"];
+    [name appendString:@"span"];
+    
+    BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:name];
+    id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
+    
+    XCTAssertIdentical(result, span);
+}
+
 - (void)testGetSpanControlsWithNonNamedSpanQuery {
     [self.plugin installWithContext:self.mockContext];
     

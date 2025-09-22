@@ -11,8 +11,22 @@
 #import <map>
 #import <list>
 #import <mutex>
+#import <unordered_map>
 
 namespace bugsnag {
+
+struct NSStringHash {
+    std::size_t operator()(NSString *str) const noexcept {
+        return std::hash<std::string>{}([str UTF8String]);
+    }
+};
+
+struct NSStringEqual {
+    bool operator()(NSString *lhs, NSString *rhs) const noexcept {
+        return [lhs isEqualToString:rhs];
+    }
+};
+
 class NamedSpansStore {
 public:
     NamedSpansStore(NSTimeInterval timeout,
@@ -31,7 +45,7 @@ public:
     void remove(BugsnagPerformanceSpan *span) noexcept;
     BugsnagPerformanceSpan *getSpan(NSString *name) noexcept;
 private:
-    std::map<NSString *, std::list<std::shared_ptr<NamedSpanState>>::iterator> nameToSpan_{};
+    std::unordered_map<NSString *, std::list<std::shared_ptr<NamedSpanState>>::iterator, NSStringHash, NSStringEqual> nameToSpan_{};
     std::list<std::shared_ptr<NamedSpanState>> spanStates_{};
     std::mutex mutex_;
     dispatch_source_t timer_;
