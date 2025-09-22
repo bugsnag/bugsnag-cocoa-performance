@@ -11,12 +11,20 @@
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 #import "../Private/BugsnagPerformanceNamedSpansPlugin+Private.h"
+#import "../Private/NamedSpansStore.h"
 
 static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
+static const NSTimeInterval kSpanSweepInterval = 60; // 1 minute
+
+using namespace bugsnag;
+
+@interface BugsnagPerformanceSpan () <BugsnagPerformanceSpanControl>
+
+@end
 
 @interface BugsnagPerformanceNamedSpansPlugin ()
 
-@property (nonatomic, strong) NSMutableDictionary *spansByName;
+@property (nonatomic, assign, readonly) std::shared_ptr<NamedSpansStore> store;
 
 @end
 
@@ -25,14 +33,14 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 #pragma mark - Initialization
 
 - (instancetype)init {
-    return [self initWithTimeoutInterval:kSpanTimeoutInterval];
+    return [self initWithTimeoutInterval:kSpanTimeoutInterval sweepInterval:kSpanSweepInterval];
 }
 
-- (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval {
+- (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval
+                          sweepInterval:(NSTimeInterval)sweepInterval {
     if ((self = [super init])) {
-        _timeoutInterval = timeoutInterval;
-        _spansByName = [NSMutableDictionary new];
-        _spanTimeoutTimers = std::make_shared<std::unordered_map<void *, dispatch_source_t>>();
+        _store = std::make_shared<NamedSpansStore>(timeoutInterval,
+                                                   sweepInterval);
     }
     return self;
 }
@@ -64,6 +72,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
     [context addOnSpanStartCallback:spanStartCallback priority:BugsnagPerformancePriorityHigh];
     [context addOnSpanEndCallback:spanEndCallback priority:BugsnagPerformancePriorityLow];
     [context addSpanControlProvider:self];
+    self.store->start();
 }
 
 - (void)start {
@@ -74,9 +83,7 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 - (id<BugsnagPerformanceSpanControl>)getSpanControlsWithQuery:(BugsnagPerformanceSpanQuery *)query {
     if ([query isKindOfClass:[BugsnagPerformanceNamedSpanQuery class]]) {
         NSString *spanName = [query getAttributeWithName:@"name"];
-        @synchronized (self) {
-            return self.spansByName[spanName];
-        }
+        return self.store->getSpan(spanName);
     }
     return nil;
 }
@@ -84,60 +91,12 @@ static const NSTimeInterval kSpanTimeoutInterval = 600; // 10 minutes
 #pragma mark Private
 
 - (void)didStartSpan:(BugsnagPerformanceSpan *)span {
-    @synchronized (self) {
-        BugsnagPerformanceSpan *existingSpan = self.spansByName[span.name];
-        if (existingSpan) {
-            // If a span with the same name already exists, cancel the associated timeout
-            [self cancelSpanTimeout:existingSpan];
-        }
-        
-        self.spansByName[span.name] = span;
-        
-        // Add timeout to remove the span from the cache if not ended
-        void *key = (__bridge void *)span;
-        dispatch_source_t timer = [self createSpanTimeoutTimer:span];
-        (*self.spanTimeoutTimers)[key] = timer;
-    }
+    self.store->add(span);
 }
 
 - (BOOL)didEndSpan:(BugsnagPerformanceSpan *)span {
-    @synchronized (self) {
-        // Remove span from cache if it exists
-        if ([self.spansByName objectForKey:span.name] == span) {
-            [self.spansByName removeObjectForKey:span.name];
-        }
-
-        [self cancelSpanTimeout:span];
-    }
+    self.store->remove(span);
     return YES;
-}
-
-- (dispatch_source_t)createSpanTimeoutTimer:(BugsnagPerformanceSpan *)span {
-    __weak BugsnagPerformanceNamedSpansPlugin *weakSelf = self;
-    
-    dispatch_source_t timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0,
-                                                     dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0));
-    
-    dispatch_source_set_timer(timer,
-                             dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.timeoutInterval * NSEC_PER_SEC)),
-                             DISPATCH_TIME_FOREVER,
-                             0);
-    
-    dispatch_source_set_event_handler(timer, ^{
-        [weakSelf didEndSpan:span];
-    });
-    
-    dispatch_resume(timer);
-    return timer;
-}
-
-- (void)cancelSpanTimeout:(BugsnagPerformanceSpan *)span {
-    void *key = (__bridge void *)span;
-    auto it = self.spanTimeoutTimers->find(key);
-    if (it != self.spanTimeoutTimers->end()) {
-        dispatch_source_cancel(it->second);
-        self.spanTimeoutTimers->erase(it);
-    }
 }
 
 @end
