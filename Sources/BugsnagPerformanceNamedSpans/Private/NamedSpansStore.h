@@ -7,7 +7,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
-#import "NamedSpanState.h"
+#import "BSGNamedSpanState.h"
 #import <map>
 #import <list>
 #import <mutex>
@@ -32,7 +32,8 @@ public:
     NamedSpansStore(NSTimeInterval timeout,
                        NSTimeInterval sweepInterval) noexcept
     : timeout_(timeout)
-    , sweepInterval_(sweepInterval) {}
+    , sweepInterval_(sweepInterval)
+    , nameToSpan_([NSMutableDictionary<NSString *, BSGNamedSpanState *> dictionary]) {}
     
     ~NamedSpansStore() noexcept {
         if (timer_ != nullptr) {
@@ -45,14 +46,16 @@ public:
     void remove(BugsnagPerformanceSpan *span) noexcept;
     BugsnagPerformanceSpan *getSpan(NSString *name) noexcept;
 private:
-    std::unordered_map<NSString *, std::list<std::shared_ptr<NamedSpanState>>::iterator, NSStringHash, NSStringEqual> nameToSpan_{};
-    std::list<std::shared_ptr<NamedSpanState>> spanStates_{};
+    NSMutableDictionary<NSString *, BSGNamedSpanState *> *nameToSpan_;
     std::mutex mutex_;
     dispatch_source_t timer_;
     NSTimeInterval timeout_;
     NSTimeInterval sweepInterval_;
+    BSGNamedSpanState *first_;
+    BSGNamedSpanState *last_;
     
-    std::list<std::shared_ptr<NamedSpanState>>::iterator stateForName(NSString *name) noexcept;
+    void add(BSGNamedSpanState *state) noexcept;
+    void erase(BSGNamedSpanState *state) noexcept;
     void sweepExpiredSpans() noexcept;
 };
 }

@@ -35,59 +35,71 @@ NamedSpansStore::start() noexcept {
 void
 NamedSpansStore::add(BugsnagPerformanceSpan *span) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    auto existingState = stateForName(span.name);
-    if (existingState != spanStates_.end()) {
-        spanStates_.erase(existingState);
+    auto existingState = nameToSpan_[span.name];
+    if (existingState != nil) {
+        erase(existingState);
     }
-    auto spanState = std::make_shared<NamedSpanState>(span, CFAbsoluteTimeGetCurrent() + timeout_);
-    spanStates_.push_back(spanState);
-    nameToSpan_[span.name] = std::prev(spanStates_.end());
+    auto spanState = [BSGNamedSpanState new];
+    spanState.span = span;
+    spanState.expireTime = CFAbsoluteTimeGetCurrent() + timeout_;
+    add(spanState);
 }
 
 void
 NamedSpansStore::remove(BugsnagPerformanceSpan *span) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    auto state = stateForName(span.name);
-    if (state != spanStates_.end() && (*state)->span == span) {
-        spanStates_.erase(state);
-        nameToSpan_.erase(span.name);
+    auto state = nameToSpan_[span.name];
+    if (state.span == span) {
+        erase(state);
     }
 }
 
 BugsnagPerformanceSpan *
 NamedSpansStore::getSpan(NSString *name) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
-    auto state = stateForName(name);
-    if (state == spanStates_.end()) {
-        return nullptr;
-    }
-    return (*state)->span;
+    return nameToSpan_[name].span;
 }
 
 #pragma mark Private
+
+void
+NamedSpansStore::add(BSGNamedSpanState *state) noexcept {
+    state.previous = last_;
+    last_.next = state;
+    if (first_ == nil) {
+        first_ = state;
+    }
+    last_ = state;
+    nameToSpan_[state.span.name] = state;
+}
+
+void
+NamedSpansStore::erase(BSGNamedSpanState *state) noexcept {
+    auto next = state.next;
+    auto previous = state.previous;
+    next.previous = previous;
+    previous.next = next;
+    if (state == first_) {
+        first_ = next;
+    }
+    if (state == last_) {
+        last_ = previous;
+    }
+    nameToSpan_[state.span.name] = nil;
+}
 
 void
 NamedSpansStore::sweepExpiredSpans() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
     
-    auto state = spanStates_.begin();
-    while (state != spanStates_.end()) {
-        if (now > (*state)->expireTime) {
-            auto name = (*state)->span.name;
-            nameToSpan_.erase(name);
-            state = spanStates_.erase(state);
+    auto state = first_;
+    while (state != nil) {
+        if (now > state.expireTime) {
+            erase(state);
+            state = state.next;
         } else {
             return;
         }
     }
-}
-
-std::list<std::shared_ptr<NamedSpanState>>::iterator
-NamedSpansStore::stateForName(NSString *name) noexcept {
-    auto result = nameToSpan_.find(name);
-    if (result == nameToSpan_.end()) {
-        return spanStates_.end();
-    }
-    return (*result).second;
 }

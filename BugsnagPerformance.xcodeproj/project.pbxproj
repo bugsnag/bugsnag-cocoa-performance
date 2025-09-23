@@ -128,7 +128,8 @@
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
 		96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C12E80D3BA009138C3 /* NamedSpansStore.h */; };
 		96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */; };
-		96A143C62E80DDEB009138C3 /* NamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* NamedSpanState.h */; };
+		96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */; };
+		96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
@@ -463,7 +464,8 @@
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
 		96A143C12E80D3BA009138C3 /* NamedSpansStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpansStore.h; sourceTree = "<group>"; };
 		96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NamedSpansStore.mm; sourceTree = "<group>"; };
-		96A143C52E80DDE6009138C3 /* NamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpanState.h; sourceTree = "<group>"; };
+		96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGNamedSpanState.h; sourceTree = "<group>"; };
+		96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGNamedSpanState.mm; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -1077,10 +1079,11 @@
 		DA9BB1C92E40CBE4009A7D25 /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */,
+				96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */,
 				DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */,
 				96A143C12E80D3BA009138C3 /* NamedSpansStore.h */,
 				96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */,
-				96A143C52E80DDE6009138C3 /* NamedSpanState.h */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -1196,7 +1199,7 @@
 				96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */,
 				DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */,
 				DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */,
-				96A143C62E80DDEB009138C3 /* NamedSpanState.h in Headers */,
+				96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */,
 				96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */,
 				DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
 				963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */,
@@ -1691,6 +1694,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */,
 				96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */,
 				96F417162E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc in Sources */,
 				DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */,
