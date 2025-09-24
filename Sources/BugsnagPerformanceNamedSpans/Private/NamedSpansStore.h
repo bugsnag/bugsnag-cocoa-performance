@@ -8,24 +8,9 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import "BSGNamedSpanState.h"
-#import <map>
-#import <list>
 #import <mutex>
-#import <unordered_map>
 
 namespace bugsnag {
-
-struct NSStringHash {
-    std::size_t operator()(NSString *str) const noexcept {
-        return std::hash<std::string>{}([str UTF8String]);
-    }
-};
-
-struct NSStringEqual {
-    bool operator()(NSString *lhs, NSString *rhs) const noexcept {
-        return [lhs isEqualToString:rhs];
-    }
-};
 
 class NamedSpansStore {
 public:
