@@ -15,11 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Creates a new plugin instance with a custom timeout interval (for testing purposes).
  */
-- (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval NS_DESIGNATED_INITIALIZER;
-
-@property (nonatomic, assign, readonly) NSTimeInterval timeoutInterval;
-
-@property (nonatomic, assign, readonly) std::shared_ptr<std::unordered_map<void *, dispatch_source_t>> spanTimeoutTimers;
+- (instancetype)initWithTimeoutInterval:(NSTimeInterval)timeoutInterval
+                          sweepInterval:(NSTimeInterval)sweepInterval NS_DESIGNATED_INITIALIZER;
 
 @end
 

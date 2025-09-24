@@ -75,7 +75,7 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 
 - (void)setUp {
     [super setUp];
-    self.plugin = [[BugsnagPerformanceNamedSpansPlugin alloc] initWithTimeoutInterval:0.2]; // Use a short timeout for testing
+    self.plugin = [[BugsnagPerformanceNamedSpansPlugin alloc] initWithTimeoutInterval:0.2 sweepInterval:0.01]; // Use a short timeout for testing
     self.mockContext = (BugsnagPerformancePluginContext *)[[FakePluginContext alloc] init];
 }
 
@@ -100,16 +100,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
 - (void)testStartMethod {
     // start method should not throw
     XCTAssertNoThrow([self.plugin start]);
-}
-
-- (void)testInitWithCustomTimeoutInterval {
-    BugsnagPerformanceNamedSpansPlugin *customPlugin = [[BugsnagPerformanceNamedSpansPlugin alloc] initWithTimeoutInterval:30.0];
-    XCTAssertEqual(customPlugin.timeoutInterval, 30.0);
-}
-
-- (void)testDefaultInitUsesDefaultTimeout {
-    BugsnagPerformanceNamedSpansPlugin *defaultPlugin = [[BugsnagPerformanceNamedSpansPlugin alloc] init];
-    XCTAssertEqual(defaultPlugin.timeoutInterval, 600.0); // 10 minutes
 }
 
 #pragma mark - Span Caching Tests
@@ -209,6 +199,23 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     XCTAssertIdentical(result, span);
 }
 
+- (void)testGetSpanControlsWithNonConstantStringNamedSpanQuery {
+    [self.plugin installWithContext:self.mockContext];
+    
+    BugsnagPerformanceSpan *span = createSpan(@"my-span");
+    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
+    
+    fakeContext.spanStartCallback(span);
+    NSMutableString *name = [NSMutableString string];
+    [name appendString:@"my-"];
+    [name appendString:@"span"];
+    
+    BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:name];
+    id<BugsnagPerformanceSpanControl> result = [self.plugin getSpanControlsWithQuery:query];
+    
+    XCTAssertIdentical(result, span);
+}
+
 - (void)testGetSpanControlsWithNonNamedSpanQuery {
     [self.plugin installWithContext:self.mockContext];
     
@@ -261,7 +268,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timeout-span"];
     id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertIdentical(cachedSpan, span);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
     // Wait for timeout to trigger
     XCTestExpectation *timeoutExpectation = [self expectationWithDescription:@"Span timeout should remove span from cache"];
@@ -270,39 +276,14 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Check span is removed from cache after timeout interval
         id<BugsnagPerformanceSpanControl> stillCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertNil(stillCachedSpan);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
         [timeoutExpectation fulfill];
     });
     
     [self waitForExpectations:@[timeoutExpectation] timeout:0.5];
 }
 
-- (void)testTimeoutTimerCancelledWhenSpanEnds {
-    [self.plugin installWithContext:self.mockContext];
-    
-    BugsnagPerformanceSpan *span = createSpan(@"timer-span");
-    FakePluginContext *fakeContext = (FakePluginContext *)self.mockContext;
-    
-    // Start span (creates timeout timer)
-    fakeContext.spanStartCallback(span);
-    
-    // Verify span is cached
-    BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"timer-span"];
-    id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
-    XCTAssertIdentical(cachedSpan, span);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
-    // End span (should cancel timeout timer and remove from cache)
-    BOOL result = fakeContext.spanEndCallback(span);
-    XCTAssertTrue(result);
-    
-    // Verify span is removed from cache
-    id<BugsnagPerformanceSpanControl> removedSpan = [self.plugin getSpanControlsWithQuery:query];
-    XCTAssertNil(removedSpan);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
-}
-
-- (void)testTimeoutTimerCancelledWhenNewSpanWithSameNameStarted {
+- (void)testTimeoutIsRenewedWhenNewSpanWithSameNameStarted {
     [self.plugin installWithContext:self.mockContext];
     
     BugsnagPerformanceSpan *span1 = createSpan(@"test-span");
@@ -316,15 +297,11 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     BugsnagPerformanceNamedSpanQuery *query = [BugsnagPerformanceNamedSpanQuery queryWithName:@"test-span"];
     id<BugsnagPerformanceSpanControl> cachedSpan = [self.plugin getSpanControlsWithQuery:query];
     XCTAssertIdentical(cachedSpan, span1);
-    
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
     // Wait for first span's timeout to almost elapse (0.15 seconds of 0.2 second timeout)
     XCTestExpectation *stagingExpectation = [self expectationWithDescription:@"Second span with same name should replace first span"];
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        // Verify first span's timer is still active
-        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
         // Start second span with same name (should cancel first timer and create a new one)
         fakeContext.spanStartCallback(span2);
@@ -332,7 +309,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Verify second span replaced first span
         id<BugsnagPerformanceSpanControl> newCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertIdentical(newCachedSpan, span2);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
         [stagingExpectation fulfill];
     });
@@ -346,14 +322,13 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Verify second span is still cached
         id<BugsnagPerformanceSpanControl> stillCachedSpan = [self.plugin getSpanControlsWithQuery:query];
         XCTAssertIdentical(stillCachedSpan, span2);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
         [timeoutExpectation fulfill];
     });
     
     [self waitForExpectations:@[timeoutExpectation] timeout:0.3];
 }
 
-- (void)testMultipleSpansWithDifferentNamesHaveSeparateTimeoutTimers {
+- (void)testMultipleSpansWithDifferentNamesAreRemovedFromCacheOnTheirTimeout {
     [self.plugin installWithContext:self.mockContext];
     
     BugsnagPerformanceSpan *span1 = createSpan(@"span-one");
@@ -363,15 +338,12 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     
     // Start first span
     fakeContext.spanStartCallback(span1);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 1UL);
 
     // Start second span with different name
     fakeContext.spanStartCallback(span2);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 2UL);
 
     // Start third span with different name
     fakeContext.spanStartCallback(span3);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 3UL);
 
     // Verify all spans are cached
     BugsnagPerformanceNamedSpanQuery *query1 = [BugsnagPerformanceNamedSpanQuery queryWithName:@"span-one"];
@@ -385,7 +357,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
     // End middle span - should only remove its timer
     BOOL result = fakeContext.spanEndCallback(span2);
     XCTAssertTrue(result);
-    XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 2UL);
 
     // Verify span2 is removed but span1 and span3 remain
     XCTAssertIdentical([self.plugin getSpanControlsWithQuery:query1], span1);
@@ -399,7 +370,6 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
         // Both remaining spans should be removed by timeout
         XCTAssertNil([self.plugin getSpanControlsWithQuery:query1]);
         XCTAssertNil([self.plugin getSpanControlsWithQuery:query3]);
-        XCTAssertEqual(self.plugin.spanTimeoutTimers->size(), 0UL);
         [timeoutExpectation fulfill];
     });
     
