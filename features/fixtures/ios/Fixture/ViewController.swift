@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var fixture: Fixture = Fixture()
+    var fixture: Fixture?
 //    var fixture: Fixture = PresetFixture(scenarioName: "RenderingMetricsScenario",
 //                                         scenarioConfig: [
 //                                            "spanStartTime": "early"
