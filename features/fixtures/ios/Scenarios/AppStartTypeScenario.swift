@@ -47,4 +47,13 @@ class AppStartTypeScenario_ViewController: UIViewController {
     required convenience init?(coder: NSCoder) {
         self.init()
     }
+
+    override func loadView() {
+        // we are creating a class property because we may have delegates
+        // assign your delegates here, before view
+        let customView = UIView()
+        customView.backgroundColor = .green
+
+        view = customView
+    }
 }

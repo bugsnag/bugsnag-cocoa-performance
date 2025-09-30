@@ -21,4 +21,13 @@ class ViewController: UIViewController {
         self.fixture = fixture
         fixture.start()
     }
+
+    override func loadView() {
+        // we are creating a class property because we may have delegates
+        // assign your delegates here, before view
+        let customView = UIView()
+        customView.backgroundColor = .white
+
+        view = customView
+    }
 }
