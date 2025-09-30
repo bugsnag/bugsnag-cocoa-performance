@@ -9,11 +9,12 @@
 #import "SpanStackingHandler.h"
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>
+#import "Instrumentation/Instrumentation.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceAppStartTypePlugin: NSObject<BugsnagPerformancePlugin, BugsnagPerformanceSpanControlProvider>
-- (instancetype)initWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>)spanStackingHandler;
+- (void)setGetAppStartInstrumentationStateCallback:(GetAppStartInstrumentationStateSnapshot)callback;
 @end
 
 NS_ASSUME_NONNULL_END

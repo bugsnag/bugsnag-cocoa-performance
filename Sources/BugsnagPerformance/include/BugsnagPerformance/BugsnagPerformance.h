@@ -21,6 +21,8 @@
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanQuery.h>
+#import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

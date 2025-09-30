@@ -152,7 +152,10 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
 
     NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
     BugsnagPerformanceAppStartTypePlugin *appStartTypePlugin =
-        [[BugsnagPerformanceAppStartTypePlugin alloc] initWithSpanStackingHandler:spanStackingHandler_];
+        [BugsnagPerformanceAppStartTypePlugin new];
+    [appStartTypePlugin setGetAppStartInstrumentationStateCallback:^AppStartupInstrumentationStateSnapshot * _Nullable {
+        return instrumentation_->getAppStartInstrumentationStateSnapshot();
+    }];
     [defaultPlugins addObject:appStartTypePlugin];
     [pluginManager_ installPlugins:defaultPlugins];
 

@@ -78,10 +78,10 @@
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
 		1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */; };
-		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; };
+		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */; };
 		1C68DB992E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */; };
-		1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */; };
+		1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */; };
 		1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */; };
 		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };

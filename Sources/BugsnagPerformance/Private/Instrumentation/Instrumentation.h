@@ -21,6 +21,11 @@
 #import "../SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../SpanFactory/Network/NetworkSpanFactory.h"
+#import "AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef  AppStartupInstrumentationStateSnapshot * _Nullable (^GetAppStartInstrumentationStateSnapshot)();
 
 std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
                                                                            std::shared_ptr<AppStartupSpanFactory> spanFactory,
@@ -63,6 +68,9 @@ public:
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
     CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
     CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
+    AppStartupInstrumentationStateSnapshot *getAppStartInstrumentationStateSnapshot() {
+        return appStartupInstrumentation_->stateSnapshot();
+    }
 
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept { viewLoadInstrumentation_->loadingIndicatorWasAdded(loadingViewIndicator); }
 
@@ -75,3 +83,5 @@ private:
 };
 
 }
+
+NS_ASSUME_NONNULL_END

@@ -42,3 +42,11 @@ Feature: Plugins
       | attribute    | type      | value |
       | span_count   | intValue  | 3     |
       | plugin_start | boolValue | true  |
+
+  Scenario: App start type plugin correctly changes the span name
+    Given I run "AppStartTypeScenario"
+    Then I relaunch the app after shutdown
+    And I wait for 5 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "[AppStart/iOSCold]customType"
