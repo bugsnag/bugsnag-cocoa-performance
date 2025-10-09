@@ -49,7 +49,6 @@ public:
            void (^onSpanStarted)()) noexcept
     : spanStackingHandler_(spanStackingHandler)
     , sampler_(sampler)
-    , prewarmSpans_([NSMutableArray new])
     , blockedSpans_([NSMutableArray new])
     , potentiallyOpenSpans_(std::make_shared<WeakSpansList>())
     , batch_(batch)
@@ -69,7 +68,7 @@ public:
     
     ~Tracer() {};
 
-    void earlyConfigure(BSGEarlyConfiguration *) noexcept;
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         plainSpanFactory_->setAttributeCountLimit(config.attributeCountLimit);
@@ -102,15 +101,11 @@ public:
                                                    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 
     void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
-
-    void onPrewarmPhaseEnded(void) noexcept;
     
     void abortAllOpenSpans() noexcept;
 
     // Sweep must be called periodically to avoid a buildup of dead pointers.
     void sweep() noexcept;
-
-    void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span);
 
 private:
     Tracer() = delete;
@@ -122,10 +117,7 @@ private:
     std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
     std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;
 
-    std::atomic<bool> willDiscardPrewarmSpans_{false};
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
-    std::mutex prewarmSpansMutex_;
-    NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
@@ -142,7 +134,6 @@ private:
     PlainSpanFactoryCallbacks *createPlainSpanFactoryCallbacks() noexcept;
     ViewLoadSpanFactoryCallbacks *createViewLoadSpanFactoryCallbacks() noexcept;
     void createFrozenFrameSpan(NSTimeInterval startTime, NSTimeInterval endTime, BugsnagPerformanceSpanContext *parentContext) noexcept;
-    void markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept;
     void onSpanEndSet(BugsnagPerformanceSpan *span);
     void onSpanClosed(BugsnagPerformanceSpan *span);
     BugsnagPerformanceSpanCondition *onSpanBlocked(BugsnagPerformanceSpan *blocked, NSTimeInterval timeout);
@@ -150,5 +141,6 @@ private:
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span);
+    void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span);
 };
 }

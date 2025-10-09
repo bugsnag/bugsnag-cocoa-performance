@@ -18,12 +18,7 @@
         }
         id swizzleViewLoadPreMain = [dict valueForKeyPath:@"bugsnag.performance.swizzleViewLoadPreMain"];
         _swizzleViewLoadPreMain = swizzleViewLoadPreMain != nil && [swizzleViewLoadPreMain boolValue];
-        _appWasLaunchedPreWarmed = [NSProcessInfo.processInfo.environment[@"ActivePrewarm"] isEqualToString:@"1"];
     }
-
-    BSGLogDebug(@"BSGEarlyConfiguration.enableSwizzling = %d", self.enableSwizzling);
-    BSGLogDebug(@"BSGEarlyConfiguration.swizzleViewLoadPreMain = %d", self.swizzleViewLoadPreMain);
-    BSGLogDebug(@"BSGEarlyConfiguration.appWasLaunchedPreWarmed = %d", self.appWasLaunchedPreWarmed);
 
     return self;
 }
