@@ -51,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) NSMutableDictionary *attributes;
 @property (nonatomic) SpanLifecycleCallback onSpanEndSet;
 @property (nonatomic) SpanLifecycleCallback onSpanClosed;
+@property (nonatomic) SpanLifecycleCallback onSpanCancelled;
 @property (nonatomic) SpanBlockedCallback onSpanBlocked;
 @property (nonatomic,readwrite) SpanId parentId;
 @property (nonatomic) double samplingProbability;
@@ -83,7 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
       conditionsToEndOnClose:(NSArray<BugsnagPerformanceSpanCondition *> *)conditionsToEndOnClose
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanEnded
-               onSpanBlocked:(SpanBlockedCallback) onSpanBlocked NS_DESIGNATED_INITIALIZER;
+               onSpanBlocked:(SpanBlockedCallback) onSpanBlocked
+             onSpanCancelled:(SpanLifecycleCallback) onSpanCancelled NS_DESIGNATED_INITIALIZER;
 
 - (void)internalSetAttribute:(NSString *)attributeName withValue:(_Nullable id)value;
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes;
@@ -95,6 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)endWithAbsoluteTime:(CFAbsoluteTime)endTime;
 
 - (void)endOnDestroy;
+- (void)cancel;
 
 - (SpanId)parentId;
 - (void)updateName:(NSString *)name;

@@ -18,15 +18,13 @@ namespace bugsnag {
 
 class NetworkLifecycleHandlerImpl: public NetworkLifecycleHandler {
 public:
-    NetworkLifecycleHandlerImpl(std::shared_ptr<Tracer> tracer,
-                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+    NetworkLifecycleHandlerImpl(std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                 std::shared_ptr<NetworkSpanFactory> spanFactory,
                                 std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
                                 std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
                                 std::shared_ptr<NetworkInstrumentationStateRepository> repository,
                                 std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : tracer_(tracer)
-    , spanAttributesProvider_(spanAttributesProvider)
+    : spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , earlyPhaseHandler_(earlyPhaseHandler)
     , systemUtils_(systemUtils)
@@ -40,7 +38,6 @@ public:
                                           NSString *ignoreBaseEndpoint) noexcept;
     
 private:
-    std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<NetworkSpanFactory> spanFactory_;
     std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler_;

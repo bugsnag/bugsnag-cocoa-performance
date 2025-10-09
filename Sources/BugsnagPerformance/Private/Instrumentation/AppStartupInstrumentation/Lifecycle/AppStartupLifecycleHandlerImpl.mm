@@ -22,12 +22,10 @@ static bool isAppStartInProgress(AppStartupInstrumentationState *state) noexcept
 
 AppStartupLifecycleHandlerImpl::AppStartupLifecycleHandlerImpl(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                                               std::shared_ptr<Tracer> tracer,
                                                                std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils,
                                                                BugsnagPerformanceCrossTalkAPI *crossTalkAPI) noexcept
 : spanFactory_(spanFactory)
 , spanAttributesProvider_(spanAttributesProvider)
-, tracer_(tracer)
 , systemUtils_(systemUtils)
 , crossTalkAPI_(crossTalkAPI) {}
 
@@ -93,10 +91,10 @@ AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationSt
 
 void
 AppStartupLifecycleHandlerImpl::onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept {
-    tracer_->cancelQueuedSpan(state.preMainSpan);
-    tracer_->cancelQueuedSpan(state.postMainSpan);
-    tracer_->cancelQueuedSpan(state.uiInitSpan);
-    tracer_->cancelQueuedSpan(state.appStartSpan);
+    [state.preMainSpan cancel];
+    [state.postMainSpan cancel];
+    [state.uiInitSpan cancel];
+    [state.appStartSpan cancel];
     state.preMainSpan = nil;
     state.postMainSpan = nil;
     state.uiInitSpan = nil;

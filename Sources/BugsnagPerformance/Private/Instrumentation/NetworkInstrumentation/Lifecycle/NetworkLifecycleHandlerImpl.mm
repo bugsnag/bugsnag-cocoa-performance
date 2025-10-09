@@ -50,7 +50,7 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *
     }
     NSError *error = nil;
     if (!shouldRecordFinishedTask(task, ignoreBaseEndpoint, &error)) {
-        tracer_->cancelQueuedSpan(state.overallSpan);
+        [state.overallSpan cancel];
         repository_->setInstrumentationState(task, nil);
         return;
     }

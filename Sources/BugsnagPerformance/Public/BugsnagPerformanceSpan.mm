@@ -41,7 +41,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
       conditionsToEndOnClose:(NSArray<BugsnagPerformanceSpanCondition *> *)conditionsToEndOnClose
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanClosed
-                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked {
+                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked
+             onSpanCancelled:(nonnull SpanLifecycleCallback)onSpanCancelled {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _actuallyStartedAt = CFAbsoluteTimeGetCurrent();
         _actuallyEndedAt = CFABSOLUTETIME_INVALID;
@@ -55,6 +56,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _onSpanEndSet = onSpanEndSet;
         _onSpanClosed = onSpanClosed;
         _onSpanBlocked = onSpanBlocked;
+        _onSpanCancelled = onSpanCancelled;
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = samplingProbability;
         _state = SpanStateOpen;
@@ -184,6 +186,13 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)endOnDestroy {
     self.onSpanDestroyAction = OnSpanDestroyEnd;
+}
+
+- (void)cancel {
+    [self abortUnconditionally];
+    if (self.onSpanCancelled) {
+        self.onSpanCancelled(self);
+    }
 }
 
 - (BugsnagPerformanceSpanCondition *_Nullable)blockWithTimeout:(NSTimeInterval)timeout {
