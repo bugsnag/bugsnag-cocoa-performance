@@ -17,6 +17,7 @@
 #import "../ConditionTimeoutExecutor.h"
 #import "../BSGPrioritizedStore.h"
 #import "../WeakSpansList.h"
+#import "../SpanStore/SpanStore.h"
 
 #import <mutex>
 
@@ -25,7 +26,7 @@ namespace bugsnag {
 class SpanLifecycleHandlerImpl: public SpanLifecycleHandler {
 public:
     SpanLifecycleHandlerImpl(std::shared_ptr<Sampler> sampler,
-                             std::shared_ptr<SpanStackingHandler> spanStackingHandler,
+                             std::shared_ptr<SpanStore> store,
                              std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
                              std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
                              std::shared_ptr<Batch> batch,
@@ -34,16 +35,14 @@ public:
                              BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                              void (^onSpanStarted)()) noexcept
     : sampler_(sampler)
-    , spanStackingHandler_(spanStackingHandler)
+    , store_(store)
     , conditionTimeoutExecutor_(conditionTimeoutExecutor)
     , plainSpanFactory_(plainSpanFactory)
     , batch_(batch)
     , frameMetricsCollector_(frameMetricsCollector)
     , onSpanStartCallbacks_(onSpanStartCallbacks)
     , onSpanEndCallbacks_(onSpanEndCallbacks)
-    , onSpanStarted_(onSpanStarted)
-    , blockedSpans_([NSMutableArray new])
-    , potentiallyOpenSpans_(std::make_shared<WeakSpansList>()) {}
+    , onSpanStarted_(onSpanStarted) {}
     
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
@@ -62,27 +61,22 @@ public:
     BugsnagPerformanceSpanCondition *onSpanBlocked(BugsnagPerformanceSpan *blocked, NSTimeInterval timeout) noexcept;
     void onSpanCancelled(BugsnagPerformanceSpan *span) noexcept;
     
-    void sweep() noexcept;
-    
 private:
     
     std::shared_ptr<Sampler> sampler_;
-    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
+    std::shared_ptr<SpanStore> store_;
     FrameMetricsCollector *frameMetricsCollector_;
     bool isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
     
     std::shared_ptr<Batch> batch_;
-    std::shared_ptr<WeakSpansList> potentiallyOpenSpans_;
-    NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
     
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
-    void cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept;
