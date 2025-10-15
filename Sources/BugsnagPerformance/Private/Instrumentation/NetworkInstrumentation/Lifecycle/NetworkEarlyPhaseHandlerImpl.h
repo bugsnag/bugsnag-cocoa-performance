@@ -7,7 +7,7 @@
 //
 
 #import "NetworkEarlyPhaseHandler.h"
-#import "../../../Tracer.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

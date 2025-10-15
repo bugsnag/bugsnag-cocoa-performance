@@ -8,9 +8,8 @@
 
 #import "NetworkLifecycleHandler.h"
 #import "NetworkEarlyPhaseHandler.h"
-#import "../../../Tracer.h"
 #import "../State/NetworkInstrumentationStateRepository.h"
-#import "../../../SpanFactory/Network/NetworkSpanFactory.h"
+#import "../../../Core/SpanFactory/Network/NetworkSpanFactory.h"
 #import "../System/NetworkInstrumentationSystemUtils.h"
 #import "../System/NetworkHeaderInjector.h"
 

@@ -9,16 +9,16 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import "PhasedStartup.h"
-#import "SpanStackingHandler.h"
+#import "Core/PhasedStartup.h"
+#import "Core/SpanStack/SpanStackingHandler.h"
 #import "Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
-#import "SpanFactory/Plain/PlainSpanFactoryImpl.h"
-#import "SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
-#import "SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
-#import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
-#import "SpanFactory/ViewLoad/ViewLoadSpanFactoryCallbacks.h"
-#import "SpanLifecycle/SpanLifecycleHandler.h"
-#import "SpanStore/SpanStore.h"
+#import "Core/SpanFactory/Plain/PlainSpanFactoryImpl.h"
+#import "Core/SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
+#import "Core/SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
+#import "Core/SpanFactory/Network/NetworkSpanFactoryImpl.h"
+#import "Core/SpanFactory/ViewLoad/ViewLoadSpanFactoryCallbacks.h"
+#import "Core/SpanLifecycle/SpanLifecycleHandler.h"
+#import "Core/SpanStore/SpanStore.h"
 
 #import <memory>
 

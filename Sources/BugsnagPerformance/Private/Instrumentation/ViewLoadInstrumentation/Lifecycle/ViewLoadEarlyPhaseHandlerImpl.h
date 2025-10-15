@@ -7,7 +7,8 @@
 //
 
 #import "ViewLoadEarlyPhaseHandler.h"
-#import "../../../Tracer.h"
+#import <memory>
+#import <mutex>
 
 NS_ASSUME_NONNULL_BEGIN
 

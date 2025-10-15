@@ -8,12 +8,11 @@
 #import "ViewLoadInstrumentation.h"
 #import <BugsnagPerformance/BugsnagPerformanceTrackedViewContainer.h>
 
-#import "../../BugsnagPerformanceSpan+Private.h"
-#import "../../Tracer.h"
-#import "../../Swizzle.h"
-#import "../../Utils.h"
-#import "../../BugsnagSwiftTools.h"
-#import "../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../Core/Span/BugsnagPerformanceSpan+Private.h"
+#import "../../Utils/Swizzle.h"
+#import "../../Utils/Utils.h"
+#import "../../Utils/BugsnagSwiftTools.h"
+#import "../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #if 0
 #define Trace NSLog

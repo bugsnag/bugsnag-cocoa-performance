@@ -7,7 +7,7 @@
 //
 
 #import "ViewLoadLoadingIndicatorsHandlerImpl.h"
-#import "../../../BugsnagPerformanceLoadingIndicatorView+Private.h"
+#import "../../BugsnagPerformanceLoadingIndicatorView+Private.h"
 
 using namespace bugsnag;
 

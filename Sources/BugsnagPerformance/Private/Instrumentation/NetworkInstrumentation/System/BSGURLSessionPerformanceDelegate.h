@@ -6,8 +6,11 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "../../../Tracer.h"
 #import "../Lifecycle/NetworkLifecycleHandler.h"
+#import "../../../Core/PhasedStartup.h"
+#import <memory>
+
+using namespace bugsnag;
 
 NS_ASSUME_NONNULL_BEGIN
 

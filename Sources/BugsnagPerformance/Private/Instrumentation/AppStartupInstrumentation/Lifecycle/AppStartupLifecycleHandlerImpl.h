@@ -7,10 +7,10 @@
 //
 
 #import "AppStartupLifecycleHandler.h"
-#import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
+#import "../../../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
+#import "../../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #import <memory>
 

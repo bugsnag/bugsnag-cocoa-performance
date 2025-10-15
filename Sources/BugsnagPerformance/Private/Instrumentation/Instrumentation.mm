@@ -8,8 +8,8 @@
 
 #import "Instrumentation.h"
 
-#import "../SpanFactory/Network/NetworkSpanFactoryImpl.h"
-#import "../SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
+#import "../Core/SpanFactory/Network/NetworkSpanFactoryImpl.h"
+#import "../Core/SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
 #import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"

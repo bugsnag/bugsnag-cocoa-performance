@@ -194,6 +194,7 @@
 		967949CA2E9DC9CE005FD87F /* SpanProcessingPipelineStep.h in Sources */ = {isa = PBXBuildFile; fileRef = 967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */; };
 		967949CD2E9DCAEE005FD87F /* SpanProcessingPipelineImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */; };
 		967949CF2E9DCB06005FD87F /* SpanProcessingPipelineImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */; };
+		967949EC2EA06044005FD87F /* BugsnagPerformancePluginSupport.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949EB2EA06038005FD87F /* BugsnagPerformancePluginSupport.h */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -558,6 +559,7 @@
 		967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanProcessingPipelineStep.h; sourceTree = "<group>"; };
 		967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanProcessingPipelineImpl.h; sourceTree = "<group>"; };
 		967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanProcessingPipelineImpl.mm; sourceTree = "<group>"; };
+		967949EB2EA06038005FD87F /* BugsnagPerformancePluginSupport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformancePluginSupport.h; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -798,103 +800,18 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
-				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
-				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
-				CBE8EA1C294B5E1500702950 /* Batch.h */,
-				963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */,
-				963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */,
-				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
-				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
-				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
-				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
-				1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */,
-				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
-				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
-				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
-				09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */,
-				09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */,
-				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
-				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
-				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
-				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
-				962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */,
-				963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */,
-				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
-				963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */,
-				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
-				964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */,
-				964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */,
-				09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */,
-				963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */,
-				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
-				CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */,
-				09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */,
-				09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */,
-				964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */,
-				CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */,
-				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
-				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
-				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
-				098FC84D2D350E60001B627D /* FixedLengthDequeue.h */,
-				966634D82C8A3939004A934D /* FrameRateMetrics */,
-				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
-				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
-				0122C22229019770002D243C /* IdGenerator.h */,
+				967949D22EA05615005FD87F /* Core */,
+				967949DD2EA05A8F005FD87F /* CrossTalkAPI */,
 				0122C22929019770002D243C /* Instrumentation */,
-				CBEC51BE296DB311009C0CE3 /* JSON.h */,
-				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
-				965FBD142DF24D3100D6BACB /* Logging.h */,
-				098FC8772D3E8D43001B627D /* Metrics.h */,
-				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
-				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
-				CB04969529150D860097E526 /* OtlpPackage.h */,
-				CB04969629150D860097E526 /* OtlpPackage.mm */,
-				0122C22029019770002D243C /* OtlpTraceEncoding.h */,
-				0122C23029019770002D243C /* OtlpTraceEncoding.mm */,
-				CB0496992915194E0097E526 /* OtlpUploader.h */,
-				CB04969A2915194E0097E526 /* OtlpUploader.mm */,
-				CBEC51B6296D8386009C0CE3 /* Persistence.h */,
-				CBEC51B7296D8386009C0CE3 /* Persistence.mm */,
-				CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */,
-				CB68FAB82A3C27B9005B2CDB /* PersistentDeviceID.mm */,
-				CBEC51BA296D9EED009C0CE3 /* PersistentState.h */,
-				CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */,
-				CB78819F29E698BF00A58906 /* PhasedStartup.h */,
-				01A414CF2913C238003152A4 /* Reachability.h */,
-				01A414D02913C238003152A4 /* Reachability.mm */,
-				015836BF29125E7A002F54C8 /* ResourceAttributes.h */,
-				015836C029125E7A002F54C8 /* ResourceAttributes.mm */,
-				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
-				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
-				01A58C0C29092D25006E4DF7 /* Sampler.h */,
-				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
-				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
-				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
-				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
-				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
-				963726C42DEAB14D00C739E6 /* SpanControl */,
-				969EE0EE2E7872A600600F63 /* SpanFactory */,
-				0122C22329019770002D243C /* SpanKind.h */,
-				967949B42E97CC7F005FD87F /* SpanLifecycle */,
-				CB7FD935299D330500499E13 /* SpanOptions.h */,
-				967949C62E9DC991005FD87F /* SpanProcessingPipeline */,
-				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
-				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
-				967949BB2E99372C005FD87F /* SpanStore */,
-				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
-				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
-				098FC8532D37A08D001B627D /* SystemInfoSampler.h */,
-				098FC8522D37A08D001B627D /* SystemInfoSampler.mm */,
-				CBC90C4429C84DEB00280884 /* Targets.h */,
+				967949D32EA05645005FD87F /* Main */,
+				967949D12EA0560D005FD87F /* Metrics */,
+				967949DC2EA05A0C005FD87F /* Plugins */,
+				967949D82EA05897005FD87F /* PluginSupport */,
 				0122C23329019770002D243C /* Tracer.h */,
 				0122C22529019770002D243C /* Tracer.mm */,
-				CBF621052919418F004BEE0B /* Uploader.h */,
-				01EAF97F291AAF19007AC627 /* Utils.h */,
+				967949D62EA0578E005FD87F /* Upload */,
+				967949D52EA056D6005FD87F /* Utils */,
 				015836C3291264E0002F54C8 /* Version.h */,
-				09B473052B23087D0024CF11 /* WeakSpansList.h */,
-				0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */,
-				CBE8EA18294B5AB800702950 /* Worker.h */,
-				CBE8EA19294B5AB800702950 /* Worker.mm */,
 			);
 			path = Private;
 			sourceTree = "<group>";
@@ -903,6 +820,7 @@
 			isa = PBXGroup;
 			children = (
 				963829032E547BA400404F3A /* AppStartupInstrumentation */,
+				962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */,
 				CBEBE59829F671A800BF0B4F /* Instrumentation.h */,
 				CBEBE59929F671A800BF0B4F /* Instrumentation.mm */,
 				CB34771929068C350033759C /* NetworkInstrumentation */,
@@ -1187,7 +1105,7 @@
 			path = Lifecycle;
 			sourceTree = "<group>";
 		};
-		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
+		966634D82C8A3939004A934D /* FrameMetrics */ = {
 			isa = PBXGroup;
 			children = (
 				966634D02C8909BB004A934D /* FrameMetricsCollector.h */,
@@ -1197,7 +1115,7 @@
 				966634D92C8A39B1004A934D /* FrozenFrameData.h */,
 				966634DB2C8A39C1004A934D /* FrozenFrameData.mm */,
 			);
-			path = FrameRateMetrics;
+			path = FrameMetrics;
 			sourceTree = "<group>";
 		};
 		967949B42E97CC7F005FD87F /* SpanLifecycle */ = {
@@ -1216,6 +1134,8 @@
 				967949BC2E993735005FD87F /* SpanStore.h */,
 				967949BE2E993742005FD87F /* SpanStoreImpl.h */,
 				967949C02E99374E005FD87F /* SpanStoreImpl.mm */,
+				09B473052B23087D0024CF11 /* WeakSpansList.h */,
+				0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */,
 			);
 			path = SpanStore;
 			sourceTree = "<group>";
@@ -1223,20 +1143,247 @@
 		967949C62E9DC991005FD87F /* SpanProcessingPipeline */ = {
 			isa = PBXGroup;
 			children = (
+				CBE8EA1C294B5E1500702950 /* Batch.h */,
 				967949C72E9DC9A1005FD87F /* SpanProcessingPipeline.h */,
 				967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */,
 				967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */,
 				967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */,
-				967949CB2E9DC9E9005FD87F /* Steps */,
 			);
 			path = SpanProcessingPipeline;
 			sourceTree = "<group>";
 		};
-		967949CB2E9DC9E9005FD87F /* Steps */ = {
+		967949D12EA0560D005FD87F /* Metrics */ = {
 			isa = PBXGroup;
 			children = (
+				966634D82C8A3939004A934D /* FrameMetrics */,
+				967949D42EA0567E005FD87F /* SystemMetrics */,
 			);
-			path = Steps;
+			path = Metrics;
+			sourceTree = "<group>";
+		};
+		967949D22EA05615005FD87F /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				967949D72EA05844005FD87F /* Attributes */,
+				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
+				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
+				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
+				963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */,
+				CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */,
+				CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */,
+				967949DF2EA05B37005FD87F /* Configuration */,
+				CB78819F29E698BF00A58906 /* PhasedStartup.h */,
+				967949E32EA05C85005FD87F /* Sampler */,
+				967949E12EA05BE6005FD87F /* Span */,
+				967949DE2EA05AF4005FD87F /* SpanConditions */,
+				969EE0EE2E7872A600600F63 /* SpanFactory */,
+				967949B42E97CC7F005FD87F /* SpanLifecycle */,
+				967949C62E9DC991005FD87F /* SpanProcessingPipeline */,
+				967949DB2EA059C0005FD87F /* SpanStack */,
+				967949BB2E99372C005FD87F /* SpanStore */,
+				967949E02EA05B58005FD87F /* Worker */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		967949D32EA05645005FD87F /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */,
+				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
+				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
+				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		967949D42EA0567E005FD87F /* SystemMetrics */ = {
+			isa = PBXGroup;
+			children = (
+				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
+				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
+				098FC8532D37A08D001B627D /* SystemInfoSampler.h */,
+				098FC8522D37A08D001B627D /* SystemInfoSampler.mm */,
+			);
+			path = SystemMetrics;
+			sourceTree = "<group>";
+		};
+		967949D52EA056D6005FD87F /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
+				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
+				09F23A8A2CE351ED00F0D769 /* BugsnagSwiftTools.h */,
+				09F23A8B2CE351ED00F0D769 /* BugsnagSwiftTools.m */,
+				CBEC51D42976BCAD009C0CE3 /* Filesystem.h */,
+				CBEC51D52976BCAD009C0CE3 /* Filesystem.mm */,
+				098FC84D2D350E60001B627D /* FixedLengthDequeue.h */,
+				CBF7C5DF297A8E9100D47719 /* Gzip.h */,
+				CBF7C5E0297A8E9100D47719 /* Gzip.m */,
+				0122C22229019770002D243C /* IdGenerator.h */,
+				CBEC51BE296DB311009C0CE3 /* JSON.h */,
+				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
+				965FBD142DF24D3100D6BACB /* Logging.h */,
+				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
+				CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */,
+				CBEC51B6296D8386009C0CE3 /* Persistence.h */,
+				CBEC51B7296D8386009C0CE3 /* Persistence.mm */,
+				CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */,
+				CB68FAB82A3C27B9005B2CDB /* PersistentDeviceID.mm */,
+				01A414CF2913C238003152A4 /* Reachability.h */,
+				01A414D02913C238003152A4 /* Reachability.mm */,
+				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
+				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
+				CBC90C4429C84DEB00280884 /* Targets.h */,
+				01EAF97F291AAF19007AC627 /* Utils.h */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		967949D62EA0578E005FD87F /* Upload */ = {
+			isa = PBXGroup;
+			children = (
+				967949DA2EA0592E005FD87F /* Otlp */,
+				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
+				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
+			);
+			path = Upload;
+			sourceTree = "<group>";
+		};
+		967949D72EA05844005FD87F /* Attributes */ = {
+			isa = PBXGroup;
+			children = (
+				015836BF29125E7A002F54C8 /* ResourceAttributes.h */,
+				015836C029125E7A002F54C8 /* ResourceAttributes.mm */,
+				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
+				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
+				96D4160D29F276FE00AEE435 /* SpanAttributesProvider.h */,
+				96D4160B29F276E400AEE435 /* SpanAttributesProvider.mm */,
+			);
+			path = Attributes;
+			sourceTree = "<group>";
+		};
+		967949D82EA05897005FD87F /* PluginSupport */ = {
+			isa = PBXGroup;
+			children = (
+				963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */,
+				967949EB2EA06038005FD87F /* BugsnagPerformancePluginSupport.h */,
+				963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */,
+				967949D92EA05901005FD87F /* PluginManager */,
+				963726C42DEAB14D00C739E6 /* SpanControl */,
+			);
+			path = PluginSupport;
+			sourceTree = "<group>";
+		};
+		967949D92EA05901005FD87F /* PluginManager */ = {
+			isa = PBXGroup;
+			children = (
+				963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */,
+				963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */,
+			);
+			path = PluginManager;
+			sourceTree = "<group>";
+		};
+		967949DA2EA0592E005FD87F /* Otlp */ = {
+			isa = PBXGroup;
+			children = (
+				CB04969529150D860097E526 /* OtlpPackage.h */,
+				CB04969629150D860097E526 /* OtlpPackage.mm */,
+				0122C22029019770002D243C /* OtlpTraceEncoding.h */,
+				0122C23029019770002D243C /* OtlpTraceEncoding.mm */,
+				CB0496992915194E0097E526 /* OtlpUploader.h */,
+				CB04969A2915194E0097E526 /* OtlpUploader.mm */,
+				CBF621052919418F004BEE0B /* Uploader.h */,
+			);
+			path = Otlp;
+			sourceTree = "<group>";
+		};
+		967949DB2EA059C0005FD87F /* SpanStack */ = {
+			isa = PBXGroup;
+			children = (
+				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
+				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
+				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
+			);
+			path = SpanStack;
+			sourceTree = "<group>";
+		};
+		967949DC2EA05A0C005FD87F /* Plugins */ = {
+			isa = PBXGroup;
+			children = (
+				967949E22EA05C3B005FD87F /* AppStart */,
+			);
+			path = Plugins;
+			sourceTree = "<group>";
+		};
+		967949DD2EA05A8F005FD87F /* CrossTalkAPI */ = {
+			isa = PBXGroup;
+			children = (
+				09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */,
+				09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */,
+			);
+			path = CrossTalkAPI;
+			sourceTree = "<group>";
+		};
+		967949DE2EA05AF4005FD87F /* SpanConditions */ = {
+			isa = PBXGroup;
+			children = (
+				964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */,
+				964B785E2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h */,
+				964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */,
+			);
+			path = SpanConditions;
+			sourceTree = "<group>";
+		};
+		967949DF2EA05B37005FD87F /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
+				CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */,
+				CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */,
+				098FC8772D3E8D43001B627D /* Metrics.h */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		967949E02EA05B58005FD87F /* Worker */ = {
+			isa = PBXGroup;
+			children = (
+				CBE8EA18294B5AB800702950 /* Worker.h */,
+				CBE8EA19294B5AB800702950 /* Worker.mm */,
+			);
+			path = Worker;
+			sourceTree = "<group>";
+		};
+		967949E12EA05BE6005FD87F /* Span */ = {
+			isa = PBXGroup;
+			children = (
+				0122C23229019770002D243C /* BugsnagPerformanceSpan+Private.h */,
+				09DC62282C6A2EF6000AA8E1 /* BugsnagPerformanceSpanContext+Private.h */,
+				0122C22329019770002D243C /* SpanKind.h */,
+				CB7FD935299D330500499E13 /* SpanOptions.h */,
+			);
+			path = Span;
+			sourceTree = "<group>";
+		};
+		967949E22EA05C3B005FD87F /* AppStart */ = {
+			isa = PBXGroup;
+			children = (
+				1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */,
+				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
+				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
+			);
+			path = AppStart;
+			sourceTree = "<group>";
+		};
+		967949E32EA05C85005FD87F /* Sampler */ = {
+			isa = PBXGroup;
+			children = (
+				CBEC51BA296D9EED009C0CE3 /* PersistentState.h */,
+				CBEC51BB296D9EED009C0CE3 /* PersistentState.mm */,
+				01A58C0C29092D25006E4DF7 /* Sampler.h */,
+			);
+			path = Sampler;
 			sourceTree = "<group>";
 		};
 		969EE0EE2E7872A600600F63 /* SpanFactory */ = {
@@ -1420,6 +1567,7 @@
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
 				962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
+				967949EC2EA06044005FD87F /* BugsnagPerformancePluginSupport.h in Headers */,
 				962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */,
 				964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */,
 				963726C62DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.h in Headers */,

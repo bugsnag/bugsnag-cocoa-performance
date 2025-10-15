@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../../../PhasedStartup.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../SpanStackingHandler.h"
-#import "../../../Sampler.h"
+#import "../../../Core/PhasedStartup.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
+#import "../../../Core/SpanStack/SpanStackingHandler.h"
+#import "../../../Core/Sampler/Sampler.h"
 
 #import <memory>
 

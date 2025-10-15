@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformance.h>
-#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 #import "BugsnagPerformanceSpan+Private.h"
 
 static BugsnagPerformanceSpan *createSpan(TraceId traceId, SpanId spanId, double samplingProbability) {

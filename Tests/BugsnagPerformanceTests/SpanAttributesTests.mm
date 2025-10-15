@@ -7,7 +7,7 @@
 //
 
 #import "TestHelpers.h"
-#import "../../Sources/BugsnagPerformance/Private/SpanAttributesProvider.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Attributes/SpanAttributesProvider.h"
 
 using namespace bugsnag;
 

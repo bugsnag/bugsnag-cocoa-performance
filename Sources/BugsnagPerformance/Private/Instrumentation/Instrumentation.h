@@ -10,17 +10,17 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
-#import "../PhasedStartup.h"
+#import "../Core/PhasedStartup.h"
 #import "AppStartupInstrumentation/AppStartupInstrumentation.h"
 #import "NetworkInstrumentation/NetworkInstrumentation.h"
 #import "AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
-#import "../SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
+#import "../Core/SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
 #import "AppStartupInstrumentation/Lifecycle/AppStartupLifecycleHandlerImpl.h"
 #import "ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "NetworkInstrumentation/System/NetworkHeaderInjector.h"
-#import "../SpanFactory/AppStartup/AppStartupSpanFactory.h"
-#import "../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
-#import "../SpanFactory/Network/NetworkSpanFactory.h"
+#import "../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
+#import "../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
+#import "../Core/SpanFactory/Network/NetworkSpanFactory.h"
 #import "AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -41,8 +41,7 @@ namespace bugsnag {
 
 class Instrumentation: public PhasedStartup {
 public:
-    Instrumentation(std::shared_ptr<Tracer> tracer,
-                    std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory,
+    Instrumentation(std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory,
                     std::shared_ptr<ViewLoadSpanFactory> viewLoadSpanFactory,
                     std::shared_ptr<NetworkSpanFactory> networkSpanFactory,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
@@ -51,7 +50,8 @@ public:
     , viewLoadInstrumentation_(createViewLoadInstrumentation(viewLoadSpanFactory, spanAttributesProvider))
     , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
     {
-        tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
+        // TODO
+//        tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
     }
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;

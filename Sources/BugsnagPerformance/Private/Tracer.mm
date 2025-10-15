@@ -7,13 +7,13 @@
 
 #import "Tracer.h"
 
-#import "SpanAttributes.h"
-#import "Utils.h"
-#import "BugsnagPerformanceSpan+Private.h"
+#import "Core/Attributes/SpanAttributes.h"
+#import "Utils/Utils.h"
+#import "Core/Span/BugsnagPerformanceSpan+Private.h"
 #import "Instrumentation/NetworkInstrumentation/NetworkInstrumentation.h"
 #import "Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
-#import "BugsnagPerformanceLibrary.h"
-#import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "Main/BugsnagPerformanceLibrary.h"
+#import "Metrics/FrameMetrics/FrameMetricsCollector.h"
 #import <algorithm>
 
 using namespace bugsnag;

@@ -9,10 +9,10 @@
 #import "ViewLoadLifecycleHandler.h"
 #import "ViewLoadEarlyPhaseHandler.h"
 #import "ViewLoadLoadingIndicatorsHandler.h"
-#import "../../../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
+#import "../../../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
-#import "../../../Tracer.h"
-#import "../../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
