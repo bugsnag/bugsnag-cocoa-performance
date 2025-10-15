@@ -190,6 +190,10 @@
 		967949BD2E99373E005FD87F /* SpanStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949BC2E993735005FD87F /* SpanStore.h */; };
 		967949BF2E993749005FD87F /* SpanStoreImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949BE2E993742005FD87F /* SpanStoreImpl.h */; };
 		967949C12E993750005FD87F /* SpanStoreImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949C02E99374E005FD87F /* SpanStoreImpl.mm */; };
+		967949C82E9DC9B8005FD87F /* SpanProcessingPipeline.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949C72E9DC9A1005FD87F /* SpanProcessingPipeline.h */; };
+		967949CA2E9DC9CE005FD87F /* SpanProcessingPipelineStep.h in Sources */ = {isa = PBXBuildFile; fileRef = 967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */; };
+		967949CD2E9DCAEE005FD87F /* SpanProcessingPipelineImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */; };
+		967949CF2E9DCB06005FD87F /* SpanProcessingPipelineImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -550,6 +554,10 @@
 		967949BC2E993735005FD87F /* SpanStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanStore.h; sourceTree = "<group>"; };
 		967949BE2E993742005FD87F /* SpanStoreImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanStoreImpl.h; sourceTree = "<group>"; };
 		967949C02E99374E005FD87F /* SpanStoreImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStoreImpl.mm; sourceTree = "<group>"; };
+		967949C72E9DC9A1005FD87F /* SpanProcessingPipeline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanProcessingPipeline.h; sourceTree = "<group>"; };
+		967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanProcessingPipelineStep.h; sourceTree = "<group>"; };
+		967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanProcessingPipelineImpl.h; sourceTree = "<group>"; };
+		967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanProcessingPipelineImpl.mm; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -869,6 +877,7 @@
 				0122C22329019770002D243C /* SpanKind.h */,
 				967949B42E97CC7F005FD87F /* SpanLifecycle */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
+				967949C62E9DC991005FD87F /* SpanProcessingPipeline */,
 				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
 				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
 				967949BB2E99372C005FD87F /* SpanStore */,
@@ -1211,6 +1220,25 @@
 			path = SpanStore;
 			sourceTree = "<group>";
 		};
+		967949C62E9DC991005FD87F /* SpanProcessingPipeline */ = {
+			isa = PBXGroup;
+			children = (
+				967949C72E9DC9A1005FD87F /* SpanProcessingPipeline.h */,
+				967949CC2E9DCAE0005FD87F /* SpanProcessingPipelineImpl.h */,
+				967949CE2E9DCB02005FD87F /* SpanProcessingPipelineImpl.mm */,
+				967949C92E9DC9C5005FD87F /* SpanProcessingPipelineStep.h */,
+				967949CB2E9DC9E9005FD87F /* Steps */,
+			);
+			path = SpanProcessingPipeline;
+			sourceTree = "<group>";
+		};
+		967949CB2E9DC9E9005FD87F /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Steps;
+			sourceTree = "<group>";
+		};
 		969EE0EE2E7872A600600F63 /* SpanFactory */ = {
 			isa = PBXGroup;
 			children = (
@@ -1350,6 +1378,7 @@
 				962CE7E82E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h in Headers */,
 				962CE7E92E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
+				967949C82E9DC9B8005FD87F /* SpanProcessingPipeline.h in Headers */,
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
 				9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
@@ -1440,6 +1469,7 @@
 				962CE8082E651A0100380522 /* NetworkInstrumentationStateRepository.h in Headers */,
 				969EE0FE2E794A0700600F63 /* ViewLoadSpanFactoryCallbacks.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
+				967949CD2E9DCAEE005FD87F /* SpanProcessingPipelineImpl.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
 				962CE8212E66D24200380522 /* NetworkInstrumentationSystemUtilsImpl.h in Headers */,
 				9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */,
@@ -1815,6 +1845,7 @@
 				963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */,
 				962CE7D32E60768400380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
+				967949CA2E9DC9CE005FD87F /* SpanProcessingPipelineStep.h in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
 				963829232E5542B500404F3A /* AppStartupInstrumentationStateSnapshot.m in Sources */,
@@ -1859,6 +1890,7 @@
 				9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */,
 				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
+				967949CF2E9DCB06005FD87F /* SpanProcessingPipelineImpl.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				962CE8062E6519E200380522 /* NetworkInstrumentationState.m in Sources */,
 				962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */,
