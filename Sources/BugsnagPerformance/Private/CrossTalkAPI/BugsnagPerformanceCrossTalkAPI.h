@@ -6,6 +6,8 @@
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 // Bugsnag CrossTalk API
 //
 // CrossTalk is an Objective-C layer for sharing private APIs between Bugsnag libraries.

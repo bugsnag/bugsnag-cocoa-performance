@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "ViewLoadLifecycleHandler.h"
 #import "ViewLoadEarlyPhaseHandler.h"
 #import "ViewLoadLoadingIndicatorsHandler.h"

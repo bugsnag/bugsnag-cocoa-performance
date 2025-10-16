@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "NetworkSpanFactory.h"
 #import "../../Attributes/SpanAttributesProvider.h"
 #import "../Plain/PlainSpanFactory.h"

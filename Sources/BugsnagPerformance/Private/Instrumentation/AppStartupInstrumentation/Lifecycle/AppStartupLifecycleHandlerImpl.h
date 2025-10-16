@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "AppStartupLifecycleHandler.h"
 #import "../../../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"

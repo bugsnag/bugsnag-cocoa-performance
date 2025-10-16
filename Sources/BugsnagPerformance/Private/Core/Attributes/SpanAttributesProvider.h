@@ -5,6 +5,8 @@
 //  Created by Robert Bartoszewski on 21/04/2023.
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
+
+#pragma once
 #import <Foundation/Foundation.h>
 #import "../BugsnagPerformanceViewType+Private.h"
 #import "../../Metrics/SystemMetrics/SystemInfoSampler.h"

@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "SpanStore.h"
 #import "../SpanStack/SpanStackingHandler.h"
 #import "WeakSpansList.h"

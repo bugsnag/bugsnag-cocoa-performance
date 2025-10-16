@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "../../Span/BugsnagPerformanceSpan+Private.h"
 
 typedef void (^OnSpanStartCallback)(BugsnagPerformanceSpan * _Nonnull,

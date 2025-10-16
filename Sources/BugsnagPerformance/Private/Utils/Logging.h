@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #define BSG_LOGLEVEL_NONE 0
 #define BSG_LOGLEVEL_ERR 10
 #define BSG_LOGLEVEL_WARN 20

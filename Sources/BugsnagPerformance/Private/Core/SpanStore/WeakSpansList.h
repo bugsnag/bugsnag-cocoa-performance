@@ -6,6 +6,8 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "../Span/BugsnagPerformanceSpan+Private.h"
 #import <mutex>
 

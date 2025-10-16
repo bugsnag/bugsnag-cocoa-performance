@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 // Core Plugin Support
 #import "BugsnagPerformancePluginContext+Private.h"
 #import "BugsnagPerformanceSpanControlProvider+Private.h"

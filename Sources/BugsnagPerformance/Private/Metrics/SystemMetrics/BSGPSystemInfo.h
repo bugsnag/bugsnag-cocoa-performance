@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <UIKit/UIKit.h>
 #import <mach/mach.h>
 #import <sys/sysctl.h>

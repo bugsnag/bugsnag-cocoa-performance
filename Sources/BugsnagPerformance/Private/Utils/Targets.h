@@ -6,6 +6,8 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 
 // Targets based on what technologis they use.

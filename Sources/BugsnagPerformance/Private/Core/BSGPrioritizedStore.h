@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 
 NS_ASSUME_NONNULL_BEGIN

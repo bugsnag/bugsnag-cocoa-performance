@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "../../Core/SpanStack/SpanStackingHandler.h"
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanControlProvider.h>

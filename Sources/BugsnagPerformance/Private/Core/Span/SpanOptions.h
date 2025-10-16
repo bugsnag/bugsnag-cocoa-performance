@@ -6,6 +6,8 @@
 //  Copyright © 2023 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import "../../Utils/Utils.h"

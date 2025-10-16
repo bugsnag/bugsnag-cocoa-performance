@@ -6,4 +6,6 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 typedef void (^ AddSpanControlProviderBlock)(id<BugsnagPerformanceSpanControlProvider> object, BugsnagPerformancePriority priority);

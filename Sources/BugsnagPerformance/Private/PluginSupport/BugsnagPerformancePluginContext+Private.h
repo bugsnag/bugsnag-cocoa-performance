@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformancePluginContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import "SpanControl/BSGCompositeSpanControlProvider.h"

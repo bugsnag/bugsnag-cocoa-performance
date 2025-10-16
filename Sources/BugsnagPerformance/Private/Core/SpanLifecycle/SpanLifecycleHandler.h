@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 #import "../Span/SpanOptions.h"
 #import "../PhasedStartup.h"

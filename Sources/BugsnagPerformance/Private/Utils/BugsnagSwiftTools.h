@@ -6,6 +6,8 @@
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
