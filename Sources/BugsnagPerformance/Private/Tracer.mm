@@ -19,30 +19,19 @@
 using namespace bugsnag;
 
 void
-Tracer::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
-    willDiscardPrewarmSpans_ = config.appWasLaunchedPreWarmed;
-}
-
-void
 Tracer::preStartSetup() noexcept {
-    BSGLogDebug(@"Tracer::preStartSetup()");
     reprocessEarlySpans();
 }
 
 void Tracer::reprocessEarlySpans(void) {
-    BSGLogDebug(@"Tracer::reprocessEarlySpans()");
     // Up until now nothing was configured, so all early spans have been kept.
     // Now that configuration is complete, force-drain all early spans and re-process them.
     auto toReprocess = batch_->drain(true);
-    BSGLogDebug(@"Tracer::reprocessEarlySpans: Reprocessing %zu early spans", toReprocess.count);
     for (BugsnagPerformanceSpan *span in toReprocess) {
-        BSGLogDebug(@"Tracer::reprocessEarlySpans: Try to re-add span (%@) to batch", span.name);
         if (span.state != SpanStateEnded) {
-            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ has state %d, so ignoring", span.name, span.state);
             continue;
         }
         if (!sampler_->sampled(span)) {
-            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
             [span abortUnconditionally];
             continue;
         }
@@ -50,7 +39,6 @@ void Tracer::reprocessEarlySpans(void) {
             callOnSpanEndCallbacks(span);
         }];
         if (span.state == SpanStateAborted) {
-            BSGLogDebug(@"Tracer::reprocessEarlySpans: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             [span abortUnconditionally];
             continue;
         }
@@ -61,13 +49,11 @@ void Tracer::reprocessEarlySpans(void) {
 
 void
 Tracer::abortAllOpenSpans() noexcept {
-    BSGLogDebug(@"Tracer::abortAllOpenSpans()");
     potentiallyOpenSpans_->abortAllOpen();
 }
 
 void
 Tracer::sweep() noexcept {
-    BSGLogDebug(@"Tracer::sweep()");
     constexpr unsigned minEntriesBeforeCompacting = 10000;
     if (potentiallyOpenSpans_->count() >= minEntriesBeforeCompacting) {
         potentiallyOpenSpans_->compact();
@@ -83,16 +69,12 @@ Tracer::startSpan(NSString *name,
 }
 
 void Tracer::onSpanEndSet(BugsnagPerformanceSpan *span) {
-    BSGLogTrace(@"Tracer::onSpanEndSet: for span %@", span.name);
-
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
 }
 
 void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
-    BSGLogTrace(@"Tracer::onSpanClosed: for span %@", span.name);
-    
     @synchronized (span) {
         for (BugsnagPerformanceSpanCondition *condition in span.conditionsToEndOnClose) {
             [condition closeWithEndTime:span.endTime];
@@ -102,12 +84,10 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     spanStackingHandler_->onSpanClosed(span.spanId);
 
     if(span.state == SpanStateAborted) {
-        BSGLogTrace(@"Tracer::onSpanClosed: span %@ has been aborted, so ignoring", span.name);
         return;
     }
 
     if (!sampler_->sampled(span)) {
-        BSGLogTrace(@"Tracer::onSpanClosed: span %@ was not sampled (P=%f), so dropping", span.name, sampler_->getProbability());
         [span abortUnconditionally];
         return;
     }
@@ -115,17 +95,14 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     if (span != nil && span.state == SpanStateEnded) {
         callOnSpanEndCallbacks(span);
         if (span.state == SpanStateAborted) {
-            BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             return;
         }
     }
     
     if (shouldInstrumentRendering(span)) {
-        BSGLogTrace(@"Tracer::onSpanClosed: Processing framerate metrics for span %@", span.name);
         processFrameMetrics(span);
     }
 
-    BSGLogTrace(@"Tracer::onSpanClosed: Adding span %@ to batch", span.name);
     batch_->add(span);
 }
 
@@ -134,7 +111,6 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
         return nil;
     }
     if (span.state != SpanStateOpen && !span.isBlocked) {
-        BSGLogDebug(@"Tracer::onSpanBlocked: span %@ has state %d, so ignoring", span.name, span.state);
         return nil;
     }
     BugsnagPerformanceSpanCondition *condition = [BugsnagPerformanceSpanCondition conditionWithSpan:span onClosedCallback:^(BugsnagPerformanceSpanCondition *c, CFAbsoluteTime endTime) {
@@ -157,7 +133,6 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
     [condition addOnDeactivatedCallback:^(BugsnagPerformanceSpanCondition *c) {
         __strong BugsnagPerformanceSpan *strongSpan = c.span;
         if (strongSpan.state == SpanStateEnded && !strongSpan.isBlocked) {
-            BSGLogTrace(@"Tracer::onSpanBlocked: Processing unblocked span %@", span.name);
             @synchronized (this->blockedSpans_) {
                 [this->blockedSpans_ removeObject:strongSpan];
                 this->conditionTimeoutExecutor_->cancelTimeout(c);
@@ -166,7 +141,6 @@ BugsnagPerformanceSpanCondition *Tracer::onSpanBlocked(BugsnagPerformanceSpan *s
         }
     }];
     this->conditionTimeoutExecutor_->sheduleTimeout(condition, timeout);
-    BSGLogTrace(@"Tracer::onSpanBlocked: Blocked span %@ with timeout %f", span.name, timeout);
     return condition;
 }
 
@@ -189,7 +163,6 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
         return;
     }
     if (span.state != SpanStateEnded) {
-        BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ has state %d, so ignoring", span.name, span.state);
         return;
     }
 
@@ -204,13 +177,11 @@ void Tracer::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) {
             shouldDiscardSpan = false;
         }
         if(shouldDiscardSpan) {
-            BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: span %@ OnEnd callback returned false. Dropping...", span.name);
             [span abortUnconditionally];
             return;
         }
     }
     CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
-    BSGLogDebug(@"Tracer::callOnSpanEndCallbacks: Adding span %@ to batch", span.name);
     [span internalSetAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
 }
 
@@ -273,19 +244,10 @@ Tracer::startViewLoadPhaseSpan(NSString *className,
 }
 
 void Tracer::cancelQueuedSpan(BugsnagPerformanceSpan *span) noexcept {
-    BSGLogTrace(@"Tracer::cancelQueuedSpan(%@)", span.name);
     if (span) {
         [span abortUnconditionally];
         batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
         [blockedSpans_ removeObject:span];
-    }
-}
-
-void Tracer::markPrewarmSpan(BugsnagPerformanceSpan *span) noexcept {
-    BSGLogTrace(@"Tracer::markPrewarmSpan(%@)", span.name);
-    std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
-    if (willDiscardPrewarmSpans_) {
-        [prewarmSpans_ addObject:span];
     }
 }
 
@@ -345,21 +307,13 @@ Tracer::createViewLoadSpanFactoryCallbacks() noexcept {
         return blockThis->spanStackingHandler_->hasSpanWithAttribute(@"bugsnag.span.category", @"view_load");
     };
     
-    auto onSpanStarted = ^(BugsnagPerformanceSpan * _Nonnull span) {
-        if (blockThis->willDiscardPrewarmSpans_) {
-            blockThis->markPrewarmSpan(span);
-        }
-    };
-    
-    auto onViewLoadSpanStarted = ^(BugsnagPerformanceSpan * _Nonnull span, NSString * _Nonnull className) {
+    auto onViewLoadSpanStarted = ^(NSString * _Nonnull className) {
         if (onViewLoadSpanStarted_ != nil) {
             onViewLoadSpanStarted_(className);
         }
-        onSpanStarted(span);
     };
     
     callbacks.onViewLoadSpanStarted = onViewLoadSpanStarted;
-    callbacks.onViewLoadPhaseSpanStarted = onSpanStarted;
     
     return callbacks;
 }
@@ -374,20 +328,6 @@ Tracer::createFrozenFrameSpan(NSTimeInterval startTime,
     options.makeCurrentContext = false;
     auto span = startSpan(@"FrozenFrame", options, BSGTriStateNo, @[]);
     [span endWithAbsoluteTime:endTime];
-}
-
-void
-Tracer::onPrewarmPhaseEnded(void) noexcept {
-    BSGLogDebug(@"Tracer::onPrewarmPhaseEnded()");
-    std::lock_guard<std::mutex> guard(prewarmSpansMutex_);
-    willDiscardPrewarmSpans_ = false;
-    for (BugsnagPerformanceSpan *span: prewarmSpans_) {
-        // Only cancel unfinished prewarm spans
-        if (span.state == SpanStateOpen) {
-            cancelQueuedSpan(span);
-        }
-    }
-    [prewarmSpans_ removeAllObjects];
 }
 
 bool
