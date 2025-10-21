@@ -208,7 +208,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic_*.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -241,7 +241,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic_*.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -274,7 +274,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic_*.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -307,7 +307,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic_*.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
