@@ -79,11 +79,7 @@ void BugsnagPerformanceLibrary::startLibrary() noexcept {
     }
 }
 
-//BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
-//: appStateTracker_([[AppStateTracker alloc] init])
-//, reachability_(std::make_shared<Reachability>())
-//, bugsnagPerformanceImpl_()
-//{}
+BugsnagPerformanceLibrary::BugsnagPerformanceLibrary() {}
 
 void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary");
@@ -93,9 +89,6 @@ void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) no
 void BugsnagPerformanceLibrary::earlySetup() noexcept {
     BSGLogDebug(@"BugsnagPerformanceLibrary::earlySetup");
     auto impl = bugsnagPerformanceImpl_;
-    bugsnagPerformanceImpl_->setOnViewLoadSpanStarted([=](NSString *className) {
-        impl->didStartViewLoadSpan(className);
-    });
     bugsnagPerformanceImpl_->earlySetup();
 }
 

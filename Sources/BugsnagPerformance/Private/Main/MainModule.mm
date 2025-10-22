@@ -136,6 +136,7 @@ MainModule::initializeModules() noexcept {
                                                                      coreModule_->getSpanAttributesProvider(),
                                                                      coreModule_->getSpanStackingHandler(),
                                                                      coreModule_->getSampler());
+    instrumentationModule_->setUp();
     metricsModule_ = std::make_shared<MetricsModule>();
     metricsModule_->setUp();
     
@@ -158,6 +159,7 @@ MainModule::initializeModules() noexcept {
     coreModule_->initializeComponentsCallbacks(metricsModule_->getCurrentFrameMetricsSnapshotTask(),
                                                instrumentationModule_->getAppStartupStateSnapshotTask(),
                                                instrumentationModule_->getHandleViewLoadSpanStartedTask());
+    pluginSupportModule_->installPlugins(pluginsModule_->getDefaultPluginsTask()());
 }
 
 NSArray<Task> *

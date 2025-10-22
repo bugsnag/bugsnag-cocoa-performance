@@ -12,7 +12,7 @@
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import "../../Core/BSGPrioritizedStore.h"
-#import "../../Core/PhasedStartup.h"
+#import "../../Core/BSGPhasedStartup.h"
 #import "../SpanControl/BSGCompositeSpanControlProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN

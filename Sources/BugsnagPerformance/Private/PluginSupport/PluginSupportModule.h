@@ -29,6 +29,10 @@ public:
     
     void setUp() noexcept;
     
+    void installPlugins(NSArray<id<BugsnagPerformancePlugin>> *plugins) noexcept {
+        [pluginManager_ installPlugins:plugins];
+    }
+    
     BSGCompositeSpanControlProvider *getSpanControlProvider() noexcept { return spanControlProvider_; }
     
 private:

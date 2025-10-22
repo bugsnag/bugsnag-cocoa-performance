@@ -12,10 +12,10 @@
 #import "../Core/PhasedStartup.h"
 #import "../Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 
-namespace bugsnag {
-
 NSString *bugsnagPerformancePath(NSString *topLevelDir);
 NSString *bugsnagSharedPath(NSString *topLevelDir);
+
+namespace bugsnag {
 
 class Persistence {
 public:

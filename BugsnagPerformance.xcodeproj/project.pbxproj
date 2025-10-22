@@ -216,6 +216,7 @@
 		96794A312EA8450F005FD87F /* NetworkSpanReporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A302EA84508005FD87F /* NetworkSpanReporter.h */; };
 		96794A332EA8451A005FD87F /* NetworkSpanReporterImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A322EA84515005FD87F /* NetworkSpanReporterImpl.h */; };
 		96794A352EA84524005FD87F /* NetworkSpanReporterImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A342EA84520005FD87F /* NetworkSpanReporterImpl.mm */; };
+		96794A372EA97C76005FD87F /* BSGPhasedStartup.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A362EA97C73005FD87F /* BSGPhasedStartup.h */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -602,6 +603,7 @@
 		96794A302EA84508005FD87F /* NetworkSpanReporter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanReporter.h; sourceTree = "<group>"; };
 		96794A322EA84515005FD87F /* NetworkSpanReporterImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanReporterImpl.h; sourceTree = "<group>"; };
 		96794A342EA84520005FD87F /* NetworkSpanReporterImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkSpanReporterImpl.mm; sourceTree = "<group>"; };
+		96794A362EA97C73005FD87F /* BSGPhasedStartup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPhasedStartup.h; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -1210,6 +1212,7 @@
 			children = (
 				96794A292EA7B0F3005FD87F /* AppLifecycleListener.h */,
 				967949D72EA05844005FD87F /* Attributes */,
+				96794A362EA97C73005FD87F /* BSGPhasedStartup.h */,
 				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
 				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
 				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
@@ -1694,6 +1697,7 @@
 				962CE80A2E651A0C00380522 /* NetworkInstrumentationStateRepositoryImpl.h in Headers */,
 				1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */,
 				962CE8182E65FD4300380522 /* NetworkSwizzlingHandler.h in Headers */,
+				96794A372EA97C76005FD87F /* BSGPhasedStartup.h in Headers */,
 				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
 				962CE8082E651A0100380522 /* NetworkInstrumentationStateRepository.h in Headers */,
 				96794A172EA1A849005FD87F /* PluginSupportModule.h in Headers */,

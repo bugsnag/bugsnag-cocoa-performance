@@ -39,24 +39,6 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
-    for(BugsnagPerformanceSpanStartCallback callback in config.onSpanStartCallbacks) {
-        [spanStartCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
-    }
-    for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
-        [spanEndCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
-    }
-    
-    pluginManager_ = [[BSGPluginManager alloc] initWithConfiguration:config
-                                                   compositeProvider:spanControlProvider_
-                                                onSpanStartCallbacks:spanStartCallbacks_
-                                                  onSpanEndCallbacks:spanEndCallbacks_];
-
-    NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
-
-    [defaultPlugins addObject:appStartTypePlugin];
-    [pluginManager_ installPlugins:defaultPlugins];
-
-    [pluginManager_ installPlugins:config.plugins];
 
     configuration_ = config;
     mainModule_->configure(config);
@@ -115,52 +97,53 @@ BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndica
 //    }
 //}
 
-void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
-    BSGLogDebug(@"BugsnagPerformanceImpl::uploadPackage(package, isRetry:%s)", isRetry ? "yes" : "no");
-    if (!configuration_.shouldSendReports) {
-        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: !configuration_.shouldSendReports");
-        return;
-    }
-    if (package == nullptr) {
-        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: package == nullptr");
-        return;
-    }
-
-    // Give up waiting for the upload after 20 seconds
-    NSTimeInterval maxWaitInterval = 20.0;
-
-    __block auto blockThis = this;
-    __block std::unique_ptr<OtlpPackage> blockPackage = std::move(package);
-    __block auto condition = [NSCondition new];
-
-    [condition lock];
-    uploader_->upload(*blockPackage, ^(UploadResult result) {
-        switch (result) {
-            case UploadResult::SUCCESSFUL:
-                if (isRetry) {
-                    blockThis->retryQueue_->remove(blockPackage->timestamp);
-                }
-                break;
-            case UploadResult::FAILED_CAN_RETRY:
-                if (!isRetry && blockPackage->uncompressedContentLength() <= maxPackageContentLength_) {
-                    blockThis->retryQueue_->add(*blockPackage);
-                }
-                break;
-            case UploadResult::FAILED_CANNOT_RETRY:
-                // We can't do anything with it, so throw it out.
-                if (isRetry) {
-                    blockThis->retryQueue_->remove(blockPackage->timestamp);
-                }
-                break;
-        }
-        [condition lock];
-        [condition signal];
-        [condition unlock];
-    });
-    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
-    [condition waitUntilDate:timeoutDate];
-    [condition unlock];
-}
+// TODO: Move to worker task
+//void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
+//    BSGLogDebug(@"BugsnagPerformanceImpl::uploadPackage(package, isRetry:%s)", isRetry ? "yes" : "no");
+//    if (!configuration_.shouldSendReports) {
+//        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: !configuration_.shouldSendReports");
+//        return;
+//    }
+//    if (package == nullptr) {
+//        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: package == nullptr");
+//        return;
+//    }
+//
+//    // Give up waiting for the upload after 20 seconds
+//    NSTimeInterval maxWaitInterval = 20.0;
+//
+//    __block auto blockThis = this;
+//    __block std::unique_ptr<OtlpPackage> blockPackage = std::move(package);
+//    __block auto condition = [NSCondition new];
+//
+//    [condition lock];
+//    uploader_->upload(*blockPackage, ^(UploadResult result) {
+//        switch (result) {
+//            case UploadResult::SUCCESSFUL:
+//                if (isRetry) {
+//                    blockThis->retryQueue_->remove(blockPackage->timestamp);
+//                }
+//                break;
+//            case UploadResult::FAILED_CAN_RETRY:
+//                if (!isRetry && blockPackage->uncompressedContentLength() <= maxPackageContentLength_) {
+//                    blockThis->retryQueue_->add(*blockPackage);
+//                }
+//                break;
+//            case UploadResult::FAILED_CANNOT_RETRY:
+//                // We can't do anything with it, so throw it out.
+//                if (isRetry) {
+//                    blockThis->retryQueue_->remove(blockPackage->timestamp);
+//                }
+//                break;
+//        }
+//        [condition lock];
+//        [condition signal];
+//        [condition unlock];
+//    });
+//    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
+//    [condition waitUntilDate:timeoutDate];
+//    [condition unlock];
+//}
 
 #pragma mark Spans
 

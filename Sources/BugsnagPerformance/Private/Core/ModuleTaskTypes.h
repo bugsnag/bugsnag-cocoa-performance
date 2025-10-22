@@ -10,9 +10,12 @@
 
 #import "../Utils/Reachability.h"
 
+@protocol BugsnagPerformancePlugin;
+
 using namespace bugsnag;
 
 typedef void (^ModuleTask)();
 typedef void (^UpdateProbabilityTask)(double);
 typedef void (^UpdateConnectivityTask)(Reachability::Connectivity);
 typedef void (^HandleStringTask)(NSString *);
+typedef NSArray<id<BugsnagPerformancePlugin>> *(^GetPluginsTask)();

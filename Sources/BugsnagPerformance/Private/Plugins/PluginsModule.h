@@ -30,6 +30,11 @@ public:
     
     void setUp() noexcept;
     
+    // Tasks
+    GetPluginsTask getDefaultPluginsTask();
+    
+    // Component access
+    
     BugsnagPerformanceAppStartTypePlugin *getAppStartTypePlugin() noexcept { return appStartTypePlugin_; }
     
 private:

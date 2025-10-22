@@ -24,7 +24,7 @@
 // It contains a full example for how to set up a client library to call this one.
 
 #import <Foundation/Foundation.h>
-#import "../Core/PhasedStartup.h"
+#import "../Core/BSGPhasedStartup.h"
 
 #import <memory>
 

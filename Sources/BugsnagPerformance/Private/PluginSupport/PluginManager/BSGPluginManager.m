@@ -28,8 +28,9 @@
     self = [super init];
     if (self) {
         _compositeProvider = compositeProvider;
-        _onSpanStartCallbacks = onSpanStartCallbacks;
-        _onSpanEndCallbacks = onSpanEndCallbacks;
+
+        _onSpanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+        _onSpanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
         _installedPlugins = [NSMutableArray array];
     }
     return self;
@@ -83,6 +84,8 @@
     for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
         [self.onSpanEndCallbacks addObject:callback priority:BugsnagPerformancePriorityMedium];
     }
+
+    [self installPlugins:config.plugins];
 }
 
 - (void)preStartSetup {

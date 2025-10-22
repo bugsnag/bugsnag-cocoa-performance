@@ -9,7 +9,7 @@
 #pragma once
 
 #import "../Lifecycle/NetworkLifecycleHandler.h"
-#import "../../../Core/PhasedStartup.h"
+#import "../../../Core/BSGPhasedStartup.h"
 #import <memory>
 
 using namespace bugsnag;
