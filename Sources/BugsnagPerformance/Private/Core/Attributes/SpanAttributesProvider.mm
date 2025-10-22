@@ -21,7 +21,15 @@ static NSDictionary *accessTechnologyMappingDictionary();
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
 
-SpanAttributesProvider::SpanAttributesProvider() noexcept {};
+NSMutableDictionary *
+SpanAttributesProvider::initialAttributes() noexcept {
+    return @{
+        @"bugsnag.app.in_foreground": @(appStateTracker_.isInForeground),
+        
+        // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/span-general/#network-transport-attributes
+        @"net.host.connection.type": hostConnectionType(),
+    }.mutableCopy;
+}
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
     for (NSURLSessionTaskTransactionMetrics *transactionMetrics in metrics.transactionMetrics) {
@@ -342,4 +350,16 @@ SpanAttributesProvider::memorySampleAttributes(const std::vector<SystemInfoSampl
         @"bugsnag.system.memory.spaces.device.used": memory,
         @"bugsnag.system.memory.spaces.device.mean": @(memoryUseTotal / memorySampleCount),
     }.mutableCopy;
+}
+
+#pragma mark Private
+
+NSString *
+SpanAttributesProvider::hostConnectionType() noexcept {
+    switch (reachability_->getConnectivity()) {
+        case bugsnag::Reachability::Unknown:    return @"unknown";
+        case bugsnag::Reachability::None:       return @"unavailable";
+        case bugsnag::Reachability::Cellular:   return @"cell";
+        case bugsnag::Reachability::Wifi:       return @"wifi";
+    }
 }

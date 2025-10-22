@@ -14,7 +14,7 @@
 #import "../../../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../../../Core/Attributes/SpanAttributesProvider.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
-#import "../../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -23,7 +23,15 @@
 #import "NetworkInstrumentation/Lifecycle/NetworkEarlyPhaseHandlerImpl.h"
 #import "NetworkInstrumentation/Lifecycle/NetworkLifecycleHandlerImpl.h"
 
+// App start spans will be thrown out if the early app start duration exceeds this.
+static constexpr CFTimeInterval maxAppStartDuration = 2.0;
+
+// App start spans will be thrown out if the app gets backgrounded within this timeframe after starting.
+static constexpr CFTimeInterval minTimeToBackgrounding = 2.0;
+
 using namespace bugsnag;
+
+#pragma mark PhasedStartup
 
 void Instrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     appStartupInstrumentation_->earlyConfigure(config);
@@ -50,13 +58,10 @@ void Instrumentation::preStartSetup() noexcept {
 }
 
 void Instrumentation::start() noexcept {
+    checkAppStartDuration();
     appStartupInstrumentation_->start();
     viewLoadInstrumentation_->start();
     networkInstrumentation_->start();
-}
-
-void Instrumentation::abortAppStartupSpans() noexcept {
-    appStartupInstrumentation_->abortAllSpans();
 }
 
 #pragma mark - Factory functions
@@ -107,4 +112,37 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
                                                     swizzlingHandler,
                                                     lifecycleHandler,
                                                     delegate);
+}
+
+#pragma mark AppLifecycleListener
+
+void
+Instrumentation::onAppFinishedLaunching() noexcept {
+    checkAppStartDuration();
+}
+
+void
+Instrumentation::onAppEnteredBackground() noexcept {
+    // We run this WITHOUT checking isStarted (in case there's notification
+    // timing jank and we get the notification before we've started).
+    if (appStartupInstrumentation_->timeSinceAppFirstBecameActive() < minTimeToBackgrounding) {
+        // If we get backgrounded too quickly after app start, throw out
+        // all app start spans even if they've completed.
+        // Sometimes the jank between backgrounding/foregrounding events
+        // can cause the spans to close very late, so we play it safe.
+        appStartupInstrumentation_->abortAllSpans();
+    }
+}
+
+#pragma mark Private
+
+// This is checked in two places: Bugsnag start, and NSApplicationDidFinishLaunchingNotification.
+void
+Instrumentation::checkAppStartDuration() noexcept {
+    if (!hasCheckedAppStartDuration_) {
+        hasCheckedAppStartDuration_ = true;
+        if (appStartupInstrumentation_->appStartDuration() > maxAppStartDuration) {
+            appStartupInstrumentation_->abortAllSpans();
+        }
+    }
 }

@@ -11,6 +11,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 #import "../Core/PhasedStartup.h"
+#import "../Core/AppLifecycleListener.h"
 #import "AppStartupInstrumentation/AppStartupInstrumentation.h"
 #import "NetworkInstrumentation/NetworkInstrumentation.h"
 #import "AppStartupInstrumentation/System/AppStartupInstrumentationSystemUtilsImpl.h"
@@ -39,7 +40,7 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
 
 namespace bugsnag {
 
-class Instrumentation: public PhasedStartup {
+class Instrumentation: public PhasedStartup, public AppLifecycleListener {
 public:
     Instrumentation(std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory,
                     std::shared_ptr<ViewLoadSpanFactory> viewLoadSpanFactory,
@@ -49,22 +50,20 @@ public:
     : appStartupInstrumentation_(createAppStartupInstrumentation(appStartupSpanFactory, spanAttributesProvider))
     , viewLoadInstrumentation_(createViewLoadInstrumentation(viewLoadSpanFactory, spanAttributesProvider))
     , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
-    {
-        // TODO
-//        tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
-    }
+    {}
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept;
     void start() noexcept;
-    void abortAppStartupSpans() noexcept;
+    
+    void onAppFinishedLaunching() noexcept;
+    void onAppEnteredBackground() noexcept;
+    void onAppEnteredForeground() noexcept {}
 
     void didStartViewLoadSpan(NSString *name) noexcept { appStartupInstrumentation_->didStartViewLoadSpan(name); }
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
-    CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
-    CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
     AppStartupInstrumentationStateSnapshot *getAppStartInstrumentationStateSnapshot() {
         return appStartupInstrumentation_->stateSnapshot();
     }
@@ -73,10 +72,13 @@ public:
 
 private:
     Instrumentation() = delete;
-
+    
+    bool hasCheckedAppStartDuration_{false};
     std::shared_ptr<class AppStartupInstrumentation> appStartupInstrumentation_;
     std::shared_ptr<class ViewLoadInstrumentation> viewLoadInstrumentation_;
     std::shared_ptr<class NetworkInstrumentation> networkInstrumentation_;
+    
+    void checkAppStartDuration() noexcept;
 };
 
 }

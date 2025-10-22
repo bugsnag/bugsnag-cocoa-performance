@@ -18,7 +18,8 @@ using namespace bugsnag;
 @implementation SpanAttributesTests
 
 - (void)testInitialNetworkSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     auto attributes = provider.initialNetworkSpanAttributes();
     XCTAssertEqual(2U, attributes.count);
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"network");
@@ -26,7 +27,8 @@ using namespace bugsnag;
 }
 
 - (void)testNetworkSpanUrlAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     NSURL *url = [NSURL URLWithString:@"https://bugsnag.com"];
     NSError *error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
 
@@ -50,7 +52,8 @@ using namespace bugsnag;
 }
 
 - (void)testInternalErrorAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     NSError *error = [NSError errorWithDomain:@"test" code:1 userInfo:nil];
     auto attributes = provider.internalErrorAttributes(error);
     XCTAssertEqual(1U, attributes.count);
@@ -58,7 +61,8 @@ using namespace bugsnag;
 }
 
 - (void)testAppStartPhaseSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.appStartPhaseSpanAttributes(@"phase1");
     XCTAssertEqual(2U, attributes.count);
@@ -67,7 +71,8 @@ using namespace bugsnag;
 }
 
 - (void)testAppStartSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.appStartSpanAttributes(@"firstView", true);
     XCTAssertEqual(3U, attributes.count);
@@ -89,7 +94,8 @@ using namespace bugsnag;
 }
 
 - (void)testViewLoadSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.viewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
     XCTAssertEqual(3U, attributes.count);
@@ -111,7 +117,8 @@ using namespace bugsnag;
 }
 
 - (void)testPreloadViewLoadSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.preloadViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
     XCTAssertEqual(3U, attributes.count);
@@ -133,7 +140,8 @@ using namespace bugsnag;
 }
 
 - (void)testPresentingViewLoadSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.presentingViewLoadSpanAttributes(@"myView", BugsnagPerformanceViewTypeUIKit);
     XCTAssertEqual(3U, attributes.count);
@@ -155,7 +163,8 @@ using namespace bugsnag;
 }
 
 - (void)testViewLoadPhaseSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.viewLoadPhaseSpanAttributes(@"myView", @"myPhase");
     XCTAssertEqual(3U, attributes.count);
@@ -165,7 +174,8 @@ using namespace bugsnag;
 }
 
 - (void)testCustomSpanAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     auto attributes = provider.customSpanAttributes();
     XCTAssertEqual(1U, attributes.count);
@@ -173,7 +183,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributesInsufficient {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     // Not enough samples
     std::vector<SystemInfoSampleData> samples;
@@ -197,7 +208,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUAttributesNilIfInvalidCPUMeanTotal {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(1),
         SystemInfoSampleData(2),
@@ -217,7 +229,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributes {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(1),
         SystemInfoSampleData(2),
@@ -260,7 +273,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributesProcessOnly {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(11),
         SystemInfoSampleData(12),
@@ -285,7 +299,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributesMainThreadOnly {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(1),
         SystemInfoSampleData(2),
@@ -303,7 +318,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributesOverheadOnly {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(1),
         SystemInfoSampleData(2),
@@ -321,7 +337,8 @@ using namespace bugsnag;
 }
 
 - (void)testCPUSampleAttributesComplex {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(1),
         SystemInfoSampleData(2),
@@ -387,7 +404,8 @@ using namespace bugsnag;
 }
 
 - (void)testMemorySampleAttributesInsufficient {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
 
     // Not enough samples
     std::vector<SystemInfoSampleData> samples;
@@ -412,7 +430,8 @@ using namespace bugsnag;
 }
 
 - (void)testMemorySampleAttributesProcessOnly {
-    SpanAttributesProvider provider;
+    SpanAttributesProvider provider = SpanAttributesProvider([[AppStateTracker alloc] init],
+                                                             std::make_shared<Reachability>());
     std::vector<SystemInfoSampleData> samples = {
         SystemInfoSampleData(11),
         SystemInfoSampleData(12),

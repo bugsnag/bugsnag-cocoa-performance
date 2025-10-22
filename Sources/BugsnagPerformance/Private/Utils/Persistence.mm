@@ -14,21 +14,24 @@
 
 using namespace bugsnag;
 
-static NSString *bugsnagPerformancePath(NSString *topLevelDir) {
+NSString *bugsnagPerformancePath(NSString *topLevelDir) {
     // Namespace it to the bundle identifier because all MacOS non-sandboxed apps share the same cache dir.
     return [topLevelDir stringByAppendingFormat:@"/bugsnag-performance-%@", [[NSBundle mainBundle] bundleIdentifier]];
 }
 
-static NSString *bugsnagSharedPath(NSString *topLevelDir) {
+NSString *bugsnagSharedPath(NSString *topLevelDir) {
     return [topLevelDir stringByAppendingFormat:@"/bugsnag-shared-%@", [[NSBundle mainBundle] bundleIdentifier]];
 }
 
-Persistence::Persistence(NSString *topLevelDir) noexcept
-: bugsnagSharedDir_(bugsnagSharedPath(topLevelDir))
-, bugsnagPerformanceDir_(bugsnagPerformancePath(topLevelDir))
-{}
+#pragma mark PhasedStartup
 
-void Persistence::start() noexcept {
+void
+Persistence::configure(BugsnagPerformanceConfiguration *config) noexcept {
+    configuration_ = config;
+}
+
+void
+Persistence::start() noexcept {
     NSError *error = nil;
     if ((error = [Filesystem ensurePathExists:bugsnagPerformanceDir_]) != nil) {
         BSGLogError(@"error while initializing bugsnag performance persistence dir: %@", error);
@@ -36,7 +39,12 @@ void Persistence::start() noexcept {
     if ((error = [Filesystem ensurePathExists:bugsnagSharedDir_]) != nil) {
         BSGLogError(@"error while initializing bugsnag shared persistence dir: %@", error);
     }
+    if (configuration_.internal.clearPersistenceOnStart) {
+        clearPerformanceData();
+    }
 }
+
+#pragma mark Public
 
 NSString *Persistence::bugsnagSharedDir(void) noexcept {
     return bugsnagSharedDir_;

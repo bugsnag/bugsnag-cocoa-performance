@@ -7,9 +7,9 @@
 //
 
 #import "BugsnagPerformanceCrossTalkAPI.h"
-#import "../Core/SpanStack/SpanStackingHandler.h"
-#import "../Tracer.h"
 #import "../Utils/Utils.h"
+#import "../Core/SpanStack/SpanStackingHandler.h"
+#import "../Core/SpanFactory/Plain/PlainSpanFactory.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;
@@ -23,7 +23,7 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
 // Declare the things your API class needs here
 
 @property(nonatomic) std::shared_ptr<SpanStackingHandler> spanStackingHandler;
-@property(nonatomic) std::shared_ptr<Tracer> tracer;
+@property(nonatomic) std::shared_ptr<PlainSpanFactory> spanFactory;
 @property(readwrite, nonatomic) BugsnagPerformanceConfiguration *configuration;
 @property(nonatomic, copy) NSArray<AppStartCallback> *willEndUIInitSpanCallbacks;
 @property(nonatomic, copy) NSArray<ViewLoadCallback> *willEndViewLoadSpanCallbacks;
@@ -36,9 +36,10 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
 /**
  * You'll call your initialize method during start up.
  */
-+ (void)initializeWithSpanStackingHandler:(std::shared_ptr<SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>)tracer {
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>)handler
+                              spanFactory:(std::shared_ptr<bugsnag::PlainSpanFactory>)spanFactory {
     BugsnagPerformanceCrossTalkAPI.sharedInstance.spanStackingHandler = handler;
-    BugsnagPerformanceCrossTalkAPI.sharedInstance.tracer = tracer;
+    BugsnagPerformanceCrossTalkAPI.sharedInstance.spanFactory = spanFactory;
 }
 
 #pragma mark Exposed API
@@ -82,13 +83,13 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
 }
 
 - (BugsnagPerformanceSpan * _Nullable)startSpanV1:(NSString * _Nonnull)name options:(BugsnagPerformanceSpanOptions *)optionsIn {
-    auto tracer = self.tracer;
-    if (tracer == nullptr) {
+    auto spanFactory = self.spanFactory;
+    if (spanFactory == nullptr) {
         return nil;
     }
 
     auto options = SpanOptions(optionsIn);
-    auto span = tracer->startSpan(name, options, BSGTriStateUnset, @[]);
+    auto span = spanFactory->startSpan(name, options, BSGTriStateUnset, @{}, @[]);
     return (BugsnagPerformanceSpan *)[BugsnagPerformanceCrossTalkProxiedObject proxied:span];
 }
 

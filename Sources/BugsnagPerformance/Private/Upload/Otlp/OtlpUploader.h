@@ -12,6 +12,7 @@
 
 #import "Uploader.h"
 #import "OtlpPackage.h"
+#import "../../Core/PhasedStartup.h"
 #import <memory>
 
 namespace bugsnag {
@@ -20,17 +21,25 @@ namespace bugsnag {
  * Bugsnag backend uploader.
  * Also informs via callback any changes the backend makes to the probability value.
  */
-class OtlpUploader: public Uploader {
+class OtlpUploader: public Uploader, public PhasedStartup {
 public:
-    OtlpUploader(NSURL *endpoint, NSString *apiKey, NewProbabilityCallback newProbabilityCallback) noexcept
-    : endpoint_(endpoint)
-    , apiKey_(apiKey)
-    , newProbabilityCallback_(newProbabilityCallback)
-    {}
+    OtlpUploader() noexcept {}
 
     virtual ~OtlpUploader() = default;
+    
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *config) noexcept {
+        endpoint_ = config.endpoint;
+        apiKey_ = config.apiKey;
+    }
+    void preStartSetup() noexcept {}
+    void start() noexcept {}
 
-    void upload(OtlpPackage &package, UploadResultCallback callback) noexcept override;
+    void upload(OtlpPackage &package, UploadResultCallback callback) noexcept;
+    void setNewProbabilityCallback(NewProbabilityCallback newProbabilityCallback) noexcept {
+        newProbabilityCallback_ = newProbabilityCallback;
+    }
 
 private:
     const NSURL *endpoint_{nil};

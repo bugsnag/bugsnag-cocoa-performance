@@ -12,7 +12,7 @@
 #import "../../../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"
 #import "../../../Core/Attributes/SpanAttributesProvider.h"
-#import "../../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #import <memory>
 

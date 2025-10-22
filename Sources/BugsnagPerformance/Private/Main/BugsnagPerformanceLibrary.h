@@ -23,8 +23,6 @@ public:
     static void startLibrary() noexcept;
 
     static std::shared_ptr<BugsnagPerformanceImpl> getBugsnagPerformanceImpl() noexcept;
-    static std::shared_ptr<Reachability> getReachability() noexcept;
-    static AppStateTracker *getAppStateTracker() noexcept;
 private:
     // Use GNU constructor attribute to auto-call functions before main() is called.
     // https://gcc.gnu.org/onlinedocs/gcc-4.7.0/gcc/Function-Attributes.html
@@ -43,10 +41,9 @@ private:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept;
     void start() noexcept;
+    void initialize() noexcept;
 
     BugsnagPerformanceLibrary();
-    AppStateTracker *appStateTracker_;
-    std::shared_ptr<Reachability> reachability_;
     std::shared_ptr<BugsnagPerformanceImpl> bugsnagPerformanceImpl_;
 };
 

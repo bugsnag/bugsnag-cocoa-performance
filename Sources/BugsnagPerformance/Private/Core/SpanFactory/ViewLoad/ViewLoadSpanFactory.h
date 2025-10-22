@@ -40,6 +40,10 @@ public:
                                                       NSString *suffix,
                                                       const SpanOptions &options,
                                                       NSDictionary *attributes) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
+                                                           BugsnagPerformanceSpanContext *parentContext,
+                                                           NSString *phase,
+                                                           NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
     virtual ~ViewLoadSpanFactory() {}
 };
 }

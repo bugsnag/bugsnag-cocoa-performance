@@ -9,6 +9,7 @@
 #import "BSGPluginManager.h"
 #import "../BugsnagPerformancePluginContext+Private.h"
 #import "../../Utils/Logging.h"
+#import "../../Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 
 @interface BSGPluginManager ()
 
@@ -22,14 +23,10 @@
 
 @implementation BSGPluginManager
 
-- (instancetype)initWithConfiguration:(BugsnagPerformanceConfiguration *)configuration
-                    compositeProvider:(BSGCompositeSpanControlProvider *)compositeProvider
-                 onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
-                   onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks
+- (instancetype)initWithSpanControlProvider:(BSGCompositeSpanControlProvider *)compositeProvider
 {
     self = [super init];
     if (self) {
-        _configuration = configuration;
         _compositeProvider = compositeProvider;
         _onSpanStartCallbacks = onSpanStartCallbacks;
         _onSpanEndCallbacks = onSpanEndCallbacks;
@@ -68,6 +65,31 @@
             BSGLogError(@"BSGPluginManager::startPlugins: plugin start threw exception: %@", e);
         }
     }
+}
+
+#pragma mark BSGPhasedStartup
+
+- (void)earlyConfigure:(BSGEarlyConfiguration *)config {
+}
+
+- (void)earlySetup {
+}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.configuration = config;
+    for(BugsnagPerformanceSpanStartCallback callback in config.onSpanStartCallbacks) {
+        [self.onSpanStartCallbacks addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
+    for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
+        [self.onSpanEndCallbacks addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
+}
+
+- (void)preStartSetup {
+
+}
+
+- (void) start {
 }
 
 @end

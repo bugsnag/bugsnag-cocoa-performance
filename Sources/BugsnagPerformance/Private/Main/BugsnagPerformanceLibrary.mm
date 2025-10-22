@@ -18,6 +18,7 @@ BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept 
     // (via calledAsEarlyAsPossible), which is a single-thread environment.
     if (!instance_do_not_access_directly) {
         instance_do_not_access_directly = std::shared_ptr<BugsnagPerformanceLibrary>(new BugsnagPerformanceLibrary);
+        instance_do_not_access_directly->initialize();
     }
 
     return *instance_do_not_access_directly;
@@ -78,11 +79,11 @@ void BugsnagPerformanceLibrary::startLibrary() noexcept {
     }
 }
 
-BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
-: appStateTracker_([[AppStateTracker alloc] init])
-, reachability_(std::make_shared<Reachability>())
-, bugsnagPerformanceImpl_(std::make_shared<BugsnagPerformanceImpl>(reachability_, appStateTracker_))
-{}
+//BugsnagPerformanceLibrary::BugsnagPerformanceLibrary()
+//: appStateTracker_([[AppStateTracker alloc] init])
+//, reachability_(std::make_shared<Reachability>())
+//, bugsnagPerformanceImpl_()
+//{}
 
 void BugsnagPerformanceLibrary::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary");
@@ -117,10 +118,10 @@ std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPer
     return sharedInstance().bugsnagPerformanceImpl_;
 }
 
-std::shared_ptr<Reachability> BugsnagPerformanceLibrary::getReachability() noexcept {
-    return sharedInstance().reachability_;
-}
-
-AppStateTracker *BugsnagPerformanceLibrary::getAppStateTracker() noexcept {
-    return sharedInstance().appStateTracker_;
+void BugsnagPerformanceLibrary::initialize() noexcept {
+    bugsnagPerformanceImpl_ = std::make_shared<BugsnagPerformanceImpl>(std::make_shared<MainModule>(),
+                                                                       ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
+                                                                           return info;
+                                                                       });
+    bugsnagPerformanceImpl_->initialize();
 }

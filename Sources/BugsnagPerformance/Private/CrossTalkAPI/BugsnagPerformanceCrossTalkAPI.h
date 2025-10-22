@@ -24,14 +24,15 @@
 // It contains a full example for how to set up a client library to call this one.
 
 #import <Foundation/Foundation.h>
-#import <memory>
 #import "../Core/PhasedStartup.h"
+
+#import <memory>
 
 NS_ASSUME_NONNULL_BEGIN
 
 namespace bugsnag {
 class SpanStackingHandler;
-class Tracer;
+class PlainSpanFactory;
 }
 
 @interface BugsnagPerformanceCrossTalkAPI : NSObject<BSGPhasedStartup>
@@ -41,7 +42,8 @@ class Tracer;
 /**
  * Use the initialize method to pass any information this CrossTalk API requires to function.
  */
-+ (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>) handler tracer:(std::shared_ptr<bugsnag::Tracer>) tracer;
++ (void)initializeWithSpanStackingHandler:(std::shared_ptr<bugsnag::SpanStackingHandler>)handler
+                              spanFactory:(std::shared_ptr<bugsnag::PlainSpanFactory>)spanFactory;
 
 - (void)willEndUIInitSpan:(BugsnagPerformanceSpan *)span;
 - (void)willEndViewLoadSpan:(BugsnagPerformanceSpan *)span viewController:(UIViewController *)viewController;

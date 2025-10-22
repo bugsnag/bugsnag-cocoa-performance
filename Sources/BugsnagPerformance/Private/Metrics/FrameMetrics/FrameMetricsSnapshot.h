@@ -10,6 +10,7 @@
 #import "../../Core/PhasedStartup.h"
 #import "FrozenFrameData.h"
 
+
 @interface FrameMetricsSnapshot: NSObject
 
 @property(nonatomic, readwrite) uint64_t totalFrames;
@@ -22,4 +23,6 @@
 + (FrameMetricsSnapshot *)mergeWithStart:(FrameMetricsSnapshot *)startSnapshot end:(FrameMetricsSnapshot *)endSnapshot;
 
 @end
+
+typedef FrameMetricsSnapshot *(^GetCurrentFrameMetricsSnapshot)();
 

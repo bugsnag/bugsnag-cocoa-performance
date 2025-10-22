@@ -9,14 +9,25 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import "../Core/PhasedStartup.h"
+#import "../Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 
 namespace bugsnag {
 
+NSString *bugsnagPerformancePath(NSString *topLevelDir);
+NSString *bugsnagSharedPath(NSString *topLevelDir);
+
 class Persistence {
 public:
-    Persistence() = delete;
-    Persistence(NSString *topLevelDir) noexcept;
+    Persistence(NSString *topLevelDir) noexcept
+    : bugsnagSharedDir_(bugsnagSharedPath(topLevelDir))
+    , bugsnagPerformanceDir_(bugsnagPerformancePath(topLevelDir))
+    {}
 
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *config) noexcept;
+    void preStartSetup() noexcept {}
     void start() noexcept;
 
     // Clear all "performance" data. "shared" data is unaffected.
@@ -31,6 +42,9 @@ public:
 private:
     NSString *bugsnagSharedDir_{nil};
     NSString *bugsnagPerformanceDir_{nil};
+    BugsnagPerformanceConfiguration *configuration_{nil};
+    
+    Persistence() = delete;
 };
 
 }

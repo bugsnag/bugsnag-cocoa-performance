@@ -7,7 +7,6 @@
 //
 
 #import "PlainSpanFactoryImpl.h"
-#import "../../Attributes/SpanAttributes.h"
 
 using namespace bugsnag;
 
@@ -84,7 +83,7 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
                                                                    onSpanClosed:onSpanClosed
                                                                   onSpanBlocked:onSpanBlocked
                                                                 onSpanCancelled:onSpanCancelled];
-    NSMutableDictionary *initialAttributes = SpanAttributes::get();
+    NSMutableDictionary *initialAttributes = spanAttributesProvider_->initialAttributes();
     [initialAttributes addEntriesFromDictionary:attributes];
     [span internalSetMultipleAttributes:initialAttributes];
     span.kind = kind;

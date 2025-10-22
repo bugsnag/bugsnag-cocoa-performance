@@ -10,13 +10,20 @@
 #import <Foundation/Foundation.h>
 #import "../BugsnagPerformanceViewType+Private.h"
 #import "../../Metrics/SystemMetrics/SystemInfoSampler.h"
+#import "../../Utils/AppStateTracker.h"
+#import "../../Utils/Reachability.h"
 
 namespace bugsnag {
 class SpanAttributesProvider {
 public:
-    SpanAttributesProvider() noexcept;
+    SpanAttributesProvider(AppStateTracker *appStateTracker,
+                           std::shared_ptr<Reachability> reachability) noexcept
+    : appStateTracker_(appStateTracker)
+    , reachability_(reachability) {};
+    
     ~SpanAttributesProvider() {};
     
+    NSMutableDictionary *initialAttributes() noexcept;
     NSMutableDictionary *initialNetworkSpanAttributes() noexcept;
     NSMutableDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
     NSMutableDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
@@ -35,5 +42,11 @@ public:
 
     NSMutableDictionary *cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
     NSMutableDictionary *memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
+    
+private:
+    AppStateTracker *appStateTracker_;
+    std::shared_ptr<Reachability> reachability_;
+    
+    NSString *hostConnectionType() noexcept;
 };
 }

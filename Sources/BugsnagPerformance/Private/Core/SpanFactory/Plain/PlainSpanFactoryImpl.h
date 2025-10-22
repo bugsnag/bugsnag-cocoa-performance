@@ -10,13 +10,14 @@
 
 #import "PlainSpanFactory.h"
 #import "PlainSpanFactoryCallbacks.h"
+#import "../../PhasedStartup.h"
 #import "../../Attributes/SpanAttributesProvider.h"
 #import "../../Sampler/Sampler.h"
 #import "../../SpanStack/SpanStackingHandler.h"
 
 namespace bugsnag {
 
-class PlainSpanFactoryImpl: public PlainSpanFactory {
+class PlainSpanFactoryImpl: public PlainSpanFactory, public PhasedStartup {
 public:
     PlainSpanFactoryImpl(std::shared_ptr<Sampler> sampler,
                          std::shared_ptr<SpanStackingHandler> spanStackingHandler,
@@ -24,6 +25,14 @@ public:
     : sampler_(sampler)
     , spanStackingHandler_(spanStackingHandler)
     , spanAttributesProvider_(spanAttributesProvider) {}
+    
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *config) noexcept {
+        attributeCountLimit_ = config.attributeCountLimit;
+    }
+    void preStartSetup() noexcept {}
+    void start() noexcept {}
     
     BugsnagPerformanceSpan *startSpan(NSString *name,
                                       const SpanOptions &options,
@@ -40,10 +49,6 @@ public:
     
     void setup(PlainSpanFactoryCallbacks *callbacks) noexcept {
         callbacks_ = callbacks;
-    }
-    
-    void setAttributeCountLimit(NSUInteger limit) noexcept {
-        attributeCountLimit_ = limit;
     }
     
 private:

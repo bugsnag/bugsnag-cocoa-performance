@@ -10,7 +10,7 @@
 #import "../../Utils/Utils.h"
 #import "../../Core/Span/BugsnagPerformanceSpan+Private.h"
 #import "../../Main/BugsnagPerformanceImpl.h"
-#import "../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
+#import "../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #import <array>
 #import <os/trace_base.h>

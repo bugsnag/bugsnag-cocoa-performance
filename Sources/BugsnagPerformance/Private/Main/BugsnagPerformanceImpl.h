@@ -12,10 +12,11 @@
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
+#import "MainModule.h"
+
 #import "../Core/Span/BugsnagPerformanceSpan+Private.h"
 #import "../Upload/Otlp/OtlpUploader.h"
 #import "../Core/Sampler/Sampler.h"
-#import "../Tracer.h"
 #import "../Core/Worker/Worker.h"
 #import "../Utils/Persistence.h"
 #import "../Core/Sampler/PersistentState.h"
@@ -44,9 +45,14 @@ namespace bugsnag {
 
 class BugsnagPerformanceImpl: public PhasedStartup {
 public:
-    BugsnagPerformanceImpl(std::shared_ptr<Reachability> reachability,
-                           AppStateTracker *appStateTracker) noexcept;
+    BugsnagPerformanceImpl(std::shared_ptr<MainModule> mainModule,
+                           BugsnagPerformanceNetworkRequestCallback networkRequestCallback) noexcept
+    : mainModule_(mainModule)
+    , networkRequestCallback_(networkRequestCallback) {}
+    
     virtual ~BugsnagPerformanceImpl();
+    
+    void initialize() noexcept;
 
     void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
     void earlySetup() noexcept;
@@ -76,56 +82,29 @@ public:
     void onSpanStarted() noexcept;
     
     BugsnagPerformanceSpanContext *currentContext() noexcept {
-        return spanStackingHandler_->currentSpan();
+        return mainModule_->getCoreModule()->getSpanStackingHandler()->currentSpan();
     }
 
-    void setOnViewLoadSpanStarted(std::function<void(NSString *)> onViewLoadSpanStarted) noexcept {
-        tracer_->setOnViewLoadSpanStarted(onViewLoadSpanStarted);
+    void setOnViewLoadSpanStarted(std::function<void(NSString *)> __unused onViewLoadSpanStarted) noexcept {
+        // TODO
+//        tracer_->setOnViewLoadSpanStarted(onViewLoadSpanStarted);
     }
 
-    void didStartViewLoadSpan(NSString *name) noexcept { instrumentation_->didStartViewLoadSpan(name); }
-    void willCallMainFunction() noexcept { instrumentation_->willCallMainFunction(); }
+    void didStartViewLoadSpan(NSString *name) noexcept { mainModule_->getInstrumentationModule()->getInstrumentation()->didStartViewLoadSpan(name); }
+    void willCallMainFunction() noexcept { mainModule_->getInstrumentationModule()->getInstrumentation()->willCallMainFunction(); }
     
     id<BugsnagPerformanceSpanControl> getSpanControls(BugsnagPerformanceSpanQuery *query) noexcept {
-        return [spanControlProvider_ getSpanControlsWithQuery:query];
+        return [mainModule_->getPluginSupportModule()->getSpanControlProvider() getSpanControlsWithQuery:query];
     }
 
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
 
 private:
-    std::shared_ptr<Persistence> persistence_;
-    std::shared_ptr<PersistentState> persistentState_;
-    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
-    std::shared_ptr<Reachability> reachability_;
-    std::shared_ptr<Batch> batch_;
-    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
-    std::shared_ptr<class Sampler> sampler_;
-    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
-    FrameMetricsCollector *frameMetricsCollector_;
-    std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
-    BSGCompositeSpanControlProvider *spanControlProvider_;
-    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
-    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
-    std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
-    std::shared_ptr<AppStartupSpanFactoryImpl> appStartupSpanFactory_;
-    std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
-    std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;
-    std::shared_ptr<SpanStoreImpl> spanStore_;
-    std::shared_ptr<SpanLifecycleHandlerImpl> spanLifecycleHandler_;
-    std::shared_ptr<Tracer> tracer_;
-    std::unique_ptr<RetryQueue> retryQueue_;
-    AppStateTracker *appStateTracker_;
+    std::shared_ptr<MainModule> mainModule_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
-    std::shared_ptr<Instrumentation> instrumentation_;
-    Worker *worker_;
-    std::shared_ptr<PersistentDeviceID> deviceID_;
-    std::shared_ptr<ResourceAttributes> resourceAttributes_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
-    OtlpTraceEncoding traceEncoding_;
 
     BugsnagPerformanceConfiguration *configuration_;
-    BSGPluginManager *pluginManager_;
-    std::shared_ptr<OtlpUploader> uploader_;
     std::mutex viewControllersToSpansMutex_;
     CFAbsoluteTime probabilityExpiry_{0};
     CFAbsoluteTime pausePValueRequestsUntil_{0};
@@ -135,7 +114,6 @@ private:
     CFTimeInterval probabilityRequestsPauseForSeconds_{0};
     uint64_t maxPackageContentLength_{1000000};
     std::atomic<bool> isStarted_{false};
-    bool hasCheckedAppStartDuration_{false};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
@@ -143,9 +121,6 @@ private:
     bool sendCurrentBatchTask() noexcept;
     bool sendRetriesTask() noexcept;
     bool sweepTracerTask() noexcept;
-
-    // Periodic Measurements
-    SystemInfoSampler systemInfoSampler_;
 
     // Event reactions
     void onBatchFull() noexcept;
@@ -158,8 +133,6 @@ private:
     void onAppFinishedLaunching() noexcept;
 
     // Utility
-    void checkAppStartDuration() noexcept;
-    void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
     NSMutableArray<BugsnagPerformanceSpan *> *
@@ -170,7 +143,9 @@ private:
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
-    NSUInteger testing_getBatchCount() { return batch_->count(); };
+    NSUInteger testing_getBatchCount() {
+        return mainModule_->getCoreModule()->getBatch()->count();
+    };
 };
 
 }

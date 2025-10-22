@@ -23,3 +23,5 @@
                             hasFirstView:(BOOL)hasFirstView;
 
 @end
+
+typedef AppStartupInstrumentationStateSnapshot *(^GetAppStartupStateSnapshot)(void);

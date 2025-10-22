@@ -12,7 +12,7 @@
 #import "SpanLifecycleHandler.h"
 #import "../SpanProcessingPipeline/Batch.h"
 #import "../Configuration/BugsnagPerformanceConfiguration+Private.h"
-#import "../../Metrics/FrameMetrics/FrameMetricsCollector.h"
+#import "../../Metrics/FrameMetrics/FrameMetricsSnapshot.h"
 #import "../SpanStack/SpanStackingHandler.h"
 #import "../Sampler/Sampler.h"
 #import "../SpanFactory/Plain/PlainSpanFactoryImpl.h"
@@ -31,19 +31,15 @@ public:
                              std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
                              std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
                              std::shared_ptr<Batch> batch,
-                             FrameMetricsCollector *frameMetricsCollector,
                              BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
-                             BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
-                             void (^onSpanStarted)()) noexcept
+                             BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks) noexcept
     : sampler_(sampler)
     , store_(store)
     , conditionTimeoutExecutor_(conditionTimeoutExecutor)
     , plainSpanFactory_(plainSpanFactory)
     , batch_(batch)
-    , frameMetricsCollector_(frameMetricsCollector)
     , onSpanStartCallbacks_(onSpanStartCallbacks)
-    , onSpanEndCallbacks_(onSpanEndCallbacks)
-    , onSpanStarted_(onSpanStarted) {}
+    , onSpanEndCallbacks_(onSpanEndCallbacks) {}
     
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
@@ -53,6 +49,10 @@ public:
     void preStartSetup() noexcept;
     void start() noexcept {
         isStarted_ = true;
+    }
+    
+    void initialize(GetCurrentFrameMetricsSnapshot getCurrentSnapshot) noexcept {
+        getCurrentSnapshot_ = getCurrentSnapshot;
     }
     
     void onAppEnteredBackground() noexcept;
@@ -68,14 +68,13 @@ private:
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
     std::shared_ptr<SpanStore> store_;
-    FrameMetricsCollector *frameMetricsCollector_;
     bool isStarted_{false};
-    void (^onSpanStarted_)(){ ^(){} };
     
     std::shared_ptr<Batch> batch_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
+    GetCurrentFrameMetricsSnapshot getCurrentSnapshot_{nullptr};
     
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;

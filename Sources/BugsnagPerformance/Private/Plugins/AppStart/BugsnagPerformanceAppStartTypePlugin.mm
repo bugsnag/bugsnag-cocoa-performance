@@ -13,7 +13,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
 #import "BugsnagPerformanceAppStartSpanControl+Private.h"
 #import "BugsnagPerformanceAppStartTypePlugin.h"
-#import "../../CrosstalkAPI/BugsnagPerformanceCrossTalkAPI.h"
+#import "../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 @interface BugsnagPerformanceAppStartTypePlugin()
 @property (nonatomic) GetAppStartInstrumentationStateSnapshot getAppStartInstrumentationState;

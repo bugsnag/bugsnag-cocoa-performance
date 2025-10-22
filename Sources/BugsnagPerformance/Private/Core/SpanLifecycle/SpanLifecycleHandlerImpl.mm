@@ -19,18 +19,17 @@ SpanLifecycleHandlerImpl::preStartSetup() noexcept {
 
 void
 SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const SpanOptions &options) noexcept {
-    if (shouldInstrumentRendering(span)) {
-        span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
+    if (shouldInstrumentRendering(span) && getCurrentSnapshot_) {
+        span.startFramerateSnapshot = getCurrentSnapshot_();
     }
     store_->addNewSpan(span, options.makeCurrentContext);
     callOnSpanStartCallbacks(span);
-    onSpanStarted_();
 }
 
 void
 SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
-    if (shouldInstrumentRendering(span)) {
-        span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
+    if (shouldInstrumentRendering(span) && getCurrentSnapshot_) {
+        span.endFramerateSnapshot = getCurrentSnapshot_();
     }
 }
 
