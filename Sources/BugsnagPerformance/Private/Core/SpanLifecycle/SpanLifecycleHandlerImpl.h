@@ -19,6 +19,7 @@
 #import "../SpanConditions/ConditionTimeoutExecutor.h"
 #import "../BSGPrioritizedStore.h"
 #import "../SpanStore/SpanStore.h"
+#import "../SpanProcessingPipeline/SpanProcessingPipeline.h"
 
 #import <mutex>
 
@@ -30,16 +31,14 @@ public:
                              std::shared_ptr<SpanStore> store,
                              std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor,
                              std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
-                             std::shared_ptr<Batch> batch,
-                             BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
-                             BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks) noexcept
+                             std::shared_ptr<SpanProcessingPipeline> pipeline,
+                             BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks) noexcept
     : sampler_(sampler)
     , store_(store)
     , conditionTimeoutExecutor_(conditionTimeoutExecutor)
     , plainSpanFactory_(plainSpanFactory)
-    , batch_(batch)
-    , onSpanStartCallbacks_(onSpanStartCallbacks)
-    , onSpanEndCallbacks_(onSpanEndCallbacks) {}
+    , pipeline_(pipeline)
+    , onSpanStartCallbacks_(onSpanStartCallbacks) {}
     
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
@@ -70,22 +69,14 @@ private:
     std::shared_ptr<SpanStore> store_;
     bool isStarted_{false};
     
-    std::shared_ptr<Batch> batch_;
+    std::shared_ptr<SpanProcessingPipeline> pipeline_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
-    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
     GetCurrentFrameMetricsSnapshot getCurrentSnapshot_{nullptr};
     
-    void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
-    bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
-    void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept;
-    void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) noexcept;
-    void createFrozenFrameSpan(NSTimeInterval startTime,
-                               NSTimeInterval endTime,
-                               BugsnagPerformanceSpanContext *parentContext) noexcept;
     void abortAllOpenSpans() noexcept;
-    void reprocessEarlySpans() noexcept;
+    bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
     
     SpanLifecycleHandlerImpl() = delete;
 };

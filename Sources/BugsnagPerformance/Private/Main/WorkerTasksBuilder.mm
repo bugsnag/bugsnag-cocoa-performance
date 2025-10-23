@@ -8,12 +8,19 @@
 
 #import "WorkerTasksBuilder.h"
 
+#define buildTask(work) \
+    __block auto blockThis = this; \
+    auto workBlock = ^(TaskCompletion completion){ \
+        work \
+    }; \
+    return std::make_shared<AsyncToSyncTask>(workBlock)
+
 using namespace bugsnag;
 
 std::vector<std::shared_ptr<AsyncToSyncTask>>
 WorkerTasksBuilder::buildInitialTasks() noexcept {
     auto result = std::vector<std::shared_ptr<AsyncToSyncTask>>();
-    result.push_back(buildGetPValueTask());
+    result.push_back(buildGetInitialPValueTask());
     result.push_back(buildStartPluginsTask());
     return result;
 }
@@ -28,52 +35,51 @@ WorkerTasksBuilder::buildRecurringTasks() noexcept {
     return result;
 }
 
-#pragma mark Private
+#pragma mark Initial Tasks
 
 std::shared_ptr<AsyncToSyncTask>
-WorkerTasksBuilder::buildGetPValueTask() noexcept {
-    __block auto blockThis = this;
-    auto work = ^(TaskCompletion completion){
-        blockThis->uploadHandler_->uploadPValueRequest(completion);
-    };
-    return std::make_shared<AsyncToSyncTask>(work);
+WorkerTasksBuilder::buildGetInitialPValueTask() noexcept {
+    return buildGetPValueTask();
 }
 
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildStartPluginsTask() noexcept {
-    __block auto blockThis = this;
-    auto work = ^(TaskCompletion completion){
+    buildTask(
         [blockThis->pluginManager_ startPlugins];
         completion(false);
-    };
-    return std::make_shared<AsyncToSyncTask>(work);
+    );
+}
+
+std::shared_ptr<AsyncToSyncTask>
+WorkerTasksBuilder::buildGetPValueTask() noexcept {
+    buildTask(
+        blockThis->uploadHandler_->uploadPValueRequest(completion);
+    );
 }
 
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildSendCurrentBatchTask() noexcept {
-    __block auto blockThis = this;
-    auto work = ^(TaskCompletion completion){
-        // TODO
-        blockThis->uploadHandler_->uploadSpans(@[], completion);
-    };
-    return std::make_shared<AsyncToSyncTask>(work);
+    buildTask(
+        auto spans = blockThis->pipeline_->drainSendableSpans();
+        if (spans.count == 0) {
+            completion(false);
+            return;
+        }
+        blockThis->uploadHandler_->uploadSpans(spans, completion);
+    );
 }
 
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildSendRetriesTask() noexcept {
-    __block auto blockThis = this;
-    auto work = ^(TaskCompletion completion){
+    buildTask(
         blockThis->uploadHandler_->sendRetries(completion);
-    };
-    return std::make_shared<AsyncToSyncTask>(work);
+    );
 }
 
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildSweepStoreTask() noexcept {
-    __block auto blockThis = this;
-    auto work = ^(TaskCompletion completion){
+    buildTask(
         blockThis->spanStore_->sweep();
         completion(false);
-    };
-    return std::make_shared<AsyncToSyncTask>(work);
+    );
 }

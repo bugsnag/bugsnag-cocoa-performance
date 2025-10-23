@@ -42,5 +42,7 @@ PluginSupportModule::start() noexcept {
 void
 PluginSupportModule::setUp() noexcept {
     spanControlProvider_ = [BSGCompositeSpanControlProvider new];
-    pluginManager_ = [[BSGPluginManager alloc] initWithSpanControlProvider:spanControlProvider_];
+    pluginManager_ = [[BSGPluginManager alloc] initWithSpanControlProvider:spanControlProvider_
+                                                      onSpanStartCallbacks:spanStartCallbacks_
+                                                        onSpanEndCallbacks:spanEndCallbacks_];
 }

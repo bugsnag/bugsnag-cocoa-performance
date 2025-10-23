@@ -14,7 +14,7 @@ using namespace bugsnag;
 
 void
 SpanLifecycleHandlerImpl::preStartSetup() noexcept {
-    reprocessEarlySpans();
+    pipeline_->processPendingSpansIfNeeded();
 }
 
 void
@@ -36,7 +36,8 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
 void
 SpanLifecycleHandlerImpl::onSpanClosed(BugsnagPerformanceSpan *span) noexcept {
     if (!span.isBlocked) {
-        processClosedSpan(span);
+        store_->removeSpan(span);
+        pipeline_->addSpanForProcessing(span);
     }
 }
 
@@ -82,7 +83,7 @@ SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept
     if (!span) {
         return;
     }
-    batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
+    pipeline_->removeSpan(span);
     if (span.isBlocked) {
         store_->removeSpanFromBlocked(span);
     }
@@ -96,45 +97,6 @@ SpanLifecycleHandlerImpl::onAppEnteredBackground() noexcept {
 }
 
 #pragma mark Private
-
-bool
-SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
-    switch (span.metricsOptions.rendering) {
-        case BSGTriStateYes:
-            return enabledMetrics_.rendering;
-        case BSGTriStateNo:
-            return false;
-        case BSGTriStateUnset:
-            return enabledMetrics_.rendering &&
-            !span.wasStartOrEndTimeProvided &&
-            span.firstClass == BSGTriStateYes;
-    }
-}
-
-void
-SpanLifecycleHandlerImpl::processFrameMetrics(BugsnagPerformanceSpan *span) noexcept {
-    auto startSnapshot = span.startFramerateSnapshot;
-    auto endSnapshot = span.endFramerateSnapshot;
-    if (!shouldInstrumentRendering(span) ||
-        startSnapshot == nil ||
-        endSnapshot == nil) {
-        return;
-    }
-    auto mergedSnapshot = [FrameMetricsSnapshot mergeWithStart:startSnapshot
-                                                           end:endSnapshot];
-    if (mergedSnapshot.totalFrames == 0) {
-        return;
-    }
-    [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
-    [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
-    [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
-    
-    auto frozenFrame = mergedSnapshot.firstFrozenFrame;
-    while (frozenFrame != nil) {
-        createFrozenFrameSpan(frozenFrame.startTime, frozenFrame.endTime, span);
-        frozenFrame = frozenFrame != mergedSnapshot.lastFrozenFrame ? frozenFrame.next : nil;
-    }
-}
 
 void
 SpanLifecycleHandlerImpl::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept {
@@ -152,106 +114,22 @@ SpanLifecycleHandlerImpl::callOnSpanStartCallbacks(BugsnagPerformanceSpan *span)
 }
 
 void
-SpanLifecycleHandlerImpl::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) noexcept {
-    if(span == nil) {
-        return;
-    }
-    if (span.state != SpanStateEnded) {
-        return;
-    }
-
-    CFAbsoluteTime callbacksStartTime = CFAbsoluteTimeGetCurrent();
-    for (BugsnagPerformanceSpanEndCallback callback: [onSpanEndCallbacks_ objects]) {
-        BOOL shouldDiscardSpan = false;
-        @try {
-            shouldDiscardSpan = !callback(span);
-        } @catch(NSException *e) {
-            BSGLogError(@"Tracer::callOnSpanEndCallbacks: span OnEnd callback threw exception: %@", e);
-            // We don't know whether they wanted to discard the span or not, so keep it.
-            shouldDiscardSpan = false;
-        }
-        if(shouldDiscardSpan) {
-            [span abortUnconditionally];
-            return;
-        }
-    }
-    CFAbsoluteTime callbacksEndTime = CFAbsoluteTimeGetCurrent();
-    [span internalSetAttribute:@"bugsnag.span.callbacks_duration" withValue:@(intervalToNanoseconds(callbacksEndTime - callbacksStartTime))];
-}
-
-void
-SpanLifecycleHandlerImpl::createFrozenFrameSpan(NSTimeInterval startTime,
-                                                NSTimeInterval endTime,
-                                                BugsnagPerformanceSpanContext *parentContext) noexcept {
-    SpanOptions options;
-    options.startTime = startTime;
-    options.parentContext = parentContext;
-    options.makeCurrentContext = false;
-    auto span = plainSpanFactory_->startSpan(@"FrozenFrame", options, BSGTriStateNo, @{}, @[]);
-    [span endWithAbsoluteTime:endTime];
-}
-
-void
-SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
-    // Up until now nothing was configured, so all early spans have been kept.
-    // Now that configuration is complete, force-drain all early spans and re-process them.
-    auto toReprocess = batch_->drain(true);
-    for (BugsnagPerformanceSpan *span in toReprocess) {
-        if (span.state != SpanStateEnded) {
-            continue;
-        }
-        if (!sampler_->sampled(span)) {
-            [span abortUnconditionally];
-            continue;
-        }
-        [span forceMutate:^() {
-            callOnSpanEndCallbacks(span);
-        }];
-        if (span.state == SpanStateAborted) {
-            [span abortUnconditionally];
-            continue;
-        }
-
-        batch_->add(span);
-    }
-}
-
-void
 SpanLifecycleHandlerImpl::abortAllOpenSpans() noexcept {
     store_->performActionAndClearOpenSpans(^(BugsnagPerformanceSpan *span) {
         [span abortIfOpen];
     });
 }
 
-void
-SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexcept {
-    @synchronized (span) {
-        for (BugsnagPerformanceSpanCondition *condition in span.conditionsToEndOnClose) {
-            [condition closeWithEndTime:span.endTime];
-        }
+bool
+SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    switch (span.metricsOptions.rendering) {
+        case BSGTriStateYes:
+            return enabledMetrics_.rendering;
+        case BSGTriStateNo:
+            return false;
+        case BSGTriStateUnset:
+            return enabledMetrics_.rendering &&
+            !span.wasStartOrEndTimeProvided &&
+            span.firstClass == BSGTriStateYes;
     }
-
-    store_->removeSpan(span);
-
-    if(span.state == SpanStateAborted) {
-        return;
-    }
-
-    if (!sampler_->sampled(span)) {
-        [span abortUnconditionally];
-        return;
-    }
-
-    if (span != nil && span.state == SpanStateEnded) {
-        callOnSpanEndCallbacks(span);
-        if (span.state == SpanStateAborted) {
-            return;
-        }
-    }
-    
-    if (shouldInstrumentRendering(span)) {
-        processFrameMetrics(span);
-    }
-
-    batch_->add(span);
 }

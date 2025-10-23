@@ -17,7 +17,10 @@
 namespace bugsnag {
 class PluginSupportModule: public Module {
 public:
-    PluginSupportModule() {};
+    PluginSupportModule(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks,
+                        BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks) noexcept
+    : spanStartCallbacks_(spanStartCallbacks)
+    , spanEndCallbacks_(spanEndCallbacks) {};
     
     ~PluginSupportModule() {};
     
@@ -37,6 +40,9 @@ public:
     BSGPluginManager *getPluginManager() noexcept { return pluginManager_; }
     
 private:
+    // Dependencies
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
     
     // Components
     BSGCompositeSpanControlProvider *spanControlProvider_;

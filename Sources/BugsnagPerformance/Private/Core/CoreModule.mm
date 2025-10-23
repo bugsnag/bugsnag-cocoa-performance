@@ -91,6 +91,9 @@ CoreModule::start() noexcept {
         }];
     });
     batch_->setBatchFullCallback(^{
+        blockThis->pipeline_->processPendingSpansIfNeeded();
+    });
+    pipeline_->setSendableSpansCallback(^{
         [blockThis->worker_ wake];
     });
 }
@@ -111,16 +114,14 @@ CoreModule::setUp() noexcept {
     viewLoadSpanFactory_ = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_);
     networkSpanFactory_ = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_);
     
-    spanStartCallbacks_ = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
-    spanEndCallbacks_ = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
     spanStore_ = std::make_shared<SpanStoreImpl>(spanStackingHandler_);
+    pipeline_ = std::make_shared<SpanProcessingPipelineImpl>(batch_);
     spanLifecycleHandler_ = std::make_shared<SpanLifecycleHandlerImpl>(sampler_,
                                                                        spanStore_,
                                                                        conditionTimeoutExecutor_,
                                                                        plainSpanFactory_,
-                                                                       batch_,
-                                                                       spanStartCallbacks_,
-                                                                       spanEndCallbacks_);
+                                                                       pipeline_,
+                                                                       spanStartCallbacks_);
     resourceAttributes_ = std::make_shared<ResourceAttributes>(deviceID_);
     networkSpanReporter_ = std::make_shared<NetworkSpanReporterImpl>(spanAttributesProvider_,
                                                                      networkSpanFactory_);

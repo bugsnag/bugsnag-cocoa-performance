@@ -222,6 +222,8 @@
 		96794A402EAA10A6005FD87F /* UploadHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A3F2EAA109F005FD87F /* UploadHandler.h */; };
 		96794A422EAA10F4005FD87F /* UploadHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A412EAA10EB005FD87F /* UploadHandlerImpl.h */; };
 		96794A442EAA10FB005FD87F /* UploadHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A432EAA10F9005FD87F /* UploadHandlerImpl.mm */; };
+		96794A462EAA8713005FD87F /* PipelineStepsBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A452EAA8705005FD87F /* PipelineStepsBuilder.h */; };
+		96794A482EAA871C005FD87F /* PipelineStepsBuilder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A472EAA871B005FD87F /* PipelineStepsBuilder.mm */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -614,6 +616,8 @@
 		96794A3F2EAA109F005FD87F /* UploadHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadHandler.h; sourceTree = "<group>"; };
 		96794A412EAA10EB005FD87F /* UploadHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadHandlerImpl.h; sourceTree = "<group>"; };
 		96794A432EAA10F9005FD87F /* UploadHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UploadHandlerImpl.mm; sourceTree = "<group>"; };
+		96794A452EAA8705005FD87F /* PipelineStepsBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PipelineStepsBuilder.h; sourceTree = "<group>"; };
+		96794A472EAA871B005FD87F /* PipelineStepsBuilder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PipelineStepsBuilder.mm; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -1258,6 +1262,8 @@
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
 				967949FB2EA16458005FD87F /* MainModule.h */,
 				967949FD2EA16463005FD87F /* MainModule.mm */,
+				96794A452EAA8705005FD87F /* PipelineStepsBuilder.h */,
+				96794A472EAA871B005FD87F /* PipelineStepsBuilder.mm */,
 				96794A382EA99C91005FD87F /* WorkerTasksBuilder.h */,
 				96794A3A2EA99CA0005FD87F /* WorkerTasksBuilder.mm */,
 			);
@@ -1618,6 +1624,7 @@
 				963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
 				962CE8352E67972300380522 /* NetworkSpanFactoryImpl.h in Headers */,
+				96794A462EAA8713005FD87F /* PipelineStepsBuilder.h in Headers */,
 				962CE7CE2E60766000380522 /* ViewLoadInstrumentationStateRepository.h in Headers */,
 				967949BD2E99373E005FD87F /* SpanStore.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
@@ -2109,6 +2116,7 @@
 				963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */,
 				962CE7D32E60768400380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
+				96794A482EAA871C005FD87F /* PipelineStepsBuilder.mm in Sources */,
 				967949CA2E9DC9CE005FD87F /* SpanProcessingPipelineStep.h in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,

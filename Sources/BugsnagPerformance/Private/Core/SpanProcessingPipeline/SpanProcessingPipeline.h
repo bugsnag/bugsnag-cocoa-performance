@@ -8,6 +8,8 @@
 
 #pragma once
 
+#import <Foundation/Foundation.h>
+
 #import "SpanProcessingPipelineStep.h"
 
 namespace bugsnag {
@@ -17,6 +19,7 @@ public:
     virtual void addSpanForProcessing(BugsnagPerformanceSpan *span) noexcept = 0;
     virtual void removeSpan(BugsnagPerformanceSpan *span) noexcept = 0;
     virtual void processPendingSpansIfNeeded() noexcept = 0;
+    virtual NSArray<BugsnagPerformanceSpan *> *drainSendableSpans() noexcept = 0;
     
     virtual ~SpanProcessingPipeline() {}
 };

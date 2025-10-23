@@ -26,6 +26,7 @@
 #import "BSGPrioritizedStore.h"
 #import "SpanConditions/ConditionTimeoutExecutor.h"
 #import "SpanProcessingPipeline/Batch.h"
+#import "SpanProcessingPipeline/SpanProcessingPipelineImpl.h"
 
 #import "../Utils/Persistence.h"
 #import "../Utils/PersistentDeviceID.h"
@@ -40,11 +41,13 @@ public:
     CoreModule(AppStateTracker *appStateTracker,
                std::shared_ptr<Reachability> reachability,
                std::shared_ptr<Persistence> persistence,
-               std::shared_ptr<PersistentDeviceID> deviceID) noexcept
+               std::shared_ptr<PersistentDeviceID> deviceID,
+               BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks) noexcept
     : appStateTracker_(appStateTracker)
     , reachability_(reachability)
     , persistence_(persistence)
-    , deviceID_(deviceID) {};
+    , deviceID_(deviceID)
+    , spanStartCallbacks_(spanStartCallbacks) {};
     
     ~CoreModule();
     
@@ -61,10 +64,12 @@ public:
     
     void initializeComponentsCallbacks(GetCurrentFrameMetricsSnapshot getCurrentSnapshot,
                                        GetAppStartupStateSnapshot getAppStartupStateSnapshot,
-                                       HandleStringTask onViewLoadSpanStarted) noexcept {
+                                       HandleStringTask onViewLoadSpanStarted,
+                                       double spanProcessingDelay) noexcept {
         spanLifecycleHandler_->initialize(getCurrentSnapshot);
         plainSpanFactory_->setup(createPlainSpanFactoryCallbacks());
         viewLoadSpanFactory_->setup(createViewLoadSpanFactoryCallbacks(onViewLoadSpanStarted, getAppStartupStateSnapshot));
+        pipeline_->setMainFlowDelay(spanProcessingDelay);
     }
     
     void initializeWorkerTasks(std::vector<std::shared_ptr<AsyncToSyncTask>> initialTasks,
@@ -74,6 +79,16 @@ public:
         }
         for (const auto &task : recurringTasks) {
             [worker_ addRecurringTask:task];
+        }
+    }
+    
+    void initializePipelineSteps(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> preprocessSteps,
+                                 std::vector<std::shared_ptr<SpanProcessingPipelineStep>> mainFlowSteps) {
+        for (const auto &step : preprocessSteps) {
+            pipeline_->addPreprocessStep(step);
+        }
+        for (const auto &step : mainFlowSteps) {
+            pipeline_->addMainFlowStep(step);
         }
     }
     
@@ -97,8 +112,7 @@ public:
     std::shared_ptr<SpanLifecycleHandler> getSpanLifecycleHandler() noexcept { return spanLifecycleHandler_; }
     std::shared_ptr<ResourceAttributes> getResourceAttributes() noexcept { return resourceAttributes_; }
     std::shared_ptr<NetworkSpanReporter> getNetworkSpanReporter() noexcept { return networkSpanReporter_; }
-    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *getSpanStartCallbacks() noexcept { return spanStartCallbacks_; }
-    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *getSpanEndCallbacks() noexcept { return spanEndCallbacks_; }
+    std::shared_ptr<SpanProcessingPipeline> getSpanProcessingPipeline() noexcept { return pipeline_; }
     
 private:
     
@@ -113,6 +127,7 @@ private:
     std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentDeviceID> deviceID_;
     std::function<AppStartupInstrumentationStateSnapshot *()> getAppStartupInstrumentationState_{ [](){ return nil; } };
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
     
     // Components
     std::shared_ptr<Batch> batch_;
@@ -129,8 +144,7 @@ private:
     std::shared_ptr<SpanLifecycleHandlerImpl> spanLifecycleHandler_;
     std::shared_ptr<ResourceAttributes> resourceAttributes_;
     std::shared_ptr<NetworkSpanReporterImpl> networkSpanReporter_;
-    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
-    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
+    std::shared_ptr<SpanProcessingPipelineImpl> pipeline_;
     Worker *worker_;
     
     PlainSpanFactoryCallbacks *createPlainSpanFactoryCallbacks() noexcept;

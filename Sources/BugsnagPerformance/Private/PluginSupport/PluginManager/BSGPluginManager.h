@@ -19,7 +19,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BSGPluginManager : NSObject<BSGPhasedStartup>
 
-- (instancetype)initWithSpanControlProvider:(BSGCompositeSpanControlProvider *)compositeProvider;
+- (instancetype)initWithSpanControlProvider:(BSGCompositeSpanControlProvider *)compositeProvider
+                       onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
+                         onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks;
 
 - (void)installPlugins:(NSArray<id<BugsnagPerformancePlugin>> *)plugins;
 - (void)startPlugins;

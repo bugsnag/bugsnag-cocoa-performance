@@ -53,7 +53,7 @@ MainModule::earlySetup() noexcept {
 }
 
 void
-MainModule::configure(BugsnagPerformanceConfiguration *config) noexcept {
+MainModule::configure(BugsnagPerformanceConfiguration *config) noexcept {    
     metricsModule_->configure(config);
     utilsModule_->configure(config);
     coreModule_->configure(config);
@@ -62,6 +62,8 @@ MainModule::configure(BugsnagPerformanceConfiguration *config) noexcept {
     pluginSupportModule_->configure(config);
     pluginsModule_->configure(config);
     crossTalkAPIModule_->configure(config);
+    
+    pluginSupportModule_->installPlugins(pluginsModule_->getDefaultPluginsTask()());
 }
 
 void
@@ -122,12 +124,15 @@ MainModule::onAppEnteredForeground() noexcept {
 
 void
 MainModule::initializeModules() noexcept {
+    spanStartCallbacks_ = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
+    spanEndCallbacks_ = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
     utilsModule_ = std::make_shared<UtilsModule>();
     utilsModule_->setUp();
     coreModule_ = std::make_shared<CoreModule>(utilsModule_->getAppStateTracker(),
                                                utilsModule_->getReachability(),
                                                utilsModule_->getPersistence(),
-                                               utilsModule_->getDeviceID());
+                                               utilsModule_->getDeviceID(),
+                                               spanStartCallbacks_);
     coreModule_->setUp();
     instrumentationModule_ = std::make_shared<InstrumentationModule>(coreModule_->getAppStartupSpanFactory(),
                                                                      coreModule_->getViewLoadSpanFactory(),
@@ -146,7 +151,8 @@ MainModule::initializeModules() noexcept {
     pluginsModule_ = std::make_shared<PluginsModule>(instrumentationModule_->getInstrumentation());
     pluginsModule_->setUp();
     
-    pluginSupportModule_ = std::make_shared<PluginSupportModule>();
+    pluginSupportModule_ = std::make_shared<PluginSupportModule>(spanStartCallbacks_,
+                                                                 spanEndCallbacks_);
     pluginSupportModule_->setUp();
     
     uploadModule_ = std::make_shared<UploadModule>(utilsModule_->getPersistence(),
@@ -158,11 +164,20 @@ MainModule::initializeModules() noexcept {
                                                  coreModule_->getUpdateProbabilityTask());
     coreModule_->initializeComponentsCallbacks(metricsModule_->getCurrentFrameMetricsSnapshotTask(),
                                                instrumentationModule_->getAppStartupStateSnapshotTask(),
-                                               instrumentationModule_->getHandleViewLoadSpanStartedTask());
-    pluginSupportModule_->installPlugins(pluginsModule_->getDefaultPluginsTask()());
+                                               instrumentationModule_->getHandleViewLoadSpanStartedTask(),
+                                               metricsModule_->getSamplerInterval());
+    
+    pipelineStepsBuilder_ = std::make_shared<PipelineStepsBuilder>(metricsModule_->getSystemInfoSampler(),
+                                                                   coreModule_->getSpanAttributesProvider(),
+                                                                   coreModule_->getPlainSpanFactory(),
+                                                                   coreModule_->getSampler(),
+                                                                   spanEndCallbacks_);
+    coreModule_->initializePipelineSteps(pipelineStepsBuilder_->buildPreprocessSteps(),
+                                         pipelineStepsBuilder_->buildMainFlowSteps());
     
     workerTasksBuilder_ = std::make_shared<WorkerTasksBuilder>(coreModule_->getSpanStore(),
                                                                uploadModule_->getUploadHandler(),
+                                                               coreModule_->getSpanProcessingPipeline(),
                                                                pluginSupportModule_->getPluginManager());
     coreModule_->initializeWorkerTasks(workerTasksBuilder_->buildInitialTasks(),
                                        workerTasksBuilder_->buildRecurringTasks());

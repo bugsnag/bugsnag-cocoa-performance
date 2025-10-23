@@ -34,6 +34,8 @@ public:
     void onAppEnteredBackground() noexcept;
     void onAppEnteredForeground() noexcept;
     
+    double getSamplerInterval() noexcept;
+    
     // Tasks
     
     GetCurrentFrameMetricsSnapshot getCurrentFrameMetricsSnapshotTask() noexcept;

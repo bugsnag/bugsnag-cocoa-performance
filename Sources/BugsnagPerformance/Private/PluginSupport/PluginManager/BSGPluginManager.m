@@ -24,13 +24,13 @@
 @implementation BSGPluginManager
 
 - (instancetype)initWithSpanControlProvider:(BSGCompositeSpanControlProvider *)compositeProvider
-{
+                       onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
+                         onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks {
     self = [super init];
     if (self) {
         _compositeProvider = compositeProvider;
-
-        _onSpanStartCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new];
-        _onSpanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+        _onSpanStartCallbacks = onSpanStartCallbacks;
+        _onSpanEndCallbacks = onSpanEndCallbacks;
         _installedPlugins = [NSMutableArray array];
     }
     return self;

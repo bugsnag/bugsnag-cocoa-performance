@@ -52,57 +52,6 @@ UploadHandlerImpl::uploadSpans(NSArray<BugsnagPerformanceSpan *> *spans, TaskCom
     uploadPackage(traceEncoding_->buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false, completion);
 }
 
-
-// TODO: Move to pipeline
-//bool NSArray::sendCurrentBatchTask() noexcept {
-//    BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
-//    auto origSpans = batch_->drain(false);
-//#ifndef __clang_analyzer__
-//    #pragma clang diagnostic ignored "-Wunused-variable"
-//    size_t origSpansSize = origSpans.count;
-//#endif
-//    auto spans = sendableSpans(origSpans);
-//    if (spans.count == 0) {
-//#ifndef __clang_analyzer__
-//        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
-//#endif
-//        return false;
-//    }
-//    bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
-//
-//    // Delay so that the sampler has time to fetch one more sample.
-//    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delaying %f seconds (%lld ns) before getting system info", SAMPLER_INTERVAL_SECONDS + 0.5, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC));
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
-//                   dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
-//        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
-//        for(BugsnagPerformanceSpan *span: spans) {
-//            auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
-//            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
-//            if (samples.size() >= 2) {
-//                if (shouldSampleCPU(span)) {
-//                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
-//                    [span forceMutate:^() {
-//                        [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
-//                    }];
-//                }
-//                if (shouldSampleMemory(span)) {
-//                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting memory sample attributes for span %@", span.name);
-//                    [span forceMutate:^() {
-//                        [span internalSetMultipleAttributes:spanAttributesProvider_->memorySampleAttributes(samples)];
-//                    }];
-//                }
-//            }
-//        }
-//
-//#ifndef __clang_analyzer__
-//        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
-//#endif
-//        uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
-//    });
-//
-//    return true;
-//}
-
 void
 UploadHandlerImpl::sendRetries(TaskCompletion completion) noexcept {
     retryQueue_->sweep();
@@ -166,15 +115,3 @@ UploadHandlerImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
         completion(true);
     });
 }
-
-// TODO: Move to pipeline
-//NSArray<BugsnagPerformanceSpan *> *
-//UploadHandlerImpl::sendableSpans(NSArray<BugsnagPerformanceSpan *> *spans) noexcept {
-//    NSMutableArray<BugsnagPerformanceSpan *> *sendableSpans = [NSMutableArray arrayWithCapacity:spans.count];
-//    for (BugsnagPerformanceSpan *span in spans) {
-//        if (span.state != SpanStateAborted && sampler_->sampled(span)) {
-//            [sendableSpans addObject:span];
-//        }
-//    }
-//    return sendableSpans;
-//}

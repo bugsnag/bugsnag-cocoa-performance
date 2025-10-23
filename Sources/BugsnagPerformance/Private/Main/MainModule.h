@@ -9,6 +9,7 @@
 #pragma once
 
 #import "WorkerTasksBuilder.h"
+#import "PipelineStepsBuilder.h"
 #import "../Core/Module.h"
 #import "../Core/AppLifecycleListener.h"
 #import "../Core/CoreModule.h"
@@ -61,6 +62,9 @@ private:
     std::shared_ptr<PluginSupportModule> pluginSupportModule_;
     std::shared_ptr<UploadModule> uploadModule_;
     std::shared_ptr<WorkerTasksBuilder> workerTasksBuilder_;
+    std::shared_ptr<PipelineStepsBuilder> pipelineStepsBuilder_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
     
     void initializeModules() noexcept;
     std::vector<std::shared_ptr<AsyncToSyncTask>> buildInitialTasks() noexcept;

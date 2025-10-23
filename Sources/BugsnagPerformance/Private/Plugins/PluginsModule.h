@@ -34,7 +34,6 @@ public:
     GetPluginsTask getDefaultPluginsTask();
     
     // Component access
-    
     BugsnagPerformanceAppStartTypePlugin *getAppStartTypePlugin() noexcept { return appStartTypePlugin_; }
     
 private:

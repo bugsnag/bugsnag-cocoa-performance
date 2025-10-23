@@ -52,6 +52,11 @@ void MetricsModule::setUp() noexcept {
     systemInfoSampler_ = std::make_shared<SystemInfoSampler>(SAMPLER_INTERVAL_SECONDS, SAMPLER_HISTORY_SECONDS);
 }
 
+double
+MetricsModule::getSamplerInterval() noexcept {
+    return SAMPLER_INTERVAL_SECONDS;
+}
+
 #pragma mark Tasks
 
 GetCurrentFrameMetricsSnapshot
