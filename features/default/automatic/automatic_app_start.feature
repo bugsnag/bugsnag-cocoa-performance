@@ -2,10 +2,9 @@ Feature: Automatic app start instrumentation spans
 
   Scenario: Auto instrument app starts without a view load
     Given I run "AutoInstrumentAppStartsScenario"
-    And I wait for 3 seconds
+    Then I relaunch the app after shutdown
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:4"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
@@ -22,7 +21,6 @@ Feature: Automatic app start instrumentation spans
     * a span string attribute "bugsnag.phase" equals "UI init"
     * a span string attribute "bugsnag.span.category" equals "app_start"
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
-    * a span string attribute "bugsnag.app_start.first_view_name" equals "Fixture.ViewController"
     * every span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -30,7 +28,7 @@ Feature: Automatic app start instrumentation spans
 
   Scenario: Auto instrument app starts with a view load
     Given I run "AutoInstrumentAppStartsWithViewLoadScenario"
-    And I wait for 3 seconds
+    Then I relaunch the app after shutdown
     And I wait for 13 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

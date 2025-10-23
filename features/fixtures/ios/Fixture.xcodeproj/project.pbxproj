@@ -61,6 +61,7 @@
 		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		1C377BA02E78BDFE002148B2 /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */; };
 		1CC791752E67838A0015FFBA /* AppStartTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */; };
+		1CFB95492EA798DC00025C16 /* AppStartTypeLateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
 		96284DCE2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */; };
 		962CE7EE2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7ED2E62240E00380522 /* LoadingIndicatorViewSimpleStopScenario.swift */; };
@@ -171,6 +172,7 @@
 		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
 		1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeScenario.swift; sourceTree = "<group>"; };
+		1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeLateScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
 		96284DCD2B626B6F00025070 /* AutoInstrumentPreLoadedViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentPreLoadedViewLoadScenario.swift; sourceTree = "<group>"; };
 		962CE7EC2E62240E00380522 /* LoadingIndicatorViewSimpleRemoveScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingIndicatorViewSimpleRemoveScenario.swift; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */,
 				1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
@@ -568,6 +571,7 @@
 				96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
 				0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */,
+				1CFB95492EA798DC00025C16 /* AppStartTypeLateScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
 				9691A9DD2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift in Sources */,
