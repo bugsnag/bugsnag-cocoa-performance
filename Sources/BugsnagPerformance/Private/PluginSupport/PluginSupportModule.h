@@ -34,6 +34,7 @@ public:
     }
     
     BSGCompositeSpanControlProvider *getSpanControlProvider() noexcept { return spanControlProvider_; }
+    BSGPluginManager *getPluginManager() noexcept { return pluginManager_; }
     
 private:
     

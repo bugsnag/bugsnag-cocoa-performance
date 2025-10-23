@@ -41,8 +41,6 @@ CoreModule::earlySetup() noexcept {
 void
 CoreModule::configure(BugsnagPerformanceConfiguration *config) noexcept {
     configuration_ = config;
-    probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
-    probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     persistentState_->configure(config);
     plainSpanFactory_->configure(config);
     resourceAttributes_->configure(config);
@@ -126,7 +124,7 @@ CoreModule::setUp() noexcept {
     resourceAttributes_ = std::make_shared<ResourceAttributes>(deviceID_);
     networkSpanReporter_ = std::make_shared<NetworkSpanReporterImpl>(spanAttributesProvider_,
                                                                      networkSpanFactory_);
-    worker_ = [[Worker alloc] initWithInitialTasks:initialTasks_ recurringTasks:recurringTasks_];
+    worker_ = [Worker worker];
 }
 
 #pragma mark Tasks
@@ -139,7 +137,6 @@ CoreModule::getUpdateProbabilityTask() noexcept {
             BSGLogTrace(@"CoreModule::getUpdateProbabilityTask: configuration_.samplingProbability != nil");
             return;
         }
-        blockThis->probabilityExpiry_ = CFAbsoluteTimeGetCurrent() + probabilityValueExpiresAfterSeconds_;
         blockThis->sampler_->setProbability(newProbability);
         blockThis->persistentState_->setProbability(newProbability);
     };

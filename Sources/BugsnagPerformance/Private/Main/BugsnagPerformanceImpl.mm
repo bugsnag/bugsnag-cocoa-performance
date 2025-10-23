@@ -37,9 +37,6 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 }
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
-    maxPackageContentLength_ = config.internal.maxPackageContentLength;
-
     configuration_ = config;
     mainModule_->configure(config);
 }
@@ -66,84 +63,10 @@ void BugsnagPerformanceImpl::start() noexcept {
 
 #pragma mark Event Reactions
 
-
-// TODO: Replace with worker task
-//void BugsnagPerformanceImpl::onSpanStarted() noexcept {
-//    // If a span starts before we've started Bugsnag, there won't be an uploader yet.
-//    if (uploader_ != nullptr) {
-//        if (CFAbsoluteTimeGetCurrent() > probabilityExpiry_) {
-//            uploadPValueRequest();
-//        }
-//    }
-//}
-
 void
 BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
     mainModule_->getInstrumentationModule()->loadingIndicatorWasAdded(loadingViewIndicator);
 }
-
-#pragma mark Utility
-
-// TODO: Initial task
-//void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {
-//    if (!configuration_.shouldSendReports || configuration_.samplingProbability != nil) {
-//        return;
-//    }
-//    auto currentTime = CFAbsoluteTimeGetCurrent();
-//    if (currentTime > pausePValueRequestsUntil_) {
-//        // Pause P-value requests so that we don't flood the server on every span start
-//        pausePValueRequestsUntil_ = currentTime + probabilityRequestsPauseForSeconds_;
-//        uploader_->upload(*traceEncoding_.buildPValueRequestPackage(), nil);
-//    }
-//}
-
-// TODO: Move to worker task
-//void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept {
-//    BSGLogDebug(@"BugsnagPerformanceImpl::uploadPackage(package, isRetry:%s)", isRetry ? "yes" : "no");
-//    if (!configuration_.shouldSendReports) {
-//        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: !configuration_.shouldSendReports");
-//        return;
-//    }
-//    if (package == nullptr) {
-//        BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: package == nullptr");
-//        return;
-//    }
-//
-//    // Give up waiting for the upload after 20 seconds
-//    NSTimeInterval maxWaitInterval = 20.0;
-//
-//    __block auto blockThis = this;
-//    __block std::unique_ptr<OtlpPackage> blockPackage = std::move(package);
-//    __block auto condition = [NSCondition new];
-//
-//    [condition lock];
-//    uploader_->upload(*blockPackage, ^(UploadResult result) {
-//        switch (result) {
-//            case UploadResult::SUCCESSFUL:
-//                if (isRetry) {
-//                    blockThis->retryQueue_->remove(blockPackage->timestamp);
-//                }
-//                break;
-//            case UploadResult::FAILED_CAN_RETRY:
-//                if (!isRetry && blockPackage->uncompressedContentLength() <= maxPackageContentLength_) {
-//                    blockThis->retryQueue_->add(*blockPackage);
-//                }
-//                break;
-//            case UploadResult::FAILED_CANNOT_RETRY:
-//                // We can't do anything with it, so throw it out.
-//                if (isRetry) {
-//                    blockThis->retryQueue_->remove(blockPackage->timestamp);
-//                }
-//                break;
-//        }
-//        [condition lock];
-//        [condition signal];
-//        [condition unlock];
-//    });
-//    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:maxWaitInterval];
-//    [condition waitUntilDate:timeoutDate];
-//    [condition unlock];
-//}
 
 #pragma mark Spans
 

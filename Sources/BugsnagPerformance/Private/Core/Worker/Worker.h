@@ -9,18 +9,24 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
+#import "AsyncToSyncTask.h"
 #import "../BSGPhasedStartup.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <memory>
 
-typedef bool (^Task)();
+using namespace bugsnag;
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  * The worker performs a set series of tasks on a background thread.
  */
 @interface Worker : NSObject<BSGPhasedStartup>
 
-- (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks recurringTasks:(NSArray<Task> *)recurringTasks;
++ (instancetype)worker;
+
+- (void)addInitialTask:(std::shared_ptr<AsyncToSyncTask>)task;
+- (void)addRecurringTask:(std::shared_ptr<AsyncToSyncTask>)task;
 
 /**
  * Wake the worker to run through the recurring tasks until none of them do any work.

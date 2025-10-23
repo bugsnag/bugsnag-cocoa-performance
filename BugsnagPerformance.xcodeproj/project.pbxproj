@@ -209,14 +209,19 @@
 		96794A192EA1A850005FD87F /* PluginSupportModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A182EA1A84E005FD87F /* PluginSupportModule.mm */; };
 		96794A1B2EA1B06A005FD87F /* UploadModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A1A2EA1B063005FD87F /* UploadModule.h */; };
 		96794A1D2EA1B074005FD87F /* UploadModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A1C2EA1B073005FD87F /* UploadModule.mm */; };
-		96794A1F2EA77AA6005FD87F /* WorkerTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A1E2EA77AA1005FD87F /* WorkerTask.h */; };
-		96794A212EA77AB8005FD87F /* WorkerTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A202EA77AB4005FD87F /* WorkerTask.mm */; };
+		96794A1F2EA77AA6005FD87F /* AsyncToSyncTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A1E2EA77AA1005FD87F /* AsyncToSyncTask.h */; };
+		96794A212EA77AB8005FD87F /* AsyncToSyncTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A202EA77AB4005FD87F /* AsyncToSyncTask.mm */; };
 		96794A2A2EA7B103005FD87F /* AppLifecycleListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A292EA7B0F3005FD87F /* AppLifecycleListener.h */; };
 		96794A2C2EA81B84005FD87F /* ModuleTaskTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A2B2EA81B80005FD87F /* ModuleTaskTypes.h */; };
 		96794A312EA8450F005FD87F /* NetworkSpanReporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A302EA84508005FD87F /* NetworkSpanReporter.h */; };
 		96794A332EA8451A005FD87F /* NetworkSpanReporterImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A322EA84515005FD87F /* NetworkSpanReporterImpl.h */; };
 		96794A352EA84524005FD87F /* NetworkSpanReporterImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A342EA84520005FD87F /* NetworkSpanReporterImpl.mm */; };
 		96794A372EA97C76005FD87F /* BSGPhasedStartup.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A362EA97C73005FD87F /* BSGPhasedStartup.h */; };
+		96794A392EA99C9A005FD87F /* WorkerTasksBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A382EA99C91005FD87F /* WorkerTasksBuilder.h */; };
+		96794A3B2EA99CA2005FD87F /* WorkerTasksBuilder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A3A2EA99CA0005FD87F /* WorkerTasksBuilder.mm */; };
+		96794A402EAA10A6005FD87F /* UploadHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A3F2EAA109F005FD87F /* UploadHandler.h */; };
+		96794A422EAA10F4005FD87F /* UploadHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96794A412EAA10EB005FD87F /* UploadHandlerImpl.h */; };
+		96794A442EAA10FB005FD87F /* UploadHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96794A432EAA10F9005FD87F /* UploadHandlerImpl.mm */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -596,14 +601,19 @@
 		96794A182EA1A84E005FD87F /* PluginSupportModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PluginSupportModule.mm; sourceTree = "<group>"; };
 		96794A1A2EA1B063005FD87F /* UploadModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadModule.h; sourceTree = "<group>"; };
 		96794A1C2EA1B073005FD87F /* UploadModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UploadModule.mm; sourceTree = "<group>"; };
-		96794A1E2EA77AA1005FD87F /* WorkerTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WorkerTask.h; sourceTree = "<group>"; };
-		96794A202EA77AB4005FD87F /* WorkerTask.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkerTask.mm; sourceTree = "<group>"; };
+		96794A1E2EA77AA1005FD87F /* AsyncToSyncTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AsyncToSyncTask.h; sourceTree = "<group>"; };
+		96794A202EA77AB4005FD87F /* AsyncToSyncTask.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AsyncToSyncTask.mm; sourceTree = "<group>"; };
 		96794A292EA7B0F3005FD87F /* AppLifecycleListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppLifecycleListener.h; sourceTree = "<group>"; };
 		96794A2B2EA81B80005FD87F /* ModuleTaskTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModuleTaskTypes.h; sourceTree = "<group>"; };
 		96794A302EA84508005FD87F /* NetworkSpanReporter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanReporter.h; sourceTree = "<group>"; };
 		96794A322EA84515005FD87F /* NetworkSpanReporterImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanReporterImpl.h; sourceTree = "<group>"; };
 		96794A342EA84520005FD87F /* NetworkSpanReporterImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkSpanReporterImpl.mm; sourceTree = "<group>"; };
 		96794A362EA97C73005FD87F /* BSGPhasedStartup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPhasedStartup.h; sourceTree = "<group>"; };
+		96794A382EA99C91005FD87F /* WorkerTasksBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WorkerTasksBuilder.h; sourceTree = "<group>"; };
+		96794A3A2EA99CA0005FD87F /* WorkerTasksBuilder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WorkerTasksBuilder.mm; sourceTree = "<group>"; };
+		96794A3F2EAA109F005FD87F /* UploadHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadHandler.h; sourceTree = "<group>"; };
+		96794A412EAA10EB005FD87F /* UploadHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadHandlerImpl.h; sourceTree = "<group>"; };
+		96794A432EAA10F9005FD87F /* UploadHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UploadHandlerImpl.mm; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -1248,6 +1258,8 @@
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
 				967949FB2EA16458005FD87F /* MainModule.h */,
 				967949FD2EA16463005FD87F /* MainModule.mm */,
+				96794A382EA99C91005FD87F /* WorkerTasksBuilder.h */,
+				96794A3A2EA99CA0005FD87F /* WorkerTasksBuilder.mm */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1303,6 +1315,7 @@
 				967949DA2EA0592E005FD87F /* Otlp */,
 				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
 				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
+				96794A3C2EAA107C005FD87F /* UploadHandler */,
 				96794A1A2EA1B063005FD87F /* UploadModule.h */,
 				96794A1C2EA1B073005FD87F /* UploadModule.mm */,
 			);
@@ -1413,8 +1426,8 @@
 			children = (
 				CBE8EA18294B5AB800702950 /* Worker.h */,
 				CBE8EA19294B5AB800702950 /* Worker.mm */,
-				96794A1E2EA77AA1005FD87F /* WorkerTask.h */,
-				96794A202EA77AB4005FD87F /* WorkerTask.mm */,
+				96794A1E2EA77AA1005FD87F /* AsyncToSyncTask.h */,
+				96794A202EA77AB4005FD87F /* AsyncToSyncTask.mm */,
 			);
 			path = Worker;
 			sourceTree = "<group>";
@@ -1458,6 +1471,16 @@
 				96794A342EA84520005FD87F /* NetworkSpanReporterImpl.mm */,
 			);
 			path = NetworkSpanReporter;
+			sourceTree = "<group>";
+		};
+		96794A3C2EAA107C005FD87F /* UploadHandler */ = {
+			isa = PBXGroup;
+			children = (
+				96794A3F2EAA109F005FD87F /* UploadHandler.h */,
+				96794A412EAA10EB005FD87F /* UploadHandlerImpl.h */,
+				96794A432EAA10F9005FD87F /* UploadHandlerImpl.mm */,
+			);
+			path = UploadHandler;
 			sourceTree = "<group>";
 		};
 		969EE0EE2E7872A600600F63 /* SpanFactory */ = {
@@ -1645,6 +1668,7 @@
 				967949BF2E993749005FD87F /* SpanStoreImpl.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
+				96794A392EA99C9A005FD87F /* WorkerTasksBuilder.h in Headers */,
 				962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
 				96794A052EA16655005FD87F /* UtilsModule.h in Headers */,
@@ -1669,6 +1693,7 @@
 				098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */,
 				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
 				967949BA2E97D5A5005FD87F /* SpanLifecycleHandlerImpl.h in Headers */,
+				96794A422EAA10F4005FD87F /* UploadHandlerImpl.h in Headers */,
 				098FC8462D2EB8E8001B627D /* BSGPSystemInfo.h in Headers */,
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
@@ -1681,7 +1706,7 @@
 				962CE7DD2E60987600380522 /* ViewLoadEarlyPhaseHandler.h in Headers */,
 				962CE8042E6519D900380522 /* NetworkInstrumentationState.h in Headers */,
 				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
-				96794A1F2EA77AA6005FD87F /* WorkerTask.h in Headers */,
+				96794A1F2EA77AA6005FD87F /* AsyncToSyncTask.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
@@ -1717,6 +1742,7 @@
 				963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */,
 				1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */,
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
+				96794A402EAA10A6005FD87F /* UploadHandler.h in Headers */,
 				963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */,
 				9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */,
 				96794A0B2EA19AC5005FD87F /* MetricsModule.h in Headers */,
@@ -2065,6 +2091,7 @@
 				CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */,
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
 				098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */,
+				96794A3B2EA99CA2005FD87F /* WorkerTasksBuilder.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
 				9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */,
 				969EE1002E794A1100600F63 /* ViewLoadSpanFactoryCallbacks.mm in Sources */,
@@ -2091,6 +2118,7 @@
 				966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */,
 				96794A032EA165DA005FD87F /* CoreModule.mm in Sources */,
 				9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */,
+				96794A442EAA10FB005FD87F /* UploadHandlerImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
 				09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */,
@@ -2133,7 +2161,7 @@
 				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				967949CF2E9DCB06005FD87F /* SpanProcessingPipelineImpl.mm in Sources */,
-				96794A212EA77AB8005FD87F /* WorkerTask.mm in Sources */,
+				96794A212EA77AB8005FD87F /* AsyncToSyncTask.mm in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
 				962CE8062E6519E200380522 /* NetworkInstrumentationState.m in Sources */,
 				962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */,

@@ -1,5 +1,5 @@
 //
-//  WorkerTask.h
+//  AsyncToSyncTask.h
 //  BugsnagPerformance
 //
 //  Created by Robert Bartoszewski on 20/10/2025.
@@ -8,21 +8,25 @@
 
 #pragma once
 
+#import <mutex>
+
 typedef void (^TaskCompletion)(bool);
 typedef void (^TaskWork)(TaskCompletion);
 
 namespace bugsnag {
 
-class WorkerTask {
+class AsyncToSyncTask {
 public:
-    WorkerTask(TaskWork work) noexcept
+    AsyncToSyncTask(TaskWork work) noexcept
     : work_(work) {}
     
     bool executeSync();
     
-    ~WorkerTask() {}
+    ~AsyncToSyncTask() {}
     
 private:
     TaskWork work_{nullptr};
+    
+    std::recursive_mutex mutex_;
 };
 }

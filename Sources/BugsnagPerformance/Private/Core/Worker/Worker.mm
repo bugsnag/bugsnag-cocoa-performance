@@ -8,6 +8,7 @@
 
 #import "Worker.h"
 #import "../Configuration/BugsnagPerformanceConfiguration+Private.h"
+#import <vector>
 
 @interface Worker ()
 
@@ -16,42 +17,71 @@
 @property(readwrite,atomic) BOOL shouldEnd;
 @property(readonly,nonatomic) NSCondition *condition;
 @property(readonly,nonatomic) NSThread *thread;
-@property(readwrite,nonatomic) NSArray<Task> *initialTasks;
-@property(readonly,nonatomic) NSArray<Task> *recurringTasks;
+@property(nonatomic) std::vector<std::shared_ptr<AsyncToSyncTask>> initialTasks;
+@property(nonatomic) std::vector<std::shared_ptr<AsyncToSyncTask>> recurringTasks;
 
 @end
 
 @implementation Worker
 
-- (instancetype) initWithInitialTasks:(NSArray<Task> *)initialTasks
-                       recurringTasks:(NSArray<Task> *)recurringTasks {
++ (instancetype)worker {
+    return [self new];
+}
+
+- (instancetype)init {
     if ((self = [super init])) {
         _condition = [[NSCondition alloc] init];
         _thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
-        _initialTasks = initialTasks;
-        _recurringTasks = recurringTasks;
+        _initialTasks = std::vector<std::shared_ptr<AsyncToSyncTask>>();
+        _recurringTasks = std::vector<std::shared_ptr<AsyncToSyncTask>>();
         _isStarted = false;
         _shouldEnd = false;
     }
     return self;
 }
 
-- (void) performInitialWork {
+- (void)addInitialTask:(std::shared_ptr<AsyncToSyncTask>)task {
+    @synchronized (self) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+        _initialTasks.push_back(task);
+#pragma clang diagnostic pop
+    }
+}
+
+- (void)addRecurringTask:(std::shared_ptr<AsyncToSyncTask>)task {
+    @synchronized (self) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+        _recurringTasks.push_back(task);
+#pragma clang diagnostic pop
+    }
+}
+
+- (void)performInitialWork {
     @autoreleasepool {
-        for (Task task in self.initialTasks) {
-            task();
+        @synchronized (self) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+            for (const auto &task : _initialTasks) {
+                task->executeSync();
+            }
+            _initialTasks.clear();
+#pragma clang diagnostic pop
         }
-        self.initialTasks = nil;
     }
 }
 
 - (bool) performRecurringWork {
     bool performedWork = false;
-    for (Task task in self.recurringTasks) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdirect-ivar-access"
+    for (const auto &task : _recurringTasks) {
         @autoreleasepool {
-            performedWork |= task();
+            performedWork |= task->executeSync();
         }
     }
+#pragma clang diagnostic pop
     return performedWork;
 }
 

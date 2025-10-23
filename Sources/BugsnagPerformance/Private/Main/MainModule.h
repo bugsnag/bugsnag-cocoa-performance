@@ -8,6 +8,7 @@
 
 #pragma once
 
+#import "WorkerTasksBuilder.h"
 #import "../Core/Module.h"
 #import "../Core/AppLifecycleListener.h"
 #import "../Core/CoreModule.h"
@@ -59,9 +60,10 @@ private:
     std::shared_ptr<PluginsModule> pluginsModule_;
     std::shared_ptr<PluginSupportModule> pluginSupportModule_;
     std::shared_ptr<UploadModule> uploadModule_;
+    std::shared_ptr<WorkerTasksBuilder> workerTasksBuilder_;
     
     void initializeModules() noexcept;
-    NSArray<Task> *buildInitialTasks() noexcept;
-    NSArray<Task> *buildRecurringTasks() noexcept;
+    std::vector<std::shared_ptr<AsyncToSyncTask>> buildInitialTasks() noexcept;
+    std::vector<std::shared_ptr<AsyncToSyncTask>> buildRecurringTasks() noexcept;
 };
 }

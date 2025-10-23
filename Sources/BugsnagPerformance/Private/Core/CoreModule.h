@@ -32,6 +32,8 @@
 #import "../Metrics/FrameMetrics/FrameMetricsSnapshot.h"
 #import "../Instrumentation/AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
 
+#import <vector>
+
 namespace bugsnag {
 class CoreModule: public Module, public AppLifecycleListener {
 public:
@@ -52,12 +54,6 @@ public:
     void preStartSetup() noexcept;
     void start() noexcept;
     
-    void initialize(NSArray<Task> *initialTasks,
-                    NSArray<Task> *recurringTasks) noexcept {
-        initialTasks_ = initialTasks;
-        recurringTasks_ = recurringTasks;
-    }
-    
     void setUp() noexcept;
     void onAppFinishedLaunching() noexcept {}
     void onAppEnteredBackground() noexcept;
@@ -69,6 +65,16 @@ public:
         spanLifecycleHandler_->initialize(getCurrentSnapshot);
         plainSpanFactory_->setup(createPlainSpanFactoryCallbacks());
         viewLoadSpanFactory_->setup(createViewLoadSpanFactoryCallbacks(onViewLoadSpanStarted, getAppStartupStateSnapshot));
+    }
+    
+    void initializeWorkerTasks(std::vector<std::shared_ptr<AsyncToSyncTask>> initialTasks,
+                               std::vector<std::shared_ptr<AsyncToSyncTask>> recurringTasks) {
+        for (const auto &task : initialTasks) {
+            [worker_ addInitialTask:task];
+        }
+        for (const auto &task : recurringTasks) {
+            [worker_ addRecurringTask:task];
+        }
     }
     
     // Tasks
@@ -98,10 +104,6 @@ private:
     
     bool isStarted_{false};
     BugsnagPerformanceConfiguration *configuration_;
-    CFAbsoluteTime probabilityExpiry_{0};
-    
-    CFTimeInterval probabilityValueExpiresAfterSeconds_{0};
-    CFTimeInterval probabilityRequestsPauseForSeconds_{0};
     
     NSTimer *workerTimer_{nil};
     
@@ -110,8 +112,6 @@ private:
     std::shared_ptr<Reachability> reachability_;
     std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentDeviceID> deviceID_;
-    NSArray<Task> *initialTasks_;
-    NSArray<Task> *recurringTasks_;
     std::function<AppStartupInstrumentationStateSnapshot *()> getAppStartupInstrumentationState_{ [](){ return nil; } };
     
     // Components

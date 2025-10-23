@@ -112,9 +112,6 @@ std::shared_ptr<BugsnagPerformanceImpl> BugsnagPerformanceLibrary::getBugsnagPer
 }
 
 void BugsnagPerformanceLibrary::initialize() noexcept {
-    bugsnagPerformanceImpl_ = std::make_shared<BugsnagPerformanceImpl>(std::make_shared<MainModule>(),
-                                                                       ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
-                                                                           return info;
-                                                                       });
+    bugsnagPerformanceImpl_ = std::make_shared<BugsnagPerformanceImpl>(std::make_shared<MainModule>());
     bugsnagPerformanceImpl_->initialize();
 }

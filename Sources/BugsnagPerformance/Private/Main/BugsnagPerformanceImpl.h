@@ -45,10 +45,8 @@ namespace bugsnag {
 
 class BugsnagPerformanceImpl: public PhasedStartup {
 public:
-    BugsnagPerformanceImpl(std::shared_ptr<MainModule> mainModule,
-                           BugsnagPerformanceNetworkRequestCallback networkRequestCallback) noexcept
-    : mainModule_(mainModule)
-    , networkRequestCallback_(networkRequestCallback) {}
+    BugsnagPerformanceImpl(std::shared_ptr<MainModule> mainModule) noexcept
+    : mainModule_(mainModule) {}
     
     ~BugsnagPerformanceImpl() {};
     
@@ -93,17 +91,14 @@ public:
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
 
 private:
+    BugsnagPerformanceConfiguration *configuration_;
+    
     std::shared_ptr<MainModule> mainModule_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
-    BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
-
-    BugsnagPerformanceConfiguration *configuration_;
     std::mutex viewControllersToSpansMutex_;
-    uint64_t maxPackageContentLength_{1000000};
     std::atomic<bool> isStarted_{false};
 
 public: // For testing
-//    void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };
     NSUInteger testing_getBatchCount() {
         return mainModule_->getCoreModule()->getBatch()->count();
