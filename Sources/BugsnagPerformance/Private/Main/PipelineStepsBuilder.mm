@@ -33,8 +33,8 @@ std::vector<std::shared_ptr<SpanProcessingPipelineStep>>
 PipelineStepsBuilder::buildPreprocessSteps() noexcept {
     auto result = std::vector<std::shared_ptr<SpanProcessingPipelineStep>>();
     result.push_back(buildProcessConditionsStep());
-    result.push_back(buildAddFrameMetricsStep());
     result.push_back(buildFilterOutSpansStep());
+    result.push_back(buildAddFrameMetricsStep());
     result.push_back(buildRunEndCallbacksStep());
     return result;
 }

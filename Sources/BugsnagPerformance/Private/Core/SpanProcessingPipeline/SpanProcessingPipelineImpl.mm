@@ -29,8 +29,8 @@ SpanProcessingPipelineImpl::preStartSetup() noexcept {
 void
 SpanProcessingPipelineImpl::addSpanForProcessing(BugsnagPerformanceSpan *span) noexcept {
     std::lock_guard<std::recursive_mutex> guard(mutex_);
-    auto spans = executeFlow(&preprocessFlow_, @[span]);
-    if (spans.count == 0) {
+    bool shouldBeProcessed = executeFlow(&preprocessFlow_, span);
+    if (!shouldBeProcessed) {
         return;
     }
     if (isStarted_) {
@@ -93,19 +93,31 @@ SpanProcessingPipelineImpl::executeFlow(std::vector<std::shared_ptr<SpanProcessi
     if (!flow || !spans) {
         return @[];
     }
-    NSMutableArray *spansToProcess = [spans mutableCopy];
+    NSMutableArray *spansToProcess = [NSMutableArray new];
     
-    for (const auto& step : *flow) {
-        NSMutableArray *spansToRemove = [NSMutableArray array];
-        for (BugsnagPerformanceSpan *span in spansToProcess) {
-            bool shouldContinueWithCurrentSpan = step->run(span);
-            if (!shouldContinueWithCurrentSpan) {
-                [spansToRemove addObject:span];
-            }
+    for (BugsnagPerformanceSpan *span in spans) {
+        bool shouldProcessCurrentSpan = executeFlow(flow, span);
+        if (shouldProcessCurrentSpan) {
+            [spansToProcess addObject:span];
         }
-        [spansToProcess removeObjectsInArray:spansToRemove];
     }
     return spansToProcess;
+}
+
+bool
+SpanProcessingPipelineImpl::executeFlow(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> *flow,
+                                        BugsnagPerformanceSpan *span) noexcept {
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
+    if (!flow || !span) {
+        return false;
+    }
+    bool didPassSteps = true;
+    for (const auto& step : *flow) {
+        if (didPassSteps) {
+            didPassSteps = step->run(span);
+        }
+    }
+    return didPassSteps;
 }
 
 void

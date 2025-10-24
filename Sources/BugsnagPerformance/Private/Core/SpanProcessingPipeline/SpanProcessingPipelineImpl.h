@@ -60,6 +60,8 @@ private:
     
     NSArray<BugsnagPerformanceSpan *> *executeFlow(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> *flow,
                                                    NSArray<BugsnagPerformanceSpan *> *spans) noexcept;
+    bool executeFlow(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> *flow,
+                     BugsnagPerformanceSpan *span) noexcept;
     void processPendingSpans(NSArray<BugsnagPerformanceSpan *> *spans) noexcept;
 };
 }
