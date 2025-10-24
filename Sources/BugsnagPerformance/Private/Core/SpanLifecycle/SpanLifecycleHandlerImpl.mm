@@ -11,12 +11,6 @@
 
 using namespace bugsnag;
 
-
-void
-SpanLifecycleHandlerImpl::preStartSetup() noexcept {
-    pipeline_->processPendingSpansIfNeeded();
-}
-
 void
 SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const SpanOptions &options) noexcept {
     if (shouldInstrumentRendering(span) && getCurrentSnapshot_) {

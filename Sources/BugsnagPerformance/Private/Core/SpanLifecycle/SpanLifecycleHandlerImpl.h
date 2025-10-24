@@ -45,7 +45,7 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
         enabledMetrics_ = [config.enabledMetrics clone];
     }
-    void preStartSetup() noexcept;
+    void preStartSetup() noexcept {}
     void start() noexcept {
         isStarted_ = true;
     }

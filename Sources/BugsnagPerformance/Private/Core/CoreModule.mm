@@ -22,6 +22,7 @@ CoreModule::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
     plainSpanFactory_->earlyConfigure(config);
     resourceAttributes_->earlyConfigure(config);
     batch_->earlyConfigure(config);
+    pipeline_->earlyConfigure(config);
     spanLifecycleHandler_->earlyConfigure(config);
     networkSpanReporter_->earlyConfigure(config);
     [worker_ earlyConfigure:config];
@@ -33,6 +34,7 @@ CoreModule::earlySetup() noexcept {
     plainSpanFactory_->earlySetup();
     resourceAttributes_->earlySetup();
     batch_->earlySetup();
+    pipeline_->earlySetup();
     spanLifecycleHandler_->earlySetup();
     networkSpanReporter_->earlySetup();
     [worker_ earlySetup];
@@ -45,6 +47,7 @@ CoreModule::configure(BugsnagPerformanceConfiguration *config) noexcept {
     plainSpanFactory_->configure(config);
     resourceAttributes_->configure(config);
     batch_->configure(config);
+    pipeline_->configure(config);
     spanLifecycleHandler_->configure(config);
     networkSpanReporter_->configure(config);
     [worker_ configure:config];
@@ -56,6 +59,7 @@ CoreModule::preStartSetup() noexcept {
     plainSpanFactory_->preStartSetup();
     resourceAttributes_->preStartSetup();
     batch_->preStartSetup();
+    pipeline_->preStartSetup();
     spanLifecycleHandler_->preStartSetup();
     networkSpanReporter_->preStartSetup();
     [worker_ preStartSetup];
@@ -75,6 +79,7 @@ CoreModule::start() noexcept {
     plainSpanFactory_->start();
     resourceAttributes_->start();
     batch_->start();
+    pipeline_->start();
     spanLifecycleHandler_->start();
     networkSpanReporter_->start();
     [worker_ start];

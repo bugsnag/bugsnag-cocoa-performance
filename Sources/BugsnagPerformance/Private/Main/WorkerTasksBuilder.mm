@@ -60,6 +60,7 @@ WorkerTasksBuilder::buildGetPValueTask() noexcept {
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildSendCurrentBatchTask() noexcept {
     buildTask(
+        blockThis->pipeline_->processPendingSpansIfNeeded();
         auto spans = blockThis->pipeline_->drainSendableSpans();
         if (spans.count == 0) {
             completion(false);

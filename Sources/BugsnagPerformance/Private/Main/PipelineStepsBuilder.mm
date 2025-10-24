@@ -88,7 +88,9 @@ std::shared_ptr<SpanProcessingPipelineStep>
 PipelineStepsBuilder::buildRunEndCallbacksStep() noexcept {
     buildSyncStep(
         if (span != nil && span.state == SpanStateEnded) {
-            blockThis->callOnSpanEndCallbacks(span);
+            [span forceMutate:^{
+                blockThis->callOnSpanEndCallbacks(span);
+            }];
             if (span.state == SpanStateAborted) {
                 return false;
             }

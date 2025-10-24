@@ -56,7 +56,7 @@ private:
     std::vector<std::shared_ptr<SpanProcessingPipelineStep>> preprocessFlow_{};
     std::vector<std::shared_ptr<SpanProcessingPipelineStep>> mainFlow_{};
     
-    std::mutex mutex_;
+    std::recursive_mutex mutex_;
     
     NSArray<BugsnagPerformanceSpan *> *executeFlow(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> *flow,
                                                    NSArray<BugsnagPerformanceSpan *> *spans) noexcept;

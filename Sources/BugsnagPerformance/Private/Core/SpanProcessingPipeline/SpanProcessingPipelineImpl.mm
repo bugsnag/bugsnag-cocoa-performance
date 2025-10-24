@@ -14,7 +14,7 @@ using namespace bugsnag;
 
 void
 SpanProcessingPipelineImpl::preStartSetup() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     auto spans = executeFlow(&preprocessFlow_, preStartSpans_);
     [preStartSpans_ removeAllObjects];
     for (BugsnagPerformanceSpan *span in spans) {
@@ -28,7 +28,7 @@ SpanProcessingPipelineImpl::preStartSetup() noexcept {
 
 void
 SpanProcessingPipelineImpl::addSpanForProcessing(BugsnagPerformanceSpan *span) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     auto spans = executeFlow(&preprocessFlow_, @[span]);
     if (spans.count == 0) {
         return;
@@ -42,7 +42,7 @@ SpanProcessingPipelineImpl::addSpanForProcessing(BugsnagPerformanceSpan *span) n
 
 void
 SpanProcessingPipelineImpl::removeSpan(BugsnagPerformanceSpan *span) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     if (isStarted_) {
         batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
     } else {
@@ -52,7 +52,7 @@ SpanProcessingPipelineImpl::removeSpan(BugsnagPerformanceSpan *span) noexcept {
 
 void
 SpanProcessingPipelineImpl::processPendingSpansIfNeeded() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     __block auto spans = batch_->drain(false);
     __block auto blockThis = this;
     if (spans.count > 0) {
@@ -74,13 +74,13 @@ SpanProcessingPipelineImpl::drainSendableSpans() noexcept {
 
 void
 SpanProcessingPipelineImpl::addPreprocessStep(std::shared_ptr<SpanProcessingPipelineStep> step) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     preprocessFlow_.push_back(step);
 }
 
 void
 SpanProcessingPipelineImpl::addMainFlowStep(std::shared_ptr<SpanProcessingPipelineStep> step) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     mainFlow_.push_back(step);
 }
 
@@ -89,7 +89,7 @@ SpanProcessingPipelineImpl::addMainFlowStep(std::shared_ptr<SpanProcessingPipeli
 NSArray<BugsnagPerformanceSpan *> *
 SpanProcessingPipelineImpl::executeFlow(std::vector<std::shared_ptr<SpanProcessingPipelineStep>> *flow,
                                         NSArray<BugsnagPerformanceSpan *> *spans) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     if (!flow || !spans) {
         return @[];
     }
@@ -110,7 +110,7 @@ SpanProcessingPipelineImpl::executeFlow(std::vector<std::shared_ptr<SpanProcessi
 
 void
 SpanProcessingPipelineImpl::processPendingSpans(NSArray<BugsnagPerformanceSpan *> *spans) noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
+    std::lock_guard<std::recursive_mutex> guard(mutex_);
     auto spansToSend = executeFlow(&mainFlow_, spans);
     if (spansToSend.count > 0) {
         [sendableSpans_ addObjectsFromArray:spansToSend];
