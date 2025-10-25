@@ -40,7 +40,6 @@ private:
     std::shared_ptr<SpanProcessingPipeline> pipeline_;
     BSGPluginManager *pluginManager_;
     
-    std::shared_ptr<AsyncToSyncTask> buildGetInitialPValueTask() noexcept;
     std::shared_ptr<AsyncToSyncTask> buildStartPluginsTask() noexcept;
     
     std::shared_ptr<AsyncToSyncTask> buildGetPValueTask() noexcept;

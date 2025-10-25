@@ -50,6 +50,7 @@ UploadModule::start() noexcept {
     retryQueue_->start();
     uploader_->start();
     uploadHandler_->start();
+    uploadHandler_->uploadPValueRequest(^(bool) {});
 }
 
 #pragma mark Module

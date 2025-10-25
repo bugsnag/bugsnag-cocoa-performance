@@ -20,12 +20,16 @@ AsyncToSyncTask::executeSync() {
     __block BOOL didComplete = NO;
     __block BOOL isWaiting = NO;
     __block auto condition = [NSCondition new];
+    __block BOOL didFinishWaiting = NO;
 
     mutex_.lock();
     [condition lock];
-    work_(^(bool workResult){
+    work_(^(bool workResult) {
         result = workResult;
         didComplete = YES;
+        if (didFinishWaiting) {
+            return;
+        }
         blockThis->mutex_.lock();
         if (isWaiting) {
             [condition lock];
@@ -42,6 +46,7 @@ AsyncToSyncTask::executeSync() {
     while (timeoutDate.timeIntervalSinceNow > 0 && !didComplete) {
         [condition waitUntilDate:timeoutDate];
     }
+    didFinishWaiting = YES;
     [condition unlock];
     
     return result;

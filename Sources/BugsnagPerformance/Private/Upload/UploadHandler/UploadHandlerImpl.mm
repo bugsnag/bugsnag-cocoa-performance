@@ -29,6 +29,7 @@ UploadHandlerImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
 void
 UploadHandlerImpl::uploadPValueRequest(TaskCompletion completion) noexcept {
     if (!configuration_.shouldSendReports || configuration_.samplingProbability != nil) {
+        completion(false);
         return;
     }
     auto currentTime = CFAbsoluteTimeGetCurrent();
@@ -67,7 +68,6 @@ UploadHandlerImpl::sendRetries(TaskCompletion completion) noexcept {
         if (retry != nullptr) {
             auto work = ^(TaskCompletion retryCompletion) {
                 uploadPackage(std::move(retry), true, retryCompletion);
-                retryCompletion(false);
             };
             auto task = std::make_shared<AsyncToSyncTask>(work);
             task->executeSync();

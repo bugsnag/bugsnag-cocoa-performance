@@ -20,7 +20,6 @@ using namespace bugsnag;
 std::vector<std::shared_ptr<AsyncToSyncTask>>
 WorkerTasksBuilder::buildInitialTasks() noexcept {
     auto result = std::vector<std::shared_ptr<AsyncToSyncTask>>();
-    result.push_back(buildGetInitialPValueTask());
     result.push_back(buildStartPluginsTask());
     return result;
 }
@@ -36,11 +35,6 @@ WorkerTasksBuilder::buildRecurringTasks() noexcept {
 }
 
 #pragma mark Initial Tasks
-
-std::shared_ptr<AsyncToSyncTask>
-WorkerTasksBuilder::buildGetInitialPValueTask() noexcept {
-    return buildGetPValueTask();
-}
 
 std::shared_ptr<AsyncToSyncTask>
 WorkerTasksBuilder::buildStartPluginsTask() noexcept {
