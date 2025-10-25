@@ -652,7 +652,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: Automatically start a network span that has a null URL
     Given I run "AutoInstrumentNetworkNullURLScenario"
-    And I wait for 1 span
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
