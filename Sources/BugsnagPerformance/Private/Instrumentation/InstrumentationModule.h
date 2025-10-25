@@ -65,6 +65,14 @@ public:
     
 private:
     
+    std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
+                                                                               std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
+    std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<ViewLoadSpanFactory> spanFactory,
+                                                                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
+    std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
+                                                                         std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
+                                                                         std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
+    
     // Dependencies
     std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory_;
     std::shared_ptr<ViewLoadSpanFactory> viewLoadSpanFactory_;
@@ -74,7 +82,11 @@ private:
     std::shared_ptr<Sampler> sampler_;
     
     // Components
+    BSGURLSessionPerformanceDelegate *urlSessionDelegate_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
+    std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation_;
+    std::shared_ptr<ViewLoadInstrumentation> viewLoadInstrumentation_;
+    std::shared_ptr<NetworkInstrumentation> networkInstrumentation_;
     std::shared_ptr<Instrumentation> instrumentation_;
     
     InstrumentationModule() = delete;

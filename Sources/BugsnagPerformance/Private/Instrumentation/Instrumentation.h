@@ -28,34 +28,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef  AppStartupInstrumentationStateSnapshot * _Nullable (^GetAppStartInstrumentationStateSnapshot)();
 
-std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
-                                                                           std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
-
-std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<ViewLoadSpanFactory> spanFactory,
-                                                                       std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
-
-std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
-                                                                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
-
 namespace bugsnag {
 
 class Instrumentation: public PhasedStartup, public AppLifecycleListener {
 public:
-    Instrumentation(std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory,
-                    std::shared_ptr<ViewLoadSpanFactory> viewLoadSpanFactory,
-                    std::shared_ptr<NetworkSpanFactory> networkSpanFactory,
-                    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : appStartupInstrumentation_(createAppStartupInstrumentation(appStartupSpanFactory, spanAttributesProvider))
-    , viewLoadInstrumentation_(createViewLoadInstrumentation(viewLoadSpanFactory, spanAttributesProvider))
-    , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
+    Instrumentation(std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation,
+                    std::shared_ptr<ViewLoadInstrumentation> viewLoadInstrumentation,
+                    std::shared_ptr<NetworkInstrumentation> networkInstrumentation) noexcept
+    : appStartupInstrumentation_(appStartupInstrumentation)
+    , viewLoadInstrumentation_(viewLoadInstrumentation)
+    , networkInstrumentation_(networkInstrumentation)
     {}
 
-    void earlyConfigure(BSGEarlyConfiguration *config) noexcept;
-    void earlySetup() noexcept;
-    void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void preStartSetup() noexcept;
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
+    void configure(BugsnagPerformanceConfiguration *) noexcept {}
+    void preStartSetup() noexcept {}
     void start() noexcept;
     
     void onAppFinishedLaunching() noexcept;
