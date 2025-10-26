@@ -506,7 +506,7 @@ Feature: Manual creation of spans
 
   Scenario: Span Conditions - blocking blocked ended span
     Given I run "SpanConditionsBlockedSpanScenario"
-    And I wait for 1 span
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
