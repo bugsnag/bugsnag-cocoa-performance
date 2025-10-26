@@ -9,6 +9,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 #import "../Private/Utils/Logging.h"
 #import "../Private/Main/BugsnagPerformanceLibrary.h"
+#import "../Private/Instrumentation/BugsnagPerformanceLoadingIndicatorView+Private.h"
 #import "../Private/Core/SpanConditions/BugsnagPerformanceSpanCondition+Private.h"
 
 @interface BugsnagPerformanceLoadingIndicatorView()
@@ -78,10 +79,14 @@
 
 - (void)closeAllConditions {
     auto currentDate = [NSDate date];
-    for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
+    for (BugsnagPerformanceSpanCondition *condition in self.conditions) {
         [condition closeWithEndTime:currentDate];
     }
     [self.conditions removeAllObjects];
+}
+
+- (void)endLoadingSpan {
+    [self.loadingSpan end];
 }
 
 #pragma mark Helpers
@@ -91,6 +96,7 @@
         return;
     }
     [self closeAllConditions];
+    [self endLoadingSpan];
 }
 
 - (void)didBecomeActive {

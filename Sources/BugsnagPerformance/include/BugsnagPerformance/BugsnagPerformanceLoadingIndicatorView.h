@@ -15,6 +15,7 @@ IB_DESIGNABLE
 @interface BugsnagPerformanceLoadingIndicatorView : UIView
 
 @property (nonatomic, readonly) BOOL isLoading;
+@property (nonatomic, nullable, strong) IBInspectable NSString *name;
 
 - (void)finishLoading;
 

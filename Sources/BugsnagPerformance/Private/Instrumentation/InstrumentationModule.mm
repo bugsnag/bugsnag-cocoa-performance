@@ -15,9 +15,8 @@
 // View Load Instrumentation
 #import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
-#import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
-#import "ViewLoadInstrumentation/Lifecycle/ViewLoadEarlyPhaseHandlerImpl.h"
-#import "ViewLoadInstrumentation/Lifecycle/ViewLoadLoadingIndicatorsHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/EarlyPhase/ViewLoadEarlyPhaseHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/LoadingIndicators/ViewLoadLoadingIndicatorsHandlerImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
 
 // Network Instrumentation
@@ -162,17 +161,20 @@ InstrumentationModule::createViewLoadInstrumentation(std::shared_ptr<ViewLoadSpa
                                                                        std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) {
     auto systemUtils = std::make_shared<ViewLoadInstrumentationSystemUtilsImpl>();
     auto swizzlingHandler = std::make_shared<ViewLoadSwizzlingHandlerImpl>();
-    auto repository = std::make_shared<ViewLoadInstrumentationStateRepositoryImpl>();
+    viewLoadRepository_ = std::make_shared<ViewLoadInstrumentationStateRepositoryImpl>();
     auto earlyPhaseHandler = std::make_shared<ViewLoadEarlyPhaseHandlerImpl>();
-    auto loadingIndicatorsHandler = std::make_shared<ViewLoadLoadingIndicatorsHandlerImpl>(repository);
-    auto lifecycleHandler = std::make_shared<ViewLoadLifecycleHandlerImpl>(earlyPhaseHandler,
-                                                                           spanAttributesProvider,
-                                                                           spanFactory,
-                                                                           repository,
-                                                                           loadingIndicatorsHandler,
-                                                                           [BugsnagPerformanceCrossTalkAPI sharedInstance]);
+    auto loadingIndicatorsHandler = std::make_shared<ViewLoadLoadingIndicatorsHandlerImpl>(viewLoadRepository_,
+                                                                                           viewLoadSpanFactory_);
+    viewLoadLifecycleHandler_ = std::make_shared<ViewLoadLifecycleHandlerImpl>(earlyPhaseHandler,
+                                                                               spanAttributesProvider,
+                                                                               spanFactory,
+                                                                               viewLoadRepository_,
+                                                                               loadingIndicatorsHandler,
+                                                                               [BugsnagPerformanceCrossTalkAPI sharedInstance]);
     
-    return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, lifecycleHandler);
+    loadingIndicatorsHandler->setCallbacks(createViewLoadLoadingIndicatorsHandlerCallbacks());
+    
+    return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, viewLoadLifecycleHandler_);
 }
 
 std::shared_ptr<NetworkInstrumentation>
@@ -194,4 +196,19 @@ InstrumentationModule::createNetworkInstrumentation(std::shared_ptr<NetworkSpanF
                                                     swizzlingHandler,
                                                     lifecycleHandler,
                                                     urlSessionDelegate_);
+}
+
+ViewLoadLoadingIndicatorsHandlerCallbacks *
+InstrumentationModule::createViewLoadLoadingIndicatorsHandlerCallbacks() noexcept {
+    __block auto blockThis = this;
+    auto callbacks = [ViewLoadLoadingIndicatorsHandlerCallbacks new];
+    callbacks.onLoading = ^BugsnagPerformanceSpanCondition * _Nullable(UIViewController * _Nonnull viewController) {
+        return blockThis->viewLoadLifecycleHandler_->onLoadingStarted(viewController);
+    };
+    
+    callbacks.getParentContext = ^BugsnagPerformanceSpanContext * _Nullable(UIViewController * _Nonnull viewController) {
+        return blockThis->viewLoadRepository_->getInstrumentationState(viewController).overallSpan;
+    };
+    
+    return callbacks;
 }

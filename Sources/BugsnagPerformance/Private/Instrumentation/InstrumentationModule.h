@@ -18,6 +18,9 @@
 #import "../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../Core/SpanFactory/Network/NetworkSpanFactory.h"
 #import "../Core/SpanStack/SpanStackingHandler.h"
+#import "ViewLoadInstrumentation/Lifecycle/LoadingIndicators/ViewLoadLoadingIndicatorsHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
+#import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
 
 namespace bugsnag {
 class InstrumentationModule: public Module, AppLifecycleListener {
@@ -72,6 +75,7 @@ private:
     std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
                                                                          std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                                                          std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
+    ViewLoadLoadingIndicatorsHandlerCallbacks *createViewLoadLoadingIndicatorsHandlerCallbacks() noexcept;
     
     // Dependencies
     std::shared_ptr<AppStartupSpanFactory> appStartupSpanFactory_;
@@ -86,6 +90,8 @@ private:
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     std::shared_ptr<AppStartupInstrumentation> appStartupInstrumentation_;
     std::shared_ptr<ViewLoadInstrumentation> viewLoadInstrumentation_;
+    std::shared_ptr<ViewLoadLifecycleHandlerImpl> viewLoadLifecycleHandler_;
+    std::shared_ptr<ViewLoadInstrumentationStateRepositoryImpl> viewLoadRepository_;
     std::shared_ptr<NetworkInstrumentation> networkInstrumentation_;
     std::shared_ptr<Instrumentation> instrumentation_;
     

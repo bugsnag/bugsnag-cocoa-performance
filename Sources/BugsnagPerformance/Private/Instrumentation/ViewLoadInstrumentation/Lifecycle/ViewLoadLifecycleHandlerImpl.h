@@ -9,8 +9,8 @@
 #pragma once
 
 #import "ViewLoadLifecycleHandler.h"
-#import "ViewLoadEarlyPhaseHandler.h"
-#import "ViewLoadLoadingIndicatorsHandler.h"
+#import "EarlyPhase/ViewLoadEarlyPhaseHandler.h"
+#import "LoadingIndicators/ViewLoadLoadingIndicatorsHandler.h"
 #import "../../../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../../../Core/Attributes/SpanAttributesProvider.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
@@ -33,11 +33,7 @@ public:
     , spanFactory_(spanFactory)
     , repository_(repository)
     , loadingIndicatorsHandler_(loadingIndicatorsHandler)
-    , crosstalkAPI_(crosstalkAPI) {
-        loadingIndicatorsHandler->setOnLoadingCallback(^BugsnagPerformanceSpanCondition *(UIViewController *viewController) {
-            return onLoadingStarted(viewController);
-        });
-    }
+    , crosstalkAPI_(crosstalkAPI) {}
     
     void onInstrumentationConfigured(bool isEnabled, __nullable BugsnagPerformanceViewControllerInstrumentationCallback callback) noexcept;
     void onLoadView(UIViewController *viewController,
@@ -53,6 +49,7 @@ public:
     void onViewDidLayoutSubviews(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
+    BugsnagPerformanceSpanCondition *onLoadingStarted(UIViewController *viewController) noexcept;
     
 private:
     std::shared_ptr<ViewLoadEarlyPhaseHandler> earlyPhaseHandler_;
@@ -72,7 +69,6 @@ private:
     void updateViewIfNeeded(ViewLoadInstrumentationState *state,
                             UIViewController *viewController) noexcept;
     
-    BugsnagPerformanceSpanCondition *onLoadingStarted(UIViewController *viewController) noexcept;
     ViewLoadLifecycleHandlerImpl() = delete;
 };
 }

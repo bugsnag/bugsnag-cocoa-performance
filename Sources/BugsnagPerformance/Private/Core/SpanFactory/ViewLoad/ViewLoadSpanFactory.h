@@ -44,6 +44,8 @@ public:
                                                            BugsnagPerformanceSpanContext *parentContext,
                                                            NSString *phase,
                                                            NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startLoadingIndicatorSpan(NSString *name,
+                                                              BugsnagPerformanceSpanContext *parentContext) noexcept = 0;
     virtual ~ViewLoadSpanFactory() {}
 };
 }
