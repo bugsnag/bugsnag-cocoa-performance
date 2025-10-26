@@ -65,7 +65,7 @@ ViewLoadLoadingIndicatorsHandlerImpl::newState(BugsnagPerformanceLoadingIndicato
             if (callbacks_.getParentContext &&
                 !hasFoundFirstViewController &&
                 loadingIndicator.name != nil) {
-                auto parentContext = callbacks_.getParentContext(viewController);
+                BugsnagPerformanceSpanContext *parentContext = callbacks_.getParentContext(viewController);
                 needsSpanUpdate = checkNeedsSpanUpdate(loadingIndicator, parentContext);
                 if (parentContext && needsSpanUpdate) {
                     loadingIndicatorSpan = spanFactory_->startLoadingIndicatorSpan(loadingIndicator.name, parentContext);
