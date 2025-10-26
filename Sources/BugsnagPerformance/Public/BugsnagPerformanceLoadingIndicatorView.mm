@@ -72,10 +72,6 @@
 
 #pragma mark Private interface
 
-- (void)addCondition:(BugsnagPerformanceSpanCondition *)condition {
-    [self.conditions addObject:condition];
-}
-
 - (void)addConditions:(NSArray<BugsnagPerformanceSpanCondition *> *)conditions {
     [self.conditions addObjectsFromArray:conditions];
 }

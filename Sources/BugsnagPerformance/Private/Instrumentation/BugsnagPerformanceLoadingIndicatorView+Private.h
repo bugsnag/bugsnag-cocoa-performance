@@ -13,7 +13,6 @@
 
 @interface BugsnagPerformanceLoadingIndicatorView()
 
-- (void)addCondition:(BugsnagPerformanceSpanCondition *)condition;
 - (void)addConditions:(NSArray<BugsnagPerformanceSpanCondition *> *)conditions;
 - (void)closeAllConditions;
 
