@@ -11,6 +11,7 @@
 #import "AppStartupSpanFactoryImpl.h"
 #import "ViewLoadSpanFactoryImpl.h"
 #import "NetworkSpanFactoryImpl.h"
+#import "SpanLifecycleHandlerImpl.h"
 
 using namespace bugsnag;
 
@@ -35,18 +36,21 @@ using namespace bugsnag;
     auto appStartupSpanFactory = std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
+    auto spanLifecycleHandler = std::make_shared<SpanLifecycleHandlerImpl>(sampler,
+                                                                           stackingHandler,
+                                                                           conditionTimeoutExecutor,
+                                                                           plainSpanFactory,
+                                                                           batch,
+                                                                           frameMetricsCollector,
+                                                                           spanStartCallbacks,
+                                                                           spanEndCallbacks,
+                                                                           ^(){});
     
-    auto tracer = std::make_shared<Tracer>(stackingHandler,
-                                           sampler,
-                                           batch,
-                                           frameMetricsCollector,
-                                           conditionTimeoutExecutor,
-                                           plainSpanFactory,
+    auto tracer = std::make_shared<Tracer>(plainSpanFactory,
                                            viewLoadSpanFactory,
                                            networkSpanFactory,
-                                           spanStartCallbacks,
-                                           spanEndCallbacks,
-                                           ^(){});
+                                           spanLifecycleHandler,
+                                           stackingHandler);
     
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(@"GET", spanOptions);
@@ -71,17 +75,21 @@ using namespace bugsnag;
     auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     
-    auto tracer = std::make_shared<Tracer>(stackingHandler,
-                                           sampler,
-                                           batch,
-                                           frameMetricsCollector,
-                                           conditionTimeoutExecutor,
-                                           plainSpanFactory,
+    auto spanLifecycleHandler = std::make_shared<SpanLifecycleHandlerImpl>(sampler,
+                                                                           stackingHandler,
+                                                                           conditionTimeoutExecutor,
+                                                                           plainSpanFactory,
+                                                                           batch,
+                                                                           frameMetricsCollector,
+                                                                           spanStartCallbacks,
+                                                                           spanEndCallbacks,
+                                                                           ^(){});
+    
+    auto tracer = std::make_shared<Tracer>(plainSpanFactory,
                                            viewLoadSpanFactory,
                                            networkSpanFactory,
-                                           spanStartCallbacks,
-                                           spanEndCallbacks,
-                                           ^(){});
+                                           spanLifecycleHandler,
+                                           stackingHandler);
     
     SpanOptions spanOptions;
     auto span = tracer->startNetworkSpan(nil, spanOptions);
@@ -107,17 +115,21 @@ using namespace bugsnag;
     auto viewLoadSpanFactory = std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     auto networkSpanFactory = std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory, spanAttributesProvider);
     
-    auto tracer = std::make_shared<Tracer>(stackingHandler,
-                                           sampler,
-                                           batch,
-                                           frameMetricsCollector,
-                                           conditionTimeoutExecutor,
-                                           plainSpanFactory,
+    auto spanLifecycleHandler = std::make_shared<SpanLifecycleHandlerImpl>(sampler,
+                                                                           stackingHandler,
+                                                                           conditionTimeoutExecutor,
+                                                                           plainSpanFactory,
+                                                                           batch,
+                                                                           frameMetricsCollector,
+                                                                           spanStartCallbacks,
+                                                                           spanEndCallbacks,
+                                                                           ^(){});
+    
+    auto tracer = std::make_shared<Tracer>(plainSpanFactory,
                                            viewLoadSpanFactory,
                                            networkSpanFactory,
-                                           spanStartCallbacks,
-                                           spanEndCallbacks,
-                                           ^(){});
+                                           spanLifecycleHandler,
+                                           stackingHandler);
     
     SpanOptions spanOptions;
     auto span = tracer->startSpan(@"TestSpan", spanOptions, BSGTriStateYes, @[]);

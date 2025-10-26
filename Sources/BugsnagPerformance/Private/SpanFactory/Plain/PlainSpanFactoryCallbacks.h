@@ -17,5 +17,6 @@ typedef void (^OnSpanStartCallback)(BugsnagPerformanceSpan * _Nonnull,
 @property (nonatomic, nullable) SpanLifecycleCallback onSpanEndSet;
 @property (nonatomic, nullable) SpanLifecycleCallback onSpanClosed;
 @property (nonatomic, nullable) SpanBlockedCallback onSpanBlocked;
+@property (nonatomic, nullable) SpanLifecycleCallback onSpanCancelled;
 
 @end

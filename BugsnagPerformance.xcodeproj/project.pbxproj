@@ -185,6 +185,9 @@
 		966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 966634DB2C8A39C1004A934D /* FrozenFrameData.mm */; };
 		966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		967949B62E97CC9E005FD87F /* SpanLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */; };
+		967949B82E97CCA9005FD87F /* SpanLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */; };
+		967949BA2E97D5A5005FD87F /* SpanLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
@@ -540,6 +543,9 @@
 		966634D62C8A365B004A934D /* FrameMetricsSnapshot.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FrameMetricsSnapshot.mm; sourceTree = "<group>"; };
 		966634D92C8A39B1004A934D /* FrozenFrameData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrozenFrameData.h; sourceTree = "<group>"; };
 		966634DB2C8A39C1004A934D /* FrozenFrameData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FrozenFrameData.mm; sourceTree = "<group>"; };
+		967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanLifecycleHandler.h; sourceTree = "<group>"; };
+		967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
+		967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanLifecycleHandlerImpl.h; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
@@ -857,6 +863,7 @@
 				963726C42DEAB14D00C739E6 /* SpanControl */,
 				969EE0EE2E7872A600600F63 /* SpanFactory */,
 				0122C22329019770002D243C /* SpanKind.h */,
+				967949B42E97CC7F005FD87F /* SpanLifecycle */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
 				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
 				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
@@ -1180,6 +1187,16 @@
 			path = FrameRateMetrics;
 			sourceTree = "<group>";
 		};
+		967949B42E97CC7F005FD87F /* SpanLifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */,
+				967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */,
+				967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */,
+			);
+			path = SpanLifecycle;
+			sourceTree = "<group>";
+		};
 		969EE0EE2E7872A600600F63 /* SpanFactory */ = {
 			isa = PBXGroup;
 			children = (
@@ -1300,6 +1317,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				967949B62E97CC9E005FD87F /* SpanLifecycleHandler.h in Headers */,
 				9638291D2E54B4A200404F3A /* AppStartupLifecycleHandlerImpl.h in Headers */,
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
 				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
@@ -1373,6 +1391,7 @@
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
 				098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */,
 				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
+				967949BA2E97D5A5005FD87F /* SpanLifecycleHandlerImpl.h in Headers */,
 				098FC8462D2EB8E8001B627D /* BSGPSystemInfo.h in Headers */,
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
@@ -1770,6 +1789,7 @@
 				963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
 				962CE8112E65224300380522 /* BSGURLSessionPerformanceDelegate.mm in Sources */,
+				967949B82E97CCA9005FD87F /* SpanLifecycleHandlerImpl.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
 				9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */,

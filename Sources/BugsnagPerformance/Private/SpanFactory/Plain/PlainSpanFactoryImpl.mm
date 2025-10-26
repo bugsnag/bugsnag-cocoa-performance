@@ -58,12 +58,16 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
             blockThis->callbacks_.onSpanClosed(span);
         }
     };
-    
     auto onSpanBlocked = ^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull span, NSTimeInterval timeout) {
         if (blockThis->callbacks_.onSpanBlocked != nil) {
             return blockThis->callbacks_.onSpanBlocked(span, timeout);
         }
         return nil;
+    };
+    auto onSpanCancelled = ^(BugsnagPerformanceSpan * _Nonnull span) {
+        if (blockThis->callbacks_.onSpanCancelled != nil) {
+            blockThis->callbacks_.onSpanCancelled(span);
+        }
     };
 
     BugsnagPerformanceSpan *span = [[BugsnagPerformanceSpan alloc] initWithName:name
@@ -78,7 +82,8 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
                                                          conditionsToEndOnClose:conditionsToEndOnClose
                                                                    onSpanEndSet:onSpanEndSet
                                                                    onSpanClosed:onSpanClosed
-                                                                  onSpanBlocked:onSpanBlocked];
+                                                                  onSpanBlocked:onSpanBlocked
+                                                                onSpanCancelled:onSpanCancelled];
     NSMutableDictionary *initialAttributes = SpanAttributes::get();
     [initialAttributes addEntriesFromDictionary:attributes];
     [span internalSetMultipleAttributes:initialAttributes];

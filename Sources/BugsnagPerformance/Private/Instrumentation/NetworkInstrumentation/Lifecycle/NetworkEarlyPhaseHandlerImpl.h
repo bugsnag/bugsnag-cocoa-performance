@@ -15,10 +15,8 @@ namespace bugsnag {
 
 class NetworkEarlyPhaseHandlerImpl: public NetworkEarlyPhaseHandler {
 public:
-    NetworkEarlyPhaseHandlerImpl(std::shared_ptr<Tracer> tracer,
-                                 std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
-    : tracer_(tracer)
-    , spanAttributesProvider_(spanAttributesProvider)
+    NetworkEarlyPhaseHandlerImpl(std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) noexcept
+    : spanAttributesProvider_(spanAttributesProvider)
     , isEarlyPhase_(true)
     , earlyStates_([NSMutableArray array]) {}
     
@@ -26,7 +24,6 @@ public:
     void onEarlyPhaseEnded(bool isEnabled, NetworkEarlyPhaseHandlerStateCallback callback) noexcept;
     
 private:
-    std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     
     std::mutex mutex_;

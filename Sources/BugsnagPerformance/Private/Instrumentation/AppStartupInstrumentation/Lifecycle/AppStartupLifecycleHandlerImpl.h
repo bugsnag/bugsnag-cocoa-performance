@@ -11,7 +11,6 @@
 #import "../System/AppStartupInstrumentationSystemUtils.h"
 #import "../../../SpanAttributesProvider.h"
 #import "../../../BugsnagPerformanceCrossTalkAPI.h"
-#import "../../../Tracer.h"
 
 #import <memory>
 
@@ -23,7 +22,6 @@ class AppStartupLifecycleHandlerImpl: public AppStartupLifecycleHandler {
 public:
     AppStartupLifecycleHandlerImpl(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                   std::shared_ptr<Tracer> tracer,
                                    std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils,
                                    BugsnagPerformanceCrossTalkAPI *crossTalkAPI) noexcept;
     
@@ -38,7 +36,6 @@ public:
 private:
     std::shared_ptr<AppStartupSpanFactory> spanFactory_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
-    std::shared_ptr<Tracer> tracer_;
     std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils_;
     BugsnagPerformanceCrossTalkAPI *crossTalkAPI_;
     

@@ -37,7 +37,7 @@ NetworkEarlyPhaseHandlerImpl::onEarlyPhaseEnded(bool isEnabled,
 void
 NetworkEarlyPhaseHandlerImpl::cancelEarlyStatesOnPhaseEnd() noexcept {
     for (NetworkInstrumentationState *state: earlyStates_) {
-        tracer_->cancelQueuedSpan(state.overallSpan);
+        [state.overallSpan cancel];
     }
 }
 
@@ -46,7 +46,7 @@ NetworkEarlyPhaseHandlerImpl::updateEarlyStatesOnPhaseEnd(NetworkEarlyPhaseHandl
     for (NetworkInstrumentationState *state: earlyStates_) {
         callback(state);
         if (state.hasBeenVetoed) {
-            tracer_->cancelQueuedSpan(state.overallSpan);
+            [state.overallSpan cancel];
         }
         [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(state.url, nil)];
     }
