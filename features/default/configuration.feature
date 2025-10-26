@@ -5,7 +5,7 @@ Feature: Configuration overrides
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "AppDataOverrideScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

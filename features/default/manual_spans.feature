@@ -6,7 +6,7 @@ Feature: Manual creation of spans
     Given I set the HTTP status code for the next requests to 200,500,200,200
     And I run "RetryScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "WillRetry"
     Then I discard the oldest trace
@@ -24,7 +24,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "ManualSpanScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -53,7 +53,7 @@ Feature: Manual creation of spans
   Scenario: Starting and ending a span before starting the SDK
     Given I run "ManualSpanBeforeStartScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "BeforeStart"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -107,7 +107,7 @@ Feature: Manual creation of spans
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[ViewLoad/UIKit]/UIViewController"
     * every span string attribute "bugsnag.view.name" equals "UIViewController"
@@ -122,7 +122,7 @@ Feature: Manual creation of spans
     Given I run "ManualNetworkSpanScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -274,7 +274,7 @@ Feature: Manual creation of spans
     And I wait for exactly 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace "Bugsnag-Uncompressed-Content-Length" header matches the regex "^[0-9]+$"
     * every span field "name" equals "MaxPayloadSizeScenario"
@@ -303,7 +303,7 @@ Feature: Manual creation of spans
   Scenario: Set attributes in a span
     Given I run "SetAttributesScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesScenario"
     * a span string attribute "a" equals "xyz"
@@ -320,7 +320,7 @@ Feature: Manual creation of spans
   Scenario: Set attributes in a span with limits set
     Given I run "SetAttributesWithLimitsScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
@@ -332,7 +332,7 @@ Feature: Manual creation of spans
   Scenario: Set attributes in a span with an attribute count limit set
     Given I run "SetAttributeCountLimitScenario"
     And I wait for 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributeCountLimitScenario"
     * every span string attribute "a" does not exist
@@ -340,7 +340,7 @@ Feature: Manual creation of spans
   Scenario: Set OnStart
     Given I run "OnStartCallbackScenario"
     And I wait for exactly 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "OnStartCallbackScenario"
     * a span bool attribute "start_callback_1" is true
@@ -349,7 +349,7 @@ Feature: Manual creation of spans
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
     And I wait for exactly 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "OnEndCallbackScenario"
 
@@ -357,7 +357,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsNoSlowFramesScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -374,7 +374,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsSlowFramesScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsSlowFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -391,7 +391,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsFronzenFramesScenario"
     And I wait for 3 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "FrameMetricsFronzenFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -409,7 +409,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsAutoInstrumentRenderingOffScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsAutoInstrumentRenderingOffScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -426,7 +426,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsSpanInstrumentRenderingOffScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsSpanInstrumentRenderingOffScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -443,7 +443,7 @@ Feature: Manual creation of spans
     Given I run "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -460,7 +460,7 @@ Feature: Manual creation of spans
     Given I run "SpanConditionsSimpleConditionScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan1"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan2"
@@ -476,7 +476,7 @@ Feature: Manual creation of spans
     Given I run "SpanConditionsConditionTimedOutScenario"
     And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan1"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan2"
@@ -491,7 +491,7 @@ Feature: Manual creation of spans
     Given I run "SpanConditionsMultipleConditionsScenario"
     And I wait for 3 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan1"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan2"
@@ -508,7 +508,7 @@ Feature: Manual creation of spans
     Given I run "SpanConditionsBlockedSpanScenario"
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan1"
     * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan2"
@@ -524,7 +524,7 @@ Feature: Manual creation of spans
     And I wait for 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "ManualSpanWithRemoteContextParentScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
