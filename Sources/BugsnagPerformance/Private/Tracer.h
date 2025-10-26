@@ -18,6 +18,7 @@
 #import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
 #import "SpanFactory/ViewLoad/ViewLoadSpanFactoryCallbacks.h"
 #import "SpanLifecycle/SpanLifecycleHandler.h"
+#import "SpanStore/SpanStore.h"
 
 #import <memory>
 
@@ -33,12 +34,12 @@ public:
            std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory,
            std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory,
            std::shared_ptr<SpanLifecycleHandler> spanLifecycleHandler,
-           std::shared_ptr<SpanStackingHandler> spanStackingHandler) noexcept
+           std::shared_ptr<SpanStore> spanStore) noexcept
     : plainSpanFactory_(plainSpanFactory)
     , viewLoadSpanFactory_(viewLoadSpanFactory)
     , networkSpanFactory_(networkSpanFactory)
     , spanLifecycleHandler_(spanLifecycleHandler)
-    , spanStackingHandler_(spanStackingHandler)
+    , spanStore_(spanStore)
     {
         plainSpanFactory_->setup(createPlainSpanFactoryCallbacks());
         viewLoadSpanFactory_->setup(createViewLoadSpanFactoryCallbacks());
@@ -79,7 +80,7 @@ public:
                                                    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
 private:
     Tracer() = delete;
-    std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
+    std::shared_ptr<SpanStore> spanStore_;
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
     std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
     std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;

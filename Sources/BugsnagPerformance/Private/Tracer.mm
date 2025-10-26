@@ -101,7 +101,7 @@ Tracer::createViewLoadSpanFactoryCallbacks() noexcept {
         return nil;
     };
     callbacks.isViewLoadInProgress = ^BOOL() {
-        return blockThis->spanStackingHandler_->hasSpanWithAttribute(@"bugsnag.span.category", @"view_load");
+        return blockThis->spanStore_->hasSpanOnCurrentStack(@"bugsnag.span.category", @"view_load");
     };
     
     auto onViewLoadSpanStarted = ^(NSString * _Nonnull className) {

@@ -22,10 +22,7 @@ SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const Span
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
-    if (options.makeCurrentContext) {
-        spanStackingHandler_->push(span);
-    }
-    potentiallyOpenSpans_->add(span);
+    store_->addNewSpan(span, options.makeCurrentContext);
     callOnSpanStartCallbacks(span);
     onSpanStarted_();
 }
@@ -41,10 +38,6 @@ void
 SpanLifecycleHandlerImpl::onSpanClosed(BugsnagPerformanceSpan *span) noexcept {
     if (!span.isBlocked) {
         processClosedSpan(span);
-    } else {
-        @synchronized (this->blockedSpans_) {
-            [blockedSpans_ addObject:span];
-        }
     }
 }
 
@@ -63,9 +56,8 @@ SpanLifecycleHandlerImpl::onSpanBlocked(BugsnagPerformanceSpan *span, NSTimeInte
         }
     } onUpgradedCallback:^BugsnagPerformanceSpanContext *(BugsnagPerformanceSpanCondition *c) {
         __strong BugsnagPerformanceSpan *strongSpan = c.span;
-        @synchronized (this->blockedSpans_) {
-            this->conditionTimeoutExecutor_->cancelTimeout(c);
-        }
+        this->conditionTimeoutExecutor_->cancelTimeout(c);
+        
         @synchronized (c) {
             if (c.isActive) {
                 return strongSpan;
@@ -76,22 +68,24 @@ SpanLifecycleHandlerImpl::onSpanBlocked(BugsnagPerformanceSpan *span, NSTimeInte
     [condition addOnDeactivatedCallback:^(BugsnagPerformanceSpanCondition *c) {
         __strong BugsnagPerformanceSpan *strongSpan = c.span;
         if (strongSpan.state == SpanStateEnded && !strongSpan.isBlocked) {
-            @synchronized (this->blockedSpans_) {
-                [this->blockedSpans_ removeObject:strongSpan];
-                this->conditionTimeoutExecutor_->cancelTimeout(c);
-            }
+            this->store_->removeSpanFromBlocked(span);
+            this->conditionTimeoutExecutor_->cancelTimeout(c);
             this->onSpanClosed(strongSpan);
         }
     }];
-    this->conditionTimeoutExecutor_->sheduleTimeout(condition, timeout);
+    conditionTimeoutExecutor_->scheduleTimeout(condition, timeout);
+    store_->addSpanToBlocked(span);
     return condition;
 }
 
 void
 SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept {
-    if (span) {
-        batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
-        [blockedSpans_ removeObject:span];
+    if (!span) {
+        return;
+    }
+    batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
+    if (span.isBlocked) {
+        store_->removeSpanFromBlocked(span);
     }
 }
 
@@ -225,15 +219,9 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
 
 void
 SpanLifecycleHandlerImpl::abortAllOpenSpans() noexcept {
-    potentiallyOpenSpans_->abortAllOpen();
-}
-
-void
-SpanLifecycleHandlerImpl::sweep() noexcept {
-    constexpr unsigned minEntriesBeforeCompacting = 10000;
-    if (potentiallyOpenSpans_->count() >= minEntriesBeforeCompacting) {
-        potentiallyOpenSpans_->compact();
-    }
+    store_->performActionAndClearOpenSpans(^(BugsnagPerformanceSpan *span) {
+        [span abortIfOpen];
+    });
 }
 
 void
@@ -244,7 +232,7 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
         }
     }
 
-    spanStackingHandler_->onSpanClosed(span.spanId);
+    store_->removeSpan(span);
 
     if(span.state == SpanStateAborted) {
         return;
