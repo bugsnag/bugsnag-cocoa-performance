@@ -5,10 +5,10 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import "../Private/BugsnagPerformanceConfiguration+Private.h"
+#import "../Private/Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 
-#import "../Private/Utils.h"
-#import "../Private/ObjCUtils.h"
+#import "../Private/Utils/Utils.h"
+#import "../Private/Utils/ObjCUtils.h"
 
 using namespace bugsnag;
 

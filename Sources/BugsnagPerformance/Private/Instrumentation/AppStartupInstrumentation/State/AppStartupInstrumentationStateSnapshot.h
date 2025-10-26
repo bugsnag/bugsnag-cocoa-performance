@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
@@ -21,3 +23,5 @@
                             hasFirstView:(BOOL)hasFirstView;
 
 @end
+
+typedef AppStartupInstrumentationStateSnapshot *(^GetAppStartupStateSnapshot)(void);

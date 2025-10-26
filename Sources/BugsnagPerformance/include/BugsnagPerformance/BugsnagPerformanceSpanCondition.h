@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 
 OBJC_EXPORT
@@ -20,4 +19,3 @@ OBJC_EXPORT
 - (void)cancel;
 
 @end
-

@@ -6,9 +6,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "../../Tracer.h"
-#import "../../PhasedStartup.h"
-#import "../../Sampler.h"
+#import "../../Core/PhasedStartup.h"
+#import "../../Core/Sampler/Sampler.h"
 #import "State/NetworkInstrumentationStateRepository.h"
 #import "System/BSGURLSessionPerformanceDelegate.h"
 #import "System/NetworkInstrumentationSystemUtils.h"

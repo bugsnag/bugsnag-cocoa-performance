@@ -6,6 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 @class ViewLoadInstrumentationState;
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>

@@ -7,11 +7,10 @@
 
 #import "AppStartupInstrumentation.h"
 
-#import "../../Tracer.h"
-#import "../../Utils.h"
-#import "../../BugsnagPerformanceSpan+Private.h"
-#import "../../BugsnagPerformanceImpl.h"
-#import "../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../Utils/Utils.h"
+#import "../../Core/Span/BugsnagPerformanceSpan+Private.h"
+#import "../../Main/BugsnagPerformanceImpl.h"
+#import "../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #import <array>
 #import <os/trace_base.h>

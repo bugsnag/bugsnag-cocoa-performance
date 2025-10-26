@@ -7,9 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import <mutex>
-#import "../../PhasedStartup.h"
-#import "../../SpanAttributesProvider.h"
-#import "../../Tracer.h"
+#import "../../Core/PhasedStartup.h"
+#import "../../Core/Attributes/SpanAttributesProvider.h"
 #import "State/AppStartupInstrumentationState.h"
 #import "State/AppStartupInstrumentationStateSnapshot.h"
 #import "Lifecycle/AppStartupLifecycleHandler.h"

@@ -8,8 +8,8 @@
 
 #import "FileBasedTest.h"
 
-#import "../../Sources/BugsnagPerformance/Private/ResourceAttributes.h"
-#import "../../Sources/BugsnagPerformance/Private/PersistentState.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Attributes/ResourceAttributes.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Sampler/PersistentState.h"
 #import <memory>
 
 using namespace bugsnag;

@@ -9,7 +9,7 @@
 #import "NetworkSwizzlingHandlerImpl.h"
 #import "Proxy/BSGURLSessionPerformanceProxy.h"
 #import "Proxy/BSGPerformanceSharedSessionProxy.h"
-#import "../../../Swizzle.h"
+#import "../../../Utils/Swizzle.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;

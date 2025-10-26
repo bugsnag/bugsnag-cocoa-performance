@@ -7,9 +7,9 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
-#import "../Private/Logging.h"
-#import "../Private/BugsnagPerformanceLibrary.h"
-#import "../Private/BugsnagPerformanceSpanCondition+Private.h"
+#import "../Private/Utils/Logging.h"
+#import "../Private/Main/BugsnagPerformanceLibrary.h"
+#import "../Private/Core/SpanConditions/BugsnagPerformanceSpanCondition+Private.h"
 
 @interface BugsnagPerformanceLoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;

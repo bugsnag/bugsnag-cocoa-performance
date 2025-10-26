@@ -5,10 +5,10 @@
 //  Created by Nick Dowell on 23/09/2022.
 //
 
-#import "../Private/BugsnagPerformanceSpan+Private.h"
-#import "../Private/Utils.h"
-#import "../Private/SpanOptions.h"
-#import "../Private/Sampler.h"
+#import "../Private/Core/Span/BugsnagPerformanceSpan+Private.h"
+#import "../Private/Utils/Utils.h"
+#import "../Private/Core/Span/SpanOptions.h"
+#import "../Private/Core/Sampler/Sampler.h"
 
 using namespace bugsnag;
 

@@ -6,7 +6,7 @@
 //
 
 #import "AppStartupInstrumentationState.h"
-#import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Core/Span/BugsnagPerformanceSpan+Private.h"
 
 @implementation AppStartupInstrumentationState
 

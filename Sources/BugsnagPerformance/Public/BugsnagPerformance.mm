@@ -7,7 +7,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformance.h>
 
-#import "../Private/BugsnagPerformanceLibrary.h"
+#import "../Private/Main/BugsnagPerformanceLibrary.h"
 
 using namespace bugsnag;
 

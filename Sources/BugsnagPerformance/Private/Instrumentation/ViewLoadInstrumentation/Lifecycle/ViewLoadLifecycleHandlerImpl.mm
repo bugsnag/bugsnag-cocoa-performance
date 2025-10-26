@@ -8,7 +8,8 @@
 
 #import "ViewLoadLifecycleHandlerImpl.h"
 
-#import "../../../BugsnagSwiftTools.h"
+#import "../../../Utils/BugsnagSwiftTools.h"
+#import "../../../Core/Span/BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 

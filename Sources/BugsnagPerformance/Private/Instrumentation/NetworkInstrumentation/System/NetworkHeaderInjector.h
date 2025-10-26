@@ -6,11 +6,13 @@
 //  Copyright © 2024 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
-#import "../../../PhasedStartup.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../SpanStackingHandler.h"
-#import "../../../Sampler.h"
+#import "../../../Core/PhasedStartup.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
+#import "../../../Core/SpanStack/SpanStackingHandler.h"
+#import "../../../Core/Sampler/Sampler.h"
 
 #import <memory>
 
@@ -29,11 +31,11 @@ public:
     {}
     virtual ~NetworkHeaderInjector() {}
 
-    void earlyConfigure(BSGEarlyConfiguration *) noexcept {};
-    void earlySetup() noexcept {};
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
-    void preStartSetup() noexcept {};
-    void start() noexcept {};
+    void preStartSetup() noexcept {}
+    void start() noexcept {}
 
     void injectTraceParentIfMatches(NSURLSessionTask *task, BugsnagPerformanceSpan * _Nullable span);
 

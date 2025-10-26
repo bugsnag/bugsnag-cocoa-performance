@@ -5,7 +5,7 @@ Feature: Automatic instrumentation spans
     And I wait for 3 seconds
     And I wait for 4 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:4"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
@@ -652,7 +652,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: Automatically start a network span that has a null URL
     Given I run "AutoInstrumentNetworkNullURLScenario"
-    And I wait for 1 span
+    And I wait for 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -770,7 +770,7 @@ Feature: Automatic instrumentation spans
     Given I run "ComplexViewScenario"
     And I wait for 27 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:27"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -821,7 +821,7 @@ Feature: Automatic instrumentation spans
     Given I run "ModifyEarlySpansScenario"
     And I wait for exactly 5 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:5"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"

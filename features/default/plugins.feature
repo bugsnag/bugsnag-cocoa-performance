@@ -3,7 +3,7 @@ Feature: Plugins
   Scenario: Plugins can automatically update spans
     Given I run "PluginScenario"
     And I wait to receive a sampling request
-    And I wait to receive a trace
+    And I wait for 3 spans
 
     Then a span named "Span 1" contains the attributes:
       | attribute    | type      | value |
@@ -24,7 +24,7 @@ Feature: Plugins
   Scenario: Error during plugin installation
     Given I run "PluginInstallErrorScenario"
     And I wait to receive a sampling request
-    And I wait to receive a trace
+    And I wait for 3 spans
     Then every span bool attribute "buggy_span_start" does not exist
     And every span bool attribute "buggy_span_end" does not exist
 

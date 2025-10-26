@@ -6,8 +6,11 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "ViewLoadEarlyPhaseHandler.h"
-#import "../../../Tracer.h"
+#import <memory>
+#import <mutex>
 
 NS_ASSUME_NONNULL_BEGIN
 

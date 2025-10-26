@@ -7,9 +7,9 @@
 //
 
 #import "AppStartupLifecycleHandlerImpl.h"
-#import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
+#import "../../../Core/Span/BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 

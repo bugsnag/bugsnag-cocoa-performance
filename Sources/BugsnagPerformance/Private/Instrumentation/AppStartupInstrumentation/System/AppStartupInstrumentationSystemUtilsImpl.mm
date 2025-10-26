@@ -7,7 +7,7 @@
 //
 
 #import "AppStartupInstrumentationSystemUtilsImpl.h"
-#import "../../../Utils.h"
+#import "../../../Utils/Utils.h"
 
 #import <array>
 

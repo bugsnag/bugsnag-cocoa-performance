@@ -8,8 +8,8 @@
 
 #import <XCTest/XCTest.h>
 
-#import "../../Sources/BugsnagPerformance/Private/Sampler.h"
-#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Sampler/Sampler.h"
+#import "../../Sources/BugsnagPerformance/Private/Core/Configuration/BugsnagPerformanceConfiguration+Private.h"
 #import "BugsnagPerformanceSpan+Private.h"
 
 #import <vector>
