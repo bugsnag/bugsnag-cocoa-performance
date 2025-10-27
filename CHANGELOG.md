@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Guard against an edge case where an auto-captured URL request with a nil URL can cause a crash.
+  [498](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/498)
+
 ## 1.15.0 (2025-08-14)
 
 ### Enhancements
