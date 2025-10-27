@@ -21,9 +21,9 @@ namespace bugsnag {
 class ViewLoadLoadingIndicatorsHandlerImpl: public ViewLoadLoadingIndicatorsHandler {
 public:
     ViewLoadLoadingIndicatorsHandlerImpl(std::shared_ptr<ViewLoadInstrumentationStateRepository> repository,
-                                         std::shared_ptr<ViewLoadSpanFactory> spanFactory_) noexcept
+                                         std::shared_ptr<ViewLoadSpanFactory> spanFactory) noexcept
     : repository_(repository)
-    , spanFactory_(spanFactory_) {}
+    , spanFactory_(spanFactory) {}
     
     void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
     void onViewControllerUpdatedView(UIViewController *viewController) noexcept;
@@ -35,7 +35,7 @@ private:
     std::shared_ptr<ViewLoadInstrumentationStateRepository> repository_;
     std::shared_ptr<ViewLoadSpanFactory> spanFactory_;
     std::mutex mutex_;
-    ViewLoadLoadingIndicatorsHandlerCallbacks *callbacks_;
+    ViewLoadLoadingIndicatorsHandlerCallbacks *callbacks_{nullptr};
     
     void updateIndicatorsState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator, ViewLoadLoadingIndicatorState *state) noexcept;
     ViewLoadLoadingIndicatorState *newState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;

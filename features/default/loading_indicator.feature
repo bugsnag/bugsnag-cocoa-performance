@@ -375,7 +375,7 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I invoke "finishLoadingParentInner"
-    And I wait for 31 spans
+    And I wait for 32 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
