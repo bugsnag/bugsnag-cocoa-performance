@@ -14,6 +14,8 @@ class AutoInstrumentAppStartsWithViewLoadScenario: Scenario {
         super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.autoInstrumentAppStarts = true
         bugsnagPerfConfig.autoInstrumentViewControllers = true
+        bugsnagPerfConfig.enabledMetrics.cpu = true
+        bugsnagPerfConfig.enabledMetrics.memory = true
         // This test can generate a variable number of spans depending on the OS version,
         // so use a timed send instead.
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100

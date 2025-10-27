@@ -13,6 +13,8 @@ class AutoInstrumentAppStartsScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.autoInstrumentAppStarts = true
+        bugsnagPerfConfig.enabledMetrics.cpu = true
+        bugsnagPerfConfig.enabledMetrics.memory = true
     }
 
     override func run() {

@@ -19,6 +19,7 @@ AppStartupSpanFactoryImpl::startAppStartOverallSpan(CFAbsoluteTime startTime, bo
     auto name = isColdLaunch ? @"[AppStart/iOSCold]" : @"[AppStart/iOSWarm]";
     SpanOptions options;
     options.startTime = startTime;
+    options.firstClass = BSGTriStateYes;
     auto attributes = spanAttributesProvider_->appStartSpanAttributes(firstViewName, isColdLaunch);
     return startAppStartSpan(name, options, attributes, @[]);
 }
