@@ -371,3 +371,11 @@ Then('the span named {string} is the parent of every span named {string}') do |s
 
   childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
 end
+
+def spans_from_request_list(list)
+  list.remaining
+      .flat_map { |req| req[:body]['resourceSpans'] }
+      .flat_map { |r| r['scopeSpans'] }
+      .flat_map { |s| s['spans'] }
+      .select { |s| !s.nil? }
+end
