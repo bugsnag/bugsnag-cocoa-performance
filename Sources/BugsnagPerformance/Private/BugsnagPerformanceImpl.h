@@ -10,6 +10,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -24,13 +25,16 @@
 #import "PhasedStartup.h"
 #import "Instrumentation/Instrumentation.h"
 #import "ResourceAttributes.h"
-#import "NetworkHeaderInjector.h"
+#import "Instrumentation/NetworkInstrumentation/System/NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "SystemInfoSampler.h"
 #import "SpanControl/BSGCompositeSpanControlProvider.h"
 #import "BSGPluginManager.h"
+#import "SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
+#import "SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
+#import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
 
 #import <mutex>
 
@@ -84,6 +88,8 @@ public:
         return [spanControlProvider_ getSpanControlsWithQuery:query];
     }
 
+    void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept;
+
 private:
     std::shared_ptr<Persistence> persistence_;
     std::shared_ptr<PersistentState> persistentState_;
@@ -98,6 +104,10 @@ private:
     BSGCompositeSpanControlProvider *spanControlProvider_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks_;
+    std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
+    std::shared_ptr<AppStartupSpanFactoryImpl> appStartupSpanFactory_;
+    std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
+    std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
@@ -148,7 +158,6 @@ private:
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;
-    void possiblyMakeSpanCurrent(BugsnagPerformanceSpan *span, SpanOptions &options);
     NSMutableArray<BugsnagPerformanceSpan *> *
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
     bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;

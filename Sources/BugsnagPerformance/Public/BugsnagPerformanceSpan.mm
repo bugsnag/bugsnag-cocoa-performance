@@ -38,6 +38,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
          samplingProbability:(double) samplingProbability
          attributeCountLimit:(NSUInteger)attributeCountLimit
               metricsOptions:(MetricsOptions)metricsOptions
+      conditionsToEndOnClose:(NSArray<BugsnagPerformanceSpanCondition *> *)conditionsToEndOnClose
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanClosed
                 onSpanBlocked:(SpanBlockedCallback) onSpanBlocked {
@@ -65,8 +66,12 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         }
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
         _metricsOptions = metricsOptions;
+        _conditionsToEndOnClose = conditionsToEndOnClose;
+        for (BugsnagPerformanceSpanCondition *condition in conditionsToEndOnClose) {
+            [condition upgrade];
+        }
         _wasStartOrEndTimeProvided = isCFAbsoluteTimeValid(startAbsTime);
-        _activeConditions = [NSMutableArray new];
+        _activeConditions = [NSMutableArray array];
     }
     return self;
 }
@@ -78,6 +83,9 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
     if (self.onDumped) {
         self.onDumped(self.spanId);
+    }
+    for (BugsnagPerformanceSpanCondition *condition in _conditionsToEndOnClose) {
+        [condition cancel];
     }
     BugsnagPerformanceSpan *clone = [self clone];
     switch(self.onSpanDestroyAction) {
@@ -325,19 +333,19 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (instancetype)clone {
-    BugsnagPerformanceSpan *copy = [[BugsnagPerformanceSpan alloc]
-                                    initWithName:self.name
-                                         traceId:self.traceId
-                                          spanId:self.spanId
-                                        parentId:self.parentId
-                                       startTime:self.startAbsTime
-                                      firstClass:self.firstClass
-                             samplingProbability:self.samplingProbability
-                             attributeCountLimit:self.attributeCountLimit
-                                  metricsOptions:self.metricsOptions
-                                    onSpanEndSet:self.onSpanEndSet
-                                    onSpanClosed:self.onSpanClosed
-                                   onSpanBlocked:self.onSpanBlocked];
+    BugsnagPerformanceSpan *copy = [[BugsnagPerformanceSpan alloc] initWithName:self.name
+                                                                        traceId:self.traceId
+                                                                         spanId:self.spanId
+                                                                       parentId:self.parentId
+                                                                      startTime:self.startAbsTime
+                                                                     firstClass:self.firstClass
+                                                            samplingProbability:self.samplingProbability
+                                                            attributeCountLimit:self.attributeCountLimit
+                                                                 metricsOptions:self.metricsOptions
+                                                         conditionsToEndOnClose:@[]
+                                                                   onSpanEndSet:self.onSpanEndSet
+                                                                   onSpanClosed:self.onSpanClosed
+                                                                  onSpanBlocked:self.onSpanBlocked];
     
     // Copy additional state that's not set during initialization
     @synchronized (self) {

@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var fixture: Fixture = Fixture()
+    var fixture: Fixture?
 //    var fixture: Fixture = PresetFixture(scenarioName: "RenderingMetricsScenario",
 //                                         scenarioConfig: [
 //                                            "spanStartTime": "early"
@@ -17,8 +17,17 @@ class ViewController: UIViewController {
 //                                            "renderingMetrics": "true"
 //                                         ])
 
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    func setFixture(fixture: Fixture) {
+        self.fixture = fixture
         fixture.start()
+    }
+
+    override func loadView() {
+        // we are creating a class property because we may have delegates
+        // assign your delegates here, before view
+        let customView = UIView()
+        customView.backgroundColor = .white
+
+        view = customView
     }
 }

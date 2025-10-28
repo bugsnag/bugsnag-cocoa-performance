@@ -249,7 +249,7 @@ steps:
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -286,7 +286,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -396,7 +396,7 @@ steps:
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
+              - "--exclude=features/default/automatic/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -433,7 +433,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
+              - "--exclude=features/default/automatic/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"

@@ -21,8 +21,6 @@ static NSDictionary *accessTechnologyMappingDictionary();
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
 
-NSString *SpanAttributesProvider::httpUrlAttributeKey() {return @"http.url";};
-
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
 static NSString *getHTTPFlavour(NSURLSessionTaskMetrics *metrics) {
@@ -177,6 +175,13 @@ SpanAttributesProvider::appStartPhaseSpanAttributes(NSString *phase) noexcept {
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::initialAppStartSpanAttributes() noexcept {
+    return @{
+        @"bugsnag.span.category": @"app_start",
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept {
     NSMutableDictionary *attributes = @{
         @"bugsnag.span.category": @"app_start",
@@ -199,10 +204,19 @@ SpanAttributesProvider::viewLoadSpanAttributes(NSString *className, BugsnagPerfo
 }
 
 NSMutableDictionary *
-SpanAttributesProvider::preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+SpanAttributesProvider::preloadViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     return @{
         @"bugsnag.span.category": @"view_load",
-        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (pre-loaded)", className],
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (preload)", className],
+        @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::presentingViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
+    return @{
+        @"bugsnag.span.category": @"view_load",
+        @"bugsnag.view.name": [NSString stringWithFormat:@"%@ (presentation)", className],
         @"bugsnag.view.type": getBugsnagPerformanceViewTypeName(viewType)
     }.mutableCopy;
 }

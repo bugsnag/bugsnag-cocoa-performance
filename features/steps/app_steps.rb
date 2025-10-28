@@ -312,6 +312,20 @@ Then('a span named {string} ended before a span named {string} started') do |nam
   Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['startTimeUnixNano'].to_i)
 end
 
+Then('a span named {string} ended at the same time as a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i == second_span['endTimeUnixNano'].to_i)
+end
+
+Then('a span named {string} ended before a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['endTimeUnixNano'].to_i)
+end
+
 Then('a span named {string} ended after a span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
@@ -324,6 +338,13 @@ Then('a span named {string} duration is equal or less than {float}') do |name, m
   span = spans.find { |span| span['name'] == name }
   duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
   Maze.check.true(duration <= maxDuration)
+end
+
+Then('a span named {string} duration is equal or greater than {float}') do |name, minDuration|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
+  Maze.check.true(duration >= minDuration)
 end
 
 When('I wait for exactly {int} span(s)') do |span_count|
@@ -378,4 +399,19 @@ def spans_from_request_list(list)
       .flat_map { |r| r['scopeSpans'] }
       .flat_map { |s| s['spans'] }
       .select { |s| !s.nil? }
+end
+
+When("I relaunch the app after shutdown") do
+  max_attempts = 20
+  attempts = 0
+  manager = Maze::Api::Appium::AppManager.new
+  state = manager.state
+  until (attempts >= max_attempts) || state == :not_running
+    attempts += 1
+    state = manager.state
+    sleep 0.5
+  end
+  $logger.warn "App state #{state} instead of not_running after 10s" unless state == :not_running
+
+  manager.activate
 end
