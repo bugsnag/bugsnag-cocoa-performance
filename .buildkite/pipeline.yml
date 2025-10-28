@@ -191,7 +191,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default"
+              - "features/default/loading_indicator.feature"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"

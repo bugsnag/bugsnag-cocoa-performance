@@ -48,6 +48,7 @@ Feature: LoadingIndicator view to mark data loading phase
     And I configure scenario "name" to "SimpleStopScenarioIndicatorName"
     And I start bugsnag
     And I run the loaded scenario
+    And I wait for 30 seconds
     And I wait for 17 spans
     And I wait for 2 seconds
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -140,6 +141,7 @@ Feature: LoadingIndicator view to mark data loading phase
     And I configure scenario "name" to "SimpleRemoveScenarioIndicatorName"
     And I start bugsnag
     And I run the loaded scenario
+    And I wait for 30 seconds
     And I wait for 17 spans
     And I wait for 2 seconds
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -360,6 +362,7 @@ Feature: LoadingIndicator view to mark data loading phase
     And I configure scenario "name3" to "NestedViewStopScenarioIndicatorName3"
     And I start bugsnag
     And I run the loaded scenario
+    And I wait for 30 seconds
     And I wait for 25 spans
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
