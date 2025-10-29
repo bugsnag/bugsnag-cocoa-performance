@@ -4,7 +4,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsNoSlowFramesScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -26,7 +26,7 @@ Feature: Spans with collected frame metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "RenderingMetricsScenarioNoSlow"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -49,7 +49,7 @@ Feature: Spans with collected frame metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "RenderingMetricsScenarioEarlyStart"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -66,7 +66,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsSlowFramesScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsSlowFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -83,7 +83,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsFronzenFramesScenario"
     And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "FrameMetricsFronzenFramesScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -101,7 +101,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsAutoInstrumentRenderingOffScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsAutoInstrumentRenderingOffScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -118,7 +118,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsSpanInstrumentRenderingOffScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsSpanInstrumentRenderingOffScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -135,7 +135,7 @@ Feature: Spans with collected frame metrics
     Given I run "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

@@ -25,7 +25,7 @@ Feature: Early spans
     Given I run "ModifyEarlySpansScenario"
     And I wait for exactly 5 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:5"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"

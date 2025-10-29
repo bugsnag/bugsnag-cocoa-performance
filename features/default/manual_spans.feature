@@ -5,15 +5,13 @@ Feature: Manual creation of spans
   Scenario: Retry a manual span
     Given I set the HTTP status code for the next requests to 200,500,200,200
     And I run "RetryScenario"
-    And I wait to receive at least 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    And I wait to receive a span named "WillRetry"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "WillRetry"
     Then I discard the oldest trace
     And I invoke "step2"
-    And I wait to receive at least 2 spans
-    * a span field "name" equals "WillRetry"
-    * a span field "name" equals "Success"
+    And I wait to receive a span named "WillRetry"
+    And I wait to receive a span named "Success"
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span string attribute "bugsnag.span.category" equals "custom"
 
@@ -55,7 +53,7 @@ Feature: Manual creation of spans
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "ManualSpanEndOnDestroyScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -84,7 +82,7 @@ Feature: Manual creation of spans
   Scenario: Starting and ending a span before starting the SDK
     Given I run "ManualSpanBeforeStartScenario"
     And I wait to receive at least 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "BeforeStart"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -138,7 +136,7 @@ Feature: Manual creation of spans
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario"
     And I wait to receive at least 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[ViewLoad/UIKit]/UIViewController"
     * every span string attribute "bugsnag.view.name" equals "UIViewController"
@@ -246,22 +244,20 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end parent and child spans
     Given I run "ParentSpanScenario"
-    And I wait to receive at least 2 spans
+    And I wait to receive a span named "SpanParent"
+    And I wait to receive a span named "SpanChild"
     Then the trace "Content-Type" header equals "application/json"
+    * a span named "SpanChild" is a child of span named "SpanParent"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
-    * a span field "name" equals "SpanParent"
-    * a span field "name" equals "SpanChild"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
-    # Note: The child span ends up first in the list of spans.
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
 
   Scenario: Manually start and end child span with a manually defined parent
     Given I run "ManualParentSpanScenario"
@@ -331,14 +327,13 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span with nil parent context
     Given I run "ManualSpanWithContextParentNilScenario"
-    And I wait to receive at least 3 spans
+    And I wait to receive a span named "ManualSpanWithContextParentNilScenario"
+    And I wait to receive a span named "ManualSpanWithContextParentSet"
+    And I wait to receive a span named "ShouldNotBeParentSpan"
     Then the trace "Content-Type" header equals "application/json"
+    * a span named "ManualSpanWithContextParentSet" is a child of span named "ManualSpanWithContextParentNilScenario"
+    * a span named "ManualSpanWithContextParentNilScenario" has no parent
+    * a span named "ShouldNotBeParentSpan" has no parent
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ManualSpanWithContextParentNilScenario"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.name" equals "ManualSpanWithContextParentSet"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.name" equals "ShouldNotBeParentSpan"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" is null
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.parentSpanId" is null

@@ -86,7 +86,7 @@ Feature: Automatic network instrumentation spans
 
   Scenario: Automatically start a network span that has a null URL
     Given I run "AutoInstrumentNetworkNullURLScenario"
-    And I wait to receive at least 1 span
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -198,10 +198,9 @@ Feature: Automatic network instrumentation spans
     # Wait for a long time because there can be a LOT of maze-runner related URL requests before the scenario starts.
     And I wait for 20 seconds
     # There will actually be any number of requests by this point since we're not filtering at all.
-    And I wait to receive at least 1 span
+    And I wait to receive a span named "[HTTP/GET]"
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
-    * a span field "name" equals "[HTTP/GET]"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3

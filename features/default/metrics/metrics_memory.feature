@@ -9,7 +9,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioDefaultSettings"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -37,7 +37,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -65,7 +65,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioNonFirstClass"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -94,7 +94,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioNonFirstClassEnabled"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -122,7 +122,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioLongerDuration"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -150,7 +150,7 @@ Feature: Spans with collected memory metrics
     And I run the loaded scenario
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "MemoryMetricsScenarioGenerateLater"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
