@@ -20,6 +20,7 @@ steps:
               upload:
                 - "BugsnagPerformance.xcframework.zip"
                 - "BugsnagPerformanceSwift.xcframework.zip"
+                - "BugsnagPerformanceNamedSpans.xcframework.zip"
 
       - label: "Carthage"
         timeout_in_minutes: 10
@@ -76,6 +77,7 @@ steps:
               download:
                 - "BugsnagPerformance.xcframework.zip"
                 - "BugsnagPerformanceSwift.xcframework.zip"
+                - "BugsnagPerformanceNamedSpans.xcframework.zip"
         artifact_paths:
           - features/fixtures/ios/output/bb_xcframework_ipa_url.txt
           - features/fixtures/ios/output/bs_xcframework_ipa_url.txt
@@ -107,6 +109,21 @@ steps:
         artifact_paths:
           - features/fixtures/ios/output/bb_url_swizzling_premain.txt
           - features/fixtures/ios/output/bs_url_swizzling_premain.txt
+          
+      - label: "Benchmarks Fixture"
+        key: ios_fixture_benchmarks
+        timeout_in_minutes: 10
+        commands:
+          - ./features/fixtures/benchmarks/build.sh --fixtureName FixtureBenchmarks
+          - bundle install
+          - bundle exec upload-app --farm=bb --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt
+          - bundle exec upload-app --farm=bs --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt
+        env:
+          XCODE_VERSION: "16.3.0"
+        artifact_paths:
+          - features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt
+          - features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt
+          - features/fixtures/benchmarks/output/FixtureBenchmarks.ipa
 
   - group: ":xcode_simulator: Unit Tests"
     steps:
@@ -166,6 +183,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests"
         depends_on:
@@ -199,6 +220,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "XcFramework E2E Tests"
     steps:
@@ -224,7 +249,7 @@ steps:
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -232,6 +257,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS XcFramework 13 E2E Tests"
         depends_on:
@@ -257,7 +286,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
+              - "features/default/automatic"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -265,6 +294,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling disabled E2E Tests"
     steps:
@@ -298,6 +331,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests swizzling disabled"
         depends_on:
@@ -330,6 +367,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling premain E2E Tests"
     steps:
@@ -355,7 +396,7 @@ steps:
               - "--device=IOS_18"
               - "--fail-fast"
               - "--farm=bs"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
+              - "--exclude=features/default/automatic/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -364,6 +405,10 @@ steps:
         concurrency: 5
         concurrency_group: browserstack-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 13 E2E Tests swizzling premain"
         depends_on:
@@ -388,7 +433,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
+              - "--exclude=features/default/automatic/automatic_spans_generic_view_load.feature"
               - "features/default"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
@@ -397,6 +442,84 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
+              
+  - group: "Benchmark Tests"
+    steps:
+      - label: ":browserstack: iOS 18 Benchmark Tests"
+        depends_on:
+          - ios_fixture_benchmarks
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.9.3:
+            download: "features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          docker-compose#v4.8.0:
+            pull: maze-runner-bs
+            run: maze-runner-bs
+            service-ports: true
+            command:
+              - "--app=@build_benchmarks/bs_ipa_url_benchmarks.txt"
+              - "--device=IOS_18"
+              - "--fail-fast"
+              - "--farm=bs"
+              - "features/benchmarks"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
+        concurrency: 5
+        concurrency_group: browserstack-app
+        concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: iOS 13 Benchmark Tests"
+        depends_on:
+          - ios_fixture_benchmarks
+        timeout_in_minutes: 30
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.9.3:
+            download: "features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          docker-compose#v4.8.0:
+            pull: maze-runner-bb
+            run: maze-runner-bb
+            service-ports: true
+            command:
+              - "--app=@build_benchmarks/bb_ipa_url_benchmarks.txt"
+              - "--device=IOS_13"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/benchmarks"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^main|next$$"
+        concurrency: 25
+        concurrency_group: bitbar-app
+        concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - label: 'Conditionally trigger full set of tests'
     agents:

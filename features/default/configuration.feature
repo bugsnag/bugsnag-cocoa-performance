@@ -2,7 +2,7 @@ Feature: Configuration overrides
 
   Scenario: Override service name, bundle version and service version
     Given I run "AppDataOverrideScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -30,7 +30,7 @@ Feature: Configuration overrides
     Given I set the sampling probability for the next traces to "0"
     And I enter unmanaged traces mode
     And I run "FixedSamplingProbabilityOneScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header is not present
@@ -44,7 +44,7 @@ Feature: Configuration overrides
     Then I discard the oldest trace
     Then I set the sampling probability for the next traces to "0"
     And I invoke "step2"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header is not present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "FixedSamplingProbabilitySpan2"

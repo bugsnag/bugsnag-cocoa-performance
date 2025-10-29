@@ -105,3 +105,4 @@ features/fixtures/ios/Fixture/Info.plist
 maze-runner.log
 Gemfile.lock
 .idea/
+bugsnag-cocoa-performance.iml

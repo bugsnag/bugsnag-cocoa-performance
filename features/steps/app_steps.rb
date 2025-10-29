@@ -34,6 +34,10 @@ When('I run {string}') do |scenario_name|
   run_command("run_scenario", { scenario: scenario_name })
 end
 
+When('I run {string} configured as {string}') do |suite_name, args|
+  run_command("run_suite", { suite: suite_name, arguments: args})
+end
+
 When('I load scenario {string}') do |scenario_name|
   run_command("load_scenario", { scenario: scenario_name })
 end
@@ -387,6 +391,14 @@ Then('the span named {string} is the parent of every span named {string}') do |s
   childSpans2 = spans.find_all { |span| span['name'].eql?(span2name) }
 
   childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
+end
+
+def spans_from_request_list(list)
+  list.remaining
+      .flat_map { |req| req[:body]['resourceSpans'] }
+      .flat_map { |r| r['scopeSpans'] }
+      .flat_map { |s| s['spans'] }
+      .select { |s| !s.nil? }
 end
 
 When("I relaunch the app after shutdown") do

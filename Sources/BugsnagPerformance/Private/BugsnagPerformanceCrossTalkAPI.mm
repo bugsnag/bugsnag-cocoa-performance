@@ -69,8 +69,8 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
         return nil;
     }
     return @[
-        [NSString stringWithFormat:@"%llx%llx", span.traceIdHi, span.traceIdLo],
-        [NSString stringWithFormat:@"%llx", span.spanId]
+        [NSString stringWithFormat:@"%016llx%016llx", span.traceIdHi, span.traceIdLo],
+        [NSString stringWithFormat:@"%016llx", span.spanId]
     ];
 }
 

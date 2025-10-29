@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
+#import "../Private/BugsnagPerformanceSpanContext+Private.h"
 
 @implementation BugsnagPerformanceSpanMetricsOptions
 
@@ -52,7 +53,7 @@
 - (instancetype)init {
     // These defaults must match the defaults in SpanOptions.h
     return [self initWithStartTime:nil
-                     parentContext:nil
+                     parentContext:[BugsnagPerformanceSpanContext defaultContext]
                 makeCurrentContext:true
                         firstClass:BSGTriStateUnset
                     metricsOptions:[BugsnagPerformanceSpanMetricsOptions new]];

@@ -14,6 +14,7 @@
 #import "Instrumentation/ViewLoadInstrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "BugsnagPerformanceSpanContext+Private.h"
 #import <algorithm>
 
 using namespace bugsnag;

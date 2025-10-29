@@ -33,7 +33,7 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
                                 NSDictionary *attributes,
                                 NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     auto parentSpan = options.parentContext;
-    if (parentSpan == nil) {
+    if (parentSpan == [BugsnagPerformanceSpanContext defaultContext]) {
         parentSpan = spanStackingHandler_->currentSpan();
     }
 

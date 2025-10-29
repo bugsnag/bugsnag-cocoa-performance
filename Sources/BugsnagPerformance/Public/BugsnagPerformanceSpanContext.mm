@@ -7,8 +7,14 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
+#import "../Private/BugsnagPerformanceSpanContext+Private.h"
+#import "../Private/SpanContext.h"
 
 @implementation BugsnagPerformanceSpanContext
+
++ (BugsnagPerformanceSpanContext*)defaultContext {
+    return bugsnag::getDefaultSpanContext();
+}
 
 - (instancetype) initWithTraceId:(TraceId) traceId spanId:(SpanId) spanId {
     if ((self = [super init])) {
