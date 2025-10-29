@@ -7,9 +7,9 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
-#import "../Private/BugsnagPerformanceSpan+Private.h"
+#import "../Private/Core/Span/BugsnagPerformanceSpan+Private.h"
 #import <BugsnagPerformance/BugsnagPerformanceAppStartSpanControl.h>
-#import "../Private/BugsnagPerformanceAppStartSpanControl+Private.h"
+#import "../Private/Plugins/AppStart/BugsnagPerformanceAppStartSpanControl+Private.h"
 
 static NSString * const AppStartNameAttribute = @"bugsnag.app_start.name";
 

@@ -8,8 +8,8 @@
 
 #import "NetworkInstrumentationSystemUtilsImpl.h"
 
-#import "../../../Swizzle.h"
-#import "../../../Utils.h"
+#import "../../../Utils/Swizzle.h"
+#import "../../../Utils/Utils.h"
 #import <objc/runtime.h>
 
 using namespace bugsnag;

@@ -6,11 +6,13 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "AppStartupLifecycleHandler.h"
-#import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
+#import "../../../Core/SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"
-#import "../../../SpanAttributesProvider.h"
-#import "../../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
+#import "../../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 #import <memory>
 

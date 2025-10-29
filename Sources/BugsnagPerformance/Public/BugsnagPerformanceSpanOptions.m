@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
-#import "../Private/BugsnagPerformanceSpanContext+Private.h"
+#import "../Private/Core/Span/BugsnagPerformanceSpanContext+Private.h"
 
 @implementation BugsnagPerformanceSpanMetricsOptions
 

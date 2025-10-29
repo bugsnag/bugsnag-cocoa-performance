@@ -7,6 +7,9 @@
 //
 
 #import "ViewLoadEarlyPhaseHandlerImpl.h"
+#import "../../../Core/Span/BugsnagPerformanceSpan+Private.h"
+
+using namespace bugsnag;
 
 void
 ViewLoadEarlyPhaseHandlerImpl::onNewStateCreated(ViewLoadInstrumentationState *state) noexcept {

@@ -8,6 +8,8 @@
 
 #import "BSGURLSessionPerformanceDelegate.h"
 
+using namespace bugsnag;
+
 @interface BSGURLSessionPerformanceDelegate ()
 
 @property(readwrite,nonatomic) BOOL isEnabled;

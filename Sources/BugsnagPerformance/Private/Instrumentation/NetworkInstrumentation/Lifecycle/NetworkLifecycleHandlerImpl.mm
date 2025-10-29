@@ -7,7 +7,7 @@
 //
 
 #import "NetworkLifecycleHandlerImpl.h"
-#import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Core/Span/BugsnagPerformanceSpan+Private.h"
 
 using namespace bugsnag;
 

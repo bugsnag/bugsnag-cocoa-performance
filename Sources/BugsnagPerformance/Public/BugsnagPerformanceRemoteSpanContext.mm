@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformanceRemoteSpanContext.h>
-#import "../Private/Utils.h"
+#import "../Private/Utils/Utils.h"
 
 static const int kTraceParentComponentTraceId = 1;
 static const int kTraceParentComponentSpanId = 2;

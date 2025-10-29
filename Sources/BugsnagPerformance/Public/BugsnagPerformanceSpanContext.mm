@@ -7,8 +7,8 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanContext.h>
-#import "../Private/BugsnagPerformanceSpanContext+Private.h"
-#import "../Private/SpanContext.h"
+#import "../Private/Core/Span/BugsnagPerformanceSpanContext+Private.h"
+#import "../Private/Core/Span/SpanContext.h"
 
 @implementation BugsnagPerformanceSpanContext
 

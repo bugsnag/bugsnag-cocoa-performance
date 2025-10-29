@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "ViewLoadSwizzlingHandlerImpl.h"
-#import "../../../Swizzle.h"
+#import "../../../Utils/Swizzle.h"
 
 #import <objc/runtime.h>
 

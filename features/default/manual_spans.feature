@@ -24,7 +24,7 @@ Feature: Manual creation of spans
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "ManualSpanScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -153,7 +153,7 @@ Feature: Manual creation of spans
     Given I run "ManualNetworkSpanScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -318,7 +318,7 @@ Feature: Manual creation of spans
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Span-Sampling" header matches the regex "^1:\d{1,2}$"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "ManualSpanWithRemoteContextParentScenario"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

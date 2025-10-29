@@ -7,8 +7,8 @@
 
 #import "NetworkInstrumentation.h"
 
-#import "../../BugsnagPerformanceSpan+Private.h"
-#import "../../SpanAttributesProvider.h"
+#import "../../Core/Span/BugsnagPerformanceSpan+Private.h"
+#import "../../Core/Attributes/SpanAttributesProvider.h"
 
 using namespace bugsnag;
 

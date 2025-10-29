@@ -191,38 +191,36 @@
                        recurringTaskCount:(int)recurringTaskCount {
     if ((self = [super init])) {
         _remainingRecurringRuns = 1;
-        auto initialTasks = [NSMutableArray array];
+        _worker = [Worker worker];
         for (int i = 0; i < initialTaskCount; i++) {
-            [initialTasks addObject:[self newInitialTask]];
+            [_worker addInitialTask:[self newInitialTask]];
         }
 
-        auto recurringTasks = [NSMutableArray array];
         for (int i = 0; i < recurringTaskCount; i++) {
-            [recurringTasks addObject:[self newRecurringTask]];
+            [_worker addRecurringTask:[self newRecurringTask]];
         }
-
-        _worker = [[Worker alloc] initWithInitialTasks:initialTasks
-                                        recurringTasks:recurringTasks];
     }
     return self;
 }
 
 
-- (Task) newInitialTask {
+- (std::shared_ptr<AsyncToSyncTask>) newInitialTask {
     __block auto blockSelf = self;
-    return ^bool(){
-        blockSelf.initialTaskCounter++;
-        return false;
-    };
+    return std::make_shared<AsyncToSyncTask>(
+                                 ^(TaskCompletion completion){
+                                     blockSelf.initialTaskCounter++;
+                                     completion(false);
+                                 });
 }
 
-- (Task) newRecurringTask {
+- (std::shared_ptr<AsyncToSyncTask>) newRecurringTask {
     __block auto blockSelf = self;
-    return ^bool(){
-        blockSelf.recurringTaskCounter++;
-        blockSelf.remainingRecurringRuns--;
-        return blockSelf.remainingRecurringRuns > 0;
-    };
+    return std::make_shared<AsyncToSyncTask>(
+                                 ^(TaskCompletion completion){
+                                     blockSelf.recurringTaskCounter++;
+                                     blockSelf.remainingRecurringRuns--;
+                                     completion(blockSelf.remainingRecurringRuns > 0);
+                                 });
 }
 
 @end

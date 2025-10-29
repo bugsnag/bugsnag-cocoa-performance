@@ -6,13 +6,15 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import "ViewLoadLifecycleHandler.h"
 #import "ViewLoadEarlyPhaseHandler.h"
 #import "ViewLoadLoadingIndicatorsHandler.h"
-#import "../../../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
+#import "../../../Core/SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
+#import "../../../Core/Attributes/SpanAttributesProvider.h"
 #import "../State/ViewLoadInstrumentationStateRepository.h"
-#import "../../../Tracer.h"
-#import "../../../BugsnagPerformanceCrossTalkAPI.h"
+#import "../../../CrossTalkAPI/BugsnagPerformanceCrossTalkAPI.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

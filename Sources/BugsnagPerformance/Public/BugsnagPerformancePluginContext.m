@@ -6,8 +6,8 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import "../Private/BugsnagPerformancePluginContext+Private.h"
-#import "../Private/BugsnagPerformanceSpanControlProvider+Private.h"
+#import "../Private/PluginSupport/BugsnagPerformancePluginContext+Private.h"
+#import "../Private/PluginSupport/BugsnagPerformanceSpanControlProvider+Private.h"
 
 @interface BugsnagPerformancePluginContext ()
 @property (nonatomic, strong) BugsnagPerformanceConfiguration *configuration_;
