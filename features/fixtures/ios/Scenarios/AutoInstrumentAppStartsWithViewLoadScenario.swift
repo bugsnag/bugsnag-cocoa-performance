@@ -23,6 +23,8 @@ class AutoInstrumentAppStartsWithViewLoadScenario: Scenario {
         let startupConfig = StartupConfiguration(configFile: nil)
         startupConfig.autoInstrumentAppStarts = true
         startupConfig.autoInstrumentViewControllers = true
+        startupConfig.enabledMetrics.cpu = true
+        startupConfig.enabledMetrics.memory = true
         startupConfig.scenarioName = String(describing: AutoInstrumentAppStartsWithViewLoadScenario.self)
         startupConfig.endpoint = fixtureConfig.tracesURL
 

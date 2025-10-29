@@ -18,6 +18,8 @@ class AutoInstrumentAppStartsScenario: Scenario {
         // Save a startup configuration
         let startupConfig = StartupConfiguration(configFile: nil)
         startupConfig.autoInstrumentAppStarts = true
+        startupConfig.enabledMetrics.cpu = true
+        startupConfig.enabledMetrics.memory = true
         startupConfig.scenarioName = String(describing: AutoInstrumentAppStartsScenario.self)
         startupConfig.endpoint = fixtureConfig.tracesURL
 

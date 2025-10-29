@@ -183,6 +183,13 @@ Then('a span string attribute {string} matches the regex {string}') do |attribut
   attribute_values.map { |v| Maze.check.match pattern, v }
 end
 
+Then('the span named {string} integer attribute {string} is greater than {int}') do |spanName, attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') }
+  Maze.check.true(selected_attribute['value']['intValue'].to_f > expected)
+end
+
 Then('a span integer attribute {string} is greater than {int}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
@@ -204,6 +211,12 @@ Then('a span integer attribute {string} is less than {int}') do |attribute, expe
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('the span named {string} float attribute {string} is greater than {float}') do |spanName, attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') }
+  Maze.check.true(selected_attribute['value']['doubleValue'].to_f > expected)
+end
 
 Then('a span float attribute {string} is greater than {float}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
@@ -274,6 +287,21 @@ def get_array_attribute_contents(attribute)
   array_attributes = selected_attributes.map { |a| a['value']['arrayValue']['values'] }
   Maze.check.false(array_attributes.empty?)
   return array_attributes[0]
+end
+
+def get_array_attribute_contents_named(spanName, attribute)
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) &&
+                                                     a['value'].has_key?('arrayValue') &&
+                                                     a['value']['arrayValue'].has_key?('values') }
+  array_attributes = selected_attribute['value']['arrayValue']['values']
+  return array_attributes
+end
+
+Then('the span named {string} array attribute {string} is not empty') do |name, attribute|
+  array_contents = get_array_attribute_contents_named(name, attribute)
+  Maze.check.false(array_contents.empty?)
 end
 
 Then('a span array attribute {string} is empty') do |attribute|

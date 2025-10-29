@@ -91,6 +91,7 @@
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
 		96DADF542EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DADF532EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift */; };
 		96E0B34B2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
+		96EB8B522EB277CE00DDBF86 /* StartupEnabledMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96EB8B512EB277CE00DDBF86 /* StartupEnabledMetrics.swift */; };
 		96F129332DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
@@ -225,6 +226,7 @@
 		96DADF532EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanEndOnDestroyScenario.swift; sourceTree = "<group>"; };
 		96DADF582EAFCECF00B56CE6 /* BugsnagPerformanceSpan+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpan+Internal.h"; sourceTree = "<group>"; };
 		96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
+		96EB8B512EB277CE00DDBF86 /* StartupEnabledMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupEnabledMetrics.swift; sourceTree = "<group>"; };
 		96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
@@ -294,7 +296,6 @@
 		01FE4DA728E1AEBD00D1F239 /* Fixture */ = {
 			isa = PBXGroup;
 			children = (
-				1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */,
 				01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */,
 				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
 				CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */,
@@ -310,6 +311,8 @@
 				01FE4DAE28E1AEBD00D1F239 /* Main.storyboard */,
 				09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */,
 				01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */,
+				1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */,
+				96EB8B512EB277CE00DDBF86 /* StartupEnabledMetrics.swift */,
 				098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */,
 				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
 			);
@@ -588,6 +591,7 @@
 				96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */,
 				CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */,
 				967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */,
+				96EB8B522EB277CE00DDBF86 /* StartupEnabledMetrics.swift in Sources */,
 				9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */,
 				CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */,
 				CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */,
