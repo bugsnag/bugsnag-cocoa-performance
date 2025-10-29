@@ -2,7 +2,7 @@ Feature: Conditions
 
   Scenario: Manually creating and ending conditions
     Given I run "ConditionsBasicScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -19,7 +19,7 @@ Feature: Conditions
 
   Scenario: Span can be blocked again after being ended as long as it is still blocked
     Given I run "ConditionsBlockingBlockedEndedSpanScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -36,7 +36,7 @@ Feature: Conditions
 
   Scenario: Condition should not override endTime to an earlier time
     Given I run "ConditionsOverrideEndTimeBackwardsScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -53,7 +53,7 @@ Feature: Conditions
 
   Scenario: Span Conditions - condition closed
     Given I run "SpanConditionsSimpleConditionScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -69,7 +69,7 @@ Feature: Conditions
 
   Scenario: Span Conditions - condition timed out
     Given I run "SpanConditionsConditionTimedOutScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -84,7 +84,7 @@ Feature: Conditions
 
   Scenario: Span Conditions - multiple conditions
     Given I run "SpanConditionsMultipleConditionsScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -101,7 +101,7 @@ Feature: Conditions
 
   Scenario: Span Conditions - blocking blocked ended span
     Given I run "SpanConditionsBlockedSpanScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

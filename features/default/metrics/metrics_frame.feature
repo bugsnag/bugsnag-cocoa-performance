@@ -2,7 +2,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - no slow frames
     Given I run "FrameMetricsNoSlowFramesScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -24,7 +24,7 @@ Feature: Spans with collected frame metrics
     And I configure scenario "variant_name" to "NoSlow"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -47,7 +47,7 @@ Feature: Spans with collected frame metrics
     And I set the sampling probability to "1.0"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -64,7 +64,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - slow frames
     Given I run "FrameMetricsSlowFramesScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -81,7 +81,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - frozen frames
     Given I run "FrameMetricsFronzenFramesScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -99,7 +99,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - autoInstrumentRendering off
     Given I run "FrameMetricsAutoInstrumentRenderingOffScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -116,7 +116,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - span instrumentRendering off
     Given I run "FrameMetricsSpanInstrumentRenderingOffScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -133,7 +133,7 @@ Feature: Spans with collected frame metrics
 
   Scenario: Frame metrics - non firstClass span with instrumentRendering off
     Given I run "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

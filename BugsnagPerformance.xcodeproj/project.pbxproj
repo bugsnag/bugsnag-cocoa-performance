@@ -76,6 +76,8 @@
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
+		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
+		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
 		1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */; };
 		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -144,6 +146,10 @@
 		963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */; };
 		963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */; };
 		963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */; };
+		963828B92E3C0B9A00404F3A /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
+		963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */; };
+		963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */ = {isa = PBXBuildFile; fileRef = 963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		963829082E547D1A00404F3A /* ViewLoadInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */; };
 		9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */; };
 		9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */; };
@@ -188,6 +194,10 @@
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
+		96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C12E80D3BA009138C3 /* NamedSpansStore.h */; };
+		96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */; };
+		96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */; };
+		96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */; };
 		969EE0F12E78730900600F63 /* PlainSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */; };
 		969EE0F32E78731300600F63 /* PlainSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */; };
 		969EE0F52E78731C00600F63 /* PlainSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */; };
@@ -212,6 +222,8 @@
 		96F1292D2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */; };
 		96F1292F2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */; };
 		96F129312DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */; };
+		96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F417122E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h */; };
+		96F417162E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc in Sources */ = {isa = PBXBuildFile; fileRef = 96F417132E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc */; };
 		CB04969729150D860097E526 /* OtlpPackage.h in Headers */ = {isa = PBXBuildFile; fileRef = CB04969529150D860097E526 /* OtlpPackage.h */; };
 		CB04969829150D860097E526 /* OtlpPackage.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB04969629150D860097E526 /* OtlpPackage.mm */; };
 		CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0496992915194E0097E526 /* OtlpUploader.h */; };
@@ -271,6 +283,14 @@
 		CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */ = {isa = PBXBuildFile; fileRef = CBF7C5DF297A8E9100D47719 /* Gzip.h */; };
 		CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */ = {isa = PBXBuildFile; fileRef = CBF7C5E0297A8E9100D47719 /* Gzip.m */; };
 		CBF7C5E4297A964900D47719 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = CBF7C5E3297A963A00D47719 /* libz.tbd */; };
+		DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */; };
+		DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */; };
+		DA8E5EEB2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
+		DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
+		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -323,6 +343,27 @@
 			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
 			remoteInfo = "BugsnagPerformance-iOS";
 		};
+		963828982E3C0B9A00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
+		9638289A2E3C0B9A00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
+			remoteInfo = BugsnagPerformanceTestsApp;
+		};
+		963828C12E3C0BAC00404F3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA8E5ED52E2FC3E80049F7AB;
+			remoteInfo = BugsnagPerformanceNamedSpans;
+		};
 		966DD5032A211D7F002030B2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
@@ -344,6 +385,20 @@
 			remoteGlobalIDString = 96D415EF29E6ADC500AEE435;
 			remoteInfo = BugsnagPerformanceTestsApp;
 		};
+		DA8E5EE92E2FC3E80049F7AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA8E5ED52E2FC3E80049F7AB;
+			remoteInfo = BugsnagPerformanceNamedSpans;
+		};
+		DA8E5EF62E2FC45B0049F7AB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5DB9DB2E409A040615FFD4FE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B4A4A4DE1EA43C6C4D6D3894;
+			remoteInfo = "BugsnagPerformance-iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -354,6 +409,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */,
+				DA8E5EEC2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Embed Frameworks */,
 				094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -432,6 +488,8 @@
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
+		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
+		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
 		1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceLoadingIndicatorView.h; sourceTree = "<group>"; };
 		1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLoadingIndicatorView.mm; sourceTree = "<group>"; };
 		1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanControl.h; sourceTree = "<group>"; };
@@ -501,6 +559,8 @@
 		963726E32DF19D7B00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpanControlProvider+Private.h"; sourceTree = "<group>"; };
 		963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPluginManager.h; sourceTree = "<group>"; };
 		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
+		963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpans.h; sourceTree = "<group>"; };
 		963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationState.h; sourceTree = "<group>"; };
 		963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadInstrumentationState.m; sourceTree = "<group>"; };
 		9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
@@ -543,6 +603,10 @@
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
+		96A143C12E80D3BA009138C3 /* NamedSpansStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpansStore.h; sourceTree = "<group>"; };
+		96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NamedSpansStore.mm; sourceTree = "<group>"; };
+		96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGNamedSpanState.h; sourceTree = "<group>"; };
+		96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGNamedSpanState.mm; sourceTree = "<group>"; };
 		969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactory.h; sourceTree = "<group>"; };
 		969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactoryImpl.h; sourceTree = "<group>"; };
 		969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlainSpanFactoryImpl.mm; sourceTree = "<group>"; };
@@ -570,6 +634,8 @@
 		96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceRemoteSpanContext.mm; sourceTree = "<group>"; };
 		96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceRemoteSpanContextTests.m; sourceTree = "<group>"; };
 		96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanTests.mm; sourceTree = "<group>"; };
+		96F417122E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpans.h; sourceTree = "<group>"; };
+		96F417132E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceNamedSpans.docc; sourceTree = "<group>"; };
 		CB04969529150D860097E526 /* OtlpPackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpPackage.h; sourceTree = "<group>"; };
 		CB04969629150D860097E526 /* OtlpPackage.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OtlpPackage.mm; sourceTree = "<group>"; };
 		CB0496992915194E0097E526 /* OtlpUploader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OtlpUploader.h; sourceTree = "<group>"; };
@@ -634,6 +700,13 @@
 		CBF7C5DF297A8E9100D47719 /* Gzip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Gzip.h; sourceTree = "<group>"; };
 		CBF7C5E0297A8E9100D47719 /* Gzip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Gzip.m; sourceTree = "<group>"; };
 		CBF7C5E3297A963A00D47719 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansPlugin.mm; sourceTree = "<group>"; };
+		DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpanQuery.h; sourceTree = "<group>"; };
+		DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceNamedSpanQuery.m; sourceTree = "<group>"; };
+		DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformanceNamedSpans.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
+		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
+		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -690,12 +763,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		963828B82E3C0B9A00404F3A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				963828B92E3C0B9A00404F3A /* BugsnagPerformance.framework in Frameworks */,
+				963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415ED29E6ADC500AEE435 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */,
+				DA8E5EEB2E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework in Frameworks */,
 				094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA8E5ED32E2FC3E80049F7AB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -705,6 +796,7 @@
 		0122C21329019770002D243C /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				DA8E5ECD2E2FC32C0049F7AB /* BugsnagPerformanceNamedSpans */,
 				0122C21429019770002D243C /* BugsnagPerformance */,
 				096CBC142B1752B000534F0C /* BugsnagPerformanceSwift */,
 			);
@@ -780,6 +872,8 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				1C7852A32E5F697D00BB8E2D /* SpanContext.mm */,
+				1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */,
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
@@ -905,8 +999,9 @@
 		0122C25B29019C05002D243C /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				8A80DA882966CE940035BDA9 /* BugsnagPerformanceTestsSwift */,
+				DA8E5F002E2FCC100049F7AB /* BugsnagPerformanceNamedSpansTests */,
 				0122C25C29019C05002D243C /* BugsnagPerformanceTests */,
+				8A80DA882966CE940035BDA9 /* BugsnagPerformanceTestsSwift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -993,6 +1088,8 @@
 				094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */,
 				094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */,
 				09D807F12B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.framework */,
+				DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */,
+				963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1249,6 +1346,15 @@
 			path = BugsnagPerformanceTestsApp;
 			sourceTree = "<group>";
 		};
+		96F417142E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans */ = {
+			isa = PBXGroup;
+			children = (
+				96F417122E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h */,
+				96F417132E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc */,
+			);
+			path = BugsnagPerformanceNamedSpans;
+			sourceTree = "<group>";
+		};
 		C6D4AAD24D6356218C22BEBE = {
 			isa = PBXGroup;
 			children = (
@@ -1260,6 +1366,7 @@
 				094FA7332B10EDE600112ED4 /* BugsnagPerformanceSwift */,
 				094FA7412B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
 				09D807F22B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
+				96F417142E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans */,
 				450CB5014AAED50046482044 /* Products */,
 				0122C25629019904002D243C /* Frameworks */,
 			);
@@ -1275,6 +1382,63 @@
 				962CE80D2E6521DD00380522 /* System */,
 			);
 			path = NetworkInstrumentation;
+			sourceTree = "<group>";
+		};
+		DA8E5ECD2E2FC32C0049F7AB /* BugsnagPerformanceNamedSpans */ = {
+			isa = PBXGroup;
+			children = (
+				DA9BB1C92E40CBE4009A7D25 /* Private */,
+				DA8E5ECE2E2FC3520049F7AB /* include */,
+				DA8E5ECF2E2FC36B0049F7AB /* Public */,
+			);
+			path = BugsnagPerformanceNamedSpans;
+			sourceTree = "<group>";
+		};
+		DA8E5ECE2E2FC3520049F7AB /* include */ = {
+			isa = PBXGroup;
+			children = (
+				DA8E5EF92E2FC9AD0049F7AB /* BugsnagPerformanceNamedSpans */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		DA8E5ECF2E2FC36B0049F7AB /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				DA87DAFA2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m */,
+				DA87DAEE2E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm */,
+			);
+			path = Public;
+			sourceTree = "<group>";
+		};
+		DA8E5EF92E2FC9AD0049F7AB /* BugsnagPerformanceNamedSpans */ = {
+			isa = PBXGroup;
+			children = (
+				DA87DAF72E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h */,
+				963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */,
+				DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */,
+			);
+			path = BugsnagPerformanceNamedSpans;
+			sourceTree = "<group>";
+		};
+		DA8E5F002E2FCC100049F7AB /* BugsnagPerformanceNamedSpansTests */ = {
+			isa = PBXGroup;
+			children = (
+				DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */,
+			);
+			path = BugsnagPerformanceNamedSpansTests;
+			sourceTree = "<group>";
+		};
+		DA9BB1C92E40CBE4009A7D25 /* Private */ = {
+			isa = PBXGroup;
+			children = (
+				96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */,
+				96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */,
+				DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */,
+				96A143C12E80D3BA009138C3 /* NamedSpansStore.h */,
+				96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */,
+			);
+			path = Private;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1360,6 +1524,7 @@
 				962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */,
 				964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */,
 				963726C62DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.h in Headers */,
+				1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
 				962CE82C2E67376300380522 /* NetworkLifecycleHandler.h in Headers */,
@@ -1423,6 +1588,20 @@
 				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
 				963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */,
 				962CE82E2E673A9400380522 /* NetworkLifecycleHandlerImpl.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA8E5ED12E2FC3E80049F7AB /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96F417152E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.h in Headers */,
+				DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */,
+				DA87DAF92E3791CE0040F086 /* BugsnagPerformanceNamedSpanQuery.h in Headers */,
+				96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */,
+				96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */,
+				DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */,
+				963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1524,6 +1703,26 @@
 			productReference = 8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		963828962E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 963828BB2E3C0B9A00404F3A /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */;
+			buildPhases = (
+				9638289B2E3C0B9A00404F3A /* Sources */,
+				963828B82E3C0B9A00404F3A /* Frameworks */,
+				963828BA2E3C0B9A00404F3A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				963828972E3C0B9A00404F3A /* PBXTargetDependency */,
+				963828992E3C0B9A00404F3A /* PBXTargetDependency */,
+				963828C22E3C0BAC00404F3A /* PBXTargetDependency */,
+			);
+			name = BugsnagPerformanceNamedSpansTests;
+			productName = "BugsnagPerformance-iOSTests";
+			productReference = 963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */;
@@ -1538,6 +1737,7 @@
 			dependencies = (
 				966DD5042A211D7F002030B2 /* PBXTargetDependency */,
 				094FA7462B10EDE700112ED4 /* PBXTargetDependency */,
+				DA8E5EEA2E2FC3E80049F7AB /* PBXTargetDependency */,
 			);
 			name = BugsnagPerformanceTestsApp;
 			productName = BugsnagPerformanceTestsApp;
@@ -1560,6 +1760,27 @@
 			name = "BugsnagPerformance-iOS";
 			productName = "BugsnagPerformance-iOS";
 			productReference = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA8E5EEE2E2FC3E80049F7AB /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpans" */;
+			buildPhases = (
+				DA8E5ED12E2FC3E80049F7AB /* Headers */,
+				DA8E5ED22E2FC3E80049F7AB /* Sources */,
+				DA8E5ED32E2FC3E80049F7AB /* Frameworks */,
+				DA8E5ED42E2FC3E80049F7AB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DA8E5EF72E2FC45B0049F7AB /* PBXTargetDependency */,
+			);
+			name = BugsnagPerformanceNamedSpans;
+			packageProductDependencies = (
+			);
+			productName = BugsnagPerformanceNamedSpans;
+			productReference = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -1600,6 +1821,9 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 96D415EF29E6ADC500AEE435;
 					};
+					963828962E3C0B9A00404F3A = {
+						DevelopmentTeam = 7W9PZ27Y5F;
+					};
 					96D415EF29E6ADC500AEE435 = {
 						CreatedOnToolsVersion = 14.2;
 						DevelopmentTeam = 7W9PZ27Y5F;
@@ -1608,6 +1832,11 @@
 					};
 					B4A4A4DE1EA43C6C4D6D3894 = {
 						LastSwiftMigration = 1630;
+					};
+					DA8E5ED52E2FC3E80049F7AB = {
+						CreatedOnToolsVersion = 16.2;
+						DevelopmentTeam = 7W9PZ27Y5F;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1631,6 +1860,8 @@
 				96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */,
 				094FA73A2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests */,
 				09D807F02B9756B000D01DF5 /* BugsnagPerformanceSwiftUI */,
+				DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */,
+				963828962E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1678,6 +1909,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		963828BA2E3C0B9A00404F3A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415EE29E6ADC500AEE435 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1685,6 +1923,13 @@
 				96D415FF29E6ADC600AEE435 /* LaunchScreen.storyboard in Resources */,
 				96D415FC29E6ADC600AEE435 /* Assets.xcassets in Resources */,
 				96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA8E5ED42E2FC3E80049F7AB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1828,6 +2073,7 @@
 				962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
+				1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
 				962CE81C2E65FD5300380522 /* NetworkSwizzlingHandlerImpl.mm in Sources */,
 				969EE0F52E78731C00600F63 /* PlainSpanFactoryImpl.mm in Sources */,
@@ -1853,12 +2099,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9638289B2E3C0B9A00404F3A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96D415EC29E6ADC500AEE435 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */,
 				96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA8E5ED22E2FC3E80049F7AB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */,
+				96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */,
+				96F417162E3B8E7000EABD8E /* BugsnagPerformanceNamedSpans.docc in Sources */,
+				DA87DAF02E2FDFE60040F086 /* BugsnagPerformanceNamedSpansPlugin.mm in Sources */,
+				DA87DAFB2E3792B10040F086 /* BugsnagPerformanceNamedSpanQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1900,6 +2166,21 @@
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
 			targetProxy = 8A80DA8C2966CE940035BDA9 /* PBXContainerItemProxy */;
 		};
+		963828972E3C0B9A00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = 963828982E3C0B9A00404F3A /* PBXContainerItemProxy */;
+		};
+		963828992E3C0B9A00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
+			targetProxy = 9638289A2E3C0B9A00404F3A /* PBXContainerItemProxy */;
+		};
+		963828C22E3C0BAC00404F3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */;
+			targetProxy = 963828C12E3C0BAC00404F3A /* PBXContainerItemProxy */;
+		};
 		966DD5042A211D7F002030B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
@@ -1914,6 +2195,16 @@
 			isa = PBXTargetDependency;
 			target = 96D415EF29E6ADC500AEE435 /* BugsnagPerformanceTestsApp */;
 			targetProxy = 96D4160629E6F6B900AEE435 /* PBXContainerItemProxy */;
+		};
+		DA8E5EEA2E2FC3E80049F7AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA8E5ED52E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans */;
+			targetProxy = DA8E5EE92E2FC3E80049F7AB /* PBXContainerItemProxy */;
+		};
+		DA8E5EF72E2FC45B0049F7AB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B4A4A4DE1EA43C6C4D6D3894 /* BugsnagPerformance-iOS */;
+			targetProxy = DA8E5EF62E2FC45B0049F7AB /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1946,7 +2237,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1968,7 +2259,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2002,7 +2293,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2038,7 +2329,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2056,7 +2347,6 @@
 		094FA74B2B10EDE700112ED4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
@@ -2067,7 +2357,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -2081,7 +2371,6 @@
 		094FA74C2B10EDE700112ED4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
@@ -2092,7 +2381,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -2124,7 +2413,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2160,7 +2449,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2192,7 +2481,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2222,7 +2511,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2431,7 +2720,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2451,8 +2740,52 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		963828BC2E3C0B9A00404F3A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_WARN_PEDANTIC = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "BugsnagPerformanceTestsApp/BugsnagPerformanceTestsApp-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BugsnagPerformanceTestsApp.app/BugsnagPerformanceTestsApp";
+			};
+			name = Debug;
+		};
+		963828BD2E3C0B9A00404F3A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				GCC_WARN_PEDANTIC = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -2467,7 +2800,6 @@
 		96D4160229E6ADC600AEE435 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2484,7 +2816,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2499,7 +2831,6 @@
 		96D4160329E6ADC600AEE435 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2516,7 +2847,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.14.0;
+				MARKETING_VERSION = 1.15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2525,6 +2856,133 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DA8E5EEF2E2FC3E80049F7AB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MARKETING_VERSION = 1.15.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wcast-qual",
+					"-Wconditional-uninitialized",
+					"-Wcustom-atomic-properties",
+					"-Wdirect-ivar-access",
+					"-Wdocumentation-unknown-command",
+					"-Wformat-nonliteral",
+					"-Widiomatic-parentheses",
+					"-Wimplicit-int-float-conversion",
+					"-Wimport-preprocessor-directive-pedantic",
+					"-Wincomplete-implementation",
+					"-Wmissing-variable-declarations",
+					"-Wno-unknown-warning-option",
+					"-Wnonportable-include-path",
+					"-Wnullable-to-nonnull-conversion",
+					"-Woverriding-method-mismatch",
+					"-Wpointer-sign",
+					"-Wswitch-enum",
+					"-Wundef",
+					"-Wunused-macros",
+				);
+			};
+			name = Debug;
+		};
+		DA8E5EF02E2FC3E80049F7AB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_FLOAT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_INHIBIT_ALL_WARNINGS = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
+				MARKETING_VERSION = 1.15.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WARNING_CFLAGS = (
+					"-Wcast-qual",
+					"-Wconditional-uninitialized",
+					"-Wcustom-atomic-properties",
+					"-Wdirect-ivar-access",
+					"-Wdocumentation-unknown-command",
+					"-Wformat-nonliteral",
+					"-Widiomatic-parentheses",
+					"-Wimplicit-int-float-conversion",
+					"-Wimport-preprocessor-directive-pedantic",
+					"-Wincomplete-implementation",
+					"-Wmissing-variable-declarations",
+					"-Wno-unknown-warning-option",
+					"-Wnonportable-include-path",
+					"-Wnullable-to-nonnull-conversion",
+					"-Woverriding-method-mismatch",
+					"-Wpointer-sign",
+					"-Wswitch-enum",
+					"-Wundef",
+					"-Wunused-macros",
+				);
 			};
 			name = Release;
 		};
@@ -2594,11 +3052,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		963828BB2E3C0B9A00404F3A /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpansTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				963828BC2E3C0B9A00404F3A /* Debug */,
+				963828BD2E3C0B9A00404F3A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		96D4160129E6ADC600AEE435 /* Build configuration list for PBXNativeTarget "BugsnagPerformanceTestsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				96D4160229E6ADC600AEE435 /* Debug */,
 				96D4160329E6ADC600AEE435 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DA8E5EEE2E2FC3E80049F7AB /* Build configuration list for PBXNativeTarget "BugsnagPerformanceNamedSpans" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DA8E5EEF2E2FC3E80049F7AB /* Debug */,
+				DA8E5EF02E2FC3E80049F7AB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

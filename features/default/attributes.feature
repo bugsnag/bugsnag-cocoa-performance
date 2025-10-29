@@ -2,7 +2,7 @@ Feature: Spans with custom attributes
 
   Scenario: Set attributes in a span
     Given I run "SetAttributesScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesScenario"
@@ -19,7 +19,7 @@ Feature: Spans with custom attributes
 
   Scenario: Set attributes in a span with limits set
     Given I run "SetAttributesWithLimitsScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesWithLimitsScenario"
@@ -31,7 +31,7 @@ Feature: Spans with custom attributes
 
   Scenario: Set attributes in a span with an attribute count limit set
     Given I run "SetAttributeCountLimitScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributeCountLimitScenario"

@@ -7,7 +7,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "DefaultSettings"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -35,7 +35,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "FirstClass"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -63,7 +63,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "NonFirstClass"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -92,7 +92,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "NonFirstClassEnabled"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -120,7 +120,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "LongerDuration"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -148,7 +148,7 @@ Feature: Spans with collected memory metrics
     And I configure scenario "variant_name" to "GenerateLater"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

@@ -77,21 +77,25 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)dealloc {
+    if (self.isClone || self.state != SpanStateOpen) {
+        return;
+    }
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
-    if (self.state == SpanStateOpen && self.onDumped) {
-        self.onDumped(self);
+    if (self.onDumped) {
+        self.onDumped(self.spanId);
     }
     for (BugsnagPerformanceSpanCondition *condition in _conditionsToEndOnClose) {
         [condition cancel];
     }
+    BugsnagPerformanceSpan *clone = [self clone];
     switch(self.onSpanDestroyAction) {
         case OnSpanDestroyAbort:
             BSGLogDebug(@"BugsnagPerformanceSpan.dealloc: for span %@. Action = Abort", self.name);
-            [self abortIfOpen];
+            [clone abortIfOpen];
             break;
         case OnSpanDestroyEnd:
             BSGLogDebug(@"BugsnagPerformanceSpan.dealloc: for span %@. Action = End", self.name);
-            [self end];
+            [clone end];
             break;
         default:
             BSGLogError(@"BugsnagPerformanceSpan.dealloc: for span %@. Unknown action type %d", self.name, self.onSpanDestroyAction);
@@ -326,6 +330,45 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         block();
         self.isMutable = wasMutable;
     }
+}
+
+- (instancetype)clone {
+    BugsnagPerformanceSpan *copy = [[BugsnagPerformanceSpan alloc] initWithName:self.name
+                                                                        traceId:self.traceId
+                                                                         spanId:self.spanId
+                                                                       parentId:self.parentId
+                                                                      startTime:self.startAbsTime
+                                                                     firstClass:self.firstClass
+                                                            samplingProbability:self.samplingProbability
+                                                            attributeCountLimit:self.attributeCountLimit
+                                                                 metricsOptions:self.metricsOptions
+                                                         conditionsToEndOnClose:@[]
+                                                                   onSpanEndSet:self.onSpanEndSet
+                                                                   onSpanClosed:self.onSpanClosed
+                                                                  onSpanBlocked:self.onSpanBlocked];
+    
+    // Copy additional state that's not set during initialization
+    @synchronized (self) {
+        copy.actuallyStartedAt = self.actuallyStartedAt;
+        copy.actuallyEndedAt = self.actuallyEndedAt;
+        copy.endAbsTime = self.endAbsTime;
+        copy.onSpanDestroyAction = self.onSpanDestroyAction;
+        copy.kind = self.kind;
+        copy.isMutable = self.isMutable;
+        copy.hasBeenProcessed = self.hasBeenProcessed;
+        copy.wasStartOrEndTimeProvided = self.wasStartOrEndTimeProvided;
+        copy.state = self.state;
+        copy.startClock = self.startClock;
+        copy.onDumped = self.onDumped;
+        
+        // Deep copy mutable collections
+        [copy.attributes addEntriesFromDictionary:self.attributes];
+        copy.startFramerateSnapshot = self.startFramerateSnapshot;
+        copy.endFramerateSnapshot = self.endFramerateSnapshot;
+        copy.isClone = YES;
+    }
+    
+    return copy;
 }
 
 @end

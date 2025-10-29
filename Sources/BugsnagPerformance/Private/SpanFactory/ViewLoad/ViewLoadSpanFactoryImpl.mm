@@ -89,7 +89,8 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
     NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
     SpanOptions spanOptions(options);
-    if (options.parentContext == nil && callbacks_.getViewLoadParentSpan != nil) {
+    if (options.parentContext == [BugsnagPerformanceSpanContext defaultContext] &&
+        callbacks_.getViewLoadParentSpan != nil) {
         BugsnagPerformanceSpan *parentSpan = callbacks_.getViewLoadParentSpan();
         if (parentSpan != nil) {
             spanOptions.parentContext = parentSpan;

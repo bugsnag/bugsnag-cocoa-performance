@@ -2,7 +2,7 @@ Feature: Automatic swift UI spans
 
   Scenario: AutoInstrumentSwiftUIScenario no change
     Given I run "AutoInstrumentSwiftUIScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
@@ -26,7 +26,7 @@ Feature: Automatic swift UI spans
 
   Scenario: AutoInstrumentSwiftUIScenario with change
     Given I run "AutoInstrumentSwiftUIScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
@@ -48,7 +48,7 @@ Feature: Automatic swift UI spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     And I discard every trace
     And I invoke "switchView"
-    Then I wait for 2 spans
+    Then I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/Text"
     * a span field "name" equals "[ViewLoadPhase/body]/Text"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -64,7 +64,7 @@ Feature: Automatic swift UI spans
 
   Scenario: AutoInstrumentSwiftUIDeferredScenario toggleEndSpanDefer
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
@@ -82,7 +82,7 @@ Feature: Automatic swift UI spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -96,7 +96,7 @@ Feature: Automatic swift UI spans
 
   Scenario: AutoInstrumentSwiftUIDeferredScenario toggle everything
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
@@ -114,7 +114,7 @@ Feature: Automatic swift UI spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -127,7 +127,7 @@ Feature: Automatic swift UI spans
     * a span string attribute "bugsnag.view.name" equals "text1"
     Then I discard every trace
     And I invoke "toggleHideText1"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

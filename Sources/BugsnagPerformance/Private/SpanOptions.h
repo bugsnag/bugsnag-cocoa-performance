@@ -10,6 +10,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanOptions.h>
 #import "Utils.h"
 #import "Metrics.h"
+#import "SpanContext.h"
 
 namespace bugsnag {
 
@@ -37,7 +38,7 @@ public:
     
     SpanOptions()
     // These defaults must match the defaults in BugsnagPerformanceSpanOptions.m
-    : SpanOptions(nil,
+    : SpanOptions(getDefaultSpanContext(),
                   CFABSOLUTETIME_INVALID,
                   true,
                   BSGTriStateUnset,

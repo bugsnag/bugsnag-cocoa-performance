@@ -24,7 +24,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner-bb:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
@@ -34,19 +34,21 @@ services:
       - "9000-9499:9340"
     volumes:
       - ./features/fixtures/ios/output:/app/build
+      - ./features/fixtures/benchmarks/output:/app/build_benchmarks
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - /var/run/docker.sock:/var/run/docker.sock
       - ./reports/:/app/reports/
 
   maze-runner-bs:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
       - ./features/fixtures/ios/output:/app/build
+      - ./features/fixtures/benchmarks/output:/app/build_benchmarks
       - ./features/:/app/features/
       - ./maze_output:/app/maze_output
       - ./reports/:/app/reports/

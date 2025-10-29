@@ -5,13 +5,13 @@ Feature: Manual creation of spans
   Scenario: Retry a manual span
     Given I set the HTTP status code for the next requests to 200,500,200,200
     And I run "RetryScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "WillRetry"
     Then I discard the oldest trace
     And I invoke "step2"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "WillRetry"
     * a span field "name" equals "Success"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -21,7 +21,7 @@ Feature: Manual creation of spans
     Given I run "ManualSpanScenario"
     And I wait to receive an error
     And the error payload field "events.0.device.id" is stored as the value "bugsnag_device_id"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -50,9 +50,40 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span string attribute "bugsnag.span.category" equals "custom"
 
+  Scenario: Manually start a span and call endOnDestroy
+    Given I run "ManualSpanEndOnDestroyScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "ManualSpanEndOnDestroyScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.app.in_foreground" is true
+    * every span string attribute "net.host.connection.type" equals "wifi"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * every span string attribute "TestString" equals "test"
+    * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "30"
+    * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "staging"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.manufacturer" equals "Apple"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.model.identifier" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "host.arch" matches the regex "arm64|amd64"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.name" equals "iOS"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.type" equals "darwin"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.version" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "10.0"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+    * every span string attribute "bugsnag.span.category" equals "custom"
+
   Scenario: Starting and ending a span before starting the SDK
     Given I run "ManualSpanBeforeStartScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "BeforeStart"
@@ -72,7 +103,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually report a view load span
     Given I run "ManualViewLoadScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/ManualViewController"
@@ -89,7 +120,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually report a SwiftUI view load phase span
     Given I run "ManualViewLoadPhaseScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/ManualViewLoadPhaseScenario"
@@ -106,7 +137,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually report a UIViewController load span
     Given I run "ManualUIViewLoadScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[ViewLoad/UIKit]/UIViewController"
@@ -120,7 +151,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start a network span
     Given I run "ManualNetworkSpanScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -157,7 +188,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start a network span with callback set to nil
     Given I run "ManualNetworkSpanCallbackSetToNilScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -179,7 +210,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span field "with" batching
     Given I run "BatchingScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -197,7 +228,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span field "with" batching
     Given I run "BatchingScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header is present
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -215,7 +246,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end parent and child spans
     Given I run "ParentSpanScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -234,7 +265,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end child span with a manually defined parent
     Given I run "ManualParentSpanScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -252,7 +283,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end first-class = yes span
     Given I run "FirstClassYesScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -268,7 +299,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end first-class = no span
     Given I run "FirstClassNoScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -284,7 +315,7 @@ Feature: Manual creation of spans
 
   Scenario: Manually start and end a span with remote parent context
     Given I run "ManualSpanWithRemoteContextParentScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -297,3 +328,17 @@ Feature: Manual creation of spans
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "custom"
+
+  Scenario: Manually start and end a span with nil parent context
+    Given I run "ManualSpanWithContextParentNilScenario"
+    And I wait to receive at least 3 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.name" equals "ManualSpanWithContextParentNilScenario"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.name" equals "ManualSpanWithContextParentSet"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.name" equals "ShouldNotBeParentSpan"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" is null
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.parentSpanId" is null

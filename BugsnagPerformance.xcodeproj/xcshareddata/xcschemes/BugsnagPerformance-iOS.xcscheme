@@ -55,6 +55,16 @@
                ReferencedContainer = "container:BugsnagPerformance.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "963828962E3C0B9A00404F3A"
+               BuildableName = "BugsnagPerformanceNamedSpansTests.xctest"
+               BlueprintName = "BugsnagPerformanceNamedSpansTests"
+               ReferencedContainer = "container:BugsnagPerformance.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

@@ -3,7 +3,7 @@ Feature: Automatic app start instrumentation spans
   Scenario: Auto instrument app starts without a view load
     Given I run "AutoInstrumentAppStartsScenario"
     Then I relaunch the app after shutdown
-    And I wait for 4 spans
+    And I wait to receive at least 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
@@ -29,7 +29,7 @@ Feature: Automatic app start instrumentation spans
   Scenario: Auto instrument app starts with a view load
     Given I run "AutoInstrumentAppStartsWithViewLoadScenario"
     Then I relaunch the app after shutdown
-    And I wait for 13 spans
+    And I wait to receive at least 13 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
