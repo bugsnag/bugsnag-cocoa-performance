@@ -7,13 +7,14 @@
 
 import Foundation
 
-class StartupConfiguration: Decodable, Encodable {
+class StartupConfiguration: Codable {
     var configurationFile: String = "startupConfig.json"
     public var apiKey: String
     public var endpoint: URL
     public var autoInstrumentAppStarts: Bool
     public var autoInstrumentViewControllers: Bool
     public var scenarioName: String
+    public var enabledMetrics: StartupEnabledMetrics
 
     init(configFile: String?) {
         configurationFile = (configFile != nil) ? configFile! : configurationFile
@@ -22,6 +23,7 @@ class StartupConfiguration: Decodable, Encodable {
         autoInstrumentAppStarts = false
         autoInstrumentViewControllers = false
         scenarioName = ""
+        enabledMetrics = StartupEnabledMetrics()
     }
 
     func saveStartupConfig() {
@@ -59,6 +61,7 @@ class StartupConfiguration: Decodable, Encodable {
             self.endpoint = loadedData.endpoint
             self.autoInstrumentAppStarts = loadedData.autoInstrumentAppStarts
             self.autoInstrumentViewControllers = loadedData.autoInstrumentViewControllers
+            self.enabledMetrics = loadedData.enabledMetrics
 
             try fileManager.removeItem(at: fileURL)
         } catch {

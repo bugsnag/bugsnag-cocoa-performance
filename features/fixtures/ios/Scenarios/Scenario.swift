@@ -66,6 +66,9 @@ class Scenario: NSObject {
         bugsnagPerfConfig.autoInstrumentViewControllers = startupConfig.autoInstrumentViewControllers
         bugsnagPerfConfig.apiKey = startupConfig.apiKey
         bugsnagPerfConfig.endpoint = startupConfig.endpoint
+        bugsnagPerfConfig.enabledMetrics.rendering = startupConfig.enabledMetrics.rendering
+        bugsnagPerfConfig.enabledMetrics.cpu = startupConfig.enabledMetrics.cpu
+        bugsnagPerfConfig.enabledMetrics.memory = startupConfig.enabledMetrics.memory
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {

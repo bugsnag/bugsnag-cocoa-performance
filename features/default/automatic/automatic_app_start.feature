@@ -21,7 +21,17 @@ Feature: Automatic app start instrumentation spans
     * a span string attribute "bugsnag.phase" equals "UI init"
     * a span string attribute "bugsnag.span.category" equals "app_start"
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
-    * every span bool attribute "bugsnag.span.first_class" does not exist
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_total" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_main_thread" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_overhead" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.memory.timestamps" is not empty
+    * the span named "[AppStart/iOSCold]" integer attribute "bugsnag.system.memory.spaces.device.size" is greater than 0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.memory.spaces.device.used" is not empty
+    * the span named "[AppStart/iOSCold]" integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span bool attribute "bugsnag.span.first_class" is true
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -57,6 +67,16 @@ Feature: Automatic app start instrumentation spans
     * a span string attribute "bugsnag.span.category" equals "app_start"
     * a span string attribute "bugsnag.span.category" equals "app_start_phase"
     * a span bool attribute "bugsnag.span.first_class" is true
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_total" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_main_thread" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.cpu_measures_overhead" is not empty
+    * the span named "[AppStart/iOSCold]" float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.memory.timestamps" is not empty
+    * the span named "[AppStart/iOSCold]" integer attribute "bugsnag.system.memory.spaces.device.size" is greater than 0
+    * the span named "[AppStart/iOSCold]" array attribute "bugsnag.system.memory.spaces.device.used" is not empty
+    * the span named "[AppStart/iOSCold]" integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
