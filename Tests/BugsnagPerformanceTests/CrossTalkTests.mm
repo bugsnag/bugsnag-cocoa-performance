@@ -231,7 +231,8 @@ static id hostMissingCrossTalkAPI = nil;
                                                          conditionsToEndOnClose:@[]
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }
+                                                                onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:span];
     
     XCTAssertTrue(didCallWillEndUIInitSpan);
@@ -265,7 +266,8 @@ static id hostMissingCrossTalkAPI = nil;
                                                          conditionsToEndOnClose:@[]
                                                                    onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                                                    onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+                                                                  onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable (BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }
+                                                                onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
     UIViewController *viewController = [UIViewController new];
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndViewLoadSpan:span viewController:viewController];
     

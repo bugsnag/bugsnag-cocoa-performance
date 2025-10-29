@@ -11,13 +11,12 @@
 
 typedef BugsnagPerformanceSpan *_Nullable(^GetViewLoadParentSpanCallback)(void);
 typedef BOOL (^IsViewLoadInProgressCallback)(void);
-typedef void (^OnViewLoadSpanStarted)(BugsnagPerformanceSpan * _Nonnull, NSString * _Nonnull);
+typedef void (^OnViewLoadSpanStarted)(NSString * _Nonnull);
 
 @interface ViewLoadSpanFactoryCallbacks: NSObject
 
 @property (nonatomic, nullable) GetViewLoadParentSpanCallback getViewLoadParentSpan;
 @property (nonatomic, nullable) IsViewLoadInProgressCallback isViewLoadInProgress;
 @property (nonatomic, nullable) OnViewLoadSpanStarted onViewLoadSpanStarted;
-@property (nonatomic, nullable) SpanLifecycleCallback onViewLoadPhaseSpanStarted;
 
 @end

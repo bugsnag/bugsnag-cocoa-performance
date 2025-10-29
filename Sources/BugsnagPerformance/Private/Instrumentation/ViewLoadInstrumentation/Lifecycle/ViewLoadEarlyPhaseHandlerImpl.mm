@@ -37,15 +37,15 @@ ViewLoadEarlyPhaseHandlerImpl::onEarlyPhaseEnded(bool isEnabled,
     for (ViewLoadInstrumentationState *state: earlyStates_) {
         UIViewController *viewController = state.viewController;
         if (!vcCheck(viewController)) {
-            tracer_->cancelQueuedSpan(state.overallSpan);
-            tracer_->cancelQueuedSpan(state.loadViewSpan);
-            tracer_->cancelQueuedSpan(state.viewDidLoadSpan);
-            tracer_->cancelQueuedSpan(state.viewWillAppearSpan);
-            tracer_->cancelQueuedSpan(state.viewAppearingSpan);
-            tracer_->cancelQueuedSpan(state.viewDidAppearSpan);
-            tracer_->cancelQueuedSpan(state.viewWillLayoutSubviewsSpan);
-            tracer_->cancelQueuedSpan(state.subviewLayoutSpan);
-            tracer_->cancelQueuedSpan(state.viewDidLayoutSubviewsSpan);
+            [state.overallSpan cancel];
+            [state.loadViewSpan cancel];
+            [state.viewDidLoadSpan cancel];
+            [state.viewWillAppearSpan cancel];
+            [state.viewAppearingSpan cancel];
+            [state.viewDidAppearSpan cancel];
+            [state.viewWillLayoutSubviewsSpan cancel];
+            [state.subviewLayoutSpan cancel];
+            [state.viewDidLayoutSubviewsSpan cancel];
         }
     }
     [earlyStates_ removeAllObjects];

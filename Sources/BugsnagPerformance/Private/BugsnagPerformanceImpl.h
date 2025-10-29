@@ -35,6 +35,8 @@
 #import "SpanFactory/AppStartup/AppStartupSpanFactoryImpl.h"
 #import "SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
 #import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
+#import "SpanLifecycle/SpanLifecycleHandlerImpl.h"
+#import "SpanStore/SpanStoreImpl.h"
 
 #import <mutex>
 
@@ -108,6 +110,8 @@ private:
     std::shared_ptr<AppStartupSpanFactoryImpl> appStartupSpanFactory_;
     std::shared_ptr<ViewLoadSpanFactoryImpl> viewLoadSpanFactory_;
     std::shared_ptr<NetworkSpanFactoryImpl> networkSpanFactory_;
+    std::shared_ptr<SpanStoreImpl> spanStore_;
+    std::shared_ptr<SpanLifecycleHandlerImpl> spanLifecycleHandler_;
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;

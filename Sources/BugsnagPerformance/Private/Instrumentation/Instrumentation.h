@@ -27,16 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef  AppStartupInstrumentationStateSnapshot * _Nullable (^GetAppStartInstrumentationStateSnapshot)();
 
-std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<Tracer> tracer,
-                                                                           std::shared_ptr<AppStartupSpanFactory> spanFactory,
+std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
 
-std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<Tracer> tracer,
-                                                                       std::shared_ptr<ViewLoadSpanFactory> spanFactory,
+std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shared_ptr<ViewLoadSpanFactory> spanFactory,
                                                                        std::shared_ptr<SpanAttributesProvider> spanAttributesProvider);
 
-std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<Tracer> tracer,
-                                                                     std::shared_ptr<NetworkSpanFactory> spanFactory,
+std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
                                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                                                      std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
 
@@ -50,9 +47,9 @@ public:
                     std::shared_ptr<NetworkSpanFactory> networkSpanFactory,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
-    : appStartupInstrumentation_(createAppStartupInstrumentation(tracer, appStartupSpanFactory, spanAttributesProvider))
-    , viewLoadInstrumentation_(createViewLoadInstrumentation(tracer, viewLoadSpanFactory, spanAttributesProvider))
-    , networkInstrumentation_(createNetworkInstrumentation(tracer, networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
+    : appStartupInstrumentation_(createAppStartupInstrumentation(appStartupSpanFactory, spanAttributesProvider))
+    , viewLoadInstrumentation_(createViewLoadInstrumentation(viewLoadSpanFactory, spanAttributesProvider))
+    , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
     {
         tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
     }
