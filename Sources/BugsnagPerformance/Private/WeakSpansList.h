@@ -55,19 +55,16 @@ public:
             spans_ = newSpans;
         }
     }
-
-    void abortAllUnconditionally() noexcept {
+    
+    void performActionAndClear(void (^action)(BugsnagPerformanceSpan *span)) noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
-        for (BSGWeakSpanPointer *ptr in spans_) {
-            [ptr.span abortUnconditionally];
-        }
-        [spans_ removeAllObjects];
-    }
-
-    void abortAllOpen() noexcept {
-        std::lock_guard<std::mutex> guard(mutex_);
-        for (BSGWeakSpanPointer *ptr in spans_) {
-            [ptr.span abortIfOpen];
+        if (action) {
+            for (BSGWeakSpanPointer *ptr in spans_) {
+                __strong auto span = ptr.span;
+                if (span) {
+                    action(span);
+                }
+            }
         }
         [spans_ removeAllObjects];
     }

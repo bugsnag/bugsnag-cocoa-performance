@@ -117,7 +117,7 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                              spanAttributes,
                                              conditionsToEndOnClose);
     if (callbacks_.onViewLoadSpanStarted != nil) {
-        callbacks_.onViewLoadSpanStarted(span, className);
+        callbacks_.onViewLoadSpanStarted(className);
     }
     return span;
 }
@@ -137,9 +137,6 @@ ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(NSString *className,
                                              BSGTriStateUnset,
                                              attributes,
                                              conditionsToEndOnClose);
-    if (callbacks_.onViewLoadPhaseSpanStarted != nil) {
-        callbacks_.onViewLoadPhaseSpanStarted(span);
-    }
     return span;
 }
 

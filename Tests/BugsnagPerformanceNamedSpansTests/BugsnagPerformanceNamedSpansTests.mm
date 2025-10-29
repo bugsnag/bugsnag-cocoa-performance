@@ -40,7 +40,8 @@ static BugsnagPerformanceSpan *createSpan(NSString *name) {
                                  conditionsToEndOnClose:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }
+                                        onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 

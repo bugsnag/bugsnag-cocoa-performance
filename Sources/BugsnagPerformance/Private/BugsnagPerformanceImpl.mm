@@ -56,7 +56,9 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , appStartupSpanFactory_(std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
 , viewLoadSpanFactory_(std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
 , networkSpanFactory_(std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, plainSpanFactory_, viewLoadSpanFactory_, networkSpanFactory_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
+, spanStore_(std::make_shared<SpanStoreImpl>(spanStackingHandler_))
+, spanLifecycleHandler_(std::make_shared<SpanLifecycleHandlerImpl>(sampler_, spanStore_, conditionTimeoutExecutor_, plainSpanFactory_, batch_, frameMetricsCollector_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
+, tracer_(std::make_shared<Tracer>(plainSpanFactory_, viewLoadSpanFactory_, networkSpanFactory_, spanLifecycleHandler_, spanStore_))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
@@ -94,6 +96,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     networkHeaderInjector_->earlyConfigure(config);
     retryQueue_->earlyConfigure(config);
     batch_->earlyConfigure(config);
+    spanLifecycleHandler_->earlyConfigure(config);
     instrumentation_->earlyConfigure(config);
     [worker_ earlyConfigure:config];
     [frameMetricsCollector_ earlyConfigure:config];
@@ -125,6 +128,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     networkHeaderInjector_->earlySetup();
     retryQueue_->earlySetup();
     batch_->earlySetup();
+    spanLifecycleHandler_->earlySetup();
     instrumentation_->earlySetup();
     [worker_ earlySetup];
     [frameMetricsCollector_ earlySetup];
@@ -176,6 +180,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     networkHeaderInjector_->configure(config);
     retryQueue_->configure(config);
     batch_->configure(config);
+    spanLifecycleHandler_->configure(config);
     instrumentation_->configure(config);
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
@@ -193,6 +198,7 @@ void BugsnagPerformanceImpl::preStartSetup() noexcept {
     networkHeaderInjector_->preStartSetup();
     retryQueue_->preStartSetup();
     batch_->preStartSetup();
+    spanLifecycleHandler_->preStartSetup();
     instrumentation_->preStartSetup();
     [worker_ preStartSetup];
 }
@@ -233,6 +239,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistentState_->start();
     deviceID_->start();
     traceEncoding_.start();
+    spanLifecycleHandler_->start();
 
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
@@ -412,7 +419,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 
 bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sweepTracerTask()");
-    tracer_->sweep();
+    spanStore_->sweep();
     // Never auto-repeat this task, even if work was done; it can wait.
     return false;
 }
@@ -488,11 +495,7 @@ void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
         instrumentation_->abortAppStartupSpans();
     }
 
-    if (!isStarted_) {
-        return;
-    }
-
-    tracer_->abortAllOpenSpans();
+    spanLifecycleHandler_->onAppEnteredBackground();
 }
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
