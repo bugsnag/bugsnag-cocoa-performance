@@ -5,6 +5,9 @@ Changelog
 
 ### Enhancements
 
+* Added CPU and memory metrics to AppStartup spans.
+  [503](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/503)
+
 * Split Preload and Presentation phases of pre-loaded ViewLoads. [455](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/455)
 
 ### Bug fixes
