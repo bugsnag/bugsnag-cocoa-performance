@@ -57,7 +57,7 @@
 		966AEDE82E70E10D002F12A6 /* SpanOpenCloseSuite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpanOpenCloseSuite.swift; sourceTree = "<group>"; };
 		9682AA3B2E70BA210033D9D8 /* BenchmarkRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BenchmarkRunner.swift; sourceTree = "<group>"; };
 		9682AA3D2E70BECC0033D9D8 /* SuiteConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuiteConfig.swift; sourceTree = "<group>"; };
-		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
+		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/Core/Configuration/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Fixture-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
