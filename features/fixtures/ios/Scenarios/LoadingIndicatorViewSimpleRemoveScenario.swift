@@ -26,6 +26,7 @@ class LoadingIndicatorViewSimpleRemoveScenario: Scenario {
 
     override func run() {
         viewController = LoadingIndicatorViewSimpleRemoveScenario_ViewController()
+        viewController?.name = scenarioConfig["name"]
         UIApplication.shared.windows[0].rootViewController!.present(
             viewController!, animated: true)
     }
@@ -34,9 +35,11 @@ class LoadingIndicatorViewSimpleRemoveScenario: Scenario {
 class LoadingIndicatorViewSimpleRemoveScenario_ViewController: UIViewController {
     
     var loadingIndicator: BugsnagPerformanceLoadingIndicatorView?
+    var name: String?
 
     override func loadView() {
         self.loadingIndicator = BugsnagPerformanceLoadingIndicatorView()
+        self.loadingIndicator?.name = name
         view = UIView()
         view.addSubview(loadingIndicator!)
     }

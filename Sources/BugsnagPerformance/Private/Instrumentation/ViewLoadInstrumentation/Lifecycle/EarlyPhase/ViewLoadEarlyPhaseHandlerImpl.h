@@ -7,7 +7,7 @@
 //
 
 #import "ViewLoadEarlyPhaseHandler.h"
-#import "../../../Tracer.h"
+#import "../../../../Tracer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

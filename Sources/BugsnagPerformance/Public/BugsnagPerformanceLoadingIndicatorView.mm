@@ -6,10 +6,10 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
-#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 #import "../Private/Logging.h"
 #import "../Private/BugsnagPerformanceLibrary.h"
 #import "../Private/BugsnagPerformanceSpanCondition+Private.h"
+#import "../Private/BugsnagPerformanceLoadingIndicatorView+Private.h"
 
 @interface BugsnagPerformanceLoadingIndicatorView()
 @property (nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
@@ -72,20 +72,20 @@
 
 #pragma mark Private interface
 
-- (void)addCondition:(BugsnagPerformanceSpanCondition *)condition {
-    [self.conditions addObject:condition];
-}
-
 - (void)addConditions:(NSArray<BugsnagPerformanceSpanCondition *> *)conditions {
     [self.conditions addObjectsFromArray:conditions];
 }
 
 - (void)closeAllConditions {
     auto currentDate = [NSDate date];
-    for (BugsnagPerformanceSpanCondition* condition in self.conditions) {
+    for (BugsnagPerformanceSpanCondition *condition in self.conditions) {
         [condition closeWithEndTime:currentDate];
     }
     [self.conditions removeAllObjects];
+}
+
+- (void)endLoadingSpan {
+    [self.loadingSpan end];
 }
 
 #pragma mark Helpers
@@ -95,6 +95,7 @@
         return;
     }
     [self closeAllConditions];
+    [self endLoadingSpan];
 }
 
 - (void)didBecomeActive {

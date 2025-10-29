@@ -14,8 +14,8 @@
 #import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
 #import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
 #import "ViewLoadInstrumentation/Lifecycle/ViewLoadLifecycleHandlerImpl.h"
-#import "ViewLoadInstrumentation/Lifecycle/ViewLoadEarlyPhaseHandlerImpl.h"
-#import "ViewLoadInstrumentation/Lifecycle/ViewLoadLoadingIndicatorsHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/EarlyPhase/ViewLoadEarlyPhaseHandlerImpl.h"
+#import "ViewLoadInstrumentation/Lifecycle/LoadingIndicators/ViewLoadLoadingIndicatorsHandlerImpl.h"
 #import "NetworkInstrumentation/State/NetworkInstrumentationStateRepositoryImpl.h"
 #import "NetworkInstrumentation/System/BSGURLSessionPerformanceDelegate.h"
 #import "NetworkInstrumentation/System/NetworkInstrumentationSystemUtilsImpl.h"
@@ -61,6 +61,21 @@ void Instrumentation::abortAppStartupSpans() noexcept {
 
 #pragma mark - Factory functions
 
+ViewLoadLoadingIndicatorsHandlerCallbacks *createLoadingIndicatorCallbacks(std::shared_ptr<ViewLoadLifecycleHandler> lifecycleHandler,
+                                                                           std::shared_ptr<ViewLoadInstrumentationStateRepository> repository) {
+    __block auto blockLifecycleHandler = lifecycleHandler;
+    __block auto blockRepository = repository;
+    ViewLoadLoadingIndicatorsHandlerCallbacks *callbacks = [ViewLoadLoadingIndicatorsHandlerCallbacks new];
+    callbacks.onLoading = ^BugsnagPerformanceSpanCondition * _Nullable(UIViewController * _Nonnull viewController) {
+        return blockLifecycleHandler->onLoadingStarted(viewController);
+    };
+    
+    callbacks.getParentContext = ^BugsnagPerformanceSpanContext * _Nullable(UIViewController * _Nonnull viewController) {
+        return blockRepository->getInstrumentationState(viewController).overallSpan;
+    };
+    return callbacks;
+}
+
 std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) {
     auto systemUtils = std::make_shared<AppStartupInstrumentationSystemUtilsImpl>();
@@ -78,13 +93,17 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
     auto swizzlingHandler = std::make_shared<ViewLoadSwizzlingHandlerImpl>();
     auto repository = std::make_shared<ViewLoadInstrumentationStateRepositoryImpl>();
     auto earlyPhaseHandler = std::make_shared<ViewLoadEarlyPhaseHandlerImpl>();
-    auto loadingIndicatorsHandler = std::make_shared<ViewLoadLoadingIndicatorsHandlerImpl>(repository);
+    auto loadingIndicatorsHandler = std::make_shared<ViewLoadLoadingIndicatorsHandlerImpl>(repository,
+                                                                                           spanFactory);
     auto lifecycleHandler = std::make_shared<ViewLoadLifecycleHandlerImpl>(earlyPhaseHandler,
                                                                            spanAttributesProvider,
                                                                            spanFactory,
                                                                            repository,
                                                                            loadingIndicatorsHandler,
                                                                            [BugsnagPerformanceCrossTalkAPI sharedInstance]);
+    
+    loadingIndicatorsHandler->setCallbacks(createLoadingIndicatorCallbacks(lifecycleHandler,
+                                                                           repository));
     
     return std::make_shared<ViewLoadInstrumentation>(systemUtils, swizzlingHandler, lifecycleHandler);
 }

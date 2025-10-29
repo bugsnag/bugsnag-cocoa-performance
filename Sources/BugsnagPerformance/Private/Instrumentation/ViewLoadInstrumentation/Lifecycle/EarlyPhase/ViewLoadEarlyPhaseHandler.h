@@ -7,7 +7,7 @@
 //
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
-#import "../State/ViewLoadInstrumentationState.h"
+#import "../../State/ViewLoadInstrumentationState.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
