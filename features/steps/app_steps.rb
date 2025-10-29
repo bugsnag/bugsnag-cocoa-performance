@@ -34,6 +34,10 @@ When('I run {string}') do |scenario_name|
   run_command("run_scenario", { scenario: scenario_name })
 end
 
+When('I run {string} configured as {string}') do |suite_name, args|
+  run_command("run_suite", { suite: suite_name, arguments: args})
+end
+
 When('I load scenario {string}') do |scenario_name|
   run_command("load_scenario", { scenario: scenario_name })
 end
@@ -294,6 +298,12 @@ Then('a span named {string} is a child of span named {string}') do |name1, name2
   Maze.check.true(first_span['traceId'] == second_span['traceId'] && first_span['parentSpanId'] == second_span['spanId'])
 end
 
+Then('a span named {string} has no parent') do |name|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  Maze.check.nil(span['parentSpanId'])
+end
+
 Then('a span named {string} started before a span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
@@ -387,6 +397,14 @@ Then('the span named {string} is the parent of every span named {string}') do |s
   childSpans2 = spans.find_all { |span| span['name'].eql?(span2name) }
 
   childSpans2.map { |span| Maze.check.true(parentSpan['spanId'] == span['parentSpanId']) }
+end
+
+def spans_from_request_list(list)
+  list.remaining
+      .flat_map { |req| req[:body]['resourceSpans'] }
+      .flat_map { |r| r['scopeSpans'] }
+      .flat_map { |s| s['spans'] }
+      .select { |s| !s.nil? }
 end
 
 When("I relaunch the app after shutdown") do

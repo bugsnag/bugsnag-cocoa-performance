@@ -9,6 +9,9 @@ Changelog
 
 ### Bug fixes
 
+* Guard against an edge case where an auto-captured URL request with a nil URL can cause a crash.
+  [498](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/498)
+
 * Fixed an issue causing onSpanStart callbacks being called before all initial attributes have been set.
   [479](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/479)
 
@@ -17,6 +20,24 @@ Changelog
 
 * Fixed an issue preventing spans that have ended but are still blocked to be blocked with another condition.
   [471](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/471)
+
+## 1.15.0 (2025-08-14)
+
+### Enhancements
+
+* Added BugsnagPerformanceNamedSpans module and plugin.
+  [457](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/457)
+
+### Bug fixes
+
+* Fixed issue where some Network spans were categorized as custom.
+  [448](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/448)
+
+* Don't send CPU data if cpu_mean_total is not available.
+  [451](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/451)
+
+* Fixed zero padding of span and trace IDs in Crosstalk API.
+  [460](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/460)
 
 ## 1.14.0 (2025-06-16)
 

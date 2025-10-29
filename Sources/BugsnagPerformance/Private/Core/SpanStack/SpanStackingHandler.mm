@@ -38,12 +38,12 @@ SpanStackingHandler::push(BugsnagPerformanceSpan *span) {
         parentState->childSpansCount++;
     }
     __block auto blockThis = this;
-    span.onDumped = ^void(BugsnagPerformanceSpan *dumpedSpan) {
+    span.onDumped = ^void(SpanId spanId) {
         std::lock_guard<std::mutex> blockGuard(blockThis->mutex_);
-        auto state = blockThis->spanStateForSpan(dumpedSpan.spanId);
+        auto state = blockThis->spanStateForSpan(spanId);
         if (state != nullptr) {
             state->isDumped = true;
-            blockThis->removeSpan(dumpedSpan.spanId);
+            blockThis->removeSpan(spanId);
         }
     };
 }

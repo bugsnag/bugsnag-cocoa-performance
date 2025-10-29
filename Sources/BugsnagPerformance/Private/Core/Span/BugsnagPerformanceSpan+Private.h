@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BugsnagPerformanceSpan ()
 
-@property(nonatomic, copy) void (^onDumped)(BugsnagPerformanceSpan *);
+@property(nonatomic, copy) void (^onDumped)(SpanId);
 
 // These mark the actual times that the span was instantiated and ended,
 // irrespective of any time values this span will report.
@@ -46,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) CFAbsoluteTime startAbsTime;
 @property (nonatomic) CFAbsoluteTime endAbsTime;
+@property (nonatomic) BOOL isClone;
 @property (nonatomic) OnSpanDestroyAction onSpanDestroyAction;
 @property (nonatomic,readwrite) NSString *name;
 @property (nonatomic,readonly) NSMutableDictionary *attributes;

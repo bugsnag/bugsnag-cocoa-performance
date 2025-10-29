@@ -20,9 +20,10 @@ set -e -u -o pipefail
 # Scheme:                   The base name of the scheme to build with (minus any "-iOS" type suffix)
 # Namespaced:               If TRUE, the schemes to load all have an ("-iOS", "-macOS") style namespaced suffix.
 TARGETS=(
-#   [Framework]                 [Project/WS Path]               [Scheme]                   [NAMESPACED]
-    "BugsnagPerformance         BugsnagPerformance.xcodeproj    BugsnagPerformance         TRUE"
-    "BugsnagPerformanceSwift    BugsnagPerformance.xcodeproj    BugsnagPerformanceSwift    FALSE"
+#   [Framework]                      [Project/WS Path]               [Scheme]                        [NAMESPACED]
+    "BugsnagPerformance              BugsnagPerformance.xcodeproj    BugsnagPerformance              TRUE"
+    "BugsnagPerformanceSwift         BugsnagPerformance.xcodeproj    BugsnagPerformanceSwift         FALSE"
+    "BugsnagPerformanceNamedSpans    BugsnagPerformance.xcodeproj    BugsnagPerformanceNamedSpans    FALSE"
 )
 
 # Platforms we are building for

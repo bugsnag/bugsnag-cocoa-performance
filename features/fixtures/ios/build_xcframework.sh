@@ -31,6 +31,7 @@ done;
 
 unzip BugsnagPerformance.xcframework.zip
 unzip BugsnagPerformanceSwift.xcframework.zip
+unzip BugsnagPerformanceNamedSpans.xcframework.zip
 
 cp $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.template.plist $(dirname "${BASH_SOURCE[0]}")/Fixture/Info.plist
 

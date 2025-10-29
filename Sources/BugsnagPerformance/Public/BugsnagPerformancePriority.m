@@ -8,6 +8,6 @@
 
 #import <BugsnagPerformance/BugsnagPerformancePriority.h>
 
-const BugsnagPerformancePriority BugsnagPerformancePriorityHigh = 100000;
-const BugsnagPerformancePriority BugsnagPerformancePriorityMedium = 50000;
-const BugsnagPerformancePriority BugsnagPerformancePriorityLow = 0;
+__attribute__((visibility("default"))) const BugsnagPerformancePriority BugsnagPerformancePriorityHigh = 100000;
+__attribute__((visibility("default"))) const BugsnagPerformancePriority BugsnagPerformancePriorityMedium = 50000;
+__attribute__((visibility("default"))) const BugsnagPerformancePriority BugsnagPerformancePriorityLow = 0;

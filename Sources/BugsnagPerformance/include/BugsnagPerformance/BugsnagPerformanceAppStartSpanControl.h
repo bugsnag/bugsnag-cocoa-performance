@@ -10,6 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+OBJC_EXPORT
 @interface BugsnagPerformanceAppStartSpanControl: NSObject<BugsnagPerformanceSpanControl>
 - (void)setType:(NSString *_Nullable)type;
 - (void)clearType;

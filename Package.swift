@@ -13,6 +13,9 @@ let package = Package(
             name: "BugsnagPerformance",
             targets: ["BugsnagPerformance"]),
         .library(
+            name: "BugsnagPerformanceNamedSpans",
+            targets: ["BugsnagPerformanceNamedSpans"]),
+        .library(
             name: "BugsnagPerformanceSwift",
             targets: ["BugsnagPerformanceSwift"]),
         .library(
@@ -37,6 +40,15 @@ let package = Package(
             ]
         ),
         .target(
+            name: "BugsnagPerformanceNamedSpans",
+            dependencies: ["BugsnagPerformance"],
+            path: "Sources/BugsnagPerformanceNamedSpans",
+            cSettings: [
+                .define("NS_BLOCK_ASSERTIONS", .when(configuration: .release)),
+                .define("NDEBUG", .when(configuration: .release))
+            ]
+        ),
+        .target(
             name: "BugsnagPerformanceSwift",
             dependencies: ["BugsnagPerformance"],
             path: "Sources/BugsnagPerformanceSwift",
@@ -55,6 +67,9 @@ let package = Package(
             dependencies: ["BugsnagPerformance"]),
         .testTarget(
             name: "BugsnagPerformanceTestsSwift",
+            dependencies: ["BugsnagPerformance"]),
+        .testTarget(
+            name: "BugsnagPerformanceNamedSpansTests",
             dependencies: ["BugsnagPerformance"]),
     ],
     cxxLanguageStandard: .cxx14

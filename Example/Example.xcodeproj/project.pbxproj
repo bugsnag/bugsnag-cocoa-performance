@@ -21,6 +21,7 @@
 		09BEAE002B9752C1002312C9 /* BugsnagPerformanceSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 09BEADFF2B9752C1002312C9 /* BugsnagPerformanceSwift */; };
 		CB572EF429C1B96100FD7A2A /* AnotherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011C69DE28F57F1500C5BA3C /* AnotherViewController.swift */; };
 		CBC90C4029C45DCB00280884 /* ForceUBSan.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC90C3F29C45DCB00280884 /* ForceUBSan.m */; };
+		DA87DAD52E2FD7840040F086 /* BugsnagPerformanceNamedSpans in Frameworks */ = {isa = PBXBuildFile; productRef = DA87DAD42E2FD7840040F086 /* BugsnagPerformanceNamedSpans */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 				0983A1752B14966B00DDF4FF /* BugsnagPerformance in Frameworks */,
 				09BEADFE2B9752C1002312C9 /* BugsnagPerformance in Frameworks */,
 				09BEAE002B9752C1002312C9 /* BugsnagPerformanceSwift in Frameworks */,
+				DA87DAD52E2FD7840040F086 /* BugsnagPerformanceNamedSpans in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,6 +158,7 @@
 				0983A1742B14966B00DDF4FF /* BugsnagPerformance */,
 				09BEADFD2B9752C1002312C9 /* BugsnagPerformance */,
 				09BEADFF2B9752C1002312C9 /* BugsnagPerformanceSwift */,
+				DA87DAD42E2FD7840040F086 /* BugsnagPerformanceNamedSpans */,
 			);
 			productName = Example;
 			productReference = 010656A428DB2E8C00F2A9A6 /* Example.app */;
@@ -574,6 +577,10 @@
 		09BEADFF2B9752C1002312C9 /* BugsnagPerformanceSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BugsnagPerformanceSwift;
+		};
+		DA87DAD42E2FD7840040F086 /* BugsnagPerformanceNamedSpans */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BugsnagPerformanceNamedSpans;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

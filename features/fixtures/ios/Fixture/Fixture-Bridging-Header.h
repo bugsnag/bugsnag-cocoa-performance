@@ -5,6 +5,7 @@
 #import <stdint.h>
 #import <Foundation/Foundation.h>
 #import "BugsnagPerformanceConfiguration+Private.h"
+#import "BugsnagPerformanceSpan+Internal.h"
 #import "Logging.h"
 #import "ObjCURLSession.h"
 #import "ErrorGenerator.h"

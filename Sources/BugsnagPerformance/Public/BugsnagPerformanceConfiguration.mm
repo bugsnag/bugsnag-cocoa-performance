@@ -25,13 +25,13 @@ using namespace bugsnag;
 #define DEFAULT_ATTRIBUTE_COUNT_LIMIT 128
 
 #define DEFAULT_URL_FORMAT @"https://%@.otlp.bugsnag.com/v1/traces"
-#define DEFAULT_HUB_URL_FORMAT @"https://%@.otlp.insighthub.smartbear.com/v1/traces"
+#define DEFAULT_SECONDARY_URL_FORMAT @"https://%@.otlp.bugsnag.smartbear.com/v1/traces"
 #define HUB_API_PREFIX @"00000"
 
 static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
 #pragma clang diagnostic ignored "-Wformat-nonliteral"
     NSString *fmt = [apiKey hasPrefix:HUB_API_PREFIX]
-        ? DEFAULT_HUB_URL_FORMAT
+        ? DEFAULT_SECONDARY_URL_FORMAT
         : DEFAULT_URL_FORMAT;
     return nsurlWithString([NSString stringWithFormat:fmt, apiKey], nil);
 }

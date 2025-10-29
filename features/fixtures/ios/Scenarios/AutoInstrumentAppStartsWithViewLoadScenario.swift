@@ -12,8 +12,6 @@ class AutoInstrumentAppStartsWithViewLoadScenario: Scenario {
     
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
-        bugsnagPerfConfig.autoInstrumentAppStarts = true
-        bugsnagPerfConfig.autoInstrumentViewControllers = true
         // This test can generate a variable number of spans depending on the OS version,
         // so use a timed send instead.
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
@@ -21,6 +19,21 @@ class AutoInstrumentAppStartsWithViewLoadScenario: Scenario {
     }
 
     override func run() {
-        
+        // Save a startup configuration
+        let startupConfig = StartupConfiguration(configFile: nil)
+        startupConfig.autoInstrumentAppStarts = true
+        startupConfig.autoInstrumentViewControllers = true
+        startupConfig.scenarioName = String(describing: AutoInstrumentAppStartsWithViewLoadScenario.self)
+        startupConfig.endpoint = fixtureConfig.tracesURL
+
+        startupConfig.saveStartupConfig()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            exit(0)
+        }
+    }
+
+    override func customViewController() -> UIViewController? {
+        return ViewController()
     }
 }

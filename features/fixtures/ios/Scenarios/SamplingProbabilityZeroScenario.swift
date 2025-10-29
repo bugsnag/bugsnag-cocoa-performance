@@ -13,6 +13,7 @@ class SamplingProbabilityZeroScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.internal.initialSamplingProbability = 0
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 2
     }
     
     override func postLoad() {

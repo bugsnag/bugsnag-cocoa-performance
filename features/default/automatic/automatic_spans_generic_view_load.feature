@@ -3,7 +3,7 @@
 Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
   Scenario: AutoInstrumentGenericViewLoadScenario
     Given I run "AutoInstrumentGenericViewLoadScenario"
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -40,7 +40,7 @@ Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
 
   Scenario: AutoInstrumentGenericViewLoadScenario2
     Given I run "AutoInstrumentGenericViewLoadScenario2"
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"

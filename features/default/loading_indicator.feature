@@ -2,11 +2,11 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: LoadingIndicatorViewSimpleStopScenario
     Given I run "LoadingIndicatorViewSimpleStopScenario"
-    And I wait for 17 spans
+    And I wait to receive at least 17 spans
     And I wait for 2 seconds
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     And I invoke "finishLoading"
-    And I wait for 19 spans
+    And I wait to receive at least 19 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -45,11 +45,11 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: LoadingIndicatorViewSimpleRemoveScenario
     Given I run "LoadingIndicatorViewSimpleRemoveScenario"
-    And I wait for 17 spans
+    And I wait to receive at least 17 spans
     And I wait for 2 seconds
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     And I invoke "finishLoading"
-    And I wait for 19 spans
+    And I wait to receive at least 19 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -88,7 +88,7 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: LoadingIndicatorViewNestedViewStopScenario - stop inner, outer, child
     Given I run "LoadingIndicatorViewNestedViewStopScenario"
-    And I wait for 25 spans
+    And I wait to receive at least 25 spans
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
@@ -101,7 +101,7 @@ Feature: LoadingIndicator view to mark data loading phase
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     And I invoke "finishLoadingChild"
-    And I wait for 29 spans
+    And I wait to receive at least 29 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -144,12 +144,12 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: LoadingIndicatorViewNestedViewStopScenario - stop child, inner, outer
     Given I run "LoadingIndicatorViewNestedViewStopScenario"
-    And I wait for 25 spans
+    And I wait to receive at least 25 spans
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     And I invoke "finishLoadingChild"
-    And I wait for 27 spans
+    And I wait to receive at least 27 spans
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -157,7 +157,7 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I invoke "finishLoadingParentOuter"
-    And I wait for 29 spans
+    And I wait to receive at least 29 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -200,7 +200,7 @@ Feature: LoadingIndicator view to mark data loading phase
 
   Scenario: LoadingIndicatorViewNestedViewStopScenario - stop outer, child, inner
     Given I run "LoadingIndicatorViewNestedViewStopScenario"
-    And I wait for 25 spans
+    And I wait to receive at least 25 spans
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
@@ -209,12 +209,12 @@ Feature: LoadingIndicator view to mark data loading phase
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     And I invoke "finishLoadingChild"
-    And I wait for 27 spans
+    And I wait to receive at least 27 spans
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     And I wait for 1 second
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I invoke "finishLoadingParentInner"
-    And I wait for 29 spans
+    And I wait to receive at least 29 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"

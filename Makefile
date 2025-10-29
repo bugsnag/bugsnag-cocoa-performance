@@ -189,6 +189,7 @@ endif
 	# Workaround for CocoaPods/CocoaPods#8000
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings BugsnagPerformance.podspec.json
 	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings --synchronous BugsnagPerformanceSwift.podspec.json
+	@EXPANDED_CODE_SIGN_IDENTITY="" EXPANDED_CODE_SIGN_IDENTITY_NAME="" EXPANDED_PROVISIONING_PROFILE="" pod trunk push --allow-warnings --synchronous BugsnagPerformanceNamedSpans.podspec.json
 
 bump: ## Bump the version numbers to $VERSION
 ifeq ($(VERSION),)
@@ -202,6 +203,9 @@ endif
 	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
 	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceSwift.podspec.json
+	@sed -i '' "s/\"version\": .*,/\"version\": \"$(VERSION)\",/" BugsnagPerformanceNamedSpans.podspec.json
+	@sed -i '' "s/\"tag\": .*/\"tag\": \"v$(VERSION)\"/" BugsnagPerformanceNamedSpans.podspec.json
+	@sed -i '' "s/\"BugsnagPerformance\": .*/\"BugsnagPerformance\": \"$(VERSION)\"/" BugsnagPerformanceNamedSpans.podspec.json
 	@sed -i '' "s/## TBD/## $(VERSION) ($(DATE))/" CHANGELOG.md
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" .jazzy.yaml
 	@sed -i '' -E "s/[0-9]+\.[0-9]+\.[0-9]+/$(VERSION)/g" Sources/BugsnagPerformance/Private/Version.h
@@ -213,7 +217,7 @@ ifeq ($(VERSION),)
 	@$(error VERSION is not defined. Run with `make VERSION=number prerelease`)
 endif
 	@git checkout -b release-v$(VERSION)
-	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json BugsnagPerformance.xcodeproj/project.pbxproj
+	@git add BugsnagPerformance.podspec.json VERSION CHANGELOG.md .jazzy.yaml Sources/BugsnagPerformance/Private/Version.h BugsnagPerformanceSwift.podspec.json BugsnagPerformanceNamedSpans.podspec.json BugsnagPerformance.xcodeproj/project.pbxproj
 	@git diff --exit-code || (echo "you have unstaged changes - Makefile may need updating to `git add` some more files"; exit 1)
 	@git commit -m "Release v$(VERSION)"
 	@git push origin release-v$(VERSION)
