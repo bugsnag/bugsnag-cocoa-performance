@@ -140,6 +140,19 @@ ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(NSString *className,
     return span;
 }
 
+BugsnagPerformanceSpan *
+ViewLoadSpanFactoryImpl::startLoadingIndicatorSpan(NSString *name,
+                                                   BugsnagPerformanceSpanContext *parentContext) noexcept {
+    SpanOptions options;
+    options.parentContext = parentContext;
+    auto span = plainSpanFactory_->startSpan(name,
+                                             options,
+                                             BSGTriStateYes,
+                                             @{},
+                                             @[]);
+    return span;
+}
+
 #pragma mark Helpers
 
 BugsnagPerformanceSpan *

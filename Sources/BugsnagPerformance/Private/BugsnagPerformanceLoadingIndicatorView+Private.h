@@ -8,11 +8,15 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 #import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
+#import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 
 @interface BugsnagPerformanceLoadingIndicatorView()
 
-- (void)addCondition:(BugsnagPerformanceSpanCondition *)condition;
+@property (nonatomic, strong) BugsnagPerformanceSpan *loadingSpan;
+
 - (void)addConditions:(NSArray<BugsnagPerformanceSpanCondition *> *)conditions;
 - (void)closeAllConditions;
+- (void)setLoadingSpan:(BugsnagPerformanceSpan *)loadingSpan;
+- (void)endLoadingSpan;
 
 @end

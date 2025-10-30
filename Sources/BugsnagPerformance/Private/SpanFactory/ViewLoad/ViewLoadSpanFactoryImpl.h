@@ -43,6 +43,8 @@ public:
                                                    BugsnagPerformanceSpanContext *parentContext,
                                                    NSString *phase,
                                                    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
+    BugsnagPerformanceSpan *startLoadingIndicatorSpan(NSString *name,
+                                                      BugsnagPerformanceSpanContext *parentContext) noexcept;
     
     void setup(ViewLoadSpanFactoryCallbacks *callbacks) noexcept { callbacks_ = callbacks; }
     

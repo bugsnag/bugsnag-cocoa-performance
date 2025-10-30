@@ -26,6 +26,7 @@ class LoadingIndicatorViewSimpleStopScenario: Scenario {
 
     override func run() {
         viewController = LoadingIndicatorViewSimpleStopScenario_ViewController()
+        viewController?.name = scenarioConfig["name"]
         UIApplication.shared.windows[0].rootViewController!.present(
             viewController!, animated: true)
     }
@@ -34,9 +35,11 @@ class LoadingIndicatorViewSimpleStopScenario: Scenario {
 class LoadingIndicatorViewSimpleStopScenario_ViewController: UIViewController {
     
     var loadingIndicator: BugsnagPerformanceLoadingIndicatorView!
+    var name: String? = nil
 
     override func loadView() {
         loadingIndicator = BugsnagPerformanceLoadingIndicatorView()
+        loadingIndicator.name = name
         view = loadingIndicator
     }
     
