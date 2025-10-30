@@ -126,9 +126,11 @@ SpanLifecycleHandlerImpl::processFrameMetrics(BugsnagPerformanceSpan *span) noex
     if (mergedSnapshot.totalFrames == 0) {
         return;
     }
-    [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
-    [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
-    [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
+    [span forceMutate:^{
+        [span setAttribute:@"bugsnag.rendering.total_frames" withValue:@(mergedSnapshot.totalFrames)];
+        [span setAttribute:@"bugsnag.rendering.slow_frames" withValue:@(mergedSnapshot.totalSlowFrames)];
+        [span setAttribute:@"bugsnag.rendering.frozen_frames" withValue:@(mergedSnapshot.totalFrozenFrames)];
+    }];
     
     auto frozenFrame = mergedSnapshot.firstFrozenFrame;
     while (frozenFrame != nil) {

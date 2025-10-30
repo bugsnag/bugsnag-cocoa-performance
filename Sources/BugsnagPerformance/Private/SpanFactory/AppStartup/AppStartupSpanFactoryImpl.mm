@@ -23,6 +23,7 @@ AppStartupSpanFactoryImpl::startAppStartOverallSpan(CFAbsoluteTime startTime, bo
     options.firstClass = BSGTriStateYes;
     options.metricsOptions.cpu = BSGTriStateYes;
     options.metricsOptions.memory = BSGTriStateYes;
+    options.metricsOptions.rendering = BSGTriStateYes;
     auto attributes = spanAttributesProvider_->appStartSpanAttributes(firstViewName, isColdLaunch);
     return startAppStartSpan(name, options, attributes, @[]);
 }
