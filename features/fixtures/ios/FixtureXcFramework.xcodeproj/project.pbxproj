@@ -76,6 +76,7 @@
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
+		96DADF542EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DADF532EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift */; };
 		96E0B34B2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
 		96F129332DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
@@ -195,6 +196,8 @@
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
+		96DADF532EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanEndOnDestroyScenario.swift; sourceTree = "<group>"; };
+		96DADF582EAFCECF00B56CE6 /* BugsnagPerformanceSpan+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpan+Internal.h"; sourceTree = "<group>"; };
 		96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
 		96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
@@ -268,19 +271,20 @@
 				01FE4DA828E1AEBD00D1F239 /* AppDelegate.swift */,
 				01FE4DB128E1AEBF00D1F239 /* Assets.xcassets */,
 				CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */,
+				96DADF582EAFCECF00B56CE6 /* BugsnagPerformanceSpan+Internal.h */,
 				09637A402B060E7C00F4F776 /* CommandReaderThread.swift */,
-				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
+				098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */,
+				098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */,
 				01FE4DC628E1D5A400D1F239 /* Fixture.swift */,
+				CBAAE25429125F5F006D4AA0 /* Fixture-Bridging-Header.h */,
+				09637A442B0B883B00F4F776 /* FixtureConfig.swift */,
 				01FE4DB628E1AEBF00D1F239 /* Info.plist */,
 				01FE4DB328E1AEBF00D1F239 /* LaunchScreen.storyboard */,
 				01FE4DAE28E1AEBD00D1F239 /* Main.storyboard */,
 				09637A422B0617FE00F4F776 /* MazeRunnerCommand.swift */,
 				01FE4DAA28E1AEBD00D1F239 /* SceneDelegate.swift */,
-				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
-				09637A442B0B883B00F4F776 /* FixtureConfig.swift */,
-				098C3B4E2C53CEC0006F9886 /* ErrorGenerator.h */,
-				098C3B4F2C53CEC0006F9886 /* ErrorGenerator.m */,
 				098C3B512C53CECF006F9886 /* SwiftErrorGenerator.swift */,
+				01FE4DAC28E1AEBD00D1F239 /* ViewController.swift */,
 			);
 			path = Fixture;
 			sourceTree = "<group>";
@@ -356,6 +360,7 @@
 				09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */,
 				093EE63C2C32E5B900632B30 /* ManualParentSpanScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
+				96DADF532EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift */,
 				01FE4DC228E1AF3700D1F239 /* ManualSpanScenario.swift */,
 				CB7FD92A299BB4E300499E13 /* ManualUIViewLoadScenario.swift */,
 				098808DF2B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift */,
@@ -478,6 +483,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBE43A9929A8EFA3000B4205 /* ProbabilityExpiryScenario.swift in Sources */,
+				96DADF542EAFCB6300B56CE6 /* ManualSpanEndOnDestroyScenario.swift in Sources */,
 				CBE0872B29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift in Sources */,
 				96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */,
 				09E045612C98649D003882D3 /* SetAttributeCountLimitScenario.swift in Sources */,

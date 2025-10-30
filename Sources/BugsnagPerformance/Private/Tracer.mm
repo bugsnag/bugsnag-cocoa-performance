@@ -14,6 +14,7 @@
 #import "Instrumentation/ViewLoadInstrumentation.h"
 #import "BugsnagPerformanceLibrary.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "BugsnagPerformanceSpanContext+Private.h"
 #import <algorithm>
 
 using namespace bugsnag;
@@ -103,6 +104,8 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
     __block auto blockThis = this;
     auto parentSpan = options.parentContext;
     if (parentSpan == nil) {
+        BSGLogTrace(@"Tracer::startSpan: Parent is intentionally set to nil");
+    } else if (parentSpan == [BugsnagPerformanceSpanContext defaultContext]) {
         BSGLogTrace(@"Tracer::startSpan: No parent specified; using current span");
         parentSpan = spanStackingHandler_->currentSpan();
     }

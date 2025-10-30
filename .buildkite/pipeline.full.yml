@@ -82,6 +82,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 16 E2E Tests"
         depends_on:
@@ -115,6 +119,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 15 E2E Tests"
         depends_on:
@@ -148,6 +156,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 14 E2E Tests"
         depends_on:
@@ -181,6 +193,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "XcFramework E2E Tests"
     steps:
@@ -216,6 +232,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS XcFramework 16 E2E Tests"
         depends_on:
@@ -249,6 +269,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS XcFramework 15 E2E Tests"
         depends_on:
@@ -282,6 +306,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS XcFramework 14 E2E Tests"
         depends_on:
@@ -315,6 +343,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling disabled E2E"
     steps:
@@ -349,6 +381,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 16 E2E Tests swizzling disabled"
         depends_on:
@@ -381,6 +417,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 15 E2E Tests swizzling disabled"
         depends_on:
@@ -413,6 +453,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 14 E2E Tests swizzling disabled"
         depends_on:
@@ -445,6 +489,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
   - group: "Swizzling premain E2E"
     steps:
@@ -480,6 +528,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 16 E2E Tests swizzling premain"
         depends_on:
@@ -513,6 +565,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 15 E2E Tests swizzling premain"
         depends_on:
@@ -546,6 +602,10 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2
 
       - label: ":bitbar: iOS 14 E2E Tests swizzling premain"
         depends_on:
@@ -579,3 +639,7 @@ steps:
         concurrency: 25
         concurrency_group: bitbar-app
         concurrency_method: eager
+        retry:
+          automatic:
+            - exit_status: 103  # Appium session failed
+              limit: 2

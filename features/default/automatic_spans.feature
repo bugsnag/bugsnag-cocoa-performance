@@ -2,7 +2,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentAppStartsScenario
     Given I run "AutoInstrumentAppStartsScenario"
-    And I wait for 4 spans
+    And I wait to receive at least 4 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:4"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
@@ -29,7 +29,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentViewLoadScenario
     Given I run "AutoInstrumentViewLoadScenario"
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -67,7 +67,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentSubViewLoadScenario
     Given I run "AutoInstrumentSubViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 27 spans
+    And I wait to receive at least 27 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -156,7 +156,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentTabViewLoadScenario
     Given I run "AutoInstrumentTabViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -204,7 +204,7 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentNavigationViewLoadScenario
     Given I run "AutoInstrumentNavigationViewLoadScenario"
     And I wait for 2 seconds
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -251,7 +251,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentPreLoadedViewLoadScenario
     Given I run "AutoInstrumentPreLoadedViewLoadScenario"
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -291,7 +291,7 @@ Feature: Automatic instrumentation spans
     And I configure scenario "keep_view_controller_alive" to "true"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 17 spans
+    And I wait to receive at least 17 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -331,7 +331,7 @@ Feature: Automatic instrumentation spans
     And I configure scenario "keep_view_controller_alive" to "false"
     And I start bugsnag
     And I run the loaded scenario
-    And I wait for 18 spans
+    And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
@@ -369,7 +369,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentSwiftUIScenario no change
     Given I run "AutoInstrumentSwiftUIScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
@@ -393,7 +393,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentSwiftUIScenario with change
     Given I run "AutoInstrumentSwiftUIScenario"
-    And I wait for 3 spans
+    And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
@@ -415,7 +415,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     And I discard every trace
     And I invoke "switchView"
-    Then I wait for 2 spans
+    Then I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/Text"
     * a span field "name" equals "[ViewLoadPhase/body]/Text"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -431,7 +431,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentSwiftUIDeferredScenario toggleEndSpanDefer
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
@@ -449,7 +449,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -463,7 +463,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentSwiftUIDeferredScenario toggle everything
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
@@ -481,7 +481,7 @@ Feature: Automatic instrumentation spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     Then I discard every trace
     And I invoke "toggleEndSpanDefer"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -494,7 +494,7 @@ Feature: Automatic instrumentation spans
     * a span string attribute "bugsnag.view.name" equals "text1"
     Then I discard every trace
     And I invoke "toggleHideText1"
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -509,7 +509,7 @@ Feature: Automatic instrumentation spans
   Scenario: Automatically start a network span that has a parent
     Given I run "AutoInstrumentNetworkWithParentScenario"
     And I wait for 2 seconds
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
@@ -537,7 +537,7 @@ Feature: Automatic instrumentation spans
   Scenario: Automatically start a network span that has no parent
     Given I run "AutoInstrumentNetworkNoParentScenario"
     And I wait for 2 seconds
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -562,7 +562,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: Auto-capture multiple network spans
     Given I run "AutoInstrumentNetworkMultiple"
-    And I wait for 10 spans
+    And I wait to receive at least 10 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -588,11 +588,11 @@ Feature: Automatic instrumentation spans
   Scenario: Don't send an auto network span that failed to send
     Given I run "AutoInstrumentNetworkBadAddressScenario"
     # Only the initial command request should be captured.
-    Then I wait for 1 span
+    Then I wait to receive at least 1 span
 
   Scenario: Automatically start a network span that has a null URL
     Given I run "AutoInstrumentNetworkNullURLScenario"
-    And I wait for 1 span
+    And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -615,7 +615,7 @@ Feature: Automatic instrumentation spans
   Scenario: Automatically start a network span triggered by AVAssetDownloadURLSession (must not crash)
     Given I run "AutoInstrumentAVAssetScenario"
     And I wait for 2 seconds
-    And I wait for 2 spans
+    And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -708,7 +708,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: ComplexViewScenario
     Given I run "ComplexViewScenario"
-    And I wait for 27 spans
+    And I wait to receive at least 27 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:27"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
