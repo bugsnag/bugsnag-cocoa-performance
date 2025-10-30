@@ -1,12 +1,20 @@
 Changelog
 =========
 
-## TBD
+## 1.16.0 (2025-10-30)
+
+### Enhancements
+
+* Reduced the overhead caused by using BugsnagPerformanceNamedSpans.
+  [481](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/481)
 
 ### Bug fixes
 
 * Guard against an edge case where an auto-captured URL request with a nil URL can cause a crash.
   [498](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/498)
+  
+* Fixed an issue causing spans to be assigned parentContext automatically despite it being set to nil in span options.
+  [469](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/469)
 
 ## 1.15.0 (2025-08-14)
 
