@@ -86,6 +86,7 @@
 		969EE0E32E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */; };
 		969EE0E92E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0E82E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift */; };
 		96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */; };
+		96CD493D2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD493C2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift */; };
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
@@ -202,6 +203,7 @@
 		969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionsOverrideEndTimeBackwardsScenario.swift; sourceTree = "<group>"; };
 		969EE0E82E7851F000600F63 /* ConditionsBlockingBlockedEndedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionsBlockingBlockedEndedSpanScenario.swift; sourceTree = "<group>"; };
 		96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsWithViewLoadScenario.swift; sourceTree = "<group>"; };
+		96CD493C2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsLoadingScenario.swift; sourceTree = "<group>"; };
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
@@ -317,9 +319,10 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */,
 				1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */,
-				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
+				96CD493C2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift */,
 				01D3A7DF28F0290D0063D79E /* AutoInstrumentAppStartsScenario.swift */,
 				96A25F3A2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift */,
 				099331FB2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift */,
@@ -565,6 +568,7 @@
 				098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */,
+				96CD493D2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift in Sources */,
 				09DA59A52A6E866B00A06EEE /* ManualNetworkCallbackScenario.swift in Sources */,
 				09301DC12B63A65A000A7C12 /* ComplexViewScenario.swift in Sources */,
 				96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */,

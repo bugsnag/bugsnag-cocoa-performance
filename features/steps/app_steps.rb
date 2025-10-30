@@ -190,6 +190,12 @@ Then('the span named {string} integer attribute {string} is greater than {int}')
   Maze.check.true(selected_attribute['value']['intValue'].to_f > expected)
 end
 
+Then('the span named {string} integer attribute {string} exists') do |spanName, attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| span['name'] == spanName && a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?)
+end
+
 Then('a span integer attribute {string} is greater than {int}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
