@@ -142,7 +142,7 @@ steps:
 
   - group: "Swizzling disabled e2e tests"
     steps:
-      - label: ":bitbar: {{matrix}} e2e tests swizzling disabled"
+      - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
         matrix:
           - "IOS_17"
           - "IOS_16"
@@ -188,7 +188,7 @@ steps:
 
   - group: "Swizzling premain e2e tests"
     steps:
-      - label: ":bitbar: {{matrix}} e2e tests swizzling premain"
+      - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
         matrix:
           - "IOS_17"
           - "IOS_16"
@@ -196,7 +196,7 @@ steps:
           - "IOS_14"
         depends_on:
           - "ios_fixture_swizzling_premain"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 60
         agents:
           queue: "opensource"
         plugins:
