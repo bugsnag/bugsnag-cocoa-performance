@@ -377,6 +377,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -415,6 +416,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -453,6 +455,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -491,6 +494,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -531,6 +535,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -570,6 +575,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -609,6 +615,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
@@ -648,6 +655,7 @@ steps:
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           "docker-compose#v4.8.0":
             pull: "maze-runner-bb"
