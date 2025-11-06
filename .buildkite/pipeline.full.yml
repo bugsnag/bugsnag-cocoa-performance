@@ -74,7 +74,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build/bb_ipa_url.txt"
-              - "--device={{matrix}}}}"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"

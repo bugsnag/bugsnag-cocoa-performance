@@ -155,8 +155,8 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} e2e tests"
         matrix:
-          - "IOS_13"
           - "IOS_18"
+          - "IOS_13"
         depends_on:
           - "ios_fixture"
         timeout_in_minutes: 60
@@ -199,8 +199,8 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} XcFramework e2e tests"
         matrix:
-          - "IOS_13"
           - "IOS_18"
+          - "IOS_13"
         depends_on:
           - "ios_xcframework_fixture"
         timeout_in_minutes: 30
@@ -243,8 +243,8 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
         matrix:
-          - "IOS_13"
           - "IOS_18"
+          - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_disabled"
         timeout_in_minutes: 30
@@ -287,8 +287,8 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
         matrix:
-          - "IOS_13"
           - "IOS_18"
+          - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_premain"
         timeout_in_minutes: 60
@@ -332,8 +332,8 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} Benchmark tests"
         matrix:
-          - "IOS_13"
           - "IOS_18"
+          - "IOS_13"
         depends_on:
           - "ios_fixture_benchmarks"
         timeout_in_minutes: 30
