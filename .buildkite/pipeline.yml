@@ -6,9 +6,9 @@ agents:
 
 steps:
 
-  - group: ":hammer: Builds"
+  - group: "Builds"
     steps:
-      - label: "XCFramework"
+      - label: ":hammer: XCFramework"
         key: "xcframework"
         timeout_in_minutes: 10
         commands:
@@ -22,7 +22,7 @@ steps:
                 - "BugsnagPerformanceSwift.xcframework.zip"
                 - "BugsnagPerformanceNamedSpans.xcframework.zip"
 
-      - label: "Carthage"
+      - label: ":hammer: Carthage"
         timeout_in_minutes: 10
         commands:
           - "bundle install"
@@ -30,7 +30,7 @@ steps:
         env:
           XCODE_VERSION: "16.3.0"
 
-      - label: "CocoaPods"
+      - label: ":hammer: CocoaPods"
         timeout_in_minutes: 10
         commands:
           - "bundle install"
@@ -38,7 +38,7 @@ steps:
         env:
           XCODE_VERSION: "16.3.0"
 
-      - label: "Example"
+      - label: ":hammer: Example"
         timeout_in_minutes: 10
         commands:
           - "bundle install"
@@ -46,7 +46,7 @@ steps:
         env:
           XCODE_VERSION: "16.3.0"
 
-      - label: "Fixture"
+      - label: ":hammer: Fixture"
         key: "ios_fixture"
         timeout_in_minutes: 10
         commands:
@@ -61,7 +61,7 @@ steps:
           - "features/fixtures/ios/output/bs_ipa_url.txt"
           - "features/fixtures/ios/output/Fixture.ipa"
 
-      - label: "XcFramework Fixture"
+      - label: ":hammer: XcFramework fixture"
         key: "ios_xcframework_fixture"
         depends_on: "xcframework"
         timeout_in_minutes: 10
@@ -82,7 +82,7 @@ steps:
           - "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
           - "features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
 
-      - label: "Fixture swizzling disabled"
+      - label: ":hammer: Fixture swizzling disabled"
         key: "ios_fixture_swizzling_disabled"
         timeout_in_minutes: 10
         commands:
@@ -96,7 +96,7 @@ steps:
           - "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
 
-      - label: "Fixture swizzling premain"
+      - label: ":hammer: Fixture swizzling premain"
         key: "ios_fixture_swizzling_premain"
         timeout_in_minutes: 10
         commands:
@@ -110,7 +110,7 @@ steps:
           - "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
 
-      - label: "Benchmarks Fixture"
+      - label: ":hammer: Benchmarks fixture"
         key: "ios_fixture_benchmarks"
         timeout_in_minutes: 10
         commands:
@@ -125,9 +125,9 @@ steps:
           - "features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
           - "features/fixtures/benchmarks/output/FixtureBenchmarks.ipa"
 
-  - group: ":xcode_simulator: Unit Tests"
+  - group: "Unit tests"
     steps:
-      - label: "iOS 18 Unit Tests"
+      - label: ":xcode_simulator: iOS 18 Unit Tests"
         timeout_in_minutes: 10
         commands:
           - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\""
@@ -138,7 +138,7 @@ steps:
             upload:
               - "logs/*"
 
-      - label: "iOS 13 Unit Tests"
+      - label: ":xcode_simulator: iOS 13 Unit tests"
         timeout_in_minutes: 10
         agents:
           queue: "macos-12-arm"
@@ -151,46 +151,12 @@ steps:
             upload:
               - "logs/*"
 
-  - group: "E2E Tests"
+  - group: "e2e tests"
     steps:
-      - label: ":browserstack: iOS 18 E2E Tests"
-        depends_on:
-          - "ios_fixture"
-        timeout_in_minutes: 30
-        agents:
-          queue: "opensource"
-        plugins:
-          "artifacts#v1.9.3":
-            download: "features/fixtures/ios/output/bs_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          "docker-compose#v4.8.0":
-            pull: "maze-runner-bs"
-            run: "maze-runner-bs"
-            service-ports: "true"
-            command:
-              - "--app=@build/bs_ipa_url.txt"
-              - "--device=IOS_18"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "features/default"
-          "test-collector#v1.10.2":
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: "browserstack-app"
-        concurrency_method: "eager"
-        retry:
-          automatic:
-            - exit_status: -1  # Agent was lost
-              limit: 2
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 13 E2E Tests"
+      - label: ":bitbar: {{matrix}} e2e tests"
+        matrix:
+          - "IOS_13"
+          - "IOS_18"
         depends_on:
           - "ios_fixture"
         timeout_in_minutes: 30
@@ -229,46 +195,12 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
 
-  - group: "XcFramework E2E Tests"
+  - group: "XcFramework e2e tests"
     steps:
-      - label: ":browserstack: iOS XcFramework 18 E2E Tests"
-        depends_on:
-          - "ios_xcframework_fixture"
-        timeout_in_minutes: 30
-        agents:
-          queue: "opensource"
-        plugins:
-          "artifacts#v1.9.3":
-            download: "features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          "docker-compose#v4.8.0":
-            pull: "maze-runner-bs"
-            run: "maze-runner-bs"
-            service-ports: "true"
-            command:
-              - "--app=@build/bs_xcframework_ipa_url.txt"
-              - "--device=IOS_18"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "features/default/automatic_spans.feature"
-          "test-collector#v1.10.2":
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: "browserstack-app"
-        concurrency_method: "eager"
-        retry:
-          automatic:
-            - exit_status: -1  # Agent was lost
-              limit: 2
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS XcFramework 13 E2E Tests"
+      - label: ":bitbar: {{matrix}} XcFramework e2e tests"
+        matrix:
+          - "IOS_13"
+          - "IOS_18"
         depends_on:
           - "ios_xcframework_fixture"
         timeout_in_minutes: 30
@@ -287,7 +219,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_13"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
@@ -307,46 +239,12 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
 
-  - group: "Swizzling disabled E2E Tests"
+  - group: "Swizzling disabled e2e tests"
     steps:
-      - label: ":browserstack: iOS 18 E2E Tests swizzling disabled"
-        depends_on:
-          - "ios_fixture_swizzling_disabled"
-        timeout_in_minutes: 30
-        agents:
-          queue: "opensource"
-        plugins:
-          "artifacts#v1.9.3":
-            download: "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          "docker-compose#v4.8.0":
-            pull: "maze-runner-bs"
-            run: "maze-runner-bs"
-            service-ports: "true"
-            command:
-              - "--app=@build/bs_url_swizzling_disabled.txt"
-              - "--device=IOS_18"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "features/swizzling_disabled"
-          "test-collector#v1.10.2":
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: "browserstack-app"
-        concurrency_method: "eager"
-        retry:
-          automatic:
-            - exit_status: -1  # Agent was lost
-              limit: 2
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 13 E2E Tests swizzling disabled"
+      - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
+        matrix:
+          - "IOS_13"
+          - "IOS_18"
         depends_on:
           - "ios_fixture_swizzling_disabled"
         timeout_in_minutes: 30
@@ -365,7 +263,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build/bb_url_swizzling_disabled.txt"
-              - "--device=IOS_13"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
@@ -385,48 +283,12 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
 
-  - group: "Swizzling premain E2E Tests"
+  - group: "Swizzling premain e2e tests"
     steps:
-      - label: ":browserstack: iOS 18 E2E Tests swizzling premain"
-        depends_on:
-          - "ios_fixture_swizzling_premain"
-        timeout_in_minutes: 30
-        agents:
-          queue: "opensource"
-        plugins:
-          "artifacts#v1.9.3":
-            download: "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/maze_output.zip"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          "docker-compose#v4.8.0":
-            pull: "maze-runner-bs"
-            run: "maze-runner-bs"
-            service-ports: "true"
-            command:
-              - "--app=@build/bs_url_swizzling_premain.txt"
-              - "--device=IOS_18"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          "test-collector#v1.10.2":
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: "browserstack-app"
-        concurrency_method: "eager"
-        retry:
-          automatic:
-            - exit_status: -1  # Agent was lost
-              limit: 2
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 13 E2E Tests swizzling premain"
+      - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
+        matrix:
+          - "IOS_13"
+          - "IOS_18"
         depends_on:
           - "ios_fixture_swizzling_premain"
         timeout_in_minutes: 30
@@ -445,7 +307,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_13"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
@@ -466,46 +328,12 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
               
-  - group: "Benchmark Tests"
+  - group: "Benchmark tests"
     steps:
-      - label: ":browserstack: iOS 18 Benchmark Tests"
-        depends_on:
-          - "ios_fixture_benchmarks"
-        timeout_in_minutes: 30
-        agents:
-          queue: "opensource"
-        plugins:
-          "artifacts#v1.9.3":
-            download: "features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          "docker-compose#v4.8.0":
-            pull: "maze-runner-bs"
-            run: "maze-runner-bs"
-            service-ports: "true"
-            command:
-              - "--app=@build_benchmarks/bs_ipa_url_benchmarks.txt"
-              - "--device=IOS_18"
-              - "--fail-fast"
-              - "--farm=bs"
-              - "features/benchmarks"
-          "test-collector#v1.10.2":
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 5
-        concurrency_group: "browserstack-app"
-        concurrency_method: "eager"
-        retry:
-          automatic:
-            - exit_status: -1  # Agent was lost
-              limit: 2
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 13 Benchmark Tests"
+      - label: ":bitbar: {{matrix}} Benchmark tests"
+        matrix:
+          - "IOS_13"
+          - "IOS_18"
         depends_on:
           - "ios_fixture_benchmarks"
         timeout_in_minutes: 30
@@ -524,7 +352,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build_benchmarks/bb_ipa_url_benchmarks.txt"
-              - "--device=IOS_13"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
