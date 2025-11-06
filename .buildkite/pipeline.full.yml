@@ -84,6 +84,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -121,6 +123,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -158,6 +162,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -195,6 +201,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -234,6 +242,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -271,6 +281,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -308,6 +320,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -345,6 +359,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -383,6 +399,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -419,6 +437,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -455,6 +475,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -491,6 +513,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -530,6 +554,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -567,6 +593,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -604,6 +632,8 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
@@ -641,5 +671,7 @@ steps:
         concurrency_method: eager
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
