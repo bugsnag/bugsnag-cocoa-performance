@@ -49,7 +49,11 @@ class CommandReaderThread: Thread {
             case CommandFetchState.success:
                 logDebug("Command fetch: Request succeeded")
                 let command = fetchTask.command!
-                if (command.uuid != "") {
+                if (command.action == "reset_uuid") {
+                    logDebug("Resetting last command UUID to empty string")
+                    lastCommandID = ""
+                } else {
+                    logDebug("Last command UUID is now: \(command.uuid)")
                     lastCommandID = command.uuid
                 }
                 commandReceiver.receiveCommand(command: command)
@@ -105,7 +109,7 @@ class CommandFetchTask {
             if let data = data {
                 do {
                     let asString = String(data: data, encoding: .utf8)!
-                    logInfo("Received command \(asString)")
+                    logInfo("Received command:\n\(asString)")
                     let decoded = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                     let command = MazeRunnerCommand.init(fromJSONDict: decoded)
                     logInfo("Command fetched and decoded")
