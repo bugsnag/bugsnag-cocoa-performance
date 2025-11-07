@@ -47,14 +47,16 @@ class CommandReaderThread: Thread {
             Thread.sleep(forTimeInterval: pollingInterval)
             switch fetchTask.state {
             case CommandFetchState.success:
-                logDebug("Command fetch: Request succeeded")
+                logInfo("Command fetch: Request succeeded")
                 let command = fetchTask.command!
                 if (command.action == "reset_uuid") {
-                    logDebug("Resetting last command UUID to empty string")
+                    logInfo("Resetting last command UUID to empty string")
                     lastCommandID = ""
-                } else {
-                    logDebug("Last command UUID is now: \(command.uuid)")
+                } else if (command.uuid != "") {
                     lastCommandID = command.uuid
+                    logInfo("Last command UUID is now: \(lastCommandID)")
+                } else {
+                    logInfo("Last command UUID unchanged: \(lastCommandID)")
                 }
                 commandReceiver.receiveCommand(command: command)
                 return
