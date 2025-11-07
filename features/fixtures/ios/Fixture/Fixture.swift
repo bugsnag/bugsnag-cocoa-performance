@@ -123,7 +123,7 @@ class Fixture: NSObject, CommandReceiver {
                 self.scenario?.enterBackground(forSeconds: Int(command.args["duration"] as! String)!)
                 self.readyToReceiveCommand = true
                 break
-            case "noop":
+            case "noop","reset_uuid":
                 self.readyToReceiveCommand = true
                 break
             default:
