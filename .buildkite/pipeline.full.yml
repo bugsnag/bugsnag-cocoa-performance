@@ -8,6 +8,15 @@ agents:
 steps:
   - group: "Unit tests"
     steps:
+      - label: ":xcode_simulator: iOS 18 Unit tests"
+        timeout_in_minutes: 10
+        commands:
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\""
+        plugins:
+          "artifacts#v1.9.3":
+            upload:
+              - "logs/*"
+
       - label: ":xcode_simulator: iOS 17 Unit tests"
         timeout_in_minutes: 10
         commands:
@@ -38,7 +47,7 @@ steps:
       - label: ":xcode_simulator: iOS 14 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5"
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
         plugins:
           "artifacts#v1.9.3":
             upload:
@@ -52,6 +61,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} e2e tests"
         matrix:
+          - "IOS_18"
           - "IOS_17"
           - "IOS_16"
           - "IOS_15"
@@ -98,6 +108,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} XcFramework e2e tests"
         matrix:
+          - "IOS_18"
           - "IOS_17"
           - "IOS_16"
           - "IOS_15"
@@ -144,6 +155,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
         matrix:
+          - "IOS_18"
           - "IOS_17"
           - "IOS_16"
           - "IOS_15"
@@ -190,6 +202,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
         matrix:
+          - "IOS_18"
           - "IOS_17"
           - "IOS_16"
           - "IOS_15"
