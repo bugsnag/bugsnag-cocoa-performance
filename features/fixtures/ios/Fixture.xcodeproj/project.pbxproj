@@ -61,6 +61,7 @@
 		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		1C377BA02E78BDFE002148B2 /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */; };
 		1C7852A62E5FA7DF00BB8E2D /* ManualSpanWithContextParentNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */; };
+		1C8CB8C12EC3C975007BF492 /* DebugModeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8C02EC3C970007BF492 /* DebugModeScenario.swift */; };
 		1CC791752E67838A0015FFBA /* AppStartTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */; };
 		1CFB95492EA798DC00025C16 /* AppStartTypeLateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */; };
 		960EECE92B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */; };
@@ -178,6 +179,7 @@
 		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
 		1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithContextParentNilScenario.swift; sourceTree = "<group>"; };
+		1C8CB8C02EC3C970007BF492 /* DebugModeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugModeScenario.swift; sourceTree = "<group>"; };
 		1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeScenario.swift; sourceTree = "<group>"; };
 		1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeLateScenario.swift; sourceTree = "<group>"; };
 		960EECE82B2316E1009FAA11 /* AutoInstrumentGenericViewLoadScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario.swift; sourceTree = "<group>"; };
@@ -319,6 +321,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C8CB8C02EC3C970007BF492 /* DebugModeScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */,
 				1CC791742E6783850015FFBA /* AppStartTypeScenario.swift */,
@@ -550,6 +553,7 @@
 				09F3F5282D6C728300BAA0A3 /* MemoryMetricsScenario.swift in Sources */,
 				966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */,
 				09E9BDAF2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift in Sources */,
+				1C8CB8C12EC3C975007BF492 /* DebugModeScenario.swift in Sources */,
 				099331FC2C11F6CF009EC92F /* AutoInstrumentAVAssetScenario.swift in Sources */,
 				962CE7FF2E64FF2300380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */,
 				097FFC0B2C33D931000E03E8 /* AutoInstrumentNullNetworkCallbackScenario.swift in Sources */,

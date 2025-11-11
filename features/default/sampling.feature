@@ -14,3 +14,11 @@ Feature: Sampling
     * a span field "name" equals "Pre-start"
     * a span field "name" equals "Post-start"
     * a span double attribute "bugsnag.sampling.p" equals 1.0
+
+  Scenario: Spans are sent regardless of batch being full if in debug mode
+    Given I run "DebugModeScenario"
+    And I wait to receive between 29 and 30 spans
+    * a span field "name" equals "DebugModeScenario-29"
+    And I wait for 5 seconds
+    And I wait to receive between 59 and 60 spans
+    * a span field "name" equals "DebugModeScenario-59"

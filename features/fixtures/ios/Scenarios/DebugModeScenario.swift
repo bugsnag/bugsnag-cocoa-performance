@@ -1,0 +1,32 @@
+//
+//  DebugModeScenario.swift
+//  Fixture
+//
+//  Created by Daria Bialobrzeska on 11/11/2025.
+//
+
+import Bugsnag
+import BugsnagPerformance
+
+@objcMembers
+class DebugModeScenario: Scenario {
+
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.debugMode = true
+    }
+
+    override func run() {
+        for i in 0..<30 {
+            var spanName = "DebugModeScenario-\(i)"
+            let span = BugsnagPerformance.startSpan(name: spanName)
+            span.end()
+        }
+        sleep(5)
+        for i in 30..<60 {
+            var spanName = "DebugModeScenario-\(i)"
+            let span = BugsnagPerformance.startSpan(name: spanName)
+            span.end()
+        }
+    }
+}

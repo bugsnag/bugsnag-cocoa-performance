@@ -59,6 +59,7 @@
 		1C3E2DB22EAA5F4900B32AD2 /* AppStartTypeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E2DAE2EAA5F4900B32AD2 /* AppStartTypeScenario.swift */; };
 		1C3E2DB32EAA5F4900B32AD2 /* ManualSpanWithRemoteContextParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E2DB02EAA5F4900B32AD2 /* ManualSpanWithRemoteContextParentScenario.swift */; };
 		1C3E2DB42EAA5F4900B32AD2 /* AutoInstrumentGenericViewLoadScenario2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3E2DAF2EAA5F4900B32AD2 /* AutoInstrumentGenericViewLoadScenario2.swift */; };
+		1C8CB8C32EC3D0D2007BF492 /* DebugModeScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8CB8C22EC3D0D2007BF492 /* DebugModeScenario.swift */; };
 		1CA34CAB2E81A09F00512E2F /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */; };
 		55A1B7CB2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; };
 		55A1B7CC2CBFF140009D68A7 /* BugsnagPerformance.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -196,6 +197,7 @@
 		1C3E2DAE2EAA5F4900B32AD2 /* AppStartTypeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeScenario.swift; sourceTree = "<group>"; };
 		1C3E2DAF2EAA5F4900B32AD2 /* AutoInstrumentGenericViewLoadScenario2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario2.swift; sourceTree = "<group>"; };
 		1C3E2DB02EAA5F4900B32AD2 /* ManualSpanWithRemoteContextParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithRemoteContextParentScenario.swift; sourceTree = "<group>"; };
+		1C8CB8C22EC3D0D2007BF492 /* DebugModeScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugModeScenario.swift; sourceTree = "<group>"; };
 		1CA34CAA2E81A09F00512E2F /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
 		55A1B7C92CBFF140009D68A7 /* BugsnagPerformance.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformance.xcframework; path = ../../../BugsnagPerformance.xcframework; sourceTree = "<group>"; };
 		55A1B7CA2CBFF140009D68A7 /* BugsnagPerformanceSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceSwift.xcframework; path = ../../../BugsnagPerformanceSwift.xcframework; sourceTree = "<group>"; };
@@ -342,6 +344,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				1C8CB8C22EC3D0D2007BF492 /* DebugModeScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				1C3E2DAD2EAA5F4900B32AD2 /* AppStartTypeLateScenario.swift */,
 				1C3E2DAE2EAA5F4900B32AD2 /* AppStartTypeScenario.swift */,
@@ -625,6 +628,7 @@
 				098C3B502C53CEC0006F9886 /* ErrorGenerator.m in Sources */,
 				0921F02E2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift in Sources */,
 				01E7918A28EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift in Sources */,
+				1C8CB8C32EC3D0D2007BF492 /* DebugModeScenario.swift in Sources */,
 				962CE8012E64FF6100380522 /* LoadingIndicatorViewNestedViewStopScenario.swift in Sources */,
 				09DC622A2C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift in Sources */,
 				969EE0E72E784E7A00600F63 /* ConditionsBasicScenario.swift in Sources */,
