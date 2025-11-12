@@ -2,7 +2,7 @@ env:
   LANG: "en_GB.UTF-8"
 
 agents:
-  queue: "macos-15"
+  queue: "macos-26"
 
 steps:
 
@@ -14,7 +14,7 @@ steps:
         commands:
           - "make build_xcframework"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         plugins:
           - "artifacts#v1.9.3":
               upload:
@@ -28,7 +28,7 @@ steps:
           - "bundle install"
           - "./features/fixtures/carthage/build.sh"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: CocoaPods"
         timeout_in_minutes: 10
@@ -36,7 +36,7 @@ steps:
           - "bundle install"
           - "pod lib lint BugsnagPerformance.podspec.json"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: Example"
         timeout_in_minutes: 10
@@ -44,7 +44,7 @@ steps:
           - "bundle install"
           - "./Example/build.sh"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: Fixture"
         key: "ios_fixture"
@@ -55,7 +55,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bb_ipa_url.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bs_ipa_url.txt"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_ipa_url.txt"
           - "features/fixtures/ios/output/bs_ipa_url.txt"
@@ -71,7 +71,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         plugins:
           - "artifacts#v1.9.3":
               download:
@@ -91,7 +91,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
@@ -105,7 +105,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_premain.txt"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
@@ -119,7 +119,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt"
           - "features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
@@ -127,12 +127,12 @@ steps:
 
   - group: "Unit tests"
     steps:
-      - label: ":xcode_simulator: iOS 18 Unit Tests"
+      - label: ":xcode_simulator: iOS 26 Unit Tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1 DEVICE=\"iPhone 17\""
         env:
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "26.1.1"
         plugins:
           "artifacts#v1.9.3":
             upload:
@@ -155,7 +155,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} e2e tests"
         matrix:
-          - "IOS_18"
+          - "IOS_26"
           - "IOS_13"
         depends_on:
           - "ios_fixture"
@@ -175,7 +175,7 @@ steps:
             service-ports: "true"
             command:
               - "--app=@build/bb_ipa_url.txt"
-              - "--device=IOS_13"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
@@ -199,7 +199,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} XcFramework e2e tests"
         matrix:
-          - "IOS_18"
+          - "IOS_26"
           - "IOS_13"
         depends_on:
           - "ios_xcframework_fixture"
@@ -243,7 +243,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
         matrix:
-          - "IOS_18"
+          - "IOS_26"
           - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_disabled"
@@ -287,7 +287,7 @@ steps:
     steps:
       - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
         matrix:
-          - "IOS_18"
+          - "IOS_26"
           - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_premain"
@@ -327,12 +327,12 @@ steps:
               limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
-              
+
   - group: "Benchmark tests"
     steps:
       - label: ":bitbar: {{matrix}} Benchmark tests"
         matrix:
-          - "IOS_18"
+          - "IOS_26"
           - "IOS_13"
         depends_on:
           - "ios_fixture_benchmarks"
