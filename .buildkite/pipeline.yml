@@ -14,7 +14,7 @@ steps:
         commands:
           - "make build_xcframework"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         plugins:
           - "artifacts#v1.9.3":
               upload:
@@ -28,7 +28,7 @@ steps:
           - "bundle install"
           - "./features/fixtures/carthage/build.sh"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: CocoaPods"
         timeout_in_minutes: 10
@@ -36,7 +36,7 @@ steps:
           - "bundle install"
           - "pod lib lint BugsnagPerformance.podspec.json"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: Example"
         timeout_in_minutes: 10
@@ -44,7 +44,7 @@ steps:
           - "bundle install"
           - "./Example/build.sh"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
 
       - label: ":hammer: Fixture"
         key: "ios_fixture"
@@ -55,7 +55,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bb_ipa_url.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bs_ipa_url.txt"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_ipa_url.txt"
           - "features/fixtures/ios/output/bs_ipa_url.txt"
@@ -71,7 +71,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         plugins:
           - "artifacts#v1.9.3":
               download:
@@ -91,7 +91,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_disabled.txt"
@@ -105,7 +105,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bs_url_swizzling_premain.txt"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
           - "features/fixtures/ios/output/bs_url_swizzling_premain.txt"
@@ -119,7 +119,7 @@ steps:
           - "bundle exec upload-app --farm=bb --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt"
           - "bundle exec upload-app --farm=bs --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         artifact_paths:
           - "features/fixtures/benchmarks/output/bb_ipa_url_benchmarks.txt"
           - "features/fixtures/benchmarks/output/bs_ipa_url_benchmarks.txt"
@@ -130,9 +130,9 @@ steps:
       - label: ":xcode_simulator: iOS 26 Unit Tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.0.1 DEVICE=\"iPhone 17\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1.1 DEVICE=\"iPhone 17\""
         env:
-          XCODE_VERSION: "26.0.1"
+          XCODE_VERSION: "26.1.1"
         plugins:
           "artifacts#v1.9.3":
             upload:
