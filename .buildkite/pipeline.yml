@@ -130,7 +130,7 @@ steps:
       - label: ":xcode_simulator: iOS 26 Unit Tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1.1 DEVICE=\"iPhone 17\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1 DEVICE=\"iPhone 17\""
         env:
           XCODE_VERSION: "26.1.1"
         plugins:
