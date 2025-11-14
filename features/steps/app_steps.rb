@@ -326,34 +326,6 @@ Then('a span named {string} duration is equal or less than {float}') do |name, m
   Maze.check.true(duration <= maxDuration)
 end
 
-When('I wait for exactly {int} span(s)') do |span_count|
-  assert_received_exactly_spans span_count, Maze::Server.list_for('traces')
-end
-
-def assert_received_exactly_spans(span_count, list)
-  timeout = Maze.config.receive_requests_wait
-  wait = Maze::Wait.new(timeout: timeout)
-
-  received = wait.until { spans_from_request_list(list).size == span_count }
-  received_count = spans_from_request_list(list).size
-
-  unless received
-    raise Test::Unit::AssertionFailedError.new <<-MESSAGE
-    Expected #{span_count} spans but received #{received_count} within the #{timeout}s timeout.
-    This could indicate that:
-    - Bugsnag crashed with a fatal error.
-    - Bugsnag did not make the requests that it should have done.
-    - The requests were made, but not deemed to be valid (e.g. missing integrity header).
-    - The requests made were prevented from being received due to a network or other infrastructure issue.
-    Please check the Maze Runner and device logs to confirm.)
-    MESSAGE
-  end
-
-  wait = Maze::Wait.new(timeout: 5)
-
-  Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
-end
-
 Then('a span double attribute {string} equals {float}') do |attribute, value|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
