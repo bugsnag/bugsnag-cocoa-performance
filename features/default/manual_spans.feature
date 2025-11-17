@@ -302,7 +302,7 @@ Feature: Manual creation of spans
   Scenario: Trace exceeds the max package size
     Given I set the HTTP status code for the next requests to 402,402,402
     And I run "MaxPayloadSizeScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
@@ -370,7 +370,7 @@ Feature: Manual creation of spans
 
   Scenario: Set OnStart
     Given I run "OnStartCallbackScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "OnStartCallbackScenario"
@@ -379,7 +379,7 @@ Feature: Manual creation of spans
 
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "OnEndCallbackScenario"

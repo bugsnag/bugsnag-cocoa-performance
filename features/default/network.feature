@@ -2,7 +2,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentNetworkCallbackScenario
     Given I run "AutoInstrumentNetworkCallbackScenario"
-    And I wait for exactly 2 spans
+    And I wait to receive 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[HTTP/GET]"
@@ -32,7 +32,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: ManualNetworkCallbackScenario
     Given I run "ManualNetworkCallbackScenario"
-    And I wait for exactly 2 spans
+    And I wait to receive 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[HTTP/GET]"
