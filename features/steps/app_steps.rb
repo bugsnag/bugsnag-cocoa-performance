@@ -435,6 +435,25 @@ def spans_from_request_list(list)
       .select { |s| !s.nil? }
 end
 
+Then('the difference between "Bugsnag-Sent-At" of first and last request is at most {int} seconds') do |max_diff_s|
+  list = Maze::Server.list_for("traces")
+  requestListSize = list.size_all
+  req1 = list.get(0)[:request]
+  req2 = list.get(requestListSize - 1)[:request]
+  req1sec = 100000
+  req2sec = 100000
+
+  # DateTime.parse throws ArgumentError if it can't parse the string
+  if dt = DateTime.iso8601(req1["Bugsnag-Sent-At"]) rescue false
+    req1sec = dt.hour * 3600 + dt.min * 60 + dt.second
+  end
+  if dt = DateTime.iso8601(req2["Bugsnag-Sent-At"]) rescue false
+    req2sec = dt.hour * 3600 + dt.min * 60 + dt.second
+  end
+  diff = (req1sec - req2sec).abs
+  Maze.check.true(diff <= max_diff_s)
+end
+
 When("I relaunch the app after shutdown") do
   max_attempts = 20
   attempts = 0

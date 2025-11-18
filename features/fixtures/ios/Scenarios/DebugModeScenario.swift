@@ -22,11 +22,12 @@ class DebugModeScenario: Scenario {
             let span = BugsnagPerformance.startSpan(name: spanName)
             span.end()
         }
-        sleep(5)
-        for i in 30..<60 {
-            var spanName = "DebugModeScenario-\(i)"
-            let span = BugsnagPerformance.startSpan(name: spanName)
-            span.end()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            for i in 30..<60 {
+                var spanName = "DebugModeScenario-\(i)"
+                let span = BugsnagPerformance.startSpan(name: spanName)
+                span.end()
+            }
         }
     }
 }

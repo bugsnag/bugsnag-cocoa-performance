@@ -17,8 +17,7 @@ Feature: Sampling
 
   Scenario: Spans are sent regardless of batch being full if in debug mode
     Given I run "DebugModeScenario"
-    And I wait to receive between 29 and 30 spans
-    * a span field "name" equals "DebugModeScenario-29"
-    And I wait for 5 seconds
     And I wait to receive between 59 and 60 spans
+    * a span field "name" equals "DebugModeScenario-29"
     * a span field "name" equals "DebugModeScenario-59"
+    And the difference between "Bugsnag-Sent-At" of first and last request is at most 5 seconds
