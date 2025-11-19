@@ -64,10 +64,14 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow Some
     Given I load scenario "AutoInstrumentNetworkTracePropagationScenario"
     And I configure bugsnag "propagateTraceParentToUrlsMatching" to ".*test.*"
-    And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1,?temp=1"
     And I start bugsnag
+    And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1"
     And I run the loaded scenario
-    Then I wait to receive 2 reflections
-    And the reflection "traceparent" header matches the regex "^00-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-01"
-    Then I discard the oldest reflection
-    And the reflection "traceparent" header is not present
+    And I wait to receive a reflection
+    Then the reflection "traceparent" header matches the regex "^00-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-01"
+    And I discard the oldest reflection
+
+    Then I invoke "setCallSitesWithCallSiteStrs:" with parameter "?temp=1"
+    And I run the loaded scenario
+    And I wait to receive a reflection
+    Then the reflection "traceparent" header is not present
