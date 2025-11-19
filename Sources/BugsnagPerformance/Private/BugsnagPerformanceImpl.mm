@@ -24,6 +24,7 @@ using namespace bugsnag;
 
 static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
 static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
+static constexpr NSTimeInterval WORK_INTERVAL_DEBUG_MODE_SECONDS = 5;
 
 // App start spans will be thrown out if the early app start duration exceeds this.
 static constexpr CFTimeInterval maxAppStartDuration = 2.0;
@@ -115,6 +116,9 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
     };
+
+    // Check if app is built in debug mode
+    isDebugMode_ = config.isDebugMode;
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
@@ -138,7 +142,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
-    performWorkInterval_ = config.internal.performWorkInterval;
+    performWorkInterval_ = (isDebugMode_ == YES || config.debugMode == YES) ? WORK_INTERVAL_DEBUG_MODE_SECONDS : config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;

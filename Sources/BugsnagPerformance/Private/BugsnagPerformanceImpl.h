@@ -136,6 +136,7 @@ private:
     uint64_t maxPackageContentLength_{1000000};
     std::atomic<bool> isStarted_{false};
     bool hasCheckedAppStartDuration_{false};
+    bool isDebugMode_{false};
 
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
