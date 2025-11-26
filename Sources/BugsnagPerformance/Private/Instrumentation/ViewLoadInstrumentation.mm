@@ -170,6 +170,7 @@ ViewLoadInstrumentation::onLoadView(UIViewController *viewController) noexcept {
     auto name = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, name, options);
+    BSGLogInfo(@"ViewLoadInstrumentation::onLoadView calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(name, viewType)];
 
     if (isEarlySpanPhase_) {
@@ -245,6 +246,7 @@ void ViewLoadInstrumentation::adjustSpanIfPreloaded(BugsnagPerformanceSpan *span
         auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
         [span updateName: [NSString stringWithFormat:@"%@ (pre-loaded)", span.name]];
         [span updateStartTime: viewWillAppearStartTime];
+        BSGLogInfo(@"ViewLoadInstrumentation::adjustSpanIfPreloaded calling internalSetMultipleAttributes");
         [span internalSetMultipleAttributes:spanAttributesProvider_->preloadedViewLoadSpanAttributes(className, viewType)];
         instrumentationState.isMarkedAsPreloaded = true;
     }
@@ -341,6 +343,7 @@ ViewLoadInstrumentation::startViewLoadPhaseSpan(UIViewController *viewController
     auto span = tracer_->startViewLoadPhaseSpan(name,
                                                 phase,
                                                 instrumentationState.overallSpan);
+    BSGLogInfo(@"ViewLoadInstrumentation::startViewLoadPhaseSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(name, phase)];
 
     if (isEarlySpanPhase_) {

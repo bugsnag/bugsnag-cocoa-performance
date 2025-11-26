@@ -351,12 +351,14 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
                 if (shouldSampleCPU(span)) {
                     BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
                     [span forceMutate:^() {
+                        BSGLogInfo(@"BugsnagPerformanceImpl::sendCurrentBatchTask (cpu metrics) calling internalSetMultipleAttributes");
                         [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
                     }];
                 }
                 if (shouldSampleMemory(span)) {
                     BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting memory sample attributes for span %@", span.name);
                     [span forceMutate:^() {
+                        BSGLogInfo(@"BugsnagPerformanceImpl::sendCurrentBatchTask (memory metrics) calling internalSetMultipleAttributes");
                         [span internalSetMultipleAttributes:spanAttributesProvider_->memorySampleAttributes(samples)];
                     }];
                 }
@@ -565,6 +567,7 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name) noexcept {
     SpanOptions options;
     auto span = tracer_->startCustomSpan(name, options);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startCustomSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->customSpanAttributes()];
     return span;
 }
@@ -572,6 +575,7 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name) 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startCustomSpan(name, options);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startCustomSpan + options calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->customSpanAttributes()];
     return span;
 }
@@ -579,6 +583,7 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name, 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType) noexcept {
     SpanOptions options;
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startViewLoadSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
@@ -586,6 +591,7 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *className, BugsnagPerformanceViewType viewType, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startViewLoadSpan + viewType + options calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
     return span;
 }
@@ -595,6 +601,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     auto viewType = BugsnagPerformanceViewTypeUIKit;
     auto className = [NSString stringWithUTF8String:object_getClassName(controller)];
     auto span = tracer_->startViewLoadSpan(viewType, className, options);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startViewLoadSpan + options calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadSpanAttributes(className, viewType)];
 
     std::lock_guard<std::mutex> guard(viewControllersToSpansMutex_);
@@ -604,6 +611,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
+    BSGLogInfo(@"BugsnagPerformanceImpl::startViewLoadPhaseSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }
@@ -648,6 +656,7 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         span = tracer_->startNetworkSpan(name, options);
+        BSGLogInfo(@"BugsnagPerformanceImpl::reportNetworkSpan calling internalSetMultipleAttributes");
         [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
         [span endWithEndTime:interval.endDate];
     }

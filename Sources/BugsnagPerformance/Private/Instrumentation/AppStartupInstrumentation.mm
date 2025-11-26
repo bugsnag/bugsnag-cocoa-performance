@@ -165,6 +165,7 @@ AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
     if (firstViewName_ == nil) {
         firstViewName_ = name;
         if (isAppStartInProgress()) {
+            BSGLogInfo(@"AppStartupInstrumentation::didStartViewLoadSpan calling internalSetMultipleAttributes");
             [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
         }
     }
@@ -201,6 +202,7 @@ AppStartupInstrumentation::beginAppStartSpan() noexcept {
     SpanOptions options;
     options.startTime = didStartProcessAtTime_;
     appStartSpan_ = tracer_->startAppStartSpan(name, options);
+    BSGLogInfo(@"AppStartupInstrumentation::beginAppStartSpan calling internalSetMultipleAttributes");
     [appStartSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartSpanAttributes(firstViewName_, isColdLaunch_)];
 }
 
@@ -218,6 +220,7 @@ AppStartupInstrumentation::beginPreMainSpan() noexcept {
     options.startTime = didStartProcessAtTime_;
     options.parentContext = appStartSpan_;
     preMainSpan_ = tracer_->startAppStartSpan(name, options);
+    BSGLogInfo(@"AppStartupInstrumentation::beginPreMainSpan calling internalSetMultipleAttributes");
     [preMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - pre main()")];
 }
 
@@ -235,6 +238,7 @@ AppStartupInstrumentation::beginPostMainSpan() noexcept {
     options.startTime = didCallMainFunctionAtTime_;
     options.parentContext = appStartSpan_;
     postMainSpan_ = tracer_->startAppStartSpan(name, options);
+    BSGLogInfo(@"AppStartupInstrumentation::beginPostMainSpan calling internalSetMultipleAttributes");
     [postMainSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"App launching - post main()")];
 }
 
@@ -252,6 +256,7 @@ AppStartupInstrumentation::beginUIInitSpan() noexcept {
     options.startTime = didFinishLaunchingAtTime_;
     options.parentContext = appStartSpan_;
     uiInitSpan_ = tracer_->startAppStartSpan(name, options);
+    BSGLogInfo(@"AppStartupInstrumentation::beginUIInitSpan calling internalSetMultipleAttributes");
     [uiInitSpan_ internalSetMultipleAttributes:spanAttributesProvider_->appStartPhaseSpanAttributes(@"UI init")];
 }
 

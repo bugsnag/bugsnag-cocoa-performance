@@ -156,6 +156,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
         BSGLogTrace(@"Tracer::startSpan: Making current context");
         spanStackingHandler_->push(span);
     }
+    BSGLogInfo(@"Tracer::startSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:SpanAttributes::get()];
     potentiallyOpenSpans_->add(span);
     
@@ -351,6 +352,7 @@ Tracer::startNetworkSpan(NSString *httpMethod, SpanOptions options) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
     auto span = startSpan(name, options, BSGTriStateUnset);
     span.kind = SPAN_KIND_CLIENT;
+    BSGLogInfo(@"Tracer::startNetworkSpan calling internalSetMultipleAttributes");
     [span internalSetMultipleAttributes:spanAttributesProvider_->initialNetworkSpanAttributes()];
     return span;
 }

@@ -277,7 +277,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes {
     @synchronized (self) {
         if (!self.isMutable) {
-            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable", self.spanId, self.name);
+            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable, attributes: %@, startTime: %@, endTime: %@, spanState: %@", self.spanId, self.name, attributes, self.startTime, self.endTime, self.state);
             return;
         }
         [self.attributes addEntriesFromDictionary:attributes];
