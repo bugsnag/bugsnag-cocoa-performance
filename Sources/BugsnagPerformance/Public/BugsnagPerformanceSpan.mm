@@ -277,8 +277,12 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 - (void)internalSetMultipleAttributes:(NSDictionary *)attributes {
     @synchronized (self) {
         if (!self.isMutable) {
-            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable, attributes: %@, startTime: %@, endTime: %@, spanState: %@", self.spanId, self.name, attributes, self.startTime, self.endTime, self.state);
-            return;
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS"];
+            NSString *startTimeString = [formatter stringFromDate:self.startTime];
+            NSString *endTimeString = [formatter stringFromDate:self.endTime];
+            BSGLogError(@"Called setMultipleAttributes, but span %llu (%@) is immutable, attributes: %@, startTime: %@, endTime: %@, spanState: %d", self.spanId, self.name, attributes, startTimeString, endTimeString, self.state);
+           return;
         }
         [self.attributes addEntriesFromDictionary:attributes];
     }
