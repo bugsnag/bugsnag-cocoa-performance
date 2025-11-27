@@ -2,7 +2,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: AutoInstrumentNetworkCallbackScenario
     Given I run "AutoInstrumentNetworkCallbackScenario"
-    And I wait for exactly 2 spans
+    And I wait to receive 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[HTTP/GET]"
@@ -32,7 +32,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: ManualNetworkCallbackScenario
     Given I run "ManualNetworkCallbackScenario"
-    And I wait for exactly 2 spans
+    And I wait to receive 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[HTTP/GET]"
@@ -64,10 +64,14 @@ Feature: Automatic instrumentation spans
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow Some
     Given I load scenario "AutoInstrumentNetworkTracePropagationScenario"
     And I configure bugsnag "propagateTraceParentToUrlsMatching" to ".*test.*"
-    And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1,?temp=1"
     And I start bugsnag
+    And I invoke "setCallSitesWithCallSiteStrs:" with parameter "?test=1"
     And I run the loaded scenario
-    Then I wait to receive 2 reflections
-    And the reflection "traceparent" header matches the regex "^00-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-01"
-    Then I discard the oldest reflection
-    And the reflection "traceparent" header is not present
+    And I wait to receive a reflection
+    Then the reflection "traceparent" header matches the regex "^00-[A-Fa-f0-9]{32}-[A-Fa-f0-9]{16}-01"
+    And I discard the oldest reflection
+
+    Then I invoke "setCallSitesWithCallSiteStrs:" with parameter "?temp=1"
+    And I run the loaded scenario
+    And I wait to receive a reflection
+    Then the reflection "traceparent" header is not present

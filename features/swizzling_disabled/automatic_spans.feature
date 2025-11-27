@@ -14,7 +14,7 @@ Feature: Automatic instrumentation spans
 
   Scenario: Automatically start a network span that has a parent with swizzling disabled
     Given I run "AutoInstrumentNetworkWithParentScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     * a span field "name" equals "parentSpan"
 
   Scenario: Auto-capture multiple network spans with swizzling disabled

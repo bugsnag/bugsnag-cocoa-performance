@@ -31,7 +31,7 @@ class FixtureConfig {
 
         docsURL = mazeRunnerBaseAddress.appendingPathComponent("docs")
         tracesURL = mazeRunnerBaseAddress.appendingPathComponent("traces")
-        commandURL = mazeRunnerBaseAddress.appendingPathComponent("command")
+        commandURL = mazeRunnerBaseAddress.appendingPathComponent("idem-command")
         metricsURL = mazeRunnerBaseAddress.appendingPathComponent("metrics")
         notifyURL = mazeRunnerBaseAddress.appendingPathComponent("notify")
         sessionsURL = mazeRunnerBaseAddress.appendingPathComponent("sessions")

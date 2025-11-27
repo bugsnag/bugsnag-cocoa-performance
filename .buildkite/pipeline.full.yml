@@ -3,643 +3,245 @@ env:
   XCODE_VERSION: "16.3.0"
 
 agents:
-  queue: macos-15
+  queue: "macos-15"
 
 steps:
-  - group: ":xcode_simulator: Unit Tests"
+  - group: "Unit tests"
     steps:
-      - label: "iOS 17 Unit Tests"
+      - label: ":xcode_simulator: iOS 18 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE="iPhone 15"
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\""
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             upload:
               - "logs/*"
 
-      - label: "iOS 16 Unit Tests"
+      - label: ":xcode_simulator: iOS 17 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE="iPhone 14"
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE=\"iPhone 15\""
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             upload:
               - "logs/*"
 
-      - label: "iOS 15 Unit Tests"
+      - label: ":xcode_simulator: iOS 16 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE="iPhone 13"
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE=\"iPhone 14\""
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             upload:
               - "logs/*"
 
-      - label: "iOS 14 Unit Tests"
+      - label: ":xcode_simulator: iOS 15 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - ./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE=\"iPhone 13\""
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
+            upload:
+              - "logs/*"
+
+      - label: ":xcode_simulator: iOS 14 Unit tests"
+        timeout_in_minutes: 10
+        commands:
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
+        plugins:
+          "artifacts#v1.9.3":
             upload:
               - "logs/*"
         agents:
-          queue: macos-12-arm
+          queue: "macos-12-arm"
         env:
           XCODE_VERSION: "14"
 
-  - group: "E2E Tests"
+  - group: "e2e tests"
     steps:
-      - label: ":bitbar: iOS 17 E2E Tests"
+      - label: ":bitbar: {{matrix}} e2e tests"
+        matrix:
+          - "IOS_18"
+          - "IOS_17"
+          - "IOS_16"
+          - "IOS_15"
+          - "IOS_14"
         depends_on:
-          - ios_fixture
-        timeout_in_minutes: 30
+          - "ios_fixture"
+        timeout_in_minutes: 60
         agents:
-          queue: opensource
+          queue: "opensource"
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             download: "features/fixtures/ios/output/bb_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
             command:
               - "--app=@build/bb_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "features/default"
-          test-collector#v1.10.2:
+          "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
         concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
-      - label: ":bitbar: iOS 16 E2E Tests"
-        depends_on:
-          - ios_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_ipa_url.txt"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 15 E2E Tests"
-        depends_on:
-          - ios_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_ipa_url.txt"
-              - "--device=IOS_15"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 14 E2E Tests"
-        depends_on:
-          - ios_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_ipa_url.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-  - group: "XcFramework E2E Tests"
+  - group: "XcFramework e2e tests"
     steps:
-      - label: ":bitbar: iOS XcFramework 17 E2E Tests"
+      - label: ":bitbar: {{matrix}} XcFramework e2e tests"
+        matrix:
+          - "IOS_18"
+          - "IOS_17"
+          - "IOS_16"
+          - "IOS_15"
+          - "IOS_14"
         depends_on:
-          - ios_xcframework_fixture
+          - "ios_xcframework_fixture"
         timeout_in_minutes: 30
         agents:
-          queue: opensource
+          queue: "opensource"
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
             upload:
               - "maze_output/failed/**/*"
               - "maze_output/metrics.csv"
               - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
             command:
               - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_17"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "features/default/automatic_spans.feature"
-          test-collector#v1.10.2:
+          "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
         concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
-      - label: ":bitbar: iOS XcFramework 16 E2E Tests"
-        depends_on:
-          - ios_xcframework_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS XcFramework 15 E2E Tests"
-        depends_on:
-          - ios_xcframework_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_15"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS XcFramework 14 E2E Tests"
-        depends_on:
-          - ios_xcframework_fixture
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-              - "maze_output/maze_output.zip"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_xcframework_ipa_url.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/default/automatic_spans.feature"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-  - group: "Swizzling disabled E2E"
+  - group: "Swizzling disabled e2e tests"
     steps:
-      - label: ":bitbar: iOS 17 E2E Tests swizzling disabled"
+      - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
+        matrix:
+          - "IOS_18"
+          - "IOS_17"
+          - "IOS_16"
+          - "IOS_15"
+          - "IOS_14"
         depends_on:
-          - ios_fixture_swizzling_disabled
+          - "ios_fixture_swizzling_disabled"
         timeout_in_minutes: 30
         agents:
-          queue: opensource
+          queue: "opensource"
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
             command:
               - "--app=@build/bb_url_swizzling_disabled.txt"
-              - "--device=IOS_17"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "features/swizzling_disabled"
-          test-collector#v1.10.2:
+          "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
         concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
         retry:
           automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
             - exit_status: 103  # Appium session failed
               limit: 2
 
-      - label: ":bitbar: iOS 16 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_disabled.txt"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/swizzling_disabled"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 15 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_disabled.txt"
-              - "--device=IOS_15"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/swizzling_disabled"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 14 E2E Tests swizzling disabled"
-        depends_on:
-          - ios_fixture_swizzling_disabled
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_disabled.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_disabled.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "features/swizzling_disabled"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-  - group: "Swizzling premain E2E"
+  - group: "Swizzling premain e2e tests"
     steps:
-      - label: ":bitbar: iOS 17 E2E Tests swizzling premain"
+      - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
+        matrix:
+          - "IOS_18"
+          - "IOS_17"
+          - "IOS_16"
+          - "IOS_15"
+          - "IOS_14"
         depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
+          - "ios_fixture_swizzling_premain"
+        timeout_in_minutes: 60
         agents:
-          queue: opensource
+          queue: "opensource"
         plugins:
-          artifacts#v1.9.3:
+          "artifacts#v1.9.3":
             download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
             upload:
               - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
             command:
               - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_17"
+              - "--device={{matrix}}"
               - "--fail-fast"
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "--exclude=features/default/automatic_spans_generic_view_load.feature"
               - "features/default"
-          test-collector#v1.10.2:
+          "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^main|next$$"
         concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
         retry:
           automatic:
-            - exit_status: 103  # Appium session failed
+            - exit_status: -1  # Agent was lost
               limit: 2
-
-      - label: ":bitbar: iOS 16 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_16"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 15 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_15"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
-            - exit_status: 103  # Appium session failed
-              limit: 2
-
-      - label: ":bitbar: iOS 14 E2E Tests swizzling premain"
-        depends_on:
-          - ios_fixture_swizzling_premain
-        timeout_in_minutes: 30
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.9.3:
-            download: "features/fixtures/ios/output/bb_url_swizzling_premain.txt"
-            upload:
-              - "maze_output/failed/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.8.0:
-            pull: maze-runner-bb
-            run: maze-runner-bb
-            service-ports: true
-            command:
-              - "--app=@build/bb_url_swizzling_premain.txt"
-              - "--device=IOS_14"
-              - "--fail-fast"
-              - "--farm=bb"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--exclude=features/default/automatic_spans_generic_view_load.feature"
-              - "features/default"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^main|next$$"
-        concurrency: 25
-        concurrency_group: bitbar-app
-        concurrency_method: eager
-        retry:
-          automatic:
             - exit_status: 103  # Appium session failed
               limit: 2
