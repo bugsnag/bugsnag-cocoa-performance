@@ -20,6 +20,7 @@
 
 using namespace bugsnag;
 
+static constexpr CFTimeInterval kMaxDurationFromLaunchToActive = 5;
 static constexpr CFTimeInterval kMaxDuration = 120;
 
 static CFAbsoluteTime getProcessStartTime() noexcept;
@@ -181,6 +182,12 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
         return;
     }
     shouldRespondToAppDidBecomeActive_ = false;
+    
+    if (CFAbsoluteTimeGetCurrent() > didFinishLaunchingAtTime_ + kMaxDurationFromLaunchToActive) {
+        abortAllSpans();
+        isEnabled_ = false;
+        return;
+    }
 
     didBecomeActiveAtTime_ = CFAbsoluteTimeGetCurrent();
     [[BugsnagPerformanceCrossTalkAPI sharedInstance] willEndUIInitSpan:uiInitSpan_];
