@@ -133,7 +133,7 @@ Feature: Automatic network instrumentation spans
   Scenario: Capture automatic network span before configuration
     Given I run "AutoInstrumentNetworkPreStartScenario"
     And I wait for 2 seconds
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -155,7 +155,7 @@ Feature: Automatic network instrumentation spans
 
   Scenario: Invalidate calls on shared session should be ignored
     Given I run "AutoInstrumentNetworkSharedSessionInvalidateScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist

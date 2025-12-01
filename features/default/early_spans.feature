@@ -2,7 +2,7 @@ Feature: Early spans
 
   Scenario: Make sure OnSpanEnd callbacks also get called for early spans.
     Given I run "EarlySpanOnEndScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -17,13 +17,18 @@ Feature: Early spans
     * every span field "kind" equals 3
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
 
   Scenario: ModifyEarlySpansScenario
     Given I run "ModifyEarlySpansScenario"
-    And I wait for exactly 5 spans
+    And I wait to receive 5 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:5"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
