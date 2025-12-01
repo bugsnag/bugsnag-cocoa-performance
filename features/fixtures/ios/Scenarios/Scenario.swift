@@ -10,6 +10,7 @@ import Foundation
 
 typealias MazerunnerMeasurement = (name: String, metrics: [String: Any])
 
+@objcMembers
 class Scenario: NSObject {
     let errorGenerator = ErrorGenerator()
     let fixtureConfig: FixtureConfig
@@ -41,6 +42,33 @@ class Scenario: NSObject {
         bugsnagPerfConfig.endpoint = fixtureConfig.tracesURL
         logDebug("Scenario.setInitialBugsnagConfiguration: config.endpoint = \(String(describing: bugsnagPerfConfig.endpoint))")
         bugsnagPerfConfig.networkRequestCallback = filterAdminMazeRunnerNetRequests
+    }
+
+    func customViewController() -> UIViewController? {
+        // create custom view controller if needed
+        return nil
+    }
+
+    func saveStartupConfig() {
+        let configToSave = StartupConfiguration(configFile: nil)
+        configToSave.scenarioName = String(describing: type(of: self))
+        configToSave.saveStartupConfig()
+    }
+
+    func loadStartupConfig() -> StartupConfiguration {
+        let configToLoad = StartupConfiguration(configFile: nil)
+        _ = configToLoad.loadStartupConfig()
+        return configToLoad
+    }
+
+    func applyStartupConfig(startupConfig: StartupConfiguration) {
+        bugsnagPerfConfig.autoInstrumentAppStarts = startupConfig.autoInstrumentAppStarts
+        bugsnagPerfConfig.autoInstrumentViewControllers = startupConfig.autoInstrumentViewControllers
+        bugsnagPerfConfig.apiKey = startupConfig.apiKey
+        bugsnagPerfConfig.endpoint = startupConfig.endpoint
+        bugsnagPerfConfig.enabledMetrics.rendering = startupConfig.enabledMetrics.rendering
+        bugsnagPerfConfig.enabledMetrics.cpu = startupConfig.enabledMetrics.cpu
+        bugsnagPerfConfig.enabledMetrics.memory = startupConfig.enabledMetrics.memory
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {

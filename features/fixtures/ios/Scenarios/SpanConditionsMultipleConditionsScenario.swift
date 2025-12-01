@@ -2,7 +2,7 @@
 //  SpanConditionsMultipleConditionsScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 31/01/2025.
+//  Created by Robert Bartoszewski on 31/01/2025.
 //
 
 import Bugsnag

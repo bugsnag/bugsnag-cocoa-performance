@@ -2,7 +2,7 @@
 //  FrameMetricsNoSlowFramesScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 20/09/2024.
+//  Created by Robert Bartoszewski on 20/09/2024.
 //
 
 import Bugsnag

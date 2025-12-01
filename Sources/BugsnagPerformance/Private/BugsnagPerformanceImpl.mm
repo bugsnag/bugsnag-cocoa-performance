@@ -18,11 +18,13 @@
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
+#import "BugsnagPerformanceAppStartTypePlugin.h"
 
 using namespace bugsnag;
 
 static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
 static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
+static constexpr NSTimeInterval WORK_INTERVAL_DEBUG_MODE_SECONDS = 5;
 
 // App start spans will be thrown out if the early app start duration exceeds this.
 static constexpr CFTimeInterval maxAppStartDuration = 2.0;
@@ -43,20 +45,29 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanStackingHandler_(std::make_shared<SpanStackingHandler>())
 , reachability_(reachability)
 , batch_(std::make_shared<Batch>())
-, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , sampler_(std::make_shared<Sampler>())
+, spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
 , spanEndCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new])
-, tracer_(std::make_shared<Tracer>(spanStackingHandler_, sampler_, batch_, frameMetricsCollector_, conditionTimeoutExecutor_, spanAttributesProvider_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
+, plainSpanFactory_(std::make_shared<PlainSpanFactoryImpl>(sampler_, spanStackingHandler_, spanAttributesProvider_))
+, appStartupSpanFactory_(std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, viewLoadSpanFactory_(std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, networkSpanFactory_(std::make_shared<NetworkSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
+, spanStore_(std::make_shared<SpanStoreImpl>(spanStackingHandler_))
+, spanLifecycleHandler_(std::make_shared<SpanLifecycleHandlerImpl>(sampler_, spanStore_, conditionTimeoutExecutor_, plainSpanFactory_, batch_, frameMetricsCollector_, spanStartCallbacks_, spanEndCallbacks_, ^{this->onSpanStarted();}))
+, tracer_(std::make_shared<Tracer>(plainSpanFactory_, viewLoadSpanFactory_, networkSpanFactory_, spanLifecycleHandler_, spanStore_))
 , retryQueue_(std::make_unique<RetryQueue>([persistence_->bugsnagPerformanceDir() stringByAppendingPathComponent:@"retry-queue"]))
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
 , instrumentation_(std::make_shared<Instrumentation>(tracer_,
+                                                     appStartupSpanFactory_,
+                                                     viewLoadSpanFactory_,
+                                                     networkSpanFactory_,
                                                      spanAttributesProvider_,
                                                      networkHeaderInjector_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
@@ -86,6 +97,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     networkHeaderInjector_->earlyConfigure(config);
     retryQueue_->earlyConfigure(config);
     batch_->earlyConfigure(config);
+    spanLifecycleHandler_->earlyConfigure(config);
     instrumentation_->earlyConfigure(config);
     [worker_ earlyConfigure:config];
     [frameMetricsCollector_ earlyConfigure:config];
@@ -104,6 +116,9 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     appStateTracker_.onTransitionToForeground = ^{
         blockThis->onAppEnteredForeground();
     };
+
+    // Check if app is built in debug mode
+    isDebugMode_ = config.isDebugMode;
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
@@ -117,6 +132,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     networkHeaderInjector_->earlySetup();
     retryQueue_->earlySetup();
     batch_->earlySetup();
+    spanLifecycleHandler_->earlySetup();
     instrumentation_->earlySetup();
     [worker_ earlySetup];
     [frameMetricsCollector_ earlySetup];
@@ -126,7 +142,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
-    performWorkInterval_ = config.internal.performWorkInterval;
+    performWorkInterval_ = (isDebugMode_ == YES || config.debugMode == YES) ? WORK_INTERVAL_DEBUG_MODE_SECONDS : config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
@@ -141,7 +157,16 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
                                                    compositeProvider:spanControlProvider_
                                                 onSpanStartCallbacks:spanStartCallbacks_
                                                   onSpanEndCallbacks:spanEndCallbacks_];
-    
+
+    NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
+    BugsnagPerformanceAppStartTypePlugin *appStartTypePlugin =
+        [BugsnagPerformanceAppStartTypePlugin new];
+    [appStartTypePlugin setGetAppStartInstrumentationStateCallback:^AppStartupInstrumentationStateSnapshot * _Nullable {
+        return instrumentation_->getAppStartInstrumentationStateSnapshot();
+    }];
+    [defaultPlugins addObject:appStartTypePlugin];
+    [pluginManager_ installPlugins:defaultPlugins];
+
     [pluginManager_ installPlugins:config.plugins];
     
     auto networkRequestCallback = config.networkRequestCallback;
@@ -159,6 +184,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     networkHeaderInjector_->configure(config);
     retryQueue_->configure(config);
     batch_->configure(config);
+    spanLifecycleHandler_->configure(config);
     instrumentation_->configure(config);
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
@@ -176,6 +202,7 @@ void BugsnagPerformanceImpl::preStartSetup() noexcept {
     networkHeaderInjector_->preStartSetup();
     retryQueue_->preStartSetup();
     batch_->preStartSetup();
+    spanLifecycleHandler_->preStartSetup();
     instrumentation_->preStartSetup();
     [worker_ preStartSetup];
 }
@@ -216,6 +243,7 @@ void BugsnagPerformanceImpl::start() noexcept {
     persistentState_->start();
     deviceID_->start();
     traceEncoding_.start();
+    spanLifecycleHandler_->start();
 
     retryQueue_->setOnFilesystemError(^{
         blockThis->onFilesystemError();
@@ -395,7 +423,7 @@ bool BugsnagPerformanceImpl::sendRetriesTask() noexcept {
 
 bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sweepTracerTask()");
-    tracer_->sweep();
+    spanStore_->sweep();
     // Never auto-repeat this task, even if work was done; it can wait.
     return false;
 }
@@ -439,6 +467,11 @@ void BugsnagPerformanceImpl::onSpanStarted() noexcept {
     }
 }
 
+void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
+    this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
+}
+
+
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
     batch_->allowDrain();
@@ -466,11 +499,7 @@ void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
         instrumentation_->abortAppStartupSpans();
     }
 
-    if (!isStarted_) {
-        return;
-    }
-
-    tracer_->abortAllOpenSpans();
+    spanLifecycleHandler_->onAppEnteredBackground();
 }
 
 void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
@@ -603,7 +632,7 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
 
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
-    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext);
+    auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext, @[]);
     [span internalSetMultipleAttributes:spanAttributesProvider_->viewLoadPhaseSpanAttributes(className, phase)];
     return span;
 }

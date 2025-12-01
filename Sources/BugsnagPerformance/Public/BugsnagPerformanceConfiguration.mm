@@ -79,6 +79,7 @@ static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
         _autoInstrumentAppStarts = YES;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
+        _debugMode = NO;
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
@@ -174,6 +175,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto debugMode = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"debugMode"]);
     auto autoInstrumentRendering = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentRendering"]);
     auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
     auto attributeArrayLengthLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeArrayLengthLimit"]);
@@ -217,6 +219,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     }
     if (autoInstrumentRendering != nil) {
         configuration.enabledMetrics.rendering = [autoInstrumentRendering boolValue];
+    }
+    if (debugMode != nil) {
+        configuration.debugMode = [debugMode boolValue];
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;

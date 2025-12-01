@@ -8,6 +8,13 @@ Changelog
 * Reduced the overhead caused by using BugsnagPerformanceNamedSpans.
   [481](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/481)
 
+### Enhancements
+
+* Added CPU and memory metrics to AppStartup spans.
+  [503](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/503)
+
+* Split Preload and Presentation phases of pre-loaded ViewLoads. [455](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/455)
+
 ### Bug fixes
 
 * Guard against an edge case where an auto-captured URL request with a nil URL can cause a crash.
@@ -15,6 +22,15 @@ Changelog
   
 * Fixed an issue causing spans to be assigned parentContext automatically despite it being set to nil in span options.
   [469](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/469)
+
+* Fixed an issue causing onSpanStart callbacks being called before all initial attributes have been set.
+  [479](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/479)
+
+* Fixed an issue allowing conditions to change spans endDate to an earlier date.
+  [478](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/478)
+
+* Fixed an issue preventing spans that have ended but are still blocked to be blocked with another condition.
+  [471](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/471)
 
 ## 1.15.0 (2025-08-14)
 

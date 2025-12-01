@@ -22,16 +22,16 @@ public:
     
     NSMutableDictionary *internalErrorAttributes(NSError *encounteredError) noexcept;
     
+    NSMutableDictionary *initialAppStartSpanAttributes() noexcept;
     NSMutableDictionary *appStartSpanAttributes(NSString *firstViewName, bool isColdLaunch) noexcept;
     NSMutableDictionary *appStartPhaseSpanAttributes(NSString *phase) noexcept;
     NSMutableDictionary *viewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
-    NSMutableDictionary *preloadedViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
+    NSMutableDictionary *preloadViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
+    NSMutableDictionary *presentingViewLoadSpanAttributes(NSString *className, BugsnagPerformanceViewType viewType) noexcept;
     NSMutableDictionary *viewLoadPhaseSpanAttributes(NSString *className, NSString *phase) noexcept;
     NSMutableDictionary *customSpanAttributes() noexcept;
 
     NSMutableDictionary *cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
     NSMutableDictionary *memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept;
-
-    static NSString *httpUrlAttributeKey();
 };
 }

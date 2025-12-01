@@ -81,6 +81,8 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentRendering DEPRECATED_ATTRIBUTE;
 
+@property (nonatomic) BOOL debugMode;
+
 @property(nonatomic,strong) BugsnagPerformanceEnabledMetrics *enabledMetrics;
 
 /**

@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, readonly) BOOL enableSwizzling;
 @property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
-@property(nonatomic, readwrite) BOOL appWasLaunchedPreWarmed;
+@property(nonatomic, readonly) BOOL isDebugMode;
 
 @end
 

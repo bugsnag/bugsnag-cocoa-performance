@@ -22,7 +22,7 @@ OBJC_EXPORT
  * the plugin to this configuration may be *ignored* by the library, so plugins should not
  * modify this configuration directly (instead making any changes via the [BugsnagPerformancePluginContext] methods).
  */
-@property (nonatomic, readonly) BugsnagPerformanceConfiguration *cofiguration;
+@property (nonatomic, readonly) BugsnagPerformanceConfiguration *configuration;
 
 - (instancetype)init NS_UNAVAILABLE;
 

@@ -21,10 +21,11 @@ bundle install
 
 echo "--- Analyze"
 
+rm -rf DerivedData
+
 make analyze "$@" || die
 
 rm -rf DerivedData
-
 
 echo "--- Test"
 

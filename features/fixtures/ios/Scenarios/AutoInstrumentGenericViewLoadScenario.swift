@@ -2,7 +2,7 @@
 //  AutoInstrumentGenericViewLoadScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 07/12/2023.
+//  Created by Robert Bartoszewski on 07/12/2023.
 //
 
 import UIKit
