@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 1.16.1 (2025-11-27)
+
+### Bug fixes
+
+* Don't send excessively long background app start spans.
+  [524](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/524)
+
 ## 1.16.0 (2025-10-30)
 
 ### Enhancements
