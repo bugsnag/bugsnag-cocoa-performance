@@ -2,7 +2,7 @@ Feature: Early spans
 
   Scenario: Make sure OnSpanEnd callbacks also get called for early spans.
     Given I run "EarlySpanOnEndScenario"
-    And I wait for exactly 1 span
+    And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
@@ -23,7 +23,7 @@ Feature: Early spans
 
   Scenario: ModifyEarlySpansScenario
     Given I run "ModifyEarlySpansScenario"
-    And I wait for exactly 5 spans
+    And I wait to receive 5 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:5"
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"

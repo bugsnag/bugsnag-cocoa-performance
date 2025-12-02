@@ -1,7 +1,19 @@
 Changelog
 =========
 
-## TBD
+## 1.16.1 (2025-11-27)
+
+### Bug fixes
+
+* Don't send excessively long background app start spans.
+  [524](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/524)
+
+## 1.16.0 (2025-10-30)
+
+### Enhancements
+
+* Reduced the overhead caused by using BugsnagPerformanceNamedSpans.
+  [481](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/481)
 
 ### Enhancements
 
@@ -14,6 +26,9 @@ Changelog
 
 * Guard against an edge case where an auto-captured URL request with a nil URL can cause a crash.
   [498](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/498)
+  
+* Fixed an issue causing spans to be assigned parentContext automatically despite it being set to nil in span options.
+  [469](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/469)
 
 * Fixed an issue causing onSpanStart callbacks being called before all initial attributes have been set.
   [479](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/479)

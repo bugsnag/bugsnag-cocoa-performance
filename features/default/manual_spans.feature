@@ -313,6 +313,242 @@ Feature: Manual creation of spans
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is false
 
+  Scenario: Trace exceeds the max package size
+    Given I set the HTTP status code for the next requests to 402,402,402
+    And I run "MaxPayloadSizeScenario"
+    And I wait to receive 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * the trace "Bugsnag-Uncompressed-Content-Length" header matches the regex "^[0-9]+$"
+    * every span field "name" equals "MaxPayloadSizeScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.app.in_foreground" is true
+    * every span string attribute "net.host.connection.type" equals "wifi"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "30"
+    * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "staging"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.id" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.manufacturer" equals "Apple"
+    * the trace payload field "resourceSpans.0.resource" string attribute "device.model.identifier" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "host.arch" matches the regex "arm64|amd64"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.name" equals "iOS"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.type" equals "darwin"
+    * the trace payload field "resourceSpans.0.resource" string attribute "os.version" exists
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.version" equals "10.0"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
+  Scenario: Set attributes in a span
+    Given I run "SetAttributesScenario"
+    And I wait to receive at least 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SetAttributesScenario"
+    * a span string attribute "a" equals "xyz"
+    * every span bool attribute "b" does not exist
+    * every span bool attribute "d" does not exist
+    * a span array attribute "e" is empty
+    * a span array attribute "f" is empty
+    * a span array attribute "x" is empty
+    * a span array attribute "c" contains the string value "array_0" at index 0
+    * a span array attribute "c" contains the integer value 1 at index 1
+    * a span array attribute "c" contains the value true at index 2
+    * a span array attribute "c" contains the float value 1.5 at index 3
+
+  Scenario: Set attributes in a span with limits set
+    Given I run "SetAttributesWithLimitsScenario"
+    And I wait to receive at least 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SetAttributesWithLimitsScenario"
+    * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
+    * a span array attribute "b" contains the integer value 1 at index 0
+    * a span array attribute "b" contains the integer value 2 at index 1
+    * a span array attribute "b" contains the integer value 3 at index 2
+    * a span array attribute "b" contains no value at index 3
+
+  Scenario: Set attributes in a span with an attribute count limit set
+    Given I run "SetAttributeCountLimitScenario"
+    And I wait to receive at least 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SetAttributeCountLimitScenario"
+    * every span string attribute "a" does not exist
+
+  Scenario: Set OnStart
+    Given I run "OnStartCallbackScenario"
+    And I wait to receive 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "OnStartCallbackScenario"
+    * a span bool attribute "start_callback_1" is true
+    * a span bool attribute "start_callback_2" is true
+
+  Scenario: Set OnEnd
+    Given I run "OnEndCallbackScenario"
+    And I wait to receive 1 span
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "OnEndCallbackScenario"
+
+  Scenario: Frame metrics - no slow frames
+    Given I run "FrameMetricsNoSlowFramesScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
+    * a span integer attribute "bugsnag.rendering.slow_frames" equals 0
+    * a span integer attribute "bugsnag.rendering.frozen_frames" equals 0
+
+  Scenario: Frame metrics - slow frames
+    Given I run "FrameMetricsSlowFramesScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsSlowFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
+    * a span integer attribute "bugsnag.rendering.slow_frames" equals 3
+    * a span integer attribute "bugsnag.rendering.frozen_frames" equals 0
+
+  Scenario: Frame metrics - frozen frames
+    Given I run "FrameMetricsFronzenFramesScenario"
+    And I wait to receive at least 3 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "FrameMetricsFronzenFramesScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span integer attribute "bugsnag.rendering.total_frames" is greater than 4
+    * a span integer attribute "bugsnag.rendering.slow_frames" equals 2
+    * a span integer attribute "bugsnag.rendering.frozen_frames" equals 2
+    * the span named "FrameMetricsFronzenFramesScenario" is the parent of every span named "FrozenFrame"
+
+  Scenario: Frame metrics - autoInstrumentRendering off
+    Given I run "FrameMetricsAutoInstrumentRenderingOffScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsAutoInstrumentRenderingOffScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * every span integer attribute "bugsnag.rendering.total_frames" does not exist
+    * every span integer attribute "bugsnag.rendering.slow_frames" does not exist
+    * every span integer attribute "bugsnag.rendering.frozen_frames" does not exist
+
+  Scenario: Frame metrics - span instrumentRendering off
+    Given I run "FrameMetricsSpanInstrumentRenderingOffScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsSpanInstrumentRenderingOffScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is true
+    * every span integer attribute "bugsnag.rendering.total_frames" does not exist
+    * every span integer attribute "bugsnag.rendering.slow_frames" does not exist
+    * every span integer attribute "bugsnag.rendering.frozen_frames" does not exist
+
+  Scenario: Frame metrics - non firstClass span with instrumentRendering off
+    Given I run "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
+    And I wait to receive at least 1 span
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * every span field "name" equals "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span bool attribute "bugsnag.span.first_class" is false
+    * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
+    * a span integer attribute "bugsnag.rendering.slow_frames" equals 3
+    * a span integer attribute "bugsnag.rendering.frozen_frames" equals 0
+
+  Scenario: Span Conditions - condition closed
+    Given I run "SpanConditionsSimpleConditionScenario"
+    And I wait to receive at least 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan1"
+    * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan2"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsSimpleConditionScenarioSpan1" ended after a span named "SpanConditionsSimpleConditionScenarioSpan2"
+    * a span named "SpanConditionsSimpleConditionScenarioSpan2" is a child of span named "SpanConditionsSimpleConditionScenarioSpan1"
+
+  Scenario: Span Conditions - condition timed out
+    Given I run "SpanConditionsConditionTimedOutScenario"
+    And I wait to receive at least 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:2"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan1"
+    * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan2"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsConditionTimedOutScenarioSpan1" ended before a span named "SpanConditionsConditionTimedOutScenarioSpan2" started
+
+  Scenario: Span Conditions - multiple conditions
+    Given I run "SpanConditionsMultipleConditionsScenario"
+    And I wait to receive at least 3 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Span-Sampling" header equals "1:3"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan1"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan2"
+    * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan3"
+    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
+    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
+    * every span field "kind" equals 1
+    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
+    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
+    * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
+    * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
+
   Scenario: Manually start and end a span with remote parent context
     Given I run "ManualSpanWithRemoteContextParentScenario"
     And I wait to receive at least 1 span
