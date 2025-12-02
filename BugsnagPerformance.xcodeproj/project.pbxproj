@@ -75,8 +75,6 @@
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
-		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
-		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
 		1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */; };
 		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -86,6 +84,8 @@
 		1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */; };
 		1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */; };
 		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };
+		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
+		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
@@ -199,10 +199,6 @@
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
-		96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C12E80D3BA009138C3 /* NamedSpansStore.h */; };
-		96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */; };
-		96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */; };
-		96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */; };
 		969EE0F12E78730900600F63 /* PlainSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */; };
 		969EE0F32E78731300600F63 /* PlainSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */; };
 		969EE0F52E78731C00600F63 /* PlainSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */; };
@@ -210,6 +206,10 @@
 		969EE0FC2E78A67600600F63 /* PlainSpanFactoryCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0FB2E78A66E00600F63 /* PlainSpanFactoryCallbacks.mm */; };
 		969EE0FE2E794A0700600F63 /* ViewLoadSpanFactoryCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0FD2E7949FD00600F63 /* ViewLoadSpanFactoryCallbacks.h */; };
 		969EE1002E794A1100600F63 /* ViewLoadSpanFactoryCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0FF2E794A0D00600F63 /* ViewLoadSpanFactoryCallbacks.mm */; };
+		96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C12E80D3BA009138C3 /* NamedSpansStore.h */; };
+		96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */; };
+		96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */; };
+		96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */; };
 		96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */; };
 		96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */; };
 		96BB66C72EAEA78A00AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BB66C62EAEA78300AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h */; };
@@ -227,6 +227,9 @@
 		96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */; };
 		96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C822A1EBA35006D1F29 /* SpanActivityState.h */; };
 		96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */; };
+		96F05DA02EDF22C400E58887 /* AppStartupStateValidatorImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */; };
+		96F05DA12EDF22C400E58887 /* AppStartupStateValidatorImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */; };
+		96F05DA22EDF22C400E58887 /* AppStartupStateValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */; };
 		96F1292B2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F1292A2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		96F1292D2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */; };
 		96F1292F2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */; };
@@ -496,8 +499,6 @@
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
-		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
-		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
 		1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceLoadingIndicatorView.h; sourceTree = "<group>"; };
 		1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLoadingIndicatorView.mm; sourceTree = "<group>"; };
 		1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanControl.h; sourceTree = "<group>"; };
@@ -507,6 +508,8 @@
 		1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartSpanQuery.mm; sourceTree = "<group>"; };
 		1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartTypePlugin.h; sourceTree = "<group>"; };
 		1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartTypePlugin.mm; sourceTree = "<group>"; };
+		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
+		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -617,10 +620,6 @@
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
-		96A143C12E80D3BA009138C3 /* NamedSpansStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpansStore.h; sourceTree = "<group>"; };
-		96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NamedSpansStore.mm; sourceTree = "<group>"; };
-		96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGNamedSpanState.h; sourceTree = "<group>"; };
-		96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGNamedSpanState.mm; sourceTree = "<group>"; };
 		969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactory.h; sourceTree = "<group>"; };
 		969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactoryImpl.h; sourceTree = "<group>"; };
 		969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlainSpanFactoryImpl.mm; sourceTree = "<group>"; };
@@ -628,6 +627,10 @@
 		969EE0FB2E78A66E00600F63 /* PlainSpanFactoryCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlainSpanFactoryCallbacks.mm; sourceTree = "<group>"; };
 		969EE0FD2E7949FD00600F63 /* ViewLoadSpanFactoryCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactoryCallbacks.h; sourceTree = "<group>"; };
 		969EE0FF2E794A0D00600F63 /* ViewLoadSpanFactoryCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSpanFactoryCallbacks.mm; sourceTree = "<group>"; };
+		96A143C12E80D3BA009138C3 /* NamedSpansStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpansStore.h; sourceTree = "<group>"; };
+		96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NamedSpansStore.mm; sourceTree = "<group>"; };
+		96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGNamedSpanState.h; sourceTree = "<group>"; };
+		96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGNamedSpanState.mm; sourceTree = "<group>"; };
 		96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationState.h; sourceTree = "<group>"; };
 		96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationState.mm; sourceTree = "<group>"; };
 		96BB66C62EAEA78300AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorsHandlerCallbacks.h; sourceTree = "<group>"; };
@@ -648,6 +651,9 @@
 		96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandler.mm; sourceTree = "<group>"; };
 		96D55C822A1EBA35006D1F29 /* SpanActivityState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanActivityState.h; sourceTree = "<group>"; };
 		96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandlerTests.mm; sourceTree = "<group>"; };
+		96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupStateValidator.h; sourceTree = "<group>"; };
+		96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupStateValidatorImpl.h; sourceTree = "<group>"; };
+		96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupStateValidatorImpl.mm; sourceTree = "<group>"; };
 		96F1292A2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceRemoteSpanContext.h; sourceTree = "<group>"; };
 		96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceRemoteSpanContext.mm; sourceTree = "<group>"; };
 		96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceRemoteSpanContextTests.m; sourceTree = "<group>"; };
@@ -1248,6 +1254,9 @@
 				9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */,
 				9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */,
 				9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */,
+				96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */,
+				96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */,
+				96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */,
 			);
 			path = Lifecycle;
 			sourceTree = "<group>";
@@ -1546,6 +1555,8 @@
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
 				9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
+				96F05DA12EDF22C400E58887 /* AppStartupStateValidatorImpl.h in Headers */,
+				96F05DA22EDF22C400E58887 /* AppStartupStateValidator.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
 				963829292E55E5DB00404F3A /* ViewLoadSpanFactoryImpl.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
@@ -2125,6 +2136,7 @@
 				09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */,
 				962CE80C2E651A1600380522 /* NetworkInstrumentationStateRepositoryImpl.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
+				96F05DA02EDF22C400E58887 /* AppStartupStateValidatorImpl.mm in Sources */,
 				963726BF2DE8D99E00C739E6 /* BugsnagPerformanceSpanQuery.m in Sources */,
 				1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */,
 				CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */,

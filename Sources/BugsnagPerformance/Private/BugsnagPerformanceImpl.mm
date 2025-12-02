@@ -26,13 +26,6 @@ static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
 static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
 static constexpr NSTimeInterval WORK_INTERVAL_DEBUG_MODE_SECONDS = 5;
 
-// App start spans will be thrown out if the early app start duration exceeds this.
-static constexpr CFTimeInterval maxAppStartDuration = 2.0;
-
-// App start spans will be thrown out if the app gets backgrounded within this timeframe after starting.
-static constexpr CFTimeInterval minTimeToBackgrounding = 2.0;
-
-
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
     return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
@@ -105,10 +98,6 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     // Configure these here because notifications may arrive
     // before Bugsnag is started.
     __block auto blockThis = this;
-    appStateTracker_.onAppFinishedLaunching = ^{
-        blockThis->onAppFinishedLaunching();
-    };
-
     appStateTracker_.onTransitionToBackground = ^{
         blockThis->onAppEnteredBackground();
     };
@@ -217,8 +206,7 @@ void BugsnagPerformanceImpl::start() noexcept {
         return;
     }
 
-    // This is checked in two places: Bugsnag start, and NSApplicationDidFinishLaunchingNotification.
-    checkAppStartDuration();
+    instrumentation_->didStartBugsnagPerformance();
 
     /* Note: Be careful about initialization order!
      *
@@ -478,26 +466,10 @@ void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     wakeWorker();
 }
 
-void BugsnagPerformanceImpl::onAppFinishedLaunching() noexcept {
-    BSGLogDebug(@"BugsnagPerformanceImpl::onAppFinishedLaunching()");
-    // We run this without checking isStarted (in case there's notification
-    // timing jank and we get the notification before we've started).
-    checkAppStartDuration();
-}
-
 void BugsnagPerformanceImpl::onAppEnteredBackground() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::onAppEnteredBackground()");
     [frameMetricsCollector_ onAppEnteredBackground];
-    
-    // We run this BEFORE checking isStarted (in case there's notification
-    // timing jank and we get the notification before we've started).
-    if (instrumentation_->timeSinceAppFirstBecameActive() < minTimeToBackgrounding) {
-        // If we get backgrounded too quickly after app start, throw out
-        // all app start spans even if they've completed.
-        // Sometimes the jank between backgrounding/foregrounding events
-        // can cause the spans to close very late, so we play it safe.
-        instrumentation_->abortAppStartupSpans();
-    }
+    instrumentation_->didEnterBackground();
 
     spanLifecycleHandler_->onAppEnteredBackground();
 }
@@ -519,15 +491,6 @@ void BugsnagPerformanceImpl::onAppEnteredForeground() noexcept {
 void BugsnagPerformanceImpl::wakeWorker() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::wakeWorker()");
     [worker_ wake];
-}
-
-void BugsnagPerformanceImpl::checkAppStartDuration() noexcept {
-    if (!hasCheckedAppStartDuration_) {
-        hasCheckedAppStartDuration_ = true;
-        if (instrumentation_->appStartDuration() > maxAppStartDuration) {
-            instrumentation_->abortAppStartupSpans();
-        }
-    }
 }
 
 void BugsnagPerformanceImpl::uploadPValueRequest() noexcept {

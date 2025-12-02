@@ -7,6 +7,7 @@
 //
 
 #import "AppStartupLifecycleHandler.h"
+#import "AppStartupStateValidator.h"
 #import "../../../SpanFactory/AppStartup/AppStartupSpanFactory.h"
 #import "../System/AppStartupInstrumentationSystemUtils.h"
 #import "../../../SpanAttributesProvider.h"
@@ -23,26 +24,30 @@ public:
     AppStartupLifecycleHandlerImpl(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                    std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                    std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils,
+                                   std::shared_ptr<AppStartupStateValidator> stateValidator,
                                    BugsnagPerformanceCrossTalkAPI *crossTalkAPI) noexcept;
     
     void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept;
     void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept;
+    void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept;
     void onAppDidFinishLaunching(AppStartupInstrumentationState *state) noexcept;
     void onDidStartViewLoadSpan(AppStartupInstrumentationState *state, NSString *viewName) noexcept;
     void onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept;
     void onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept;
-    void onAppInstrumentationAborted(AppStartupInstrumentationState *state) noexcept;
+    void onAppEnteredBackground(AppStartupInstrumentationState *state) noexcept;
     
 private:
     std::shared_ptr<AppStartupSpanFactory> spanFactory_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils_;
+    std::shared_ptr<AppStartupStateValidator> stateValidator_;
     BugsnagPerformanceCrossTalkAPI *crossTalkAPI_;
     
     void beginAppStartSpan(AppStartupInstrumentationState *state) noexcept;
     void beginPreMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginPostMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginUIInitSpan(AppStartupInstrumentationState *state) noexcept;
+    void abort(AppStartupInstrumentationState *state) noexcept;
     
     AppStartupLifecycleHandlerImpl() = delete;
 };

@@ -15,11 +15,12 @@ class AppStartupLifecycleHandler {
 public:
     virtual void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept = 0;
+    virtual void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onAppDidFinishLaunching(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onDidStartViewLoadSpan(AppStartupInstrumentationState *state, NSString *viewName) noexcept = 0;
     virtual void onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept = 0;
-    virtual void onAppInstrumentationAborted(AppStartupInstrumentationState *state) noexcept = 0;
+    virtual void onAppEnteredBackground(AppStartupInstrumentationState *state) noexcept = 0;
     virtual ~AppStartupLifecycleHandler() {}
 };
 }

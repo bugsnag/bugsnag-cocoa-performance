@@ -13,11 +13,6 @@
 
 using namespace bugsnag;
 
-static inline bool isActivePrewarm(void) {
-    // NOLINTNEXTLINE(concurrency-mt-unsafe)
-    return getenv("ActivePrewarm") != nullptr;
-}
-
 CFAbsoluteTime
 AppStartupInstrumentationSystemUtilsImpl::getProcessStartTime() noexcept {
     std::array<int, 4> cmd { CTL_KERN, KERN_PROC, KERN_PROC_PID, getpid() };
@@ -31,6 +26,12 @@ AppStartupInstrumentationSystemUtilsImpl::getProcessStartTime() noexcept {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
     auto timeval = info.kp_proc.p_un.__p_starttime;
     return timevalToAbsoluteTime(timeval);
+}
+
+bool
+AppStartupInstrumentationSystemUtilsImpl::isActivePrewarm() noexcept {
+    // NOLINTNEXTLINE(concurrency-mt-unsafe)
+    return getenv("ActivePrewarm") != nullptr;
 }
 
 // TODO: Remove after integration with Bugsnag
@@ -61,22 +62,4 @@ AppStartupInstrumentationSystemUtilsImpl::isColdLaunch(void) {
     bool isCold = ![[userDefaults stringForKey:launchIdKey] isEqualToString:launchId];
     [userDefaults setObject:launchId forKey:launchIdKey];
     return isCold;
-}
-
-bool
-AppStartupInstrumentationSystemUtilsImpl::canInstallInstrumentation(CFTimeInterval maxDuration) {
-    if (isActivePrewarm()) {
-        BSGLogInfo(@"App startup instrumentation disabled due to ActivePrewarm");
-        return false;
-    }
-    auto processStartTime = getProcessStartTime();
-    if (processStartTime == 0.0) {
-        BSGLogInfo(@"App startup instrumentation disabled because process start time is 0");
-        return false;
-    }
-    if (CFAbsoluteTimeGetCurrent() > processStartTime + maxDuration) {
-        BSGLogWarning(@"Ignoring excessively long app startup span");
-        return false;
-    }
-    return true;
 }
