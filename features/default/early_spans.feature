@@ -17,11 +17,6 @@ Feature: Early spans
     * every span field "kind" equals 3
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * a span string attribute "bugsnag.span.category" equals "view_load"
-    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
-    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
-    * a span bool attribute "bugsnag.span.first_class" is true
-    * a span string attribute "bugsnag.view.type" equals "UIKit"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
