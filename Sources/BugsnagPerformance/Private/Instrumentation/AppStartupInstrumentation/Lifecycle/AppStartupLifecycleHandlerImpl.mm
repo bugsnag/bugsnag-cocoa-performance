@@ -40,14 +40,14 @@ AppStartupLifecycleHandlerImpl::onInstrumentationInit(AppStartupInstrumentationS
     state.isColdLaunch = systemUtils_->isColdLaunch();
     state.stage = BSGAppStartupStagePreMain;
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
         return;
     }
 }
 
 void
 AppStartupLifecycleHandlerImpl::onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept {
-    if (state.isAborted) {
+    if (state.isDiscarded) {
         return;
     }
     beginAppStartSpan(state);
@@ -57,7 +57,7 @@ AppStartupLifecycleHandlerImpl::onWillCallMainFunction(AppStartupInstrumentation
     beginPostMainSpan(state);
     state.stage = BSGAppStartupStagePostMain;
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
         return;
     }
 
@@ -67,18 +67,18 @@ AppStartupLifecycleHandlerImpl::onWillCallMainFunction(AppStartupInstrumentation
 
 void
 AppStartupLifecycleHandlerImpl::onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept {
-    if (state.isAborted) {
+    if (state.isDiscarded) {
         return;
     }
     state.didStartBugsnagPerformanceAtTime = CFAbsoluteTimeGetCurrent();
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
     }
 }
 
 void
 AppStartupLifecycleHandlerImpl::onAppDidFinishLaunching(AppStartupInstrumentationState *state) noexcept {
-    if (state.isAborted ||
+    if (state.isDiscarded ||
         !state.shouldRespondToAppDidFinishLaunching) {
         return;
     }
@@ -88,13 +88,13 @@ AppStartupLifecycleHandlerImpl::onAppDidFinishLaunching(AppStartupInstrumentatio
     beginUIInitSpan(state);
     state.stage = BSGAppStartupStageUIInit;
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
     }
 }
 
 void
 AppStartupLifecycleHandlerImpl::onDidStartViewLoadSpan(AppStartupInstrumentationState *state, NSString *viewName) noexcept {
-    if (state.isAborted) {
+    if (state.isDiscarded) {
         return;
     }
     if (state.firstViewName == nil) {
@@ -107,7 +107,7 @@ AppStartupLifecycleHandlerImpl::onDidStartViewLoadSpan(AppStartupInstrumentation
 
 void
 AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept {
-    if (state.isAborted ||
+    if (state.isDiscarded ||
         !state.shouldRespondToAppDidBecomeActive) {
         return;
     }
@@ -116,7 +116,7 @@ AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationSt
     state.didBecomeActiveAtTime = CFAbsoluteTimeGetCurrent();
     state.stage = BSGAppStartupStageActive;
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
         return;
     }
     
@@ -134,7 +134,7 @@ AppStartupLifecycleHandlerImpl::onAppEnteredBackground(AppStartupInstrumentation
         state.didEnterBackgroundAtTime = CFAbsoluteTimeGetCurrent();
     }
     if (!stateValidator_->isValid(state)) {
-        abort(state);
+        discardAppStart(state);
     }
 }
 
@@ -199,10 +199,10 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
 }
 
 void
-AppStartupLifecycleHandlerImpl::abort(AppStartupInstrumentationState *state) noexcept {
+AppStartupLifecycleHandlerImpl::discardAppStart(AppStartupInstrumentationState *state) noexcept {
     [state.preMainSpan abortUnconditionally];
     [state.postMainSpan abortUnconditionally];
     [state.uiInitSpan abortUnconditionally];
     [state.appStartSpan abortUnconditionally];
-    state.isAborted = true;
+    state.isDiscarded = true;
 }

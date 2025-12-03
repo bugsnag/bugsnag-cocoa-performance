@@ -33,7 +33,7 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupL
 #pragma mark PhasedStartup
 
 void AppStartupInstrumentation::earlySetup() noexcept {
-    if (state_.isAborted) {
+    if (state_.isDiscarded) {
         disable();
     }
 }

@@ -33,7 +33,7 @@ typedef NS_ENUM(uint8_t, BSGAppStartupStage) {
 @property (nonatomic) BOOL hasFirstView;
 @property (nonatomic) BOOL isColdLaunch;
 @property (nonatomic) BOOL isActivePrewarm;
-@property (nonatomic) BOOL isAborted;
+@property (nonatomic) BOOL isDiscarded;
 @property (nonatomic) BOOL didCheckEarlyStartDuration;
 @property (nonatomic) BOOL shouldRespondToAppDidFinishLaunching;
 @property (nonatomic) BOOL shouldRespondToAppDidBecomeActive;

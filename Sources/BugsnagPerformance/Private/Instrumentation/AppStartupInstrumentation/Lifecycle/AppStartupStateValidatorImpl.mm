@@ -19,7 +19,7 @@ using namespace bugsnag;
 
 bool
 AppStartupStateValidatorImpl::isValid(AppStartupInstrumentationState *state) noexcept {
-    if (state.isAborted) {
+    if (state.isDiscarded) {
         return false;
     }
     BOOL result = true;

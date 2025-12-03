@@ -47,7 +47,7 @@ private:
     void beginPreMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginPostMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginUIInitSpan(AppStartupInstrumentationState *state) noexcept;
-    void abort(AppStartupInstrumentationState *state) noexcept;
+    void discardAppStart(AppStartupInstrumentationState *state) noexcept;
     
     AppStartupLifecycleHandlerImpl() = delete;
 };
