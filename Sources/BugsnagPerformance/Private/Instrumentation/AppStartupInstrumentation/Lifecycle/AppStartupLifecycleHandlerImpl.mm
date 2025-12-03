@@ -19,7 +19,6 @@ static bool isAppStartInProgress(AppStartupInstrumentationState *state) noexcept
     return state.appStartSpan != nil && (state.appStartSpan.isValid || state.appStartSpan.isBlocked);
 }
 
-
 AppStartupLifecycleHandlerImpl::AppStartupLifecycleHandlerImpl(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                                                std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils,
@@ -32,6 +31,12 @@ AppStartupLifecycleHandlerImpl::AppStartupLifecycleHandlerImpl(std::shared_ptr<A
 , crossTalkAPI_(crossTalkAPI) {}
 
 #pragma mark Lifecycle
+
+void
+AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState *state,
+                                                 BSGEarlyConfiguration *config) noexcept {
+    state.didStartEarlyPhaseAtTime = config.earlyPhaseStartTime;
+}
 
 void
 AppStartupLifecycleHandlerImpl::onInstrumentationInit(AppStartupInstrumentationState *state) noexcept {

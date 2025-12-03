@@ -26,7 +26,7 @@ public:
     AppStartupInstrumentation(std::shared_ptr<AppStartupLifecycleHandler> lifecycleHandler,
                               std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils) noexcept;
 
-    void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
+    void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept;
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept {}

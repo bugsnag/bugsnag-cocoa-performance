@@ -27,6 +27,8 @@ public:
                                    std::shared_ptr<AppStartupStateValidator> stateValidator,
                                    BugsnagPerformanceCrossTalkAPI *crossTalkAPI) noexcept;
     
+    void onEarlyConfigure(AppStartupInstrumentationState *state,
+                          BSGEarlyConfiguration *config) noexcept;
     void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept;
     void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept;
     void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept;
