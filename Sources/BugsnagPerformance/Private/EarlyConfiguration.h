@@ -21,16 +21,17 @@ NS_ASSUME_NONNULL_BEGIN
  * Configure from Info.plist
  * This constructor extracts a dictionary from the contents of Info.plist and calls the other constructor.
  */
-- (instancetype) init;
+- (instancetype) initWithEarlyPhaseStartTime:(CFAbsoluteTime)startTime;
 
 /**
  * Configure from an Info.plist style dictionary.
  */
-- (instancetype) initWithBundleDictionary:(NSDictionary *)dict;
+- (instancetype) initWithBundleDictionary:(NSDictionary *)dict earlyPhaseStartTime:(CFAbsoluteTime)startTime;
 
 @property(nonatomic, readonly) BOOL enableSwizzling;
 @property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
 @property(nonatomic, readwrite) BOOL appWasLaunchedPreWarmed;
+@property(nonatomic, readonly) CFAbsoluteTime earlyPhaseStartTime;
 
 @end
 
