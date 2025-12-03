@@ -156,10 +156,8 @@ private:
     void onWorkInterval() noexcept;
     void onAppEnteredForeground() noexcept;
     void onAppEnteredBackground() noexcept;
-    void onAppFinishedLaunching() noexcept;
 
     // Utility
-    void checkAppStartDuration() noexcept;
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;

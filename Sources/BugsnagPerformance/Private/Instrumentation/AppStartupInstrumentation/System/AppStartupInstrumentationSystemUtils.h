@@ -16,8 +16,8 @@ namespace bugsnag {
 class AppStartupInstrumentationSystemUtils {
 public:
     virtual CFAbsoluteTime getProcessStartTime() noexcept = 0;
+    virtual bool isActivePrewarm() noexcept = 0;
     virtual bool isColdLaunch(void) = 0;
-    virtual bool canInstallInstrumentation(CFTimeInterval maxDuration) = 0;
     virtual uint64_t GetBootTime(void) = 0;
     virtual ~AppStartupInstrumentationSystemUtils() {}
 };

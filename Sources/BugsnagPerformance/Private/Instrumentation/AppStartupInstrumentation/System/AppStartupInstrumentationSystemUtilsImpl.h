@@ -13,8 +13,8 @@ namespace bugsnag {
 class AppStartupInstrumentationSystemUtilsImpl: public AppStartupInstrumentationSystemUtils {
 public:
     CFAbsoluteTime getProcessStartTime() noexcept;
+    bool isActivePrewarm() noexcept;
     bool isColdLaunch(void);
-    bool canInstallInstrumentation(CFTimeInterval maxDuration);
     uint64_t GetBootTime(void);
 };
 }

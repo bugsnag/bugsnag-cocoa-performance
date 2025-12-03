@@ -59,12 +59,11 @@ public:
     void configure(BugsnagPerformanceConfiguration *config) noexcept;
     void preStartSetup() noexcept;
     void start() noexcept;
-    void abortAppStartupSpans() noexcept;
 
+    void didStartBugsnagPerformance() noexcept { appStartupInstrumentation_->didStartBugsnagPerformance(); }
     void didStartViewLoadSpan(NSString *name) noexcept { appStartupInstrumentation_->didStartViewLoadSpan(name); }
+    void didEnterBackground() noexcept { appStartupInstrumentation_->didEnterBackground(); }
     void willCallMainFunction() noexcept { appStartupInstrumentation_->willCallMainFunction(); }
-    CFAbsoluteTime appStartDuration() noexcept { return appStartupInstrumentation_->appStartDuration(); }
-    CFAbsoluteTime timeSinceAppFirstBecameActive() noexcept { return appStartupInstrumentation_->timeSinceAppFirstBecameActive(); }
     AppStartupInstrumentationStateSnapshot *getAppStartInstrumentationStateSnapshot() {
         return appStartupInstrumentation_->stateSnapshot();
     }

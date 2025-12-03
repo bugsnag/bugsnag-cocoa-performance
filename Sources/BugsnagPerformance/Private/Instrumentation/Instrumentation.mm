@@ -10,6 +10,7 @@
 
 #import "../SpanFactory/Network/NetworkSpanFactoryImpl.h"
 #import "../SpanFactory/ViewLoad/ViewLoadSpanFactoryImpl.h"
+#import "AppStartupInstrumentation/Lifecycle/AppStartupStateValidatorImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadInstrumentationSystemUtilsImpl.h"
 #import "ViewLoadInstrumentation/System/ViewLoadSwizzlingHandlerImpl.h"
 #import "ViewLoadInstrumentation/State/ViewLoadInstrumentationStateRepositoryImpl.h"
@@ -55,10 +56,6 @@ void Instrumentation::start() noexcept {
     networkInstrumentation_->start();
 }
 
-void Instrumentation::abortAppStartupSpans() noexcept {
-    appStartupInstrumentation_->abortAllSpans();
-}
-
 #pragma mark - Factory functions
 
 ViewLoadLoadingIndicatorsHandlerCallbacks *createLoadingIndicatorCallbacks(std::shared_ptr<ViewLoadLifecycleHandler> lifecycleHandler,
@@ -79,9 +76,11 @@ ViewLoadLoadingIndicatorsHandlerCallbacks *createLoadingIndicatorCallbacks(std::
 std::shared_ptr<AppStartupInstrumentation> createAppStartupInstrumentation(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                            std::shared_ptr<SpanAttributesProvider> spanAttributesProvider) {
     auto systemUtils = std::make_shared<AppStartupInstrumentationSystemUtilsImpl>();
+    auto stateValidator = std::make_shared<AppStartupStateValidatorImpl>();
     auto lifecycleHandler = std::make_shared<AppStartupLifecycleHandlerImpl>(spanFactory,
                                                                              spanAttributesProvider,
                                                                              systemUtils,
+                                                                             stateValidator,
                                                                              [BugsnagPerformanceCrossTalkAPI sharedInstance]);
     
     return std::make_shared<AppStartupInstrumentation>(lifecycleHandler, systemUtils);

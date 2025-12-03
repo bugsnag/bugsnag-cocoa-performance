@@ -20,8 +20,6 @@
 
 using namespace bugsnag;
 
-static constexpr CFTimeInterval kMaxDuration = 120;
-
 AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupLifecycleHandler> lifecycleHandler,
                                                      std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils) noexcept
 : isEnabled_(true)
@@ -35,7 +33,7 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupL
 #pragma mark PhasedStartup
 
 void AppStartupInstrumentation::earlySetup() noexcept {
-    if (!systemUtils_->canInstallInstrumentation(kMaxDuration)) {
+    if (state_.isDiscarded) {
         disable();
     }
 }
@@ -68,6 +66,15 @@ AppStartupInstrumentation::onAppDidFinishLaunching() noexcept {
 }
 
 void
+AppStartupInstrumentation::didStartBugsnagPerformance() noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    if (!isEnabled_) {
+        return;
+    }
+    lifecycleHandler_->onBugsnagPerformanceStarted(state_);
+}
+
+void
 AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     if (!isEnabled_) {
@@ -86,6 +93,16 @@ AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
     lifecycleHandler_->onAppDidBecomeActive(state_);
 }
 
+void
+AppStartupInstrumentation::didEnterBackground() noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    if (!isEnabled_) {
+        return;
+    }
+    
+    lifecycleHandler_->onAppEnteredBackground(state_);
+}
+
 #pragma mark Instrumentation cancelled
 
 void AppStartupInstrumentation::disable() noexcept {
@@ -99,28 +116,11 @@ void AppStartupInstrumentation::disable() noexcept {
     }
 }
 
-void AppStartupInstrumentation::abortAllSpans() noexcept {
-    std::lock_guard<std::mutex> guard(mutex_);
-    lifecycleHandler_->onAppInstrumentationAborted(state_);
-}
-
 #pragma mark State access
 
 AppStartupInstrumentationStateSnapshot *
 AppStartupInstrumentation::stateSnapshot() noexcept {
     return [state_ createSnapshot];
-}
-
-CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
-    CFAbsoluteTime endTime = state_.didFinishLaunchingAtTime > 0 ? state_.didFinishLaunchingAtTime : CFAbsoluteTimeGetCurrent();
-    return endTime - state_.didStartProcessAtTime;
-}
-
-CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
-    if (state_.didBecomeActiveAtTime == 0) {
-        return 0;
-    }
-    return CFAbsoluteTimeGetCurrent() - state_.didBecomeActiveAtTime;
 }
 
 #pragma mark Helpers

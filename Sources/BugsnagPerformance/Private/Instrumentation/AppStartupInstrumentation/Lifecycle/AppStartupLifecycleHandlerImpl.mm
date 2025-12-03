@@ -23,46 +23,80 @@ static bool isAppStartInProgress(AppStartupInstrumentationState *state) noexcept
 AppStartupLifecycleHandlerImpl::AppStartupLifecycleHandlerImpl(std::shared_ptr<AppStartupSpanFactory> spanFactory,
                                                                std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
                                                                std::shared_ptr<AppStartupInstrumentationSystemUtils> systemUtils,
+                                                               std::shared_ptr<AppStartupStateValidator> stateValidator,
                                                                BugsnagPerformanceCrossTalkAPI *crossTalkAPI) noexcept
 : spanFactory_(spanFactory)
 , spanAttributesProvider_(spanAttributesProvider)
 , systemUtils_(systemUtils)
+, stateValidator_(stateValidator)
 , crossTalkAPI_(crossTalkAPI) {}
 
 #pragma mark Lifecycle
 
 void
 AppStartupLifecycleHandlerImpl::onInstrumentationInit(AppStartupInstrumentationState *state) noexcept {
+    state.isActivePrewarm = systemUtils_->isActivePrewarm();
     state.didStartProcessAtTime = systemUtils_->getProcessStartTime();
     state.isColdLaunch = systemUtils_->isColdLaunch();
+    state.stage = BSGAppStartupStagePreMain;
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+        return;
+    }
 }
 
 void
 AppStartupLifecycleHandlerImpl::onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept {
+    if (state.isDiscarded) {
+        return;
+    }
     beginAppStartSpan(state);
     beginPreMainSpan(state);
     state.didCallMainFunctionAtTime = CFAbsoluteTimeGetCurrent();
     [state.preMainSpan endWithAbsoluteTime:state.didCallMainFunctionAtTime];
     beginPostMainSpan(state);
+    state.stage = BSGAppStartupStagePostMain;
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+        return;
+    }
 
     state.shouldRespondToAppDidBecomeActive = true;
     state.shouldRespondToAppDidFinishLaunching = true;
 }
 
 void
+AppStartupLifecycleHandlerImpl::onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept {
+    if (state.isDiscarded) {
+        return;
+    }
+    state.didStartBugsnagPerformanceAtTime = CFAbsoluteTimeGetCurrent();
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+    }
+}
+
+void
 AppStartupLifecycleHandlerImpl::onAppDidFinishLaunching(AppStartupInstrumentationState *state) noexcept {
-    if (!state.shouldRespondToAppDidFinishLaunching) {
+    if (state.isDiscarded ||
+        !state.shouldRespondToAppDidFinishLaunching) {
         return;
     }
     state.shouldRespondToAppDidFinishLaunching = false;
-
     state.didFinishLaunchingAtTime = CFAbsoluteTimeGetCurrent();
     [state.postMainSpan endWithAbsoluteTime:state.didFinishLaunchingAtTime];
     beginUIInitSpan(state);
+    state.stage = BSGAppStartupStageUIInit;
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+    }
 }
 
 void
 AppStartupLifecycleHandlerImpl::onDidStartViewLoadSpan(AppStartupInstrumentationState *state, NSString *viewName) noexcept {
+    if (state.isDiscarded) {
+        return;
+    }
     if (state.firstViewName == nil) {
         state.firstViewName = viewName;
         if (isAppStartInProgress(state)) {
@@ -73,18 +107,35 @@ AppStartupLifecycleHandlerImpl::onDidStartViewLoadSpan(AppStartupInstrumentation
 
 void
 AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept {
-    if (!state.shouldRespondToAppDidBecomeActive) {
+    if (state.isDiscarded ||
+        !state.shouldRespondToAppDidBecomeActive) {
         return;
     }
     state.shouldRespondToAppDidBecomeActive = false;
 
     state.didBecomeActiveAtTime = CFAbsoluteTimeGetCurrent();
+    state.stage = BSGAppStartupStageActive;
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+        return;
+    }
+    
     [crossTalkAPI_ willEndUIInitSpan:state.uiInitSpan];
     [state.appStartSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
     if (state.firstViewName == nil) {
         [state.uiInitSpan blockWithTimeout:kFirstViewDelayThreshold];
     }
     [state.uiInitSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
+}
+
+void
+AppStartupLifecycleHandlerImpl::onAppEnteredBackground(AppStartupInstrumentationState *state) noexcept {
+    if (state.didEnterBackgroundAtTime == 0.0) {
+        state.didEnterBackgroundAtTime = CFAbsoluteTimeGetCurrent();
+    }
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+    }
 }
 
 #pragma mark Instrumentation cancelled
@@ -99,14 +150,6 @@ AppStartupLifecycleHandlerImpl::onAppInstrumentationDisabled(AppStartupInstrumen
     state.postMainSpan = nil;
     state.uiInitSpan = nil;
     state.appStartSpan = nil;
-}
-
-void
-AppStartupLifecycleHandlerImpl::onAppInstrumentationAborted(AppStartupInstrumentationState *state) noexcept {
-    [state.preMainSpan abortUnconditionally];
-    [state.postMainSpan abortUnconditionally];
-    [state.uiInitSpan abortUnconditionally];
-    [state.appStartSpan abortUnconditionally];
 }
 
 #pragma mark Helpers
@@ -153,4 +196,13 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
     }
 
     state.uiInitSpan = spanFactory_->startUIInitSpan(state.didFinishLaunchingAtTime, state.appStartSpan, conditionsToEndOnClose);
+}
+
+void
+AppStartupLifecycleHandlerImpl::discardAppStart(AppStartupInstrumentationState *state) noexcept {
+    [state.preMainSpan abortUnconditionally];
+    [state.postMainSpan abortUnconditionally];
+    [state.uiInitSpan abortUnconditionally];
+    [state.appStartSpan abortUnconditionally];
+    state.isDiscarded = true;
 }
