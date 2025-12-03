@@ -24,6 +24,7 @@ typedef NS_ENUM(uint8_t, BSGAppStartupStage) {
 @property (nonatomic, strong) BugsnagPerformanceSpan *uiInitSpan;
 @property (nonatomic, strong) NSString *firstViewName;
 @property (nonatomic) CFAbsoluteTime didStartProcessAtTime;
+@property (nonatomic) CFAbsoluteTime didStartEarlyPhaseAtTime;
 @property (nonatomic) CFAbsoluteTime didCallMainFunctionAtTime;
 @property (nonatomic) CFAbsoluteTime didStartBugsnagPerformanceAtTime;
 @property (nonatomic) CFAbsoluteTime didBecomeActiveAtTime;

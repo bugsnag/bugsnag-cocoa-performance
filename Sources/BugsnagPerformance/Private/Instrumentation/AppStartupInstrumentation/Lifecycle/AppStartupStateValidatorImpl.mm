@@ -53,7 +53,11 @@ AppStartupStateValidatorImpl::checkEarlyAppStartDuration(AppStartupInstrumentati
         return true;
     }
     state.didCheckEarlyStartDuration = true;
-    CFAbsoluteTime duration = earlyPhaseEndTime(state) - state.didStartProcessAtTime;
+#if TARGET_OS_SIMULATOR
+    CFTimeInterval duration = earlyPhaseEndTime(state) - state.didStartEarlyPhaseAtTime;
+#else
+    CFTimeInterval duration = earlyPhaseEndTime(state) - state.didStartProcessAtTime;
+#endif
     return duration <= maxEarlyAppStartDuration;
 }
 

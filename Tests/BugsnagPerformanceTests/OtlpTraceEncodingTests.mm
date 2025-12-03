@@ -43,7 +43,8 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
 @implementation OtlpTraceEncodingTests
 
 - (std::shared_ptr<OtlpTraceEncoding>)newEncoderWithConfig:(BugsnagPerformanceConfiguration *)config {
-    BSGEarlyConfiguration *earlyConfig = [[BSGEarlyConfiguration alloc] initWithBundleDictionary:@{}];
+    BSGEarlyConfiguration *earlyConfig = [[BSGEarlyConfiguration alloc] initWithBundleDictionary:@{}
+                                                                             earlyPhaseStartTime:CFAbsoluteTimeGetCurrent()];
     auto encoder = std::make_shared<OtlpTraceEncoding>();
     encoder->earlyConfigure(earlyConfig);
     encoder->earlySetup();

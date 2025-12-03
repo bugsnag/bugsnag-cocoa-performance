@@ -32,6 +32,10 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<AppStartupL
 
 #pragma mark PhasedStartup
 
+void AppStartupInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    lifecycleHandler_->onEarlyConfigure(state_, config);
+}
+
 void AppStartupInstrumentation::earlySetup() noexcept {
     if (state_.isDiscarded) {
         disable();

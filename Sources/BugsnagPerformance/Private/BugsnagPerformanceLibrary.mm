@@ -26,8 +26,9 @@ BugsnagPerformanceLibrary &BugsnagPerformanceLibrary::sharedInstance() noexcept 
 void BugsnagPerformanceLibrary::calledAsEarlyAsPossible() noexcept {
     @autoreleasepool {
         BSGLogDebug(@"BugsnagPerformanceLibrary::calledAsEarlyAsPossible");
+        auto time = CFAbsoluteTimeGetCurrent();
         auto instance = sharedInstance();
-        auto config = [BSGEarlyConfiguration new];
+        auto config = [[BSGEarlyConfiguration alloc] initWithEarlyPhaseStartTime:time];
         instance.earlyConfigure(config);
         instance.earlySetup();
     }

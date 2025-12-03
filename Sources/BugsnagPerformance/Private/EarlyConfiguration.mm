@@ -11,8 +11,9 @@
 
 @implementation BSGEarlyConfiguration
 
-- (instancetype) initWithBundleDictionary:(NSDictionary *)dict {
+- (instancetype) initWithBundleDictionary:(NSDictionary *)dict earlyPhaseStartTime:(CFAbsoluteTime)startTime {
     if ((self = [super init])) {
+        _earlyPhaseStartTime = startTime;
         if (![[dict valueForKeyPath:@"bugsnag.performance.disableSwizzling"] boolValue]) {
             _enableSwizzling = YES;
         }
@@ -26,7 +27,7 @@
     return self;
 }
 
-- (instancetype) init {
+- (instancetype) initWithEarlyPhaseStartTime:(CFAbsoluteTime)startTime {
     NSString *infoPath = [NSBundle.mainBundle pathForResource:@"Info" ofType:@"plist"];
     NSMutableDictionary *infoDict = [[NSDictionary dictionaryWithContentsOfFile: infoPath] mutableCopy];
     if (infoDict == nil) {
@@ -36,7 +37,7 @@
     for (NSString *key in [[[NSProcessInfo processInfo] environment] allKeys]) {
         infoDict[key] = [[NSProcessInfo processInfo] environment][key];
     }
-    return [self initWithBundleDictionary:infoDict];
+    return [self initWithBundleDictionary:infoDict earlyPhaseStartTime:startTime];
 }
 
 @end
