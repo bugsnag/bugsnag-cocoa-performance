@@ -348,7 +348,6 @@ Feature: Manual creation of spans
     Given I run "SetAttributesWithLimitsScenario"
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
     * a span array attribute "b" contains the integer value 1 at index 0

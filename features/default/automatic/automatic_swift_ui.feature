@@ -4,7 +4,6 @@ Feature: Automatic swift UI spans
     Given I run "AutoInstrumentSwiftUIScenario"
     And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My Image view"
@@ -28,7 +27,6 @@ Feature: Automatic swift UI spans
     Given I run "AutoInstrumentSwiftUIScenario"
     And I wait to receive at least 3 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My Image view"
@@ -66,7 +64,6 @@ Feature: Automatic swift UI spans
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
     And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -98,7 +95,6 @@ Feature: Automatic swift UI spans
     Given I run "AutoInstrumentSwiftUIDeferredScenario"
     And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"

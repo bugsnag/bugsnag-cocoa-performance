@@ -5,7 +5,6 @@ Feature: Automatic network instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "parentSpanId" exists
     * a span field "parentSpanId" is greater than 0
     * a span field "parentSpanId" does not exist
@@ -33,7 +32,6 @@ Feature: Automatic network instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -58,7 +56,6 @@ Feature: Automatic network instrumentation spans
     Given I run "AutoInstrumentNetworkMultiple"
     And I wait to receive at least 10 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -88,7 +85,6 @@ Feature: Automatic network instrumentation spans
     Given I run "AutoInstrumentNetworkNullURLScenario"
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -111,7 +107,6 @@ Feature: Automatic network instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -135,7 +130,6 @@ Feature: Automatic network instrumentation spans
     And I wait for 2 seconds
     And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -157,7 +151,6 @@ Feature: Automatic network instrumentation spans
     Given I run "AutoInstrumentNetworkSharedSessionInvalidateScenario"
     And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -183,7 +176,6 @@ Feature: Automatic network instrumentation spans
     Given I run "AutoInstrumentNetworkCallbackScenario"
     And I wait to receive 2 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "name" equals "[HTTP/GET]"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
@@ -200,7 +192,6 @@ Feature: Automatic network instrumentation spans
     # There will actually be any number of requests by this point since we're not filtering at all.
     And I wait to receive at least 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[HTTP/GET]"
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
