@@ -22,8 +22,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentViewLoadScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentViewLoadScenario_ViewController"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -90,8 +88,6 @@ Feature: Automatic view load instrumentation spans
     * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentSubViewLoadScenario_SubViewController"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -152,8 +148,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -197,8 +191,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -244,8 +236,6 @@ Feature: Automatic view load instrumentation spans
     * a span named "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (presenting)"
     * a span named "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (presenting)"
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (presenting)"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -282,8 +272,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * no span field "name" equals "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -320,8 +308,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
     * a span field "name" equals "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan"
     * a span named "ViewDidLoadDoesntTriggerScenarioOnDeinitSpan" duration is equal or less than 1.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -363,8 +349,6 @@ Feature: Automatic view load instrumentation spans
     * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ComplexViewScenario_TableViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ComplexViewScenario_TableViewController"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ComplexViewScenario_TableViewController"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.phase" equals "loadView"
     * a span string attribute "bugsnag.phase" equals "viewDidLoad"

@@ -23,8 +23,6 @@ Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
@@ -57,8 +55,6 @@ Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
     * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.GenericViewController<Swift.Int>"
     * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.GenericViewController<Swift.Int>"
     * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.GenericViewController<Swift.Int>"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"

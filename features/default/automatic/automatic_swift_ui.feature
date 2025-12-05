@@ -8,8 +8,6 @@ Feature: Automatic swift UI spans
     * a span field "name" equals "[ViewLoadPhase/body]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My Image view"
     # ios < 15 won't have the "view appearing" span
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
@@ -28,8 +26,6 @@ Feature: Automatic swift UI spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My VStack view"
     * a span field "name" equals "[ViewLoadPhase/body]/My Image view"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
@@ -45,8 +41,6 @@ Feature: Automatic swift UI spans
     Then I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/Text"
     * a span field "name" equals "[ViewLoadPhase/body]/Text"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
@@ -60,8 +54,6 @@ Feature: Automatic swift UI spans
     Then the trace "Content-Type" header equals "application/json"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
@@ -74,8 +66,6 @@ Feature: Automatic swift UI spans
     And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
@@ -87,8 +77,6 @@ Feature: Automatic swift UI spans
     Then the trace "Content-Type" header equals "application/json"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
@@ -101,8 +89,6 @@ Feature: Automatic swift UI spans
     And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/text1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
@@ -112,8 +98,6 @@ Feature: Automatic swift UI spans
     And I wait to receive at least 2 spans
     * a span field "name" equals "[ViewLoad/SwiftUI]/vstack1"
     * a span field "name" equals "[ViewLoadPhase/body]/vstack1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"

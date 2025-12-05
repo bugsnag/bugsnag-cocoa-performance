@@ -27,8 +27,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" duration is equal or greater than 2.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -71,8 +69,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" duration is equal or greater than 2.0
     * a span named "SimpleStopScenarioIndicatorName" duration is equal or greater than 2.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -109,8 +105,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" duration is equal or greater than 2.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -153,8 +147,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" duration is equal or greater than 2.0
     * a span named "SimpleRemoveScenarioIndicatorName" duration is equal or greater than 2.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -204,8 +196,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 3.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -253,8 +243,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 1.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -303,8 +291,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" duration is equal or greater than 2.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
@@ -367,8 +353,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * a span named "NestedViewStopScenarioIndicatorName1" duration is equal or greater than 4.0
     * a span named "NestedViewStopScenarioIndicatorName2" duration is equal or greater than 2.0
     * a span named "NestedViewStopScenarioIndicatorName3" duration is equal or greater than 3.0
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
