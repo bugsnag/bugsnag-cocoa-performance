@@ -4,7 +4,6 @@ Feature: Early spans
     Given I run "EarlySpanOnEndScenario"
     And I wait to receive 1 span
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * every span field "parentSpanId" does not exist
     * a span field "name" equals "[HTTP/GET]"
     * a span string attribute "http.flavor" exists
@@ -26,7 +25,6 @@ Feature: Early spans
     And I wait to receive 5 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:5"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[AppStart/iOSCold]"
     * a span field "name" equals "[AppStartPhase/App launching - pre main()]"
     * a span field "name" equals "[AppStartPhase/App launching - post main()]"

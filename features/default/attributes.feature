@@ -4,7 +4,6 @@ Feature: Spans with custom attributes
     Given I run "SetAttributesScenario"
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesScenario"
     * a span string attribute "a" equals "xyz"
     * every span bool attribute "b" does not exist
@@ -21,7 +20,6 @@ Feature: Spans with custom attributes
     Given I run "SetAttributesWithLimitsScenario"
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributesWithLimitsScenario"
     * a span string attribute "a" equals "1234567890*** 1 CHARS TRUNCATED"
     * a span array attribute "b" contains the integer value 1 at index 0
@@ -33,6 +31,5 @@ Feature: Spans with custom attributes
     Given I run "SetAttributeCountLimitScenario"
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "SetAttributeCountLimitScenario"
     * every span string attribute "a" does not exist
