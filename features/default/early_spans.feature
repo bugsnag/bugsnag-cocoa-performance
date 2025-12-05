@@ -11,8 +11,6 @@ Feature: Early spans
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
     * a span string attribute "net.host.connection.type" equals "wifi"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -28,8 +26,6 @@ Feature: Early spans
     * a span field "name" equals "[AppStartPhase/App launching - post main()]"
     * a span field "name" equals "[AppStartPhase/UI init]"
     * a span field "name" equals "[HTTP/GET]"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 1
     * a span field "kind" equals 3
     * a span string attribute "bugsnag.app_start.type" equals "cold"

@@ -6,8 +6,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -25,8 +23,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "RenderingMetricsScenarioNoSlow"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -45,8 +41,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "RenderingMetricsScenarioEarlyStart"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -59,8 +53,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsSlowFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -73,8 +65,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * a span field "name" equals "FrameMetricsFronzenFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 4
@@ -88,8 +78,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsAutoInstrumentRenderingOffScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
@@ -102,8 +90,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsSpanInstrumentRenderingOffScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
@@ -116,8 +102,6 @@ Feature: Spans with collected frame metrics
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is false
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0

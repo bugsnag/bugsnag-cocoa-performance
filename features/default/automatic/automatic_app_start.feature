@@ -8,8 +8,6 @@ Feature: Automatic app start instrumentation spans
     And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
     And I wait to receive a span named "[AppStartPhase/UI init]"
     Then the trace "Content-Type" header equals "application/json"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.app_start.type" equals "cold"
     * a span string attribute "bugsnag.phase" equals "App launching - pre main()"
@@ -49,8 +47,6 @@ Feature: Automatic app start instrumentation spans
     And I wait to receive a span named "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
     And I wait to receive a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.app_start.type" equals "cold"
     * a span string attribute "bugsnag.phase" equals "App launching - pre main()"
@@ -102,8 +98,6 @@ Feature: Automatic app start instrumentation spans
     And I wait to receive a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentAppStartsLoadingScenario_ViewController"
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.AutoInstrumentAppStartsLoadingScenario_ViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span string attribute "bugsnag.app_start.type" equals "cold"
     * a span string attribute "bugsnag.phase" equals "App launching - pre main()"

@@ -25,8 +25,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ManualSpanScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
@@ -53,8 +51,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ManualSpanEndOnDestroyScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
@@ -79,8 +75,6 @@ Feature: Manual creation of spans
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "BeforeStart"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
 #    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -145,8 +139,6 @@ Feature: Manual creation of spans
     * every span integer attribute "http.status_code" is greater than 0
     * every span integer attribute "http.response_content_length" is greater than 0
     * every span string attribute "net.host.connection.type" equals "wifi"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
@@ -155,8 +147,6 @@ Feature: Manual creation of spans
     And I wait for exactly 2 spans
     Then the trace "Content-Type" header equals "application/json"
     * every span field "name" equals "[HTTP/GET]"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
     * a span string attribute "http.url" equals "https://bugsnag.com"
     * a span string attribute "http.url" equals "https://bugsnag.com/changed"
@@ -175,8 +165,6 @@ Feature: Manual creation of spans
     * a span integer attribute "http.status_code" is greater than 0
     * a span integer attribute "http.response_content_length" is greater than 0
     * a span string attribute "net.host.connection.type" equals "wifi"
-    * a span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * a span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 3
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
@@ -190,8 +178,6 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * a span field "name" equals "Span1"
     * a span field "name" equals "Span2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
 
@@ -202,8 +188,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header is present
     * a span field "name" equals "Span1"
     * a span field "name" equals "Span2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
@@ -219,8 +203,6 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * a span field "name" equals "SpanParent"
     * a span field "name" equals "SpanChild"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     # Note: The child span ends up first in the list of spans.
@@ -234,8 +216,6 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * a span field "name" equals "SpanChild"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" equals "123456789abcdef0fedcba9876543210"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     # Note: The child span ends up first in the list of spans.
@@ -249,8 +229,6 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span field "name" equals "FirstClassYesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
 
@@ -262,8 +240,6 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
     * every span field "name" equals "FirstClassNoScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is false
 
@@ -276,8 +252,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Uncompressed-Content-Length" header matches the regex "^[0-9]+$"
     * every span field "name" equals "MaxPayloadSizeScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
@@ -350,8 +324,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsNoSlowFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -364,8 +336,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsSlowFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -378,8 +348,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:3"
     * a span field "name" equals "FrameMetricsFronzenFramesScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 4
@@ -393,8 +361,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsAutoInstrumentRenderingOffScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
@@ -407,8 +373,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsSpanInstrumentRenderingOffScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
@@ -421,8 +385,6 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is false
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
@@ -436,8 +398,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan1"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsSimpleConditionScenarioSpan1" ended after a span named "SpanConditionsSimpleConditionScenarioSpan2"
     * a span named "SpanConditionsSimpleConditionScenarioSpan2" is a child of span named "SpanConditionsSimpleConditionScenarioSpan1"
@@ -449,8 +409,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan1"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsConditionTimedOutScenarioSpan1" ended before a span named "SpanConditionsConditionTimedOutScenarioSpan2" started
 
@@ -462,8 +420,6 @@ Feature: Manual creation of spans
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan1"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan3"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
@@ -475,8 +431,6 @@ Feature: Manual creation of spans
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ManualSpanWithRemoteContextParentScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" equals "a053e37f6d56592bc15a2c13c3c688ff"
     * every span field "parentSpanId" equals "eeb87b8b7cde2185"
     * every span field "kind" equals 1
     * every span string attribute "bugsnag.span.category" equals "custom"

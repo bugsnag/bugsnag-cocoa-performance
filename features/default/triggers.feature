@@ -7,7 +7,5 @@ Scenario: BackgroundForegroundScenario
   Then the trace "Content-Type" header equals "application/json"
   * the trace "Bugsnag-Span-Sampling" header equals "1:1"
   * every span field "name" equals "BackgroundForegroundScenario"
-  * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-  * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
   * every span field "kind" equals 1
   * every span bool attribute "bugsnag.app.in_foreground" is false

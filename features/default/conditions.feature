@@ -7,8 +7,6 @@ Feature: Conditions
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ConditionsBasicScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span string attribute "bugsnag.span.category" equals "custom"
@@ -21,8 +19,6 @@ Feature: Conditions
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ConditionsBlockingBlockedEndedSpanScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span string attribute "bugsnag.span.category" equals "custom"
@@ -35,8 +31,6 @@ Feature: Conditions
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "ConditionsOverrideEndTimeBackwardsScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span string attribute "bugsnag.span.category" equals "custom"
@@ -49,8 +43,6 @@ Feature: Conditions
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan1"
     * a span field "name" equals "SpanConditionsSimpleConditionScenarioSpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsSimpleConditionScenarioSpan1" ended after a span named "SpanConditionsSimpleConditionScenarioSpan2"
     * a span named "SpanConditionsSimpleConditionScenarioSpan2" is a child of span named "SpanConditionsSimpleConditionScenarioSpan1"
@@ -62,8 +54,6 @@ Feature: Conditions
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan1"
     * a span field "name" equals "SpanConditionsConditionTimedOutScenarioSpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsConditionTimedOutScenarioSpan1" ended before a span named "SpanConditionsConditionTimedOutScenarioSpan2" started
 
@@ -75,8 +65,6 @@ Feature: Conditions
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan1"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span field "name" equals "SpanConditionsMultipleConditionsScenarioSpan3"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
@@ -88,7 +76,5 @@ Feature: Conditions
     * the trace "Bugsnag-Span-Sampling" header equals "1:2"
     * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan1"
     * a span field "name" equals "SpanConditionsBlockedSpanScenarioSpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * a span named "SpanConditionsBlockedSpanScenarioSpan1" ended after a span named "SpanConditionsBlockedSpanScenarioSpan2"

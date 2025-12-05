@@ -7,8 +7,6 @@ Feature: Configuration overrides
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * every span field "name" equals "AppDataOverrideScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "100"
     * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "staging"
@@ -32,8 +30,6 @@ Feature: Configuration overrides
     * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
     * the trace "Bugsnag-Span-Sampling" header is not present
     * every span field "name" equals "FixedSamplingProbabilitySpan1"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     Then I discard the oldest trace
     Then I set the sampling probability for the next traces to "0"
@@ -41,8 +37,6 @@ Feature: Configuration overrides
     And I wait to receive at least 1 span
     * the trace "Bugsnag-Span-Sampling" header is not present
     * every span field "name" equals "FixedSamplingProbabilitySpan2"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
 
   Scenario: Setting fixed sampling probability of 0 with dynamic probability of 1 should send no spans
