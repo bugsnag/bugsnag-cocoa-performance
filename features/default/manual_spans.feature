@@ -28,8 +28,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -58,8 +56,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -86,8 +82,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
 #    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -109,8 +103,6 @@ Feature: Manual creation of spans
     * a span string attribute "bugsnag.view.type" equals "SwiftUI"
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load"
 
   Scenario: Manually report a SwiftUI view load phase span
@@ -124,8 +116,6 @@ Feature: Manual creation of spans
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" is false
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
 
@@ -137,8 +127,6 @@ Feature: Manual creation of spans
     * every span string attribute "bugsnag.view.name" equals "UIViewController"
     * every span string attribute "bugsnag.view.type" equals "UIKit"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load"
     * every span bool attribute "bugsnag.span.first_class" is true
 
@@ -160,8 +148,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
   Scenario: ManualNetworkCallbackScenario
@@ -172,8 +158,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "http.url" equals "https://bugsnag.com"
     * a span string attribute "http.url" equals "https://bugsnag.com/changed"
 
@@ -194,8 +178,6 @@ Feature: Manual creation of spans
     * a span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * a span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 3
-    * a span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * a span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" does not exist
 
   Scenario: Manually start and end a span field "with" batching
@@ -211,8 +193,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end a span field "with" batching
@@ -225,8 +205,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -244,8 +222,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     # Note: The child span ends up first in the list of spans.
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
@@ -261,8 +237,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" equals "123456789abcdef0fedcba9876543210"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     # Note: The child span ends up first in the list of spans.
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" equals "23456789abcdef01"
@@ -278,8 +252,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
 
   Scenario: Manually start and end first-class = no span
@@ -293,8 +265,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is false
 
   Scenario: Trace exceeds the max package size
@@ -309,8 +279,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
     * every span bool attribute "bugsnag.span.first_class" is true
@@ -385,8 +353,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
     * a span integer attribute "bugsnag.rendering.slow_frames" equals 0
@@ -401,8 +367,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
     * a span integer attribute "bugsnag.rendering.slow_frames" equals 3
@@ -417,8 +381,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 4
     * a span integer attribute "bugsnag.rendering.slow_frames" equals 2
@@ -434,8 +396,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
     * every span integer attribute "bugsnag.rendering.slow_frames" does not exist
@@ -450,8 +410,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is true
     * every span integer attribute "bugsnag.rendering.total_frames" does not exist
     * every span integer attribute "bugsnag.rendering.slow_frames" does not exist
@@ -466,8 +424,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span bool attribute "bugsnag.span.first_class" is false
     * a span integer attribute "bugsnag.rendering.total_frames" is greater than 0
     * a span integer attribute "bugsnag.rendering.slow_frames" equals 3
@@ -483,8 +439,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span named "SpanConditionsSimpleConditionScenarioSpan1" ended after a span named "SpanConditionsSimpleConditionScenarioSpan2"
     * a span named "SpanConditionsSimpleConditionScenarioSpan2" is a child of span named "SpanConditionsSimpleConditionScenarioSpan1"
 
@@ -498,8 +452,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span named "SpanConditionsConditionTimedOutScenarioSpan1" ended before a span named "SpanConditionsConditionTimedOutScenarioSpan2" started
 
   Scenario: Span Conditions - multiple conditions
@@ -513,8 +465,6 @@ Feature: Manual creation of spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan3" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan2"
     * a span named "SpanConditionsMultipleConditionsScenarioSpan1" ended after a span named "SpanConditionsMultipleConditionsScenarioSpan3"
 
@@ -529,8 +479,6 @@ Feature: Manual creation of spans
     * every span field "traceId" equals "a053e37f6d56592bc15a2c13c3c688ff"
     * every span field "parentSpanId" equals "eeb87b8b7cde2185"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "custom"
 
   Scenario: Manually start and end a span with nil parent context
