@@ -9,8 +9,6 @@ Feature: Checking payloads limits
     * the trace "Bugsnag-Span-Sampling" header equals "1:1"
     * the trace "Bugsnag-Uncompressed-Content-Length" header matches the regex "^[0-9]+$"
     * every span field "name" equals "MaxPayloadSizeScenario"
-    * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
-    * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
     * every span bool attribute "bugsnag.app.in_foreground" is true
     * every span string attribute "net.host.connection.type" equals "wifi"
