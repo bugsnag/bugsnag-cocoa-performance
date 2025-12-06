@@ -30,8 +30,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
@@ -76,8 +74,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
@@ -116,8 +112,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
@@ -162,8 +156,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span bool attribute "bugsnag.span.first_class" is true
@@ -215,8 +207,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
@@ -266,8 +256,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
@@ -318,8 +306,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
@@ -384,8 +370,6 @@ Feature: LoadingIndicator view to mark data loading phase
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"

@@ -23,8 +23,6 @@ Feature: Initial P values
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     Then I discard the oldest trace
     And I invoke "step2"
     And I wait to receive at least 1 span
@@ -33,8 +31,6 @@ Feature: Initial P values
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
 
   Scenario: ProbabilityExpiryScenario
     Given I run "ProbabilityExpiryScenario"

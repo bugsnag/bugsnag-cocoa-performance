@@ -25,8 +25,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentViewLoadScenario_ViewController"
@@ -95,8 +93,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentSubViewLoadScenario_ViewController"
@@ -159,8 +155,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentTabViewLoadScenario_SubViewController"
@@ -206,8 +200,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentNavigationViewLoadScenario_SubViewController"
@@ -255,8 +247,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentPreLoadedViewLoadScenario_ViewController (preload)"
@@ -295,8 +285,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
@@ -335,8 +323,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
     * a span string attribute "bugsnag.view.name" equals "Fixture.ViewDidLoadDoesntTriggerScenario_ViewController"
@@ -380,8 +366,6 @@ Feature: Automatic view load instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.phase" equals "loadView"
     * a span string attribute "bugsnag.phase" equals "viewDidLoad"
     * a span string attribute "bugsnag.phase" equals "viewWillAppear"

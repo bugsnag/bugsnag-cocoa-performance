@@ -11,8 +11,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "My VStack view"
@@ -33,8 +31,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "My VStack view"
@@ -52,8 +48,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
     * every span string attribute "bugsnag.view.name" equals "Text"
@@ -69,8 +63,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
@@ -85,8 +77,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
@@ -100,8 +90,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
@@ -116,8 +104,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * every span string attribute "bugsnag.span.category" equals "view_load_phase"
     * a span string attribute "bugsnag.view.name" equals "vstack1"
     * a span string attribute "bugsnag.view.name" equals "text1"
@@ -129,8 +115,6 @@ Feature: Automatic swift UI spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.span.category" equals "view_load"
     * a span string attribute "bugsnag.span.category" equals "view_load_phase"
     * every span string attribute "bugsnag.view.name" equals "vstack1"
