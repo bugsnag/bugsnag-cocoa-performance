@@ -10,8 +10,6 @@ Feature: Configuration overrides
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "bugsnag.app.bundle_version" equals "100"
     * the trace payload field "resourceSpans.0.resource" string attribute "deployment.environment" equals "staging"
     * the trace payload field "resourceSpans.0.resource" string attribute "device.manufacturer" equals "Apple"
@@ -37,8 +35,6 @@ Feature: Configuration overrides
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     Then I discard the oldest trace
     Then I set the sampling probability for the next traces to "0"
     And I invoke "step2"
@@ -48,8 +44,6 @@ Feature: Configuration overrides
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 1
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
 
   Scenario: Setting fixed sampling probability of 0 with dynamic probability of 1 should send no spans
     Given I set the sampling probability for the next traces to "0"

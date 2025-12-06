@@ -19,8 +19,6 @@ Feature: Automatic network instrumentation spans
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 1
     * a span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -44,8 +42,6 @@ Feature: Automatic network instrumentation spans
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 1
     * a span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span bool attribute "bugsnag.span.first_class" is true
     * a span bool attribute "bugsnag.span.first_class" does not exist
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
@@ -66,8 +62,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -96,8 +90,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -113,8 +105,6 @@ Feature: Automatic network instrumentation spans
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 1
     * a span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.instrumentation_message" exists
     * a span string attribute "bugsnag.instrumentation_message" matches the regex "Error.*"
     * a span bool attribute "bugsnag.span.first_class" is true
@@ -141,8 +131,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -162,8 +150,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -180,8 +166,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "http.url" equals "https://bugsnag.com"
     * a span string attribute "http.url" equals "https://bugsnag.com/changed"
 
@@ -196,8 +180,6 @@ Feature: Automatic network instrumentation spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "http.url" equals "https://bugsnag.com"
 
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow All

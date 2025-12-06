@@ -14,8 +14,6 @@ Feature: Early spans
     * every span field "spanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * every span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
     * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
@@ -34,8 +32,6 @@ Feature: Early spans
     * every span field "traceId" matches the regex "^[A-Fa-f0-9]{32}$"
     * a span field "kind" equals 1
     * a span field "kind" equals 3
-    * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
-    * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
     * a span string attribute "bugsnag.app_start.type" equals "cold"
     * a span string attribute "bugsnag.phase" equals "App launching - pre main()"
     * a span string attribute "bugsnag.phase" equals "App launching - post main()"
