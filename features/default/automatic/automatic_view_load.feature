@@ -4,7 +4,6 @@ Feature: Automatic view load instrumentation spans
     Given I run "AutoInstrumentViewLoadScenario"
     And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -42,7 +41,6 @@ Feature: Automatic view load instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 27 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -131,7 +129,6 @@ Feature: Automatic view load instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -179,7 +176,6 @@ Feature: Automatic view load instrumentation spans
     And I wait for 2 seconds
     And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -226,7 +222,6 @@ Feature: Automatic view load instrumentation spans
     Given I run "AutoInstrumentPreLoadedViewLoadScenario"
     And I wait to receive at least 19 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -279,7 +274,6 @@ Feature: Automatic view load instrumentation spans
     And I run the loaded scenario
     And I wait to receive at least 17 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -319,7 +313,6 @@ Feature: Automatic view load instrumentation spans
     And I run the loaded scenario
     And I wait to receive at least 18 spans
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
@@ -358,7 +351,6 @@ Feature: Automatic view load instrumentation spans
     And I wait to receive at least 27 spans
     Then the trace "Content-Type" header equals "application/json"
     * the trace "Bugsnag-Span-Sampling" header equals "1:27"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
     * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"

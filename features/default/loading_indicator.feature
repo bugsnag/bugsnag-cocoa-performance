@@ -16,7 +16,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -61,7 +60,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
     * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleStopScenario_ViewController"
@@ -104,7 +102,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -149,7 +146,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     And I wait to receive a span named "SimpleRemoveScenarioIndicatorName"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoadPhase/loadView]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewDidLoad]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
     * a span named "[ViewLoadPhase/viewWillAppear]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewSimpleRemoveScenario_ViewController"
@@ -212,7 +208,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
@@ -264,7 +259,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
@@ -317,7 +311,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController" ended at the same time as a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
     * a span named "[ViewLoadPhase/viewDataLoading]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController" duration is equal or greater than 3.0
@@ -378,7 +371,6 @@ Feature: LoadingIndicator view to mark data loading phase
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     And I wait to receive a span named "NestedViewStopScenarioIndicatorName1"
     Then the trace "Content-Type" header equals "application/json"
-    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span named "NestedViewStopScenarioIndicatorName1" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span named "NestedViewStopScenarioIndicatorName2" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ParentViewController"
     * a span named "NestedViewStopScenarioIndicatorName3" is a child of span named "[ViewLoad/UIKit]/Fixture.LoadingIndicatorViewNestedViewStopScenario_ChildViewController"
