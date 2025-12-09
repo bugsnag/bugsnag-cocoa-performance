@@ -80,6 +80,7 @@
 		96E0B34B2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */; };
 		96F129332DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
+		96F901152EE81E6D0026F5B9 /* BackgroundThreadStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F901142EE81E6D0026F5B9 /* BackgroundThreadStartScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
 		CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */; };
@@ -201,6 +202,7 @@
 		96E0B34A2CD0E21C008AEB9C /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkSharedSessionInvalidateScenario.swift; sourceTree = "<group>"; };
 		96F129322DCE0CDD00A6FB2B /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
+		96F901142EE81E6D0026F5B9 /* BackgroundThreadStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundThreadStartScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
 		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
@@ -334,6 +336,7 @@
 				9657A8982A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift */,
 				0185C47128F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift */,
 				CB572EAC29BB829800FD7A2A /* BackgroundForegroundScenario.swift */,
+				96F901142EE81E6D0026F5B9 /* BackgroundThreadStartScenario.swift */,
 				CBAAE2582912601D006D4AA0 /* BatchingScenario.swift */,
 				CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */,
 				09301DC02B63A65A000A7C12 /* ComplexViewScenario.swift */,
@@ -529,6 +532,7 @@
 				CB7FD92B299BB4E300499E13 /* ManualUIViewLoadScenario.swift in Sources */,
 				9691A9E12CA7588700707CDF /* FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift in Sources */,
 				09F3F52C2D6C72BD00BAA0A3 /* MemoryMetricsScenario.swift in Sources */,
+				96F901152EE81E6D0026F5B9 /* BackgroundThreadStartScenario.swift in Sources */,
 				09637A3F2B06082200F4F776 /* Logging.m in Sources */,
 				CB3477182901481F0033759C /* AutoInstrumentNetworkWithParentScenario.swift in Sources */,
 				091B95742CA18F66007DC8A9 /* AutoInstrumentNetworkPreStartDisabledScenario.swift in Sources */,
