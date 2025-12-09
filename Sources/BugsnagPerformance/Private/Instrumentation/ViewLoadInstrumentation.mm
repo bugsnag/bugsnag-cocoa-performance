@@ -424,9 +424,13 @@ ViewLoadInstrumentation::instrumentViewWillAppear(Class cls) noexcept {
             reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillAppear)(self, selector, animated);
         }
         [span end];
-        adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
-        BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
-        instrumentationState.viewAppearingSpan = viewAppearingSpan;
+        [span forceMutate:^{
+            adjustSpanIfPreloaded(overallSpan, instrumentationState, [span startTime], self);
+        }];
+        if (instrumentationState.viewAppearingSpan == nil) {
+            BugsnagPerformanceSpan *viewAppearingSpan = startViewLoadPhaseSpan(self, @"View appearing");
+            instrumentationState.viewAppearingSpan = viewAppearingSpan;
+        }
     });
 }
 
