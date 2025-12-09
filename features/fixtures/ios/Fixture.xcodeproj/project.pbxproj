@@ -82,6 +82,7 @@
 		96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
 		96F901132EE81E580026F5B9 /* BackgroundThreadStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F901122EE81E580026F5B9 /* BackgroundThreadStartScenario.swift */; };
+		96F901092EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F901082EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
 		CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9C2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift */; };
@@ -188,6 +189,7 @@
 		96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithRemoteContextParentScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
 		96F901122EE81E580026F5B9 /* BackgroundThreadStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundThreadStartScenario.swift; sourceTree = "<group>"; };
+		96F901082EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkEarlyCallbackScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
 		CB211D0629EEB615008F748D /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "BugsnagPerformanceConfiguration+Private.h"; path = "../../../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 				9657A89A2A3D06EB001CEF5D /* AutoInstrumentNavigationViewLoadScenario.swift */,
 				CB2B8A9E2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift */,
 				0921F02D2A69262300C764EB /* AutoInstrumentNetworkCallbackScenario.swift */,
+				96F901082EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift */,
 				CBEC89222A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift */,
 				CBE0872A29F81BBB007455F2 /* AutoInstrumentNetworkNoParentScenario.swift */,
 				09F025082BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift */,
@@ -532,6 +535,7 @@
 				9657A8992A3CF75B001CEF5D /* AutoInstrumentTabViewLoadScenario.swift in Sources */,
 				CBEC89452A4ED0590088A3CE /* MaxPayloadSizeScenario.swift in Sources */,
 				964735CB2CCF137A00759ED9 /* AutoInstrumentNetworkSharedSessionInvalidateScenario.swift in Sources */,
+				96F901092EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift in Sources */,
 				CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */,
 				966634E02C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift in Sources */,
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,

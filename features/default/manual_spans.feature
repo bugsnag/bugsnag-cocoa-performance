@@ -379,10 +379,13 @@ Feature: Manual creation of spans
 
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
-    And I wait to receive 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    And I wait to receive 3 spans
     * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
     * a span field "name" equals "OnEndCallbackScenario"
+    * a span field "name" equals "OnEndCallbackScenarioEarlySpan"
+    * a span field "name" equals "OnEndCallbackScenarioBlockedSpan"
+    * every span string attribute "OnSpanEndAttribute" equals "OnEndCallbackScenarioValue"
+    * every span float attribute "bugsnag.span.callbacks_duration" is greater than 1.0
 
   Scenario: Frame metrics - no slow frames
     Given I run "FrameMetricsNoSlowFramesScenario"
