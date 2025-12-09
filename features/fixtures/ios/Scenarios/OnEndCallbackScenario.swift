@@ -15,6 +15,8 @@ class OnEndCallbackScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
+        
+        BugsnagPerformance.startSpan(name: "OnEndCallbackScenarioEarlySpan").end()
 
         bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             return true
@@ -36,11 +38,21 @@ class OnEndCallbackScenario: Scenario {
         bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
             return span.name != "drop_me_too"
         })
+        bugsnagPerfConfig.add(onSpanEndCallback: { (span: BugsnagPerformanceSpan) -> Bool in
+            Thread.sleep(forTimeInterval: 1.2)
+            span.setAttribute("OnSpanEndAttribute", withValue: "OnEndCallbackScenarioValue")
+            return true
+        })
     }
 
     override func run() {
         BugsnagPerformance.startSpan(name: "OnEndCallbackScenario").end()
         BugsnagPerformance.startSpan(name: "drop_me").end()
         BugsnagPerformance.startSpan(name: "drop_me_too").end()
+        let blockedSpan = BugsnagPerformance.startSpan(name: "OnEndCallbackScenarioBlockedSpan")
+        let condition = blockedSpan.block(timeout: 0.7)
+        condition?.upgrade()
+        blockedSpan.end()
+        condition?.close(endTime: Date())
     }
 }
