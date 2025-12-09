@@ -190,7 +190,9 @@ void Tracer::onSpanClosed(BugsnagPerformanceSpan *span) {
     }
 
     if (span != nil && span.state == SpanStateEnded) {
-        callOnSpanEndCallbacks(span);
+        [span forceMutate:^{
+            callOnSpanEndCallbacks(span);
+        }];
         if (span.state == SpanStateAborted) {
             BSGLogTrace(@"Tracer::onSpanClosed: span %@ was rejected in the OnEnd callbacks, so dropping", span.name);
             return;
