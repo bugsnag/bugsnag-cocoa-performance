@@ -215,7 +215,9 @@ void NetworkInstrumentation::endEarlySpansPhase() noexcept {
             BSGLogTrace(@"NetworkInstrumentation::endEarlySpansPhase: info.url is nil, so we will end on destroy");
             [span endOnDestroy];
         } else {
-            [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+            [span forceMutate:^{
+                [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(info.url, nil)];
+            }];
         }
     }
 }
