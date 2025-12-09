@@ -81,6 +81,7 @@
 		96DADF512EAFCB1100B56CE6 /* ManualSpanEndOnDestroyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DADF502EAFCB1100B56CE6 /* ManualSpanEndOnDestroyScenario.swift */; };
 		96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */; };
 		96F5268C2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */; };
+		96F901172EE836CC0026F5B9 /* ManualParentBlockedSpanScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F901162EE836CC0026F5B9 /* ManualParentBlockedSpanScenario.swift */; };
 		96F901092EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96F901082EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift */; };
 		CB0496942913CA300097E526 /* BatchingWithTimeoutScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */; };
 		CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */; };
@@ -187,6 +188,7 @@
 		96DADF572EAFCE6D00B56CE6 /* BugsnagPerformanceSpan+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceSpan+Internal.h"; sourceTree = "<group>"; };
 		96F129342DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithRemoteContextParentScenario.swift; sourceTree = "<group>"; };
 		96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualNetworkSpanCallbackSetToNilScenario.swift; sourceTree = "<group>"; };
+		96F901162EE836CC0026F5B9 /* ManualParentBlockedSpanScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualParentBlockedSpanScenario.swift; sourceTree = "<group>"; };
 		96F901082EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentNetworkEarlyCallbackScenario.swift; sourceTree = "<group>"; };
 		CB0496932913CA300097E526 /* BatchingWithTimeoutScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchingWithTimeoutScenario.swift; sourceTree = "<group>"; };
 		CB0AD76D2965BBDA002A3FB6 /* InitialPScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialPScenario.swift; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 				96F5268B2C259E4E0095D600 /* ManualNetworkSpanCallbackSetToNilScenario.swift */,
 				CBE6B66A28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift */,
 				09D59E162BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift */,
+				96F901162EE836CC0026F5B9 /* ManualParentBlockedSpanScenario.swift */,
 				093EE63C2C32E5B900632B30 /* ManualParentSpanScenario.swift */,
 				01E7918928EC7B5E00855993 /* ManualSpanBeforeStartScenario.swift */,
 				96DADF502EAFCB1100B56CE6 /* ManualSpanEndOnDestroyScenario.swift */,
@@ -481,6 +484,7 @@
 				09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */,
 				966634E22C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift in Sources */,
 				9691A9DF2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift in Sources */,
+				96F901172EE836CC0026F5B9 /* ManualParentBlockedSpanScenario.swift in Sources */,
 				09F025092BA08817007D9F73 /* AutoInstrumentNetworkNullURLScenario.swift in Sources */,
 				0185C47228F6C983006F9BDC /* AutoInstrumentViewLoadScenario.swift in Sources */,
 				09D59E172BDFA23600199E1B /* ManualNetworkTracePropagationScenario.swift in Sources */,

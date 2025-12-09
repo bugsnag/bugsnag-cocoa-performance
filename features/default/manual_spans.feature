@@ -567,3 +567,18 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.0.parentSpanId" is null
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.parentSpanId" is null
+
+  Scenario: Parent context should be calculated despite blocked spans on the stack
+    Given I run "ManualParentBlockedSpanScenario"
+    And I wait to receive at least 4 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "ManualParentBlockedSpanScenarioParent"
+    * a span field "name" equals "ManualParentBlockedSpanScenarioBlocked1"
+    * a span field "name" equals "ManualParentBlockedSpanScenarioBlocked2"
+    * a span field "name" equals "ManualParentBlockedSpanScenarioChild"
+    * a span named "ManualParentBlockedSpanScenarioBlocked1" is a child of span named "ManualParentBlockedSpanScenarioParent"
+    * a span named "ManualParentBlockedSpanScenarioBlocked2" is a child of span named "ManualParentBlockedSpanScenarioBlocked1"
+    * a span named "ManualParentBlockedSpanScenarioChild" is a child of span named "ManualParentBlockedSpanScenarioParent"
+
