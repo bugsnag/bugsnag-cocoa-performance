@@ -9,4 +9,14 @@
 #import "ViewLoadLoadingIndicatorState.h"
 
 @implementation ViewLoadLoadingIndicatorState
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _conditions = [NSMutableArray array];
+    }
+    return self;
+}
+
 @end

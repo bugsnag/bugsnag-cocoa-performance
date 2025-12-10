@@ -29,6 +29,12 @@ ViewLoadLoadingIndicatorsHandlerImpl::onViewControllerUpdatedView(UIViewControll
     updateLoadingIndicators(viewController.view);
 }
 
+void
+ViewLoadLoadingIndicatorsHandlerImpl::onViewControllerDidAppear(UIViewController *viewController) noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    updateLoadingIndicators(viewController.view);
+}
+
 #pragma mark Helpers
 
 void
@@ -44,43 +50,52 @@ ViewLoadLoadingIndicatorsHandlerImpl::updateIndicatorsState(BugsnagPerformanceLo
 ViewLoadLoadingIndicatorState *
 ViewLoadLoadingIndicatorsHandlerImpl::newState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
     NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
-    auto needsSpanUpdate = false;
     auto hasFoundFirstViewController = false;
-    BugsnagPerformanceSpan *loadingIndicatorSpan;
 
+    auto state = [ViewLoadLoadingIndicatorState new];
     UIView *view = loadingIndicator;
     while (view != nil) {
-        ViewLoadInstrumentationState *state = repository_->getInstrumentationState(view);
-        __strong UIViewController *viewController = state.viewController;
-        if (state != nil &&
-            state.overallSpan.isValid &&
-            viewController != nil) {
-            
-            if (callbacks_.onLoading) {
-                BugsnagPerformanceSpanCondition *condition = callbacks_.onLoading(viewController);
-                if (condition != nil) {
-                    [newConditions addObject:condition];
-                }
-            }
-            if (callbacks_.getParentContext &&
-                !hasFoundFirstViewController &&
-                loadingIndicator.name != nil) {
-                BugsnagPerformanceSpanContext *parentContext = callbacks_.getParentContext(viewController);
-                needsSpanUpdate = checkNeedsSpanUpdate(loadingIndicator, parentContext);
-                if (parentContext && needsSpanUpdate) {
-                    loadingIndicatorSpan = spanFactory_->startLoadingIndicatorSpan(loadingIndicator.name, parentContext);
-                }
-            }
+        ViewLoadInstrumentationState *viewLoadState = repository_->getInstrumentationState(view);
+        if (viewLoadState.overallSpan.isValid && viewLoadState.viewController != nil) {
+            addToState(state,
+                       loadingIndicator,
+                       viewLoadState,
+                       !hasFoundFirstViewController);
             hasFoundFirstViewController = true;
         }
+        
         view = view.superview;
     }
     
-    auto state = [ViewLoadLoadingIndicatorState new];
-    state.conditions = newConditions;
-    state.loadingIndicatorSpan = loadingIndicatorSpan;
-    state.needsSpanUpdate = needsSpanUpdate;
     return state;
+}
+
+void
+ViewLoadLoadingIndicatorsHandlerImpl::addToState(ViewLoadLoadingIndicatorState *state,
+                                                 BugsnagPerformanceLoadingIndicatorView *loadingIndicator,
+                                                 ViewLoadInstrumentationState *viewLoadState,
+                                                 BOOL isFirstViewController) noexcept {
+    __strong UIViewController *viewController = viewLoadState.viewController;
+    
+    if (viewController == nil || !viewLoadState.hasAppeared) {
+        return;
+    }
+    if (callbacks_.onLoading) {
+        BugsnagPerformanceSpanCondition *condition = callbacks_.onLoading(viewController);
+        if (condition != nil) {
+            [state.conditions addObject:condition];
+        }
+    }
+    if (callbacks_.getParentContext &&
+        isFirstViewController &&
+        loadingIndicator.name != nil) {
+        BugsnagPerformanceSpanContext *parentContext = callbacks_.getParentContext(viewController);
+        BOOL needsSpanUpdate = checkNeedsSpanUpdate(loadingIndicator, parentContext);
+        if (parentContext && needsSpanUpdate) {
+            state.needsSpanUpdate = needsSpanUpdate;
+            state.loadingIndicatorSpan = spanFactory_->startLoadingIndicatorSpan(loadingIndicator.name, parentContext);
+        }
+    }
 }
 
 void

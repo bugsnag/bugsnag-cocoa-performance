@@ -27,6 +27,7 @@ public:
     
     void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
     void onViewControllerUpdatedView(UIViewController *viewController) noexcept;
+    void onViewControllerDidAppear(UIViewController *viewController) noexcept;
     void setCallbacks(ViewLoadLoadingIndicatorsHandlerCallbacks *callbacks) noexcept {
         callbacks_ = callbacks;
     }
@@ -39,6 +40,10 @@ private:
     
     void updateIndicatorsState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator, ViewLoadLoadingIndicatorState *state) noexcept;
     ViewLoadLoadingIndicatorState *newState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
+    void addToState(ViewLoadLoadingIndicatorState *state,
+                    BugsnagPerformanceLoadingIndicatorView *loadingIndicator,
+                    ViewLoadInstrumentationState *viewLoadState,
+                    BOOL isFirstViewController) noexcept;
     void updateLoadingIndicators(UIView *view) noexcept;
     bool checkNeedsSpanUpdate(BugsnagPerformanceLoadingIndicatorView *loadingIndicator,
                               BugsnagPerformanceSpanContext *parentContext) noexcept;
