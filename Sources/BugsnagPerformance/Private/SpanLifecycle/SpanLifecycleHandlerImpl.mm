@@ -246,7 +246,9 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
     }
 
     if (span != nil && span.state == SpanStateEnded) {
-        callOnSpanEndCallbacks(span);
+        [span forceMutate:^{
+            callOnSpanEndCallbacks(span);
+        }];
         if (span.state == SpanStateAborted) {
             return;
         }

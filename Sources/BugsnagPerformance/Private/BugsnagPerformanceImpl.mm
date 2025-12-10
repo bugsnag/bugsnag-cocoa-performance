@@ -19,6 +19,7 @@
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import "BugsnagPerformanceAppStartTypePlugin.h"
+#import "NSTimer+MainThread.h"
 
 using namespace bugsnag;
 
@@ -262,9 +263,9 @@ void BugsnagPerformanceImpl::start() noexcept {
     [worker_ start];
     [frameMetricsCollector_ start];
 
-    workerTimer_ = [NSTimer scheduledTimerWithTimeInterval:performWorkInterval_
-                                                   repeats:YES
-                                                     block:^(__unused NSTimer * _Nonnull timer) {
+    workerTimer_ = [NSTimer mainThreadTimerWithTimeInterval:performWorkInterval_
+                                                    repeats:YES
+                                                      block:^(__unused NSTimer * _Nonnull timer) {
         blockThis->onWorkInterval();
     }];
 
