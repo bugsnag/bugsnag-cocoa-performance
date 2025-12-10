@@ -568,6 +568,15 @@ Feature: Manual creation of spans
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.1.parentSpanId" matches the regex "^[A-Fa-f0-9]{16}$"
     * the trace payload field "resourceSpans.0.scopeSpans.0.spans.2.parentSpanId" is null
 
+Scenario: Manually start and end spans after starting BugsnagPerformance on a background thread
+    Given I run "BackgroundThreadStartScenario"
+    And I wait to receive at least 2 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * the trace "Bugsnag-Integrity" header matches the regex "^sha1 [A-Fa-f0-9]{40}$"
+    * the trace "Bugsnag-Sent-At" header matches the regex "^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ$"
+    * a span field "name" equals "BackgroundThreadStartScenarioEarlySpan"
+    * a span field "name" equals "BackgroundThreadStartScenarioSpan"
+    
   Scenario: Parent context should be calculated despite blocked spans on the stack
     Given I run "ManualParentBlockedSpanScenario"
     And I wait to receive at least 4 spans
@@ -581,4 +590,3 @@ Feature: Manual creation of spans
     * a span named "ManualParentBlockedSpanScenarioBlocked1" is a child of span named "ManualParentBlockedSpanScenarioParent"
     * a span named "ManualParentBlockedSpanScenarioBlocked2" is a child of span named "ManualParentBlockedSpanScenarioBlocked1"
     * a span named "ManualParentBlockedSpanScenarioChild" is a child of span named "ManualParentBlockedSpanScenarioParent"
-
