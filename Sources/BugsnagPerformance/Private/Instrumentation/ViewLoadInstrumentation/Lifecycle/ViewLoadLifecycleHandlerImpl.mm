@@ -167,14 +167,6 @@ ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasAdded(BugsnagPerformanceLoadi
     loadingIndicatorsHandler_->onLoadingIndicatorWasAdded(loadingIndicator);
 }
 
-//void
-//ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
-//    if (loadingIndicator == nil) {
-//        return;
-//    }
-//    loadingIndicatorsHandler_->onLoadingIndicatorWasRemoved(loadingIndicator);
-//}
-
 #pragma mark Helpers
 
 void
