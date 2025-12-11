@@ -19,6 +19,7 @@ typedef void (^ ViewLoadInstrumentationStateOnDeallocCallback)(ViewLoadInstrumen
 
 @property (nonatomic) BOOL isMarkedAsPreloaded;
 @property (nonatomic) BOOL hasAppeared;
+@property (nonatomic) BOOL isHandlingViewDidAppear;
 @property (nonatomic, nullable, weak) UIViewController *viewController;
 @property (nonatomic, nullable, weak) UIView *view;
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *overallSpan;

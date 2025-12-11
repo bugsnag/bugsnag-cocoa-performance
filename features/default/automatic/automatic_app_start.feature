@@ -133,3 +133,10 @@ Feature: Automatic app start instrumentation spans
     * a span named "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentAppStartsLoadingScenario_ViewController" is a child of span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentAppStartsLoadingScenario_ViewController"
     * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
     * a span named "[ViewLoad/UIKit]/Fixture.AutoInstrumentAppStartsLoadingScenario_ViewController" ended at the same time as a span named "[AppStartPhase/UI init]"
+
+  Scenario: Auto instrument app startup with interrupted view load
+    Given I run "AppStartInterruptedScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "AppStartInterruptedScenario"
+    * no span field "name" equals "[AppStart/iOSCold]"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentAppStartInterruptedScenario_ViewController"

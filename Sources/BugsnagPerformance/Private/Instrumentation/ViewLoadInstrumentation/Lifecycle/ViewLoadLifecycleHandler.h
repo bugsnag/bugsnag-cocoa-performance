@@ -12,6 +12,7 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpanCondition.h>
 #import "../State/ViewLoadInstrumentationState.h"
 #import "../System/ViewLoadSwizzlingCallbacks.h"
+#import "../../../BugsnagPerformanceSpan+Private.h"
 
 namespace bugsnag {
 
@@ -30,6 +31,9 @@ public:
                                           ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
     virtual void onViewDidLayoutSubviews(UIViewController *viewController,
                                          ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept = 0;
+    virtual void onViewWillDisappear(UIViewController *viewController,
+                                     ViewLoadSwizzlingOriginalImplementationCallback originalImplementation,
+                                     SpanLifecycleCallback onSpanCancelled) noexcept = 0;
     virtual void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept = 0;
     virtual BugsnagPerformanceSpanCondition *onLoadingStarted(UIViewController *viewController) noexcept = 0;
     virtual ~ViewLoadLifecycleHandler() {}

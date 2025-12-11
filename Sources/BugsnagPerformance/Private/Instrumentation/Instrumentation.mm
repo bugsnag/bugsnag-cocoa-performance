@@ -36,6 +36,9 @@ void Instrumentation::earlySetup() noexcept {
     appStartupInstrumentation_->earlySetup();
     viewLoadInstrumentation_->earlySetup();
     networkInstrumentation_->earlySetup();
+    viewLoadInstrumentation_->setDidCancelViewLoadCallback(^(BugsnagPerformanceSpan *span) {
+        appStartupInstrumentation_->didCancelViewLoadSpan(span);
+    });
 }
 
 void Instrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {

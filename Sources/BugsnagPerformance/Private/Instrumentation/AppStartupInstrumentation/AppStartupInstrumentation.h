@@ -36,6 +36,7 @@ public:
     void didStartViewLoadSpan(NSString *name) noexcept;
     void willCallMainFunction() noexcept;
     void didEnterBackground() noexcept;
+    void didCancelViewLoadSpan(BugsnagPerformanceSpan *span) noexcept;
     
     AppStartupInstrumentationStateSnapshot *stateSnapshot() noexcept;
 

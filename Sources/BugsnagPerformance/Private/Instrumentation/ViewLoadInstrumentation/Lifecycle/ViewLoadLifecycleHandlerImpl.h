@@ -46,6 +46,9 @@ public:
                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
     void onViewDidLayoutSubviews(UIViewController *viewController,
                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept;
+    void onViewWillDisappear(UIViewController *viewController,
+                             ViewLoadSwizzlingOriginalImplementationCallback originalImplementation,
+                             SpanLifecycleCallback onSpanCancelled) noexcept;
     void onLoadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept;
     BugsnagPerformanceSpanCondition *onLoadingStarted(UIViewController *viewController) noexcept;
     

@@ -88,6 +88,22 @@ AppStartupInstrumentation::didStartViewLoadSpan(NSString *name) noexcept {
 }
 
 void
+AppStartupInstrumentation::didCancelViewLoadSpan(BugsnagPerformanceSpan *span) noexcept {
+    std::lock_guard<std::mutex> guard(mutex_);
+    if (!isEnabled_) {
+        return;
+    }
+    auto appStartSpan = state_.appStartSpan;
+    if (appStartSpan != nil &&
+        (appStartSpan.isValid || appStartSpan.isBlocked) &&
+        span.parentId == appStartSpan.spanId &&
+        span.traceIdHi == appStartSpan.traceIdHi &&
+        span.traceIdLo == appStartSpan.traceIdLo) {
+        lifecycleHandler_->onFirstViewWillDisappear(state_);
+    }
+}
+
+void
 AppStartupInstrumentation::onAppDidBecomeActive() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
     if (!isEnabled_) {

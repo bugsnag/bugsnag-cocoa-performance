@@ -13,6 +13,7 @@
 #import "System/ViewLoadInstrumentationSystemUtils.h"
 #import "System/ViewLoadSwizzlingHandler.h"
 #import "Lifecycle/ViewLoadLifecycleHandler.h"
+#import "../../BugsnagPerformanceSpan+Private.h"
 
 #import <vector>
 
@@ -37,6 +38,9 @@ public:
     void start() noexcept {}
     
     void loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingIndicatorView) noexcept;
+    void setDidCancelViewLoadCallback(SpanLifecycleCallback callback) noexcept {
+        didCancelViewLoadCallback_ = callback;
+    }
     
 private:
     std::shared_ptr<ViewLoadInstrumentationSystemUtils> systemUtils_;
@@ -46,6 +50,7 @@ private:
     bool isEnabled_{true};
     bool swizzleViewLoadPreMain_{true};
     BOOL (^ _Nullable callback_)(UIViewController *viewController){nullptr};
+    SpanLifecycleCallback didCancelViewLoadCallback_{nullptr};
     
     ViewLoadSwizzlingCallbacks *createViewLoadSwizzlingCallbacks() noexcept;
     bool canCreateSpans(UIViewController *viewController) noexcept;

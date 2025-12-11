@@ -87,10 +87,11 @@ void
 ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
                                               ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) noexcept {
     auto state = repository_->getInstrumentationState(viewController);
-    if (state.overallSpan == nil || state.viewDidAppearSpan != nil) {
+    if (state.overallSpan == nil || state.viewDidAppearSpan != nil || state.isHandlingViewDidAppear) {
         originalImplementation();
         return;
     }
+    state.isHandlingViewDidAppear = YES;
     endViewAppearingSpan(state, CFAbsoluteTimeGetCurrent());
     state.viewDidAppearSpan = spanFactory_->startViewDidAppearSpan(viewController,
                                                                    state.overallSpan);
@@ -100,6 +101,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
     updateViewIfNeeded(state, viewController);
     loadingIndicatorsHandler_->onViewControllerDidAppear(viewController);
     endOverallSpan(state, viewController, CFAbsoluteTimeGetCurrent());
+    state.isHandlingViewDidAppear = NO;
 }
 
 void
@@ -159,6 +161,36 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
         strongState.onDealloc = nil;
         endViewAppearingSpanIfNeeded(strongState);
     });
+}
+
+void
+ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewController,
+                                                  ViewLoadSwizzlingOriginalImplementationCallback originalImplementation,
+                                                  SpanLifecycleCallback onSpanCancelled) noexcept {
+    auto state = repository_->getInstrumentationState(viewController);
+    if (!(state.overallSpan.isValid || state.overallSpan.isBlocked)) {
+        originalImplementation();
+        return;
+    }
+    
+    BugsnagPerformanceSpan *overallSpan = state.overallSpan;
+    if (overallSpan != nil) {
+        [state.overallSpan cancel];
+        if (onSpanCancelled) {
+            onSpanCancelled(overallSpan);
+        }
+    }
+    
+    [state.loadViewSpan cancel];
+    [state.viewDidLoadSpan cancel];
+    [state.viewWillAppearSpan cancel];
+    [state.viewAppearingSpan cancel];
+    [state.viewDidAppearSpan cancel];
+    [state.viewWillLayoutSubviewsSpan cancel];
+    [state.subviewLayoutSpan cancel];
+    [state.viewDidLayoutSubviewsSpan cancel];
+    [state.loadingPhaseSpan cancel];
+    state.overallSpan = nil;
 }
 
 void

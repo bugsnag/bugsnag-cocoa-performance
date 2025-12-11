@@ -18,4 +18,5 @@ typedef void (^ ViewLoadSwizzlingCallback)(UIViewController *viewController, Vie
 @property (atomic, copy) ViewLoadSwizzlingCallback viewDidAppearCallback;
 @property (atomic, copy) ViewLoadSwizzlingCallback viewWillLayoutSubviewsCallback;
 @property (atomic, copy) ViewLoadSwizzlingCallback viewDidLayoutSubviewsCallback;
+@property (atomic, copy) ViewLoadSwizzlingCallback viewWillDisappearCallback;
 @end
