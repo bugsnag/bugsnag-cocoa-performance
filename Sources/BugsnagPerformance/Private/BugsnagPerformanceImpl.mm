@@ -142,7 +142,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
 
-    [pluginManager_ installPlugins:config.plugins];
+    [pluginManager_ configure:config];
     
     auto networkRequestCallback = config.networkRequestCallback;
     if (networkRequestCallback != nullptr) {
