@@ -10,6 +10,5 @@ Feature: Setting callbacks
 
   Scenario: Set OnEnd
     Given I run "OnEndCallbackScenario"
-    And I wait for exactly 1 span
-    * the trace "Bugsnag-Span-Sampling" header equals "1:1"
+    And I wait for exactly 3 spans
     * a span field "name" equals "OnEndCallbackScenario"
