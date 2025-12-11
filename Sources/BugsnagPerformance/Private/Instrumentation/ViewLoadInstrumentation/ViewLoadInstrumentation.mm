@@ -157,6 +157,17 @@ ViewLoadInstrumentation::createViewLoadSwizzlingCallbacks() noexcept {
                                                    originalImplementation);
     };
     
+    swizzlingCallbacks.viewWillDisappearCallback = ^(UIViewController *viewController,
+                                                         ViewLoadSwizzlingOriginalImplementationCallback originalImplementation) {
+        if (!(*isEnabled)) {
+            originalImplementation();
+            return;
+        }
+        lifecycleHandler_->onViewWillDisappear(viewController,
+                                               originalImplementation,
+                                               didCancelViewLoadCallback_);
+    };
+    
     return swizzlingCallbacks;
 }
 

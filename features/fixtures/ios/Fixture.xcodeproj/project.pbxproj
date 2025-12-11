@@ -90,6 +90,7 @@
 		96CD493D2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96CD493C2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift */; };
 		96D090CB2EEA299C00BAA6D4 /* AppStartTypeLoadingScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D090CA2EEA299C00BAA6D4 /* AppStartTypeLoadingScenario.swift */; };
 		96D090CF2EEA2A3B00BAA6D4 /* AppStartTypeEarlyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D090CE2EEA2A3B00BAA6D4 /* AppStartTypeEarlyScenario.swift */; };
+		96D090D52EEB3DAA00BAA6D4 /* AppStartInterruptedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D090D42EEB3DA700BAA6D4 /* AppStartInterruptedScenario.swift */; };
 		96D528CC2C72B14300FEA2E2 /* AppDataOverrideScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */; };
 		96D528CE2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */; };
 		96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */; };
@@ -213,6 +214,7 @@
 		96CD493C2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentAppStartsLoadingScenario.swift; sourceTree = "<group>"; };
 		96D090CA2EEA299C00BAA6D4 /* AppStartTypeLoadingScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeLoadingScenario.swift; sourceTree = "<group>"; };
 		96D090CE2EEA2A3B00BAA6D4 /* AppStartTypeEarlyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartTypeEarlyScenario.swift; sourceTree = "<group>"; };
+		96D090D42EEB3DA700BAA6D4 /* AppStartInterruptedScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartInterruptedScenario.swift; sourceTree = "<group>"; };
 		96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDataOverrideScenario.swift; sourceTree = "<group>"; };
 		96D528CD2C75DC7000FEA2E2 /* FixedSamplingProbabilityOneScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityOneScenario.swift; sourceTree = "<group>"; };
 		96D528CF2C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedSamplingProbabilityZeroScenario.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 			isa = PBXGroup;
 			children = (
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
+				96D090D42EEB3DA700BAA6D4 /* AppStartInterruptedScenario.swift */,
 				96D090CE2EEA2A3B00BAA6D4 /* AppStartTypeEarlyScenario.swift */,
 				1CFB95482EA798D600025C16 /* AppStartTypeLateScenario.swift */,
 				96D090CA2EEA299C00BAA6D4 /* AppStartTypeLoadingScenario.swift */,
@@ -615,6 +618,7 @@
 				01FE4DC728E1D5A400D1F239 /* Fixture.swift in Sources */,
 				094F41E62C4A84D6008162A4 /* SetAttributesScenario.swift in Sources */,
 				09637A412B060E7C00F4F776 /* CommandReaderThread.swift in Sources */,
+				96D090D52EEB3DAA00BAA6D4 /* AppStartInterruptedScenario.swift in Sources */,
 				CBC90CE029CDD02800280884 /* FirstClassYesScenario.swift in Sources */,
 				96F129352DCE0CFE00A6FB2B /* ManualSpanWithRemoteContextParentScenario.swift in Sources */,
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
