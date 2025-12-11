@@ -32,19 +32,21 @@ static NSString * const AppStartNameAttribute = @"bugsnag.app_start.name";
 - (void)setType:(NSString *_Nullable)type {
     @synchronized (self) {
         __strong BugsnagPerformanceSpan *span = self.span;
-        if (span == nil || !span.isValid) {
+        if (span == nil || !(span.isValid || span.isBlocked)) {
             return;
         }
 
-        if (type == nil) {
-            [span updateName:self.spanPreviousName];
-        } else {
-            NSString *typeStr = type;
-            // Original span name should be in format "[AppStart/$platform$type]"
-            NSString *newName = [NSString stringWithFormat:@"%@%@", self.spanPreviousName, typeStr];
-            [span updateName:newName];
-        }
-        [span setAttribute:AppStartNameAttribute withValue:type];
+        [span forceMutate:^{
+            if (type == nil) {
+                [span updateName:self.spanPreviousName];
+            } else {
+                NSString *typeStr = type;
+                // Original span name should be in format "[AppStart/$platform$type]"
+                NSString *newName = [NSString stringWithFormat:@"%@%@", self.spanPreviousName, typeStr];
+                [span updateName:newName];
+            }
+            [span setAttribute:AppStartNameAttribute withValue:type];
+        }];
     }
 }
 
