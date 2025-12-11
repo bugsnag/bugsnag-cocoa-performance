@@ -10,6 +10,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BugsnagPerformanceSpanCondition+Private.h"
+#import "NSTimer+MainThread.h"
 #import <map>
 #import <mutex>
 
@@ -21,7 +22,7 @@ public:
     
     void sheduleTimeout(BugsnagPerformanceSpanCondition *condition, NSTimeInterval timeout) noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
-        this->conditionIdToTimer_[condition.conditionId] = [NSTimer scheduledTimerWithTimeInterval:timeout repeats:NO block:^(NSTimer *) {
+        this->conditionIdToTimer_[condition.conditionId] = [NSTimer mainThreadTimerWithTimeInterval:timeout repeats:NO block:^(NSTimer *) {
             [condition didTimeout];
         }];
     }

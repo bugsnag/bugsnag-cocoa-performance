@@ -68,6 +68,10 @@ AppStartupInstrumentation::AppStartupInstrumentation(std::shared_ptr<Tracer> tra
 , isColdLaunch_(isColdLaunch())
 {}
 
+void AppStartupInstrumentation::earlyConfigure(BSGEarlyConfiguration *config) noexcept {
+    didStartEarlyPhaseAtTime_ = config.earlyPhaseStartTime;
+}
+
 void AppStartupInstrumentation::earlySetup() noexcept {
     if (!canInstallInstrumentation()) {
         disable();
@@ -126,7 +130,11 @@ void AppStartupInstrumentation::disable() noexcept {
 
 CFAbsoluteTime AppStartupInstrumentation::appStartDuration() noexcept {
     CFAbsoluteTime endTime = didFinishLaunchingAtTime_ > 0 ? didFinishLaunchingAtTime_ : CFAbsoluteTimeGetCurrent();
+#if TARGET_OS_SIMULATOR
+    return endTime - didStartEarlyPhaseAtTime_;
+#else
     return endTime - didStartProcessAtTime_;
+#endif
 }
 
 CFAbsoluteTime AppStartupInstrumentation::timeSinceAppFirstBecameActive() noexcept {
