@@ -8,6 +8,7 @@
 
 #import "../../../Tracer.h"
 #import "../Lifecycle/NetworkLifecycleHandler.h"
+#import "../../../BSGPhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

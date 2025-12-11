@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#import "../PhasedStartup.h"
+#import "../BSGPhasedStartup.h"
 #import "FrameMetricsSnapshot.h"
 
 @interface FrameMetricsCollector: NSObject<BSGPhasedStartup>

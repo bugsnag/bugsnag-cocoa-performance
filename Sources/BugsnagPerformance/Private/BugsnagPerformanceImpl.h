@@ -158,6 +158,7 @@ private:
     void onAppEnteredBackground() noexcept;
 
     // Utility
+    void installDefaultPlugins();
     void wakeWorker() noexcept;
     void uploadPValueRequest() noexcept;
     void uploadPackage(std::unique_ptr<OtlpPackage> package, bool isRetry) noexcept;

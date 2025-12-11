@@ -6,20 +6,22 @@
 //  Copyright © 2025 Bugsnag. All rights reserved.
 //
 
+#pragma once
+
 #import <Foundation/Foundation.h>
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import "BSGPrioritizedStore.h"
 #import "SpanControl/BSGCompositeSpanControlProvider.h"
+#import "BSGPhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BSGPluginManager : NSObject
+@interface BSGPluginManager : NSObject <BSGConfigurable>
 
-- (instancetype)initWithConfiguration:(BugsnagPerformanceConfiguration *)configuration
-                    compositeProvider:(BSGCompositeSpanControlProvider *)compositeProvider
-                 onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
-                   onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks;
+- (instancetype)initWithCompositeProvider:(BSGCompositeSpanControlProvider *)compositeProvider
+                     onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
+                       onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks;
 
 - (void)installPlugins:(NSArray<id<BugsnagPerformancePlugin>> *)plugins;
 - (void)startPlugins;
