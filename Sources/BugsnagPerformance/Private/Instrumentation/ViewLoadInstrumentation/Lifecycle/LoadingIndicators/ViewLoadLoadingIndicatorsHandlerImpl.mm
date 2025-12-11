@@ -49,7 +49,6 @@ ViewLoadLoadingIndicatorsHandlerImpl::updateIndicatorsState(BugsnagPerformanceLo
 
 ViewLoadLoadingIndicatorState *
 ViewLoadLoadingIndicatorsHandlerImpl::newState(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
-    NSMutableArray<BugsnagPerformanceSpanCondition *> *newConditions = [NSMutableArray array];
     auto hasFoundFirstViewController = false;
 
     auto state = [ViewLoadLoadingIndicatorState new];
