@@ -52,13 +52,13 @@ BugsnagPerformanceSpan *
 SpanStackingHandler::currentSpan() {
     std::lock_guard<std::mutex> guard(mutex_);
     std::shared_ptr<SpanActivityState> state = spanStateForActivity(currentActivityId());
-    if (state == nullptr) {
-        return nullptr;
+    while (state != nullptr) {
+        if (state->span.state == SpanStateOpen) {
+            return state->span;
+        }
+        state = spanStateForActivity(state->parentActivityId);
     }
-    if (!(state->span.state == SpanStateOpen)) {
-        return nullptr;
-    }
-    return state->span;
+    return nullptr;
 }
 
 void

@@ -71,7 +71,9 @@ ViewLoadLifecycleHandlerImpl::onViewWillAppear(UIViewController *viewController,
         originalImplementation();
         return;
     }
-    adjustSpanIfPreloaded(overallSpan, state, [NSDate new], viewController);
+    [overallSpan forceMutate:^{
+        adjustSpanIfPreloaded(overallSpan, state, [NSDate new], viewController);
+    }];
     state.viewWillAppearSpan = spanFactory_->startViewWillAppearSpan(viewController,
                                                                      state.overallSpan);
     originalImplementation();

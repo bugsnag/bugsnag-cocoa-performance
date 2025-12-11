@@ -231,6 +231,13 @@ Then('a span float attribute {string} is greater than {float}') do |attribute, e
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('every span float attribute {string} is greater than {float}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact
+  attribute_values = selected_attributes.map { |a| a['value']['doubleValue'].to_f > expected }
+  Maze.check.not_includes attribute_values, false
+end
+
 Then('a span float attribute {string} equals {float}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') } }.compact

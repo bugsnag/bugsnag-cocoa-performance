@@ -47,7 +47,10 @@ NetworkEarlyPhaseHandlerImpl::updateEarlyStatesOnPhaseEnd(NetworkEarlyPhaseHandl
         callback(state);
         if (state.hasBeenVetoed) {
             [state.overallSpan cancel];
+            continue;
         }
-        [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(state.url, nil)];
+        [state.overallSpan forceMutate:^{
+            [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanUrlAttributes(state.url, nil)];
+        }];
     }
 }
