@@ -1,6 +1,28 @@
 Changelog
 =========
 
+## 1.16.2 (2025-12-11)
+
+### Bug fixes
+
+* Fixed an issue preventing some preloaded ViewLoad spans from being adjusted.
+  [541](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/541)
+  
+* Fixed an issue where current context would not calculated properly whenever there is an ended and blocked span on the top of the stack.
+  [540](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/540)
+  
+* Fixed an issue where spans weren't sent when BugsnagPerformance has been started on a background thread.
+  [539](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/539)
+  
+* Fixed an issue where early network span attributes wouldn't be updated in reprocessing.
+  [538](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/538)
+  
+* Fixed an issue where onSpanEnd callbacks would fail to set attributes of blocked spans.
+  [537](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/537)
+
+* Fixed an issue causing AppStartups to be discarded on iOS 26 Simulator.
+  [530](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/530)
+
 ## 1.16.1 (2025-11-27)
 
 ### Bug fixes
