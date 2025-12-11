@@ -9,7 +9,7 @@
 #pragma once
 
 #import <Foundation/Foundation.h>
-#import "PhasedStartup.h"
+#import "BSGPhasedStartup.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
