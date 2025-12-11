@@ -11,7 +11,7 @@
 
 @interface ViewLoadLoadingIndicatorState : NSObject
 
-@property(nonatomic, strong) NSArray<BugsnagPerformanceSpanCondition *> *conditions;
+@property(nonatomic, strong) NSMutableArray<BugsnagPerformanceSpanCondition *> *conditions;
 @property(nonatomic, strong) BugsnagPerformanceSpan *loadingIndicatorSpan;
 @property(nonatomic) BOOL needsSpanUpdate;
 

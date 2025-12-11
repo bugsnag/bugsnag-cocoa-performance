@@ -96,7 +96,9 @@ ViewLoadLifecycleHandlerImpl::onViewDidAppear(UIViewController *viewController,
                                                                    state.overallSpan);
     originalImplementation();
     [state.viewDidAppearSpan end];
+    state.hasAppeared = true;
     updateViewIfNeeded(state, viewController);
+    loadingIndicatorsHandler_->onViewControllerDidAppear(viewController);
     endOverallSpan(state, viewController, CFAbsoluteTimeGetCurrent());
 }
 
@@ -167,14 +169,6 @@ ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasAdded(BugsnagPerformanceLoadi
     loadingIndicatorsHandler_->onLoadingIndicatorWasAdded(loadingIndicator);
 }
 
-//void
-//ViewLoadLifecycleHandlerImpl::onLoadingIndicatorWasRemoved(BugsnagPerformanceLoadingIndicatorView *loadingIndicator) noexcept {
-//    if (loadingIndicator == nil) {
-//        return;
-//    }
-//    loadingIndicatorsHandler_->onLoadingIndicatorWasRemoved(loadingIndicator);
-//}
-
 #pragma mark Helpers
 
 void
@@ -186,10 +180,7 @@ ViewLoadLifecycleHandlerImpl::endOverallSpan(ViewLoadInstrumentationState *state
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     [crosstalkAPI_ willEndViewLoadSpan:overallSpan viewController:viewController];
     
-    if (state.loadingPhaseSpan != nil) {
-        // Adjust span start time to reflect the view appearing time
-        [state.loadingPhaseSpan updateStartTime:[NSDate date]];
-    } else {
+    if (state.loadingPhaseSpan == nil) {
         [state.overallSpan blockWithTimeout:kLoadingBlockTimeout];
     }
 
