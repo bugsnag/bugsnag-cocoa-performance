@@ -91,12 +91,14 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
     SpanOptions spanOptions(options);
     if (options.parentContext == [BugsnagPerformanceSpanContext defaultContext] &&
         callbacks_.getViewLoadParentSpan != nil) {
-        BugsnagPerformanceSpan *parentSpan = callbacks_.getViewLoadParentSpan();
-        if (parentSpan != nil) {
-            spanOptions.parentContext = parentSpan;
-            BugsnagPerformanceSpanCondition *parentSpanCondition = [parentSpan blockWithTimeout:0.1];
-            if (parentSpanCondition) {
-                conditionsToEndOnClose = @[parentSpanCondition];
+        GetViewLoadParentSpanCallbackResult *result = callbacks_.getViewLoadParentSpan();
+        if (result.span != nil) {
+            spanOptions.parentContext = result.span;
+            if (!result.isLegacy) {
+                BugsnagPerformanceSpanCondition *parentSpanCondition = [result.span blockWithTimeout:0.1];
+                if (parentSpanCondition) {
+                    conditionsToEndOnClose = @[parentSpanCondition];
+                }
             }
         }
     }

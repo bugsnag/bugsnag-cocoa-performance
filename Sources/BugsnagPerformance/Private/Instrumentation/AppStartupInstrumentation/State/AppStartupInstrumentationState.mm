@@ -14,7 +14,8 @@
     return [AppStartupInstrumentationStateSnapshot snapshotWithAppStartSpan:self.appStartSpan
                                                                  uiInitSpan:self.uiInitSpan
                                                                isInProgress:self.appStartSpan.isValid || self.appStartSpan.isBlocked
-                                                               hasFirstView:self.firstViewName != nil];
+                                                               hasFirstView:self.firstViewName != nil
+                                                                   isLegacy:self.isLegacy];
 }
 
 @end

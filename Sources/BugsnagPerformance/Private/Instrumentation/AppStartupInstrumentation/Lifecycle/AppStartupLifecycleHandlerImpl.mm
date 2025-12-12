@@ -39,6 +39,22 @@ AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState 
 }
 
 void
+AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
+                                            BugsnagPerformanceConfiguration *config) noexcept {
+    BOOL isLegacy = config.autoInstrumentAppStartsLegacy;
+    state.isLegacy = isLegacy;
+    if (isLegacy) {
+        if (!state.uiInitSpan.isValid && state.didBecomeActiveAtTime != 0) {
+            [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+            [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+        }
+        for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+            [condition cancel];
+        }
+    }
+}
+
+void
 AppStartupLifecycleHandlerImpl::onInstrumentationInit(AppStartupInstrumentationState *state) noexcept {
     state.isActivePrewarm = systemUtils_->isActivePrewarm();
     state.didStartProcessAtTime = systemUtils_->getProcessStartTime();
@@ -127,7 +143,7 @@ AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationSt
     
     [crossTalkAPI_ willEndUIInitSpan:state.uiInitSpan];
     [state.appStartSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
-    if (state.firstViewName == nil) {
+    if (state.firstViewName == nil && !state.isLegacy) {
         [state.uiInitSpan blockWithTimeout:kFirstViewDelayThreshold];
     }
     [state.uiInitSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
@@ -202,10 +218,12 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
         return;
     }
     
-    BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
     NSArray *conditionsToEndOnClose = @[];
-    if (appStartCondition) {
-        conditionsToEndOnClose = @[appStartCondition];
+    if (!state.isLegacy) {
+        BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
+        if (appStartCondition) {
+            conditionsToEndOnClose = @[appStartCondition];
+        }
     }
 
     state.uiInitSpan = spanFactory_->startUIInitSpan(state.didFinishLaunchingAtTime, state.appStartSpan, conditionsToEndOnClose);

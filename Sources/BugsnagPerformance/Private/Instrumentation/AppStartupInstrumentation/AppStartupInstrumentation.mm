@@ -43,9 +43,10 @@ void AppStartupInstrumentation::earlySetup() noexcept {
 }
 
 void AppStartupInstrumentation::configure(BugsnagPerformanceConfiguration *config) noexcept {
-    if (!config.autoInstrumentAppStarts) {
+    if (!(config.autoInstrumentAppStarts || config.autoInstrumentAppStartsLegacy)) {
         disable();
     }
+    lifecycleHandler_->onConfigure(state_, config);
 }
 
 #pragma mark Lifecycle
