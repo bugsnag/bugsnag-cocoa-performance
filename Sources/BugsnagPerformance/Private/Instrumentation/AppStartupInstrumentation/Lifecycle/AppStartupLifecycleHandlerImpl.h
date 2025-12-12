@@ -29,6 +29,8 @@ public:
     
     void onEarlyConfigure(AppStartupInstrumentationState *state,
                           BSGEarlyConfiguration *config) noexcept;
+    void onConfigure(AppStartupInstrumentationState *state,
+                     BugsnagPerformanceConfiguration *config) noexcept;
     void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept;
     void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept;
     void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept;

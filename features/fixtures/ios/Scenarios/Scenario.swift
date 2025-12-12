@@ -36,6 +36,7 @@ class Scenario: NSObject {
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
         bugsnagPerfConfig.apiKey = "12312312312312312312312312312312"
         bugsnagPerfConfig.autoInstrumentAppStarts = false
+        bugsnagPerfConfig.autoInstrumentAppStartsLegacy = false
         bugsnagPerfConfig.autoInstrumentNetworkRequests = false
         bugsnagPerfConfig.autoInstrumentViewControllers = false
         bugsnagPerfConfig.enabledMetrics.rendering = false
@@ -63,6 +64,7 @@ class Scenario: NSObject {
 
     func applyStartupConfig(startupConfig: StartupConfiguration) {
         bugsnagPerfConfig.autoInstrumentAppStarts = startupConfig.autoInstrumentAppStarts
+        bugsnagPerfConfig.autoInstrumentAppStartsLegacy = startupConfig.autoInstrumentAppStartsLegacy
         bugsnagPerfConfig.autoInstrumentViewControllers = startupConfig.autoInstrumentViewControllers
         bugsnagPerfConfig.apiKey = startupConfig.apiKey
         bugsnagPerfConfig.endpoint = startupConfig.endpoint

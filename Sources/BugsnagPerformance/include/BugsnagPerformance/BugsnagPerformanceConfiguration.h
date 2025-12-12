@@ -75,6 +75,8 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentAppStarts;
 
+@property (nonatomic) BOOL autoInstrumentAppStartsLegacy;
+
 @property (nonatomic) BOOL autoInstrumentViewControllers;
 
 @property (nonatomic) BOOL autoInstrumentNetworkRequests;

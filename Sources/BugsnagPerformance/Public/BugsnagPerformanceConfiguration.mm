@@ -77,6 +77,7 @@ static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
         _apiKey = [apiKey copy];
         _endpoint = DefaultEndpointForKey(apiKey);
         _autoInstrumentAppStarts = YES;
+        _autoInstrumentAppStartsLegacy = NO;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
         _debugMode = NO;
@@ -173,6 +174,7 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
     auto tracePropagationUrls = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"tracePropagationUrls"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
+    auto autoInstrumentAppStartsLegacy = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStartsLegacy"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
     auto debugMode = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"debugMode"]);
@@ -210,6 +212,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     }
     if (autoInstrumentAppStarts != nil) {
         configuration.autoInstrumentAppStarts = [autoInstrumentAppStarts boolValue];
+    }
+    if (autoInstrumentAppStartsLegacy != nil) {
+        configuration.autoInstrumentAppStartsLegacy = [autoInstrumentAppStartsLegacy boolValue];
     }
     if (autoInstrumentViewControllers != nil) {
         configuration.autoInstrumentViewControllers = [autoInstrumentViewControllers boolValue];

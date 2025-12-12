@@ -12,6 +12,7 @@ class StartupConfiguration: Codable {
     public var apiKey: String
     public var endpoint: URL
     public var autoInstrumentAppStarts: Bool
+    public var autoInstrumentAppStartsLegacy: Bool
     public var autoInstrumentViewControllers: Bool
     public var scenarioName: String
     public var enabledMetrics: StartupEnabledMetrics
@@ -21,6 +22,7 @@ class StartupConfiguration: Codable {
         apiKey = "12312312312312312312312312312312"
         endpoint = URL(string: "http://bs-local.com:9339/traces")!
         autoInstrumentAppStarts = false
+        autoInstrumentAppStartsLegacy = false
         autoInstrumentViewControllers = false
         scenarioName = ""
         enabledMetrics = StartupEnabledMetrics()
@@ -60,6 +62,7 @@ class StartupConfiguration: Codable {
             self.apiKey = loadedData.apiKey
             self.endpoint = loadedData.endpoint
             self.autoInstrumentAppStarts = loadedData.autoInstrumentAppStarts
+            self.autoInstrumentAppStartsLegacy = loadedData.autoInstrumentAppStartsLegacy
             self.autoInstrumentViewControllers = loadedData.autoInstrumentViewControllers
             self.enabledMetrics = loadedData.enabledMetrics
 

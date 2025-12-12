@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import "../State/AppStartupInstrumentationState.h"
 #import "../../../EarlyConfiguration.h"
 
@@ -16,6 +17,8 @@ class AppStartupLifecycleHandler {
 public:
     virtual void onEarlyConfigure(AppStartupInstrumentationState *state,
                                   BSGEarlyConfiguration *config) noexcept = 0;
+    virtual void onConfigure(AppStartupInstrumentationState *state,
+                             BugsnagPerformanceConfiguration *config) noexcept = 0;
     virtual void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept = 0;

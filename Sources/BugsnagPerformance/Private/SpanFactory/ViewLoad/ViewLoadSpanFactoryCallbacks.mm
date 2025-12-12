@@ -10,3 +10,6 @@
 
 @implementation ViewLoadSpanFactoryCallbacks
 @end
+
+@implementation GetViewLoadParentSpanCallbackResult
+@end
