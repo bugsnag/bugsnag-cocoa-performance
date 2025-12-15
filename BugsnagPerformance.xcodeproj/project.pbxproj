@@ -216,6 +216,7 @@
 		96BB66C92EAEA79200AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96BB66C82EAEA79000AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm */; };
 		96BB66CD2EAEB1A400AB3C93 /* ViewLoadLoadingIndicatorState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BB66CC2EAEB19D00AB3C93 /* ViewLoadLoadingIndicatorState.h */; };
 		96BB66CF2EAEB1AE00AB3C93 /* ViewLoadLoadingIndicatorState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96BB66CE2EAEB1AC00AB3C93 /* ViewLoadLoadingIndicatorState.mm */; };
+		96D090D32EEB05CD00BAA6D4 /* BSGPhasedStartup.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
@@ -639,6 +640,7 @@
 		96BB66C82EAEA79000AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLoadingIndicatorsHandlerCallbacks.mm; sourceTree = "<group>"; };
 		96BB66CC2EAEB19D00AB3C93 /* ViewLoadLoadingIndicatorState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorState.h; sourceTree = "<group>"; };
 		96BB66CE2EAEB1AC00AB3C93 /* ViewLoadLoadingIndicatorState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLoadingIndicatorState.mm; sourceTree = "<group>"; };
+		96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPhasedStartup.h; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -903,6 +905,7 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
+				96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */,
 				963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */,
 				963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */,
 				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
@@ -1580,6 +1583,7 @@
 				CB68FAB92A3C27B9005B2CDB /* PersistentDeviceID.h in Headers */,
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
 				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
+				96D090D32EEB05CD00BAA6D4 /* BSGPhasedStartup.h in Headers */,
 				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
 				1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,

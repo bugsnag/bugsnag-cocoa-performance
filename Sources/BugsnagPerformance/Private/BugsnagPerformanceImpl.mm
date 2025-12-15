@@ -47,6 +47,9 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
 , spanEndCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new])
+, pluginManager_([[BSGPluginManager alloc] initWithCompositeProvider:spanControlProvider_
+                                                 onSpanStartCallbacks:spanStartCallbacks_
+                                                   onSpanEndCallbacks:spanEndCallbacks_])
 , plainSpanFactory_(std::make_shared<PlainSpanFactoryImpl>(sampler_, spanStackingHandler_, spanAttributesProvider_))
 , appStartupSpanFactory_(std::make_shared<AppStartupSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
 , viewLoadSpanFactory_(std::make_shared<ViewLoadSpanFactoryImpl>(plainSpanFactory_, spanAttributesProvider_))
@@ -126,6 +129,8 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     instrumentation_->earlySetup();
     [worker_ earlySetup];
     [frameMetricsCollector_ earlySetup];
+    
+    installDefaultPlugins();
 
     [BugsnagPerformanceCrossTalkAPI initializeWithSpanStackingHandler:spanStackingHandler_ tracer:tracer_];
 }
@@ -136,28 +141,8 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
-    for(BugsnagPerformanceSpanStartCallback callback in config.onSpanStartCallbacks) {
-        [spanStartCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
-    }
-    for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
-        [spanEndCallbacks_ addObject:callback priority:BugsnagPerformancePriorityMedium];
-    }
-    
-    pluginManager_ = [[BSGPluginManager alloc] initWithConfiguration:config
-                                                   compositeProvider:spanControlProvider_
-                                                onSpanStartCallbacks:spanStartCallbacks_
-                                                  onSpanEndCallbacks:spanEndCallbacks_];
 
-    NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
-    BugsnagPerformanceAppStartTypePlugin *appStartTypePlugin =
-        [BugsnagPerformanceAppStartTypePlugin new];
-    [appStartTypePlugin setGetAppStartInstrumentationStateCallback:^AppStartupInstrumentationStateSnapshot * _Nullable {
-        return instrumentation_->getAppStartInstrumentationStateSnapshot();
-    }];
-    [defaultPlugins addObject:appStartTypePlugin];
-    [pluginManager_ installPlugins:defaultPlugins];
-
-    [pluginManager_ installPlugins:config.plugins];
+    [pluginManager_ configure:config];
     
     auto networkRequestCallback = config.networkRequestCallback;
     if (networkRequestCallback != nullptr) {
@@ -292,6 +277,19 @@ void BugsnagPerformanceImpl::start() noexcept {
     if (!configuration_.shouldSendReports) {
         BSGLogInfo("Note: No reports will be sent because releaseStage '%@' is not in enabledReleaseStages", configuration_.releaseStage);
     }
+}
+
+#pragma mark Plugins
+
+void BugsnagPerformanceImpl::installDefaultPlugins() {
+    NSMutableArray<id<BugsnagPerformancePlugin>> *defaultPlugins = [NSMutableArray array];
+    BugsnagPerformanceAppStartTypePlugin *appStartTypePlugin =
+    [BugsnagPerformanceAppStartTypePlugin new];
+    [appStartTypePlugin setGetAppStartInstrumentationStateCallback:^AppStartupInstrumentationStateSnapshot * _Nullable {
+        return instrumentation_->getAppStartInstrumentationStateSnapshot();
+    }];
+    [defaultPlugins addObject:appStartTypePlugin];
+    [pluginManager_ installPlugins:defaultPlugins];
 }
 
 #pragma mark Tasks

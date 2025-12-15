@@ -58,6 +58,13 @@ Feature: Plugins
     Then the trace "Content-Type" header equals "application/json"
     * a span field "name" equals "[AppStart/iOSCold]"
 
+  Scenario: App start type plugin correctly changes the span name early
+    Given I run "AppStartTypeEarlyScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive at least 5 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * a span field "name" equals "[AppStart/iOSCold]AppStartTypeEarlyScenario"
+
   Scenario: App start type plugin correctly changes the span name during data loading phase of the first view
     Given I run "AppStartTypeLoadingScenario"
     Then I relaunch the app after shutdown
