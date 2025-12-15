@@ -83,6 +83,17 @@ void instrumentViewDidLayoutSubviews(Class cls, ViewLoadSwizzlingCallbacks *call
     });
 }
 
+void instrumentViewWillDisappear(Class cls, ViewLoadSwizzlingCallbacks *callbacks) noexcept {
+    __block SEL selector = @selector(viewWillDisappear:);
+    __block IMP viewWillDisappear = ObjCSwizzle::replaceInstanceMethodOverride(cls, selector, ^(id self, BOOL animated) {
+        callbacks.viewWillDisappearCallback(self, ^{
+            if (viewWillDisappear) {
+                reinterpret_cast<void (*)(id, SEL, BOOL)>(viewWillDisappear)(self, selector, animated);
+            }
+        });
+    });
+}
+
 #pragma mark Instrumentation
 
 void
@@ -94,6 +105,7 @@ ViewLoadSwizzlingHandlerImpl::instrument(Class cls, ViewLoadSwizzlingCallbacks *
     instrumentViewDidAppear(cls, callbacks);
     instrumentViewWillLayoutSubviews(cls, callbacks);
     instrumentViewDidLayoutSubviews(cls, callbacks);
+    instrumentViewWillDisappear(cls, callbacks);
 }
 
 void

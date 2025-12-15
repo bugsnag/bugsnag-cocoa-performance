@@ -143,6 +143,14 @@ AppStartupLifecycleHandlerImpl::onAppEnteredBackground(AppStartupInstrumentation
     }
 }
 
+void
+AppStartupLifecycleHandlerImpl::onFirstViewLoadCancelled(AppStartupInstrumentationState *state) noexcept {
+    state.firstViewLoadWasCancelled = true;
+    if (!stateValidator_->isValid(state)) {
+        discardAppStart(state);
+    }
+}
+
 #pragma mark Instrumentation cancelled
 
 void

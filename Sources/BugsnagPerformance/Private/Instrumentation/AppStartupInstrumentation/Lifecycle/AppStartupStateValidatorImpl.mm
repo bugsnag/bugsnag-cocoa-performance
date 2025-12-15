@@ -35,6 +35,7 @@ AppStartupStateValidatorImpl::isValid(AppStartupInstrumentationState *state) noe
         case BSGAppStartupStageActive:
             result &= checkLaunchToActiveDuration(state);
             result &= checkActiveToFirstBackgroundingDuration(state);
+            result &= !state.firstViewLoadWasCancelled;
             break;
     }
     return result;
