@@ -24,7 +24,7 @@ public:
     virtual void onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept = 0;
     virtual void onAppEnteredBackground(AppStartupInstrumentationState *state) noexcept = 0;
-    virtual void onFirstViewWillDisappear(AppStartupInstrumentationState *state) noexcept = 0;
+    virtual void onFirstViewLoadCancelled(AppStartupInstrumentationState *state) noexcept = 0;
     virtual ~AppStartupLifecycleHandler() {}
 };
 }

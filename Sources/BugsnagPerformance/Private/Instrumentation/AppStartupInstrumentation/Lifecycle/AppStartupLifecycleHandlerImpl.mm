@@ -144,8 +144,8 @@ AppStartupLifecycleHandlerImpl::onAppEnteredBackground(AppStartupInstrumentation
 }
 
 void
-AppStartupLifecycleHandlerImpl::onFirstViewWillDisappear(AppStartupInstrumentationState *state) noexcept {
-    state.calledFirstViewWillDisappear = true;
+AppStartupLifecycleHandlerImpl::onFirstViewLoadCancelled(AppStartupInstrumentationState *state) noexcept {
+    state.firstViewLoadWasCancelled = true;
     if (!stateValidator_->isValid(state)) {
         discardAppStart(state);
     }

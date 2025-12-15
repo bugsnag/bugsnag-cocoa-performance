@@ -37,7 +37,7 @@ public:
     void onAppDidBecomeActive(AppStartupInstrumentationState *state) noexcept;
     void onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept;
     void onAppEnteredBackground(AppStartupInstrumentationState *state) noexcept;
-    void onFirstViewWillDisappear(AppStartupInstrumentationState *state) noexcept;
+    void onFirstViewLoadCancelled(AppStartupInstrumentationState *state) noexcept;
     
 private:
     std::shared_ptr<AppStartupSpanFactory> spanFactory_;

@@ -93,13 +93,9 @@ AppStartupInstrumentation::didCancelViewLoadSpan(BugsnagPerformanceSpan *span) n
     if (!isEnabled_) {
         return;
     }
-    auto appStartSpan = state_.appStartSpan;
-    if (appStartSpan != nil &&
-        (appStartSpan.isValid || appStartSpan.isBlocked) &&
-        span.parentId == appStartSpan.spanId &&
-        span.traceIdHi == appStartSpan.traceIdHi &&
-        span.traceIdLo == appStartSpan.traceIdLo) {
-        lifecycleHandler_->onFirstViewWillDisappear(state_);
+    if (state_.isInProgress &&
+        [state_.appStartSpan isParentOf:span]) {
+        lifecycleHandler_->onFirstViewLoadCancelled(state_);
     }
 }
 

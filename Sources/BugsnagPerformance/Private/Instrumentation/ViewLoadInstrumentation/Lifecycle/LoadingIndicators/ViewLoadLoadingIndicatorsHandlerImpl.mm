@@ -114,7 +114,5 @@ ViewLoadLoadingIndicatorsHandlerImpl::updateLoadingIndicators(UIView *view) noex
 bool
 ViewLoadLoadingIndicatorsHandlerImpl::checkNeedsSpanUpdate(BugsnagPerformanceLoadingIndicatorView *loadingIndicator,
                                                            BugsnagPerformanceSpanContext *parentContext) noexcept {
-    return !(loadingIndicator.loadingSpan.parentId == parentContext.spanId &&
-             loadingIndicator.loadingSpan.traceId.hi == parentContext.traceId.hi &&
-             loadingIndicator.loadingSpan.traceId.lo == parentContext.traceId.lo);
+    return ![parentContext isParentOf:loadingIndicator.loadingSpan];
 }
