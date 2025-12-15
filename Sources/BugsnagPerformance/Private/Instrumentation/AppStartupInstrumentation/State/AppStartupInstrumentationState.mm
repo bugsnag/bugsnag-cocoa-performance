@@ -13,9 +13,13 @@
 - (AppStartupInstrumentationStateSnapshot *)createSnapshot {
     return [AppStartupInstrumentationStateSnapshot snapshotWithAppStartSpan:self.appStartSpan
                                                                  uiInitSpan:self.uiInitSpan
-                                                               isInProgress:self.appStartSpan.isValid || self.appStartSpan.isBlocked
+                                                               isInProgress:self.isInProgress
                                                                hasFirstView:self.firstViewName != nil
                                                                    isLegacy:self.isLegacy];
+}
+
+- (BOOL)isInProgress {
+    return self.appStartSpan.isValid || self.appStartSpan.isBlocked;
 }
 
 @end

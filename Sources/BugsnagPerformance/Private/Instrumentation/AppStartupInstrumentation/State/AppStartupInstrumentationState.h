@@ -23,6 +23,7 @@ typedef NS_ENUM(uint8_t, BSGAppStartupStage) {
 @property (nonatomic, strong) BugsnagPerformanceSpan *postMainSpan;
 @property (nonatomic, strong) BugsnagPerformanceSpan *uiInitSpan;
 @property (nonatomic, strong) NSString *firstViewName;
+@property (nonatomic, readonly) BOOL isInProgress;
 @property (nonatomic) CFAbsoluteTime didStartProcessAtTime;
 @property (nonatomic) CFAbsoluteTime didStartEarlyPhaseAtTime;
 @property (nonatomic) CFAbsoluteTime didCallMainFunctionAtTime;
@@ -30,7 +31,6 @@ typedef NS_ENUM(uint8_t, BSGAppStartupStage) {
 @property (nonatomic) CFAbsoluteTime didBecomeActiveAtTime;
 @property (nonatomic) CFAbsoluteTime didFinishLaunchingAtTime;
 @property (nonatomic) CFAbsoluteTime didEnterBackgroundAtTime;
-@property (nonatomic) BOOL isInProgress;
 @property (nonatomic) BOOL hasFirstView;
 @property (nonatomic) BOOL isColdLaunch;
 @property (nonatomic) BOOL isActivePrewarm;
@@ -39,7 +39,7 @@ typedef NS_ENUM(uint8_t, BSGAppStartupStage) {
 @property (nonatomic) BOOL didCheckEarlyStartDuration;
 @property (nonatomic) BOOL shouldRespondToAppDidFinishLaunching;
 @property (nonatomic) BOOL shouldRespondToAppDidBecomeActive;
-@property (nonatomic) BOOL calledFirstViewWillDisappear;
+@property (nonatomic) BOOL firstViewLoadWasCancelled;
 @property (nonatomic) BSGAppStartupStage stage;
 
 - (AppStartupInstrumentationStateSnapshot *)createSnapshot;

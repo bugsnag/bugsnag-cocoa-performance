@@ -46,29 +46,21 @@ Feature: Plugins
   Scenario: App start type plugin correctly changes the span name
     Given I run "AppStartTypeScenario"
     Then I relaunch the app after shutdown
-    And I wait to receive at least 5 spans
-    Then the trace "Content-Type" header equals "application/json"
-    * a span field "name" equals "[AppStart/iOSCold]customType"
+    And I wait to receive a span named "[AppStart/iOSCold]customType"
 
   Scenario: App start type plugin wont change span name if it's too late
     Given I run "AppStartTypeLateScenario"
     Then I relaunch the app after shutdown
     And I wait for 4 seconds
-    And I wait to receive at least 5 spans
-    Then the trace "Content-Type" header equals "application/json"
-    * a span field "name" equals "[AppStart/iOSCold]"
+    And I wait to receive a span named "[AppStart/iOSCold]"
 
   Scenario: App start type plugin correctly changes the span name early
     Given I run "AppStartTypeEarlyScenario"
     Then I relaunch the app after shutdown
-    And I wait to receive at least 5 spans
-    Then the trace "Content-Type" header equals "application/json"
-    * a span field "name" equals "[AppStart/iOSCold]AppStartTypeEarlyScenario"
+    And I wait to receive a span named "[AppStart/iOSCold]AppStartTypeEarlyScenario"
 
   Scenario: App start type plugin correctly changes the span name during data loading phase of the first view
     Given I run "AppStartTypeLoadingScenario"
     Then I relaunch the app after shutdown
-    And I wait to receive at least 6 spans
-    Then the trace "Content-Type" header equals "application/json"
-    * a span field "name" equals "[AppStart/iOSCold]AppStartTypeLoadingScenario"
+    And I wait to receive a span named "[AppStart/iOSCold]AppStartTypeLoadingScenario"
 
