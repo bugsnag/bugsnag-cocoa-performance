@@ -167,7 +167,7 @@ ViewLoadLifecycleHandlerImpl::onViewDidLayoutSubviews(UIViewController *viewCont
 void
 ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewController,
                                                   ViewLoadSwizzlingOriginalImplementationCallback originalImplementation,
-                                                  SpanLifecycleCallback __unused onSpanCancelled) noexcept {
+                                                  SpanLifecycleCallback onSpanCancelled) noexcept {
     auto state = repository_->getInstrumentationState(viewController);
     if (!(state.overallSpan.isValid || state.overallSpan.isBlocked)) {
         originalImplementation();
@@ -176,13 +176,13 @@ ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewControll
     
     auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     [[BugsnagPerformance startSpanWithName:[NSString stringWithFormat:@"%@ viewWillDisappear", className]] end];
-//    BugsnagPerformanceSpan *overallSpan = state.overallSpan;
-//    if (overallSpan != nil) {
-//        [state.overallSpan cancel];
-//        if (onSpanCancelled) {
-//            onSpanCancelled(overallSpan);
-//        }
-//    }
+    BugsnagPerformanceSpan *overallSpan = state.overallSpan;
+    if (overallSpan != nil) {
+        [state.overallSpan cancel];
+        if (onSpanCancelled) {
+            onSpanCancelled(overallSpan);
+        }
+    }
     
     [state.loadViewSpan cancel];
     [state.viewDidLoadSpan cancel];
