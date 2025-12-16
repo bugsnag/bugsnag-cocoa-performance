@@ -7,6 +7,7 @@
 //
 
 #import "ViewLoadLifecycleHandlerImpl.h"
+#import <BugsnagPerformance/BugsnagPerformance.h>
 
 #import "../../../BugsnagSwiftTools.h"
 
@@ -173,6 +174,8 @@ ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewControll
         return;
     }
     
+    auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
+    [[BugsnagPerformance startSpanWithName:[NSString stringWithFormat:@"%@ viewWillDisappear", className]] end];
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     if (overallSpan != nil) {
         [state.overallSpan cancel];

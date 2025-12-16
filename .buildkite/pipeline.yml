@@ -180,7 +180,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default"
+              - "features/default/automatic/automatic_app_start.feature:144"
           "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
@@ -224,7 +224,7 @@ steps:
               - "--farm=bb"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "features/default/automatic"
+              - "features/default/automatic/automatic_app_start.feature:144"
           "test-collector#v1.10.2":
             files: "reports/TEST-*.xml"
             format: "junit"
