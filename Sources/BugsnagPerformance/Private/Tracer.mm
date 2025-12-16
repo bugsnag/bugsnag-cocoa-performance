@@ -97,7 +97,7 @@ Tracer::createViewLoadSpanFactoryCallbacks() noexcept {
             AppStartupInstrumentationStateSnapshot *appStartupState = blockThis->getAppStartupInstrumentationState_();
             if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
                 return [GetViewLoadParentSpanCallbackInfo infoWithSpan:appStartupState.uiInitSpan
-                                                       shouldBeBlocked:/*appStartupState.shouldIncludeFirstViewLoad*/YES];
+                                                       shouldBeBlocked:appStartupState.shouldIncludeFirstViewLoad];
             }
         }
         return nil;
