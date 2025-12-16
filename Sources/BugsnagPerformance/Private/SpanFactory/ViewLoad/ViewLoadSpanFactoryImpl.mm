@@ -12,6 +12,16 @@
 
 using namespace bugsnag;
 
+NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose(GetViewLoadParentSpanCallbackInfo *info) {
+    if (info.shouldBeBlocked) {
+        BugsnagPerformanceSpanCondition *parentSpanCondition = [info.span blockWithTimeout:0.1];
+        if (parentSpanCondition) {
+            return @[parentSpanCondition];
+        }
+    }
+    return @[];
+}
+
 BugsnagPerformanceSpan *
 ViewLoadSpanFactoryImpl::startOverallViewLoadSpan(UIViewController *viewController) noexcept {
     auto viewType = BugsnagPerformanceViewTypeUIKit;
@@ -87,20 +97,13 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                            const SpanOptions &options,
                                            NSDictionary *attributes) noexcept {
     NSString *type = getBugsnagPerformanceViewTypeName(viewType);
-    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose = @[];
     SpanOptions spanOptions(options);
-    if (options.parentContext == [BugsnagPerformanceSpanContext defaultContext] &&
-        callbacks_.getViewLoadParentSpan != nil) {
-        GetViewLoadParentSpanCallbackResult *result = callbacks_.getViewLoadParentSpan();
-        if (result.span != nil) {
-            spanOptions.parentContext = result.span;
-            if (!result.isLegacy) {
-                BugsnagPerformanceSpanCondition *parentSpanCondition = [result.span blockWithTimeout:0.1];
-                if (parentSpanCondition) {
-                    conditionsToEndOnClose = @[parentSpanCondition];
-                }
-            }
-        }
+    GetViewLoadParentSpanCallbackInfo *parentInfo;
+    if (options.parentContext == [BugsnagPerformanceSpanContext defaultContext]) {
+        parentInfo = getParentSpanInfo();
+    }
+    if (parentInfo.span != nil) {
+        spanOptions.parentContext = parentInfo.span;
     }
     NSString *name = [NSString stringWithFormat:@"[ViewLoad/%@]/%@", type, className];
     if (suffix) {
@@ -117,7 +120,7 @@ ViewLoadSpanFactoryImpl::startViewLoadSpan(BugsnagPerformanceViewType viewType,
                                              spanOptions,
                                              BSGTriStateYes,
                                              spanAttributes,
-                                             conditionsToEndOnClose);
+                                             conditionsToEndOnClose(parentInfo));
     if (callbacks_.onViewLoadSpanStarted != nil) {
         callbacks_.onViewLoadSpanStarted(className);
     }
@@ -171,4 +174,12 @@ ViewLoadSpanFactoryImpl::startViewLoadPhaseSpan(UIViewController *viewController
                                                 NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept {
     auto className = [BugsnagSwiftTools demangledClassNameFromInstance:viewController];
     return startViewLoadPhaseSpan(className, parentContext, phase, conditionsToEndOnClose);
+}
+
+GetViewLoadParentSpanCallbackInfo *
+ViewLoadSpanFactoryImpl::getParentSpanInfo() noexcept {
+    if (callbacks_.getViewLoadParentSpan != nil) {
+        return callbacks_.getViewLoadParentSpan();
+    }
+    return nil;
 }

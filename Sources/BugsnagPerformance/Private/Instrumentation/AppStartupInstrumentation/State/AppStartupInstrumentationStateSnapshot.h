@@ -14,12 +14,12 @@
 @property (nonatomic, readonly) BugsnagPerformanceSpan *uiInitSpan;
 @property (nonatomic, readonly) BOOL isInProgress;
 @property (nonatomic, readonly) BOOL hasFirstView;
-@property (nonatomic, readonly) BOOL isLegacy;
+@property (nonatomic, readonly) BOOL shouldIncludeFirstViewLoad;
 
 + (instancetype)snapshotWithAppStartSpan:(BugsnagPerformanceSpan *)appStartSpan
                               uiInitSpan:(BugsnagPerformanceSpan *)uiInitSpan
                             isInProgress:(BOOL)isInProgress
                             hasFirstView:(BOOL)hasFirstView
-                                isLegacy:(BOOL)isLegacy;
+              shouldIncludeFirstViewLoad:(BOOL)shouldIncludeFirstViewLoad;
 
 @end

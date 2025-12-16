@@ -41,16 +41,16 @@ AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState 
 void
 AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
                                             BugsnagPerformanceConfiguration *config) noexcept {
-    BOOL isLegacy = config.autoInstrumentAppStartsLegacy;
-    state.isLegacy = isLegacy;
-    if (isLegacy) {
-        if (!state.uiInitSpan.isValid && state.didBecomeActiveAtTime != 0) {
-            [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-            [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-        }
-        for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
-            [condition cancel];
-        }
+    state.shouldIncludeFirstViewLoad = !config.autoInstrumentAppStartsLegacy;
+    if (state.shouldIncludeFirstViewLoad ||
+        state.didBecomeActiveAtTime == 0 ||
+        state.isLoadingUI) {
+        return;
+    }
+    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+        [condition cancel];
     }
 }
 
@@ -143,7 +143,7 @@ AppStartupLifecycleHandlerImpl::onAppDidBecomeActive(AppStartupInstrumentationSt
     
     [crossTalkAPI_ willEndUIInitSpan:state.uiInitSpan];
     [state.appStartSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
-    if (state.firstViewName == nil && !state.isLegacy) {
+    if (state.firstViewName == nil) {
         [state.uiInitSpan blockWithTimeout:kFirstViewDelayThreshold];
     }
     [state.uiInitSpan endWithAbsoluteTime:state.didBecomeActiveAtTime];
@@ -219,11 +219,9 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
     }
     
     NSArray *conditionsToEndOnClose = @[];
-    if (!state.isLegacy) {
-        BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
-        if (appStartCondition) {
-            conditionsToEndOnClose = @[appStartCondition];
-        }
+    BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
+    if (appStartCondition) {
+        conditionsToEndOnClose = @[appStartCondition];
     }
 
     state.uiInitSpan = spanFactory_->startUIInitSpan(state.didFinishLaunchingAtTime, state.appStartSpan, conditionsToEndOnClose);

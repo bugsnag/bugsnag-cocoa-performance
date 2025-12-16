@@ -11,5 +11,14 @@
 @implementation ViewLoadSpanFactoryCallbacks
 @end
 
-@implementation GetViewLoadParentSpanCallbackResult
+@implementation GetViewLoadParentSpanCallbackInfo
+
++ (instancetype _Nonnull)infoWithSpan:(BugsnagPerformanceSpan *_Nullable)span
+                      shouldBeBlocked:(BOOL)shouldBeBlocked {
+    GetViewLoadParentSpanCallbackInfo *result = [self new];
+    result.span = span;
+    result.shouldBeBlocked = shouldBeBlocked;
+    return result;
+}
+
 @end

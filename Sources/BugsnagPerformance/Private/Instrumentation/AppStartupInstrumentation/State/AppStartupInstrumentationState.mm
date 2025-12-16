@@ -15,11 +15,15 @@
                                                                  uiInitSpan:self.uiInitSpan
                                                                isInProgress:self.isInProgress
                                                                hasFirstView:self.firstViewName != nil
-                                                                   isLegacy:self.isLegacy];
+                                                 shouldIncludeFirstViewLoad:self.shouldIncludeFirstViewLoad];
 }
 
 - (BOOL)isInProgress {
     return self.appStartSpan.isValid || self.appStartSpan.isBlocked;
+}
+
+- (BOOL)isLoadingUI {
+    return !self.uiInitSpan.isValid && self.uiInitSpan.isBlocked;
 }
 
 @end

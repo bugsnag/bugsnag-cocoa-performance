@@ -9,12 +9,16 @@
 #import <Foundation/Foundation.h>
 #import "../../BugsnagPerformanceSpan+Private.h"
 
-@interface GetViewLoadParentSpanCallbackResult: NSObject
+@interface GetViewLoadParentSpanCallbackInfo: NSObject
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *span;
-@property (nonatomic) BOOL isLegacy;
+@property (nonatomic) BOOL shouldBeBlocked;
+
++ (instancetype _Nonnull)infoWithSpan:(BugsnagPerformanceSpan *_Nullable)span
+                      shouldBeBlocked:(BOOL)shouldBeBlocked;
+
 @end
 
-typedef GetViewLoadParentSpanCallbackResult *_Nullable(^GetViewLoadParentSpanCallback)(void);
+typedef GetViewLoadParentSpanCallbackInfo *_Nullable(^GetViewLoadParentSpanCallback)(void);
 typedef BOOL (^IsViewLoadInProgressCallback)(void);
 typedef void (^OnViewLoadSpanStarted)(NSString * _Nonnull);
 
