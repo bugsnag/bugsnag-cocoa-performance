@@ -13,12 +13,13 @@
 using namespace bugsnag;
 
 NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose(GetViewLoadParentSpanCallbackInfo *info) {
-//    if (info.shouldBeBlocked) {
-        BugsnagPerformanceSpanCondition *parentSpanCondition = [info.span blockWithTimeout:0.1];
-        if (parentSpanCondition) {
-            return @[parentSpanCondition];
-        }
-//    }
+    if (info.shouldBeBlocked) {
+        [info.span blockWithTimeout:0.1];
+//        BugsnagPerformanceSpanCondition *parentSpanCondition = [info.span blockWithTimeout:0.1];
+//        if (parentSpanCondition) {
+//            return @[parentSpanCondition];
+//        }
+    }
     return @[];
 }
 
