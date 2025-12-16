@@ -41,7 +41,7 @@ AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState 
 void
 AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
                                             BugsnagPerformanceConfiguration *config) noexcept {
-    state.shouldIncludeFirstViewLoad = !config.autoInstrumentAppStartsLegacy;
+    state.shouldIncludeFirstViewLoad = YES;//!config.autoInstrumentAppStartsLegacy;
     if (state.shouldIncludeFirstViewLoad ||
         state.didBecomeActiveAtTime == 0 ||
         state.isLoadingUI) {
