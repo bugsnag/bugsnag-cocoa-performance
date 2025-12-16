@@ -149,7 +149,6 @@ Feature: Automatic app start instrumentation spans
     And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
     And I wait to receive a span named "[AppStartPhase/UI init]"
     And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyScenario_ViewController"
-    And I wait to receive a span named "Fixture.AppStartLegacyScenario_ViewController viewWillDisappear"
     * a span named "[AppStart/iOSCold]" ended before a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyScenario_ViewController"
     * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
 

@@ -40,18 +40,18 @@ AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState 
 
 void
 AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
-                                            BugsnagPerformanceConfiguration __unused *config) noexcept {
-    state.shouldIncludeFirstViewLoad = YES;//!config.autoInstrumentAppStartsLegacy;
+                                            BugsnagPerformanceConfiguration *config) noexcept {
+    state.shouldIncludeFirstViewLoad = !config.autoInstrumentAppStartsLegacy;
     if (state.shouldIncludeFirstViewLoad ||
         state.didBecomeActiveAtTime == 0 ||
         state.isLoadingUI) {
         return;
     }
-    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
-        [condition cancel];
-    }
+//    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+//    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+//    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+//        [condition cancel];
+//    }
 }
 
 void
