@@ -96,7 +96,7 @@ AppStartupInstrumentation::didCancelViewLoadSpan(BugsnagPerformanceSpan *span) n
     }
     if (state_.isInProgress &&
         [state_.appStartSpan isParentOf:span]) {
-        lifecycleHandler_->onFirstViewLoadCancelled(state_);
+//        lifecycleHandler_->onFirstViewLoadCancelled(state_);
     }
 }
 
