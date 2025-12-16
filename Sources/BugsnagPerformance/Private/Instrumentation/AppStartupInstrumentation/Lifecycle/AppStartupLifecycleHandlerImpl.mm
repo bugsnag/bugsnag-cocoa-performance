@@ -47,11 +47,11 @@ AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *stat
         state.isLoadingUI) {
         return;
     }
-//    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-//    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-//    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
-//        [condition cancel];
-//    }
+    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+        [condition cancel];
+    }
 }
 
 void
