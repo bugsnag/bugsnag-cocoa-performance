@@ -6,6 +6,7 @@
 //
 
 import BugsnagPerformance
+import Bugsnag
 
 @objcMembers
 class AppStartLegacyScenario: Scenario {
@@ -13,6 +14,13 @@ class AppStartLegacyScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
+        Bugsnag.start(with: {
+            let config = BugsnagConfiguration.loadConfig()
+            config.apiKey = "12312312312312312312312312312312"
+            config.endpoints.notify = fixtureConfig.notifyURL.absoluteString
+            config.endpoints.sessions = fixtureConfig.sessionsURL.absoluteString
+            return config
+        }())
     }
 
     override func run() {
