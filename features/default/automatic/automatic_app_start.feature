@@ -144,8 +144,6 @@ Feature: Automatic app start instrumentation spans
   Scenario: Auto instrument legacy app startup 
     Given I run "AppStartLegacyScenario"
     Then I relaunch the app after shutdown
-    And I wait for 4 seconds
-    And I relaunch the app after shutdown
     And I wait to receive a span named "[AppStart/iOSCold]"
     And I wait to receive a span named "[AppStartPhase/App launching - pre main()]"
     And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
