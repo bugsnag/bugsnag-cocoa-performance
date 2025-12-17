@@ -12,7 +12,7 @@ import Bugsnag
 class AppStartLegacyScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
-        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
+        bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
         bugsnagPerfConfig.internal.performWorkInterval = 1
         Bugsnag.start(with: {
             let config = BugsnagConfiguration.loadConfig()
