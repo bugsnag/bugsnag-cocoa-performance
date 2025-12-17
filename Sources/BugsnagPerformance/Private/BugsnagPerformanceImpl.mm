@@ -341,11 +341,23 @@ bool BugsnagPerformanceImpl::shouldSampleMemory(BugsnagPerformanceSpan *span) no
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
     auto origSpans = batch_->drain(false);
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: Drained spans");
+    for (BugsnagPerformanceSpan *span in origSpans) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: %@",
+                    span.name);
+    }
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: Drained spans end");
 #ifndef __clang_analyzer__
     #pragma clang diagnostic ignored "-Wunused-variable"
     size_t origSpansSize = origSpans.count;
 #endif
     auto spans = sendableSpans(origSpans);
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: Sendable spans");
+    for (BugsnagPerformanceSpan *span in spans) {
+        BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: %@",
+                    span.name);
+    }
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask: Sendable spans end");
     if (spans.count == 0) {
 #ifndef __clang_analyzer__
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Nothing to send. origSpans size = %zu", origSpansSize);
@@ -526,17 +538,20 @@ void BugsnagPerformanceImpl::uploadPackage(std::unique_ptr<OtlpPackage> package,
     uploader_->upload(*blockPackage, ^(UploadResult result) {
         switch (result) {
             case UploadResult::SUCCESSFUL:
+                BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: Upload successful");
                 if (isRetry) {
                     blockThis->retryQueue_->remove(blockPackage->timestamp);
                 }
                 break;
             case UploadResult::FAILED_CAN_RETRY:
+                BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: Upload failed can retry");
                 if (!isRetry && blockPackage->uncompressedContentLength() <= maxPackageContentLength_) {
                     blockThis->retryQueue_->add(*blockPackage);
                 }
                 break;
             case UploadResult::FAILED_CANNOT_RETRY:
                 // We can't do anything with it, so throw it out.
+                BSGLogTrace(@"BugsnagPerformanceImpl::uploadPackage: Upload failed can not retry");
                 if (isRetry) {
                     blockThis->retryQueue_->remove(blockPackage->timestamp);
                 }
