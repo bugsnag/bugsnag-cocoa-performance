@@ -12,6 +12,7 @@ class AutoInstrumentAppStartsScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
+        bugsnagPerfConfig.samplingProbability = 1.0
     }
 
     override func run() {

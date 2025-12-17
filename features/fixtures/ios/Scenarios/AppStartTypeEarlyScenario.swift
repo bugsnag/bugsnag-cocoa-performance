@@ -13,6 +13,7 @@ class AppStartTypeEarlyScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
+        bugsnagPerfConfig.samplingProbability = 1.0
         let query = BugsnagPerformanceAppStartSpanQuery()
         let spanControl = BugsnagPerformance.getSpanControls(with: query) as! BugsnagPerformanceAppStartSpanControl?
         spanControl?.setType("AppStartTypeEarlyScenario")

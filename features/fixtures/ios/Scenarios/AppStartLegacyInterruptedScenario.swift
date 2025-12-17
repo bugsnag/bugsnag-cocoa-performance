@@ -13,6 +13,7 @@ class AppStartLegacyInterruptedScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
+        bugsnagPerfConfig.samplingProbability = 1.0
         bugsnagPerfConfig.viewControllerInstrumentationCallback = { vc in
             vc is AppStartLegacyInterruptedScenario_ViewController
         }

@@ -16,6 +16,7 @@ class AutoInstrumentAppStartsWithViewLoadScenario: Scenario {
         // so use a timed send instead.
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
+        bugsnagPerfConfig.samplingProbability = 1.0
     }
 
     override func run() {

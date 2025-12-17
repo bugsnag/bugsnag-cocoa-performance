@@ -13,6 +13,7 @@ class AppStartTypeLoadingScenario: Scenario {
     override func setInitialBugsnagConfiguration() {
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
+        bugsnagPerfConfig.samplingProbability = 1.0
     }
 
     override func run() {
