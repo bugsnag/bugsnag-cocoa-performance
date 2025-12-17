@@ -49,6 +49,7 @@ public:
      */
     bool sampled(BugsnagPerformanceSpan *span) noexcept {
         if (span == nil) {
+            BSGLogDebug(@"[TEST] sampling: span is nil");
             return false;
         }
 
@@ -58,6 +59,8 @@ public:
             [span forceMutate:^{
                 [span updateSamplingProbability:p];
             }];
+        } else {
+            BSGLogDebug(@"[TEST] sampling: span is not sampled. Probability: %f", p);
         }
         
         return isSampled;
