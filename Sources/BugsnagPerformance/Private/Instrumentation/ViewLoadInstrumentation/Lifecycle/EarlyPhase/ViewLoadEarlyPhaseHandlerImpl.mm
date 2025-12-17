@@ -40,6 +40,7 @@ ViewLoadEarlyPhaseHandlerImpl::onEarlyPhaseEnded(bool isEnabled,
     for (ViewLoadInstrumentationState *state: earlyStates_) {
         UIViewController *viewController = state.viewController;
         if (!vcCheck(viewController)) {
+            BSGLogDebug(@"[TEST] cancelling view load in reprocessing");
             [state.overallSpan cancel];
             [state.loadViewSpan cancel];
             [state.viewDidLoadSpan cancel];

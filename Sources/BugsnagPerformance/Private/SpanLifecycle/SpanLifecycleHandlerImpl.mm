@@ -174,6 +174,7 @@ SpanLifecycleHandlerImpl::callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) n
             shouldDiscardSpan = false;
         }
         if(shouldDiscardSpan) {
+            BSGLogDebug(@"[TEST] discarding span due to callbacks");
             [span abortUnconditionally];
             return;
         }
@@ -204,6 +205,7 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
             continue;
         }
         if (!sampler_->sampled(span)) {
+            BSGLogDebug(@"[TEST] discard span in reprocessing (sampling)");
             [span abortUnconditionally];
             continue;
         }
@@ -211,6 +213,7 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
             callOnSpanEndCallbacks(span);
         }];
         if (span.state == SpanStateAborted) {
+            BSGLogDebug(@"[TEST] discard span in reprocessing (aborted)");
             [span abortUnconditionally];
             continue;
         }
@@ -241,6 +244,7 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
     }
 
     if (!sampler_->sampled(span)) {
+        BSGLogDebug(@"[TEST] discard span in processing (sampling)");
         [span abortUnconditionally];
         return;
     }

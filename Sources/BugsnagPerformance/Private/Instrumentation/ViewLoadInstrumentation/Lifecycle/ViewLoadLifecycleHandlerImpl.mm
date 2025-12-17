@@ -173,6 +173,7 @@ ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewControll
         return;
     }
     
+    BSGLogDebug(@"[TEST] interuppted view load");
     BugsnagPerformanceSpan *overallSpan = state.overallSpan;
     if (overallSpan != nil) {
         [state.overallSpan cancel];

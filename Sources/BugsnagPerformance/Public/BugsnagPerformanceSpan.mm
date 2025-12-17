@@ -193,6 +193,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (void)cancel {
+    BSGLogDebug(@"[TEST] discard span in cancel");
     [self abortUnconditionally];
     if (self.onSpanCancelled) {
         self.onSpanCancelled(self);

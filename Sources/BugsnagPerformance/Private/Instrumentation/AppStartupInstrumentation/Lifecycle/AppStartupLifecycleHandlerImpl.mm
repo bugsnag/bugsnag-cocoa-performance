@@ -171,6 +171,7 @@ AppStartupLifecycleHandlerImpl::onFirstViewLoadCancelled(AppStartupInstrumentati
 
 void
 AppStartupLifecycleHandlerImpl::onAppInstrumentationDisabled(AppStartupInstrumentationState *state) noexcept {
+    BSGLogDebug(@"[TEST] disabling app startup instrumentation");
     [state.preMainSpan cancel];
     [state.postMainSpan cancel];
     [state.uiInitSpan cancel];
@@ -229,6 +230,7 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
 
 void
 AppStartupLifecycleHandlerImpl::discardAppStart(AppStartupInstrumentationState *state) noexcept {
+    BSGLogDebug(@"[TEST] discardAppStart");
     [state.preMainSpan abortUnconditionally];
     [state.postMainSpan abortUnconditionally];
     [state.uiInitSpan abortUnconditionally];

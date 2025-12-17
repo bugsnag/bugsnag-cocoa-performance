@@ -50,6 +50,7 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *
     }
     NSError *error = nil;
     if (!shouldRecordFinishedTask(task, ignoreBaseEndpoint, &error)) {
+        BSGLogDebug(@"[TEST] cancelling network span");
         [state.overallSpan cancel];
         repository_->setInstrumentationState(task, nil);
         return;

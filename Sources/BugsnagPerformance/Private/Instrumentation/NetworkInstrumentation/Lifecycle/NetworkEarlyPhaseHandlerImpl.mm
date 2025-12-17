@@ -37,6 +37,7 @@ NetworkEarlyPhaseHandlerImpl::onEarlyPhaseEnded(bool isEnabled,
 void
 NetworkEarlyPhaseHandlerImpl::cancelEarlyStatesOnPhaseEnd() noexcept {
     for (NetworkInstrumentationState *state: earlyStates_) {
+        BSGLogDebug(@"[TEST] cancelling network span");
         [state.overallSpan cancel];
     }
 }
