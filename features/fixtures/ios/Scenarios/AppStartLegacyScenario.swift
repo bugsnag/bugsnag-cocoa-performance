@@ -12,6 +12,7 @@ import Bugsnag
 class AppStartLegacyScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
         bugsnagPerfConfig.internal.performWorkInterval = 1
         bugsnagPerfConfig.internal.initialSamplingProbability = 1.0
