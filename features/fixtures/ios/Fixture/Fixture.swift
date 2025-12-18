@@ -63,6 +63,7 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     func start() {
+        logInfo("[TEST] Starting fixture")
         DispatchQueue.global(qos: .userInitiated).async {
             self.loadMazeRunnerAddress { address in
                 self.fixtureConfig = FixtureConfig(mazeRunnerBaseAddress: address)
@@ -217,6 +218,7 @@ class Fixture: NSObject, CommandReceiver {
     }
 
     func loadMazeRunnerAddress(completion: (URL)->()) {
+        logInfo("[TEST] Loading maze runner address")
         let defaultUrl = Fixture.defaultMazeRunnerURL
 
         // Only iOS 12 and above will run on BitBar for now

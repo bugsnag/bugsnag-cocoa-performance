@@ -61,6 +61,7 @@ class StartupConfiguration: Codable {
             self.scenarioName = loadedData.scenarioName
             self.apiKey = loadedData.apiKey
             self.endpoint = loadedData.endpoint
+            logInfo("[TEST] loaded endpoint = \(self.endpoint)")
             self.autoInstrumentAppStarts = loadedData.autoInstrumentAppStarts
             self.autoInstrumentAppStartsLegacy = loadedData.autoInstrumentAppStartsLegacy
             self.autoInstrumentViewControllers = loadedData.autoInstrumentViewControllers

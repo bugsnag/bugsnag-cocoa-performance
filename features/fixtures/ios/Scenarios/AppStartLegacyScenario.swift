@@ -24,6 +24,7 @@ class AppStartLegacyScenario: Scenario {
         startupConfig.autoInstrumentAppStartsLegacy = true
         startupConfig.autoInstrumentViewControllers = true
         startupConfig.scenarioName = String(describing: AppStartLegacyScenario.self)
+        logInfo("[TEST] fixtureConfig.tracesURL = \(fixtureConfig.tracesURL)")
         startupConfig.endpoint = fixtureConfig.tracesURL
 
         startupConfig.saveStartupConfig()
