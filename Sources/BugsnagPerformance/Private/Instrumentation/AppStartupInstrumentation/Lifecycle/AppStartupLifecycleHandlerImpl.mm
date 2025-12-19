@@ -42,16 +42,7 @@ void
 AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
                                             BugsnagPerformanceConfiguration *config) noexcept {
     state.shouldIncludeFirstViewLoad = !config.autoInstrumentAppStartsLegacy;
-    if (state.shouldIncludeFirstViewLoad ||
-        state.didBecomeActiveAtTime == 0 ||
-        state.isLoadingUI) {
-        return;
-    }
-    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
-    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
-        [condition cancel];
-    }
+    unlinkFromViewLoadIfNeeded(state);
 }
 
 void
@@ -234,4 +225,18 @@ AppStartupLifecycleHandlerImpl::discardAppStart(AppStartupInstrumentationState *
     [state.uiInitSpan abortUnconditionally];
     [state.appStartSpan abortUnconditionally];
     state.isDiscarded = true;
+}
+
+void
+AppStartupLifecycleHandlerImpl::unlinkFromViewLoadIfNeeded(AppStartupInstrumentationState *state) noexcept {
+    if (state.shouldIncludeFirstViewLoad ||
+        state.didBecomeActiveAtTime == 0 ||
+        !state.isLoadingUI) {
+        return;
+    }
+    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+        [condition cancel];
+    }
 }

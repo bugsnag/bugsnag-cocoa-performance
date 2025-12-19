@@ -178,4 +178,5 @@ Feature: Automatic app start instrumentation spans
     Given I run "AppStartLegacyInterruptedScenario"
     Then I relaunch the app after shutdown
     And I wait to receive a span named "[AppStart/iOSCold]"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AppStartLegacyInterruptedScenario_ViewController"
 

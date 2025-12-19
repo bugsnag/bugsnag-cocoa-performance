@@ -53,6 +53,7 @@ private:
     void beginPostMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginUIInitSpan(AppStartupInstrumentationState *state) noexcept;
     void discardAppStart(AppStartupInstrumentationState *state) noexcept;
+    void unlinkFromViewLoadIfNeeded(AppStartupInstrumentationState *state) noexcept;
     
     AppStartupLifecycleHandlerImpl() = delete;
 };
