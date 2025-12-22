@@ -92,11 +92,12 @@ ViewLoadSpanFactoryCallbacks *
 Tracer::createViewLoadSpanFactoryCallbacks() noexcept {
     __block auto blockThis = this;
     auto callbacks = [ViewLoadSpanFactoryCallbacks new];
-    callbacks.getViewLoadParentSpan = ^BugsnagPerformanceSpan *() {
+    callbacks.getViewLoadParentSpan = ^GetViewLoadParentSpanCallbackInfo *() {
         if (blockThis->getAppStartupInstrumentationState_ != nil) {
             AppStartupInstrumentationStateSnapshot *appStartupState = blockThis->getAppStartupInstrumentationState_();
             if (appStartupState.isInProgress && !appStartupState.hasFirstView) {
-                return appStartupState.uiInitSpan;
+                return [GetViewLoadParentSpanCallbackInfo infoWithSpan:appStartupState.uiInitSpan
+                                                       shouldBeBlocked:appStartupState.shouldIncludeFirstViewLoad];
             }
         }
         return nil;

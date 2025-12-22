@@ -76,6 +76,10 @@
 		966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */; };
 		966634E02C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634DF2C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift */; };
 		966634E22C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966634E12C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift */; };
+		966CF1C12EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966CF1BD2EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift */; };
+		966CF1C22EEBA46700774E2B /* AppStartLegacyScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966CF1BF2EEBA46700774E2B /* AppStartLegacyScenario.swift */; };
+		966CF1C32EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966CF1C02EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift */; };
+		966CF1C42EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966CF1BE2EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift */; };
 		967F6F1A29C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */; };
 		9691A9DD2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9DC2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift */; };
 		9691A9DF2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9691A9DE2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift */; };
@@ -218,6 +222,10 @@
 		966634DD2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsFronzenFramesScenario.swift; sourceTree = "<group>"; };
 		966634DF2C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsSlowFramesScenario.swift; sourceTree = "<group>"; };
 		966634E12C9DE648004A934D /* FrameMetricsNoSlowFramesScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsNoSlowFramesScenario.swift; sourceTree = "<group>"; };
+		966CF1BD2EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartLegacyDelayedStartScenario.swift; sourceTree = "<group>"; };
+		966CF1BE2EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartLegacyInterruptedScenario.swift; sourceTree = "<group>"; };
+		966CF1BF2EEBA46700774E2B /* AppStartLegacyScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartLegacyScenario.swift; sourceTree = "<group>"; };
+		966CF1C02EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStartLegacyStartAfterAppStartScenario.swift; sourceTree = "<group>"; };
 		967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseStageNotEnabledScenario.swift; sourceTree = "<group>"; };
 		9691A9DC2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsAutoInstrumentRenderingOffScenario.swift; sourceTree = "<group>"; };
 		9691A9DE2CA5E62800707CDF /* FrameMetricsSpanInstrumentRenderingOffScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameMetricsSpanInstrumentRenderingOffScenario.swift; sourceTree = "<group>"; };
@@ -358,6 +366,10 @@
 			children = (
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				96D090D62EEB3E1D00BAA6D4 /* AppStartInterruptedScenario.swift */,
+				966CF1BD2EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift */,
+				966CF1BE2EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift */,
+				966CF1BF2EEBA46700774E2B /* AppStartLegacyScenario.swift */,
+				966CF1C02EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift */,
 				96D090D02EEA2A6200BAA6D4 /* AppStartTypeEarlyScenario.swift */,
 				1C3E2DAD2EAA5F4900B32AD2 /* AppStartTypeLateScenario.swift */,
 				96D090CC2EEA29F500BAA6D4 /* AppStartTypeLoadingScenario.swift */,
@@ -630,6 +642,10 @@
 				09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */,
 				962CE7FD2E64F2AD00380522 /* SpanConditionsBlockedSpanScenario.swift in Sources */,
 				0988B5372CAD32C500D131B1 /* InfraCheckNoBugsnagScenario.swift in Sources */,
+				966CF1C12EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift in Sources */,
+				966CF1C22EEBA46700774E2B /* AppStartLegacyScenario.swift in Sources */,
+				966CF1C32EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift in Sources */,
+				966CF1C42EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				091B95722CA179AC007DC8A9 /* AutoInstrumentNetworkPreStartScenario.swift in Sources */,
 				098C3B522C53CECF006F9886 /* SwiftErrorGenerator.swift in Sources */,

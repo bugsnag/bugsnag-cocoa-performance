@@ -191,6 +191,7 @@ ViewLoadLifecycleHandlerImpl::onViewWillDisappear(UIViewController *viewControll
     [state.viewDidLayoutSubviewsSpan cancel];
     [state.loadingPhaseSpan cancel];
     state.overallSpan = nil;
+    originalImplementation();
 }
 
 void

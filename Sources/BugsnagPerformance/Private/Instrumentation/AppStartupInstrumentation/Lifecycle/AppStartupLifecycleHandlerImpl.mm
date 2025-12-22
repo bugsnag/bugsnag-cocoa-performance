@@ -39,6 +39,13 @@ AppStartupLifecycleHandlerImpl::onEarlyConfigure(AppStartupInstrumentationState 
 }
 
 void
+AppStartupLifecycleHandlerImpl::onConfigure(AppStartupInstrumentationState *state,
+                                            BugsnagPerformanceConfiguration *config) noexcept {
+    state.shouldIncludeFirstViewLoad = !config.autoInstrumentAppStartsLegacy;
+    unlinkFromViewLoadIfNeeded(state);
+}
+
+void
 AppStartupLifecycleHandlerImpl::onInstrumentationInit(AppStartupInstrumentationState *state) noexcept {
     state.isActivePrewarm = systemUtils_->isActivePrewarm();
     state.didStartProcessAtTime = systemUtils_->getProcessStartTime();
@@ -202,8 +209,8 @@ AppStartupLifecycleHandlerImpl::beginUIInitSpan(AppStartupInstrumentationState *
         return;
     }
     
-    BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
     NSArray *conditionsToEndOnClose = @[];
+    BugsnagPerformanceSpanCondition *appStartCondition = [state.appStartSpan blockWithTimeout:0.1];
     if (appStartCondition) {
         conditionsToEndOnClose = @[appStartCondition];
     }
@@ -218,4 +225,18 @@ AppStartupLifecycleHandlerImpl::discardAppStart(AppStartupInstrumentationState *
     [state.uiInitSpan abortUnconditionally];
     [state.appStartSpan abortUnconditionally];
     state.isDiscarded = true;
+}
+
+void
+AppStartupLifecycleHandlerImpl::unlinkFromViewLoadIfNeeded(AppStartupInstrumentationState *state) noexcept {
+    if (state.shouldIncludeFirstViewLoad ||
+        state.didBecomeActiveAtTime == 0 ||
+        !state.isLoadingUI) {
+        return;
+    }
+    [state.appStartSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    [state.uiInitSpan markEndAbsoluteTime:state.didBecomeActiveAtTime];
+    for (BugsnagPerformanceSpanCondition *condition in state.uiInitSpan.activeConditions) {
+        [condition cancel];
+    }
 }

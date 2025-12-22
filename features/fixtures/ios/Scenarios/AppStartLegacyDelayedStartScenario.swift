@@ -1,27 +1,36 @@
 //
-//  AppStartTypeLoadingScenario.swift
+//  AppStartLegacyDelayedStartScenario.swift
 //  Fixture
 //
-//  Created by Robert Bartoszewski on 10/12/2025.
+//  Created by Robert Bartoszewski on 12/12/2025.
 //
 
 import BugsnagPerformance
 
 @objcMembers
-class AppStartTypeLoadingScenario: Scenario {
+class AppStartLegacyDelayedStartScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         bugsnagPerfConfig.internal.performWorkInterval = 1
     }
+    
+    override func startBugsnag() {
+        DispatchQueue
+            .global(qos: .background)
+            .asyncAfter(deadline: .now() + 1.0) {
+            super.startBugsnag()
+        }
+    }
 
     override func run() {
         // Save a startup configuration
         let startupConfig = StartupConfiguration(configFile: nil)
         startupConfig.autoInstrumentAppStarts = true
+        startupConfig.autoInstrumentAppStartsLegacy = true
         startupConfig.autoInstrumentViewControllers = true
-        startupConfig.scenarioName = String(describing: AppStartTypeLoadingScenario.self)
+        startupConfig.scenarioName = String(describing: AppStartLegacyDelayedStartScenario.self)
         startupConfig.endpoint = fixtureConfig.tracesURL
 
         startupConfig.saveStartupConfig()
@@ -32,11 +41,11 @@ class AppStartTypeLoadingScenario: Scenario {
     }
 
     override func customViewController() -> UIViewController? {
-        return AppStartTypeLoadingScenario_ViewController()
+        return AppStartLegacyDelayedStartScenario_ViewController()
     }
 }
 
-class AppStartTypeLoadingScenario_ViewController: UIViewController {
+class AppStartLegacyDelayedStartScenario_ViewController: UIViewController {
     
     var loadingIndicator: BugsnagPerformanceLoadingIndicatorView?
 
@@ -58,12 +67,7 @@ class AppStartTypeLoadingScenario_ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            let query = BugsnagPerformanceAppStartSpanQuery()
-            let spanControl = BugsnagPerformance.getSpanControls(with: query) as! BugsnagPerformanceAppStartSpanControl?
-            spanControl?.setType("AppStartTypeLoadingScenario")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.loadingIndicator?.finishLoading()
-            }
+            self.loadingIndicator?.finishLoading()
         }
     }
 }

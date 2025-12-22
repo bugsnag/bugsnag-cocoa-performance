@@ -140,3 +140,43 @@ Feature: Automatic app start instrumentation spans
     And I wait to receive a span named "AppStartInterruptedScenario"
     * no span field "name" equals "[AppStart/iOSCold]"
     * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentAppStartInterruptedScenario_ViewController"
+
+  Scenario: Auto instrument legacy app startup 
+    Given I run "AppStartLegacyScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]"
+    And I wait to receive a span named "[AppStartPhase/App launching - pre main()]"
+    And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
+    And I wait to receive a span named "[AppStartPhase/UI init]"
+    And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended before a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
+
+  Scenario: Auto instrument legacy app startup with delayed BugsnagPerformance start
+    Given I run "AppStartLegacyDelayedStartScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]"
+    And I wait to receive a span named "[AppStartPhase/App launching - pre main()]"
+    And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
+    And I wait to receive a span named "[AppStartPhase/UI init]"
+    And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyDelayedStartScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended before a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyDelayedStartScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
+
+  Scenario: Auto instrument legacy app startup with BugsnagPerformance start called after app startup ended
+    Given I run "AppStartLegacyStartAfterAppStartScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]"
+    And I wait to receive a span named "[AppStartPhase/App launching - pre main()]"
+    And I wait to receive a span named "[AppStartPhase/App launching - post main()]"
+    And I wait to receive a span named "[AppStartPhase/UI init]"
+    And I wait to receive a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyStartAfterAppStartScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended before a span named "[ViewLoad/UIKit]/Fixture.AppStartLegacyStartAfterAppStartScenario_ViewController"
+    * a span named "[AppStart/iOSCold]" ended at the same time as a span named "[AppStartPhase/UI init]"
+
+  Scenario: Auto instrument legacy app startup with interrupted view load
+    Given I run "AppStartLegacyInterruptedScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]"
+    * no span field "name" equals "[ViewLoad/UIKit]/Fixture.AppStartLegacyInterruptedScenario_ViewController"
+

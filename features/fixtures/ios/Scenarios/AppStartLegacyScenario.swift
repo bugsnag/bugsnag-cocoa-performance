@@ -1,14 +1,14 @@
 //
-//  AppStartTypeLoadingScenario.swift
+//  AppStartLegacyScenario.swift
 //  Fixture
 //
-//  Created by Robert Bartoszewski on 10/12/2025.
+//  Created by Robert Bartoszewski on 12/12/2025.
 //
 
 import BugsnagPerformance
 
 @objcMembers
-class AppStartTypeLoadingScenario: Scenario {
+class AppStartLegacyScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
@@ -20,8 +20,9 @@ class AppStartTypeLoadingScenario: Scenario {
         // Save a startup configuration
         let startupConfig = StartupConfiguration(configFile: nil)
         startupConfig.autoInstrumentAppStarts = true
+        startupConfig.autoInstrumentAppStartsLegacy = true
         startupConfig.autoInstrumentViewControllers = true
-        startupConfig.scenarioName = String(describing: AppStartTypeLoadingScenario.self)
+        startupConfig.scenarioName = String(describing: AppStartLegacyScenario.self)
         startupConfig.endpoint = fixtureConfig.tracesURL
 
         startupConfig.saveStartupConfig()
@@ -32,11 +33,11 @@ class AppStartTypeLoadingScenario: Scenario {
     }
 
     override func customViewController() -> UIViewController? {
-        return AppStartTypeLoadingScenario_ViewController()
+        return AppStartLegacyScenario_ViewController()
     }
 }
 
-class AppStartTypeLoadingScenario_ViewController: UIViewController {
+class AppStartLegacyScenario_ViewController: UIViewController {
     
     var loadingIndicator: BugsnagPerformanceLoadingIndicatorView?
 
@@ -58,12 +59,7 @@ class AppStartTypeLoadingScenario_ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            let query = BugsnagPerformanceAppStartSpanQuery()
-            let spanControl = BugsnagPerformance.getSpanControls(with: query) as! BugsnagPerformanceAppStartSpanControl?
-            spanControl?.setType("AppStartTypeLoadingScenario")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.loadingIndicator?.finishLoading()
-            }
+            self.loadingIndicator?.finishLoading()
         }
     }
 }

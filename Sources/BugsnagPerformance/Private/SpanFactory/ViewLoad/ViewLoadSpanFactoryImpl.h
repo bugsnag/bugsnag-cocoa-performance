@@ -61,6 +61,8 @@ private:
                                                    NSString *phase,
                                                    NSArray<BugsnagPerformanceSpanCondition *> *conditionsToEndOnClose) noexcept;
     
+    GetViewLoadParentSpanCallbackInfo *getParentSpanInfo() noexcept;
+    
     ViewLoadSpanFactoryImpl() = delete;
 };
 }

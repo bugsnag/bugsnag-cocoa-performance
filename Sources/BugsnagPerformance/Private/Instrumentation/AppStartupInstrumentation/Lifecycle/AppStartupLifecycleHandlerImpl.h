@@ -29,6 +29,8 @@ public:
     
     void onEarlyConfigure(AppStartupInstrumentationState *state,
                           BSGEarlyConfiguration *config) noexcept;
+    void onConfigure(AppStartupInstrumentationState *state,
+                     BugsnagPerformanceConfiguration *config) noexcept;
     void onInstrumentationInit(AppStartupInstrumentationState *state) noexcept;
     void onWillCallMainFunction(AppStartupInstrumentationState *state) noexcept;
     void onBugsnagPerformanceStarted(AppStartupInstrumentationState *state) noexcept;
@@ -51,6 +53,7 @@ private:
     void beginPostMainSpan(AppStartupInstrumentationState *state) noexcept;
     void beginUIInitSpan(AppStartupInstrumentationState *state) noexcept;
     void discardAppStart(AppStartupInstrumentationState *state) noexcept;
+    void unlinkFromViewLoadIfNeeded(AppStartupInstrumentationState *state) noexcept;
     
     AppStartupLifecycleHandlerImpl() = delete;
 };
