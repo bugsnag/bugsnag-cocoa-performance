@@ -20,8 +20,11 @@
         id swizzleViewLoadPreMain = [dict valueForKeyPath:@"bugsnag.performance.swizzleViewLoadPreMain"];
         _swizzleViewLoadPreMain = swizzleViewLoadPreMain != nil && [swizzleViewLoadPreMain boolValue];
 
-        id debugMode = [dict valueForKeyPath:@"bugsnag.performance.debugMode"];
-        _isDebugMode = debugMode != nil && [debugMode boolValue];
+#if defined(DEBUG) && DEBUG
+        _isDevelopment = YES;
+#else
+        _isDevelopment = NO;
+#endif
     }
 
     return self;
