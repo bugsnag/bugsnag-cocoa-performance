@@ -40,8 +40,6 @@
 			<false/>
 			<key>autoInstrumentAppStarts</key>
 			<true/>
-			<key>debugMode</key>
-			<false/>
 		</dict>
 		<key>enabledReleaseStages</key>
 		<array>

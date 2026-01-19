@@ -13,7 +13,7 @@ class DebugModeScenario: Scenario {
 
     override func setInitialBugsnagConfiguration() {
         super.setInitialBugsnagConfiguration()
-        bugsnagPerfConfig.debugMode = true
+        bugsnagPerfConfig.isDevelopment = true
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 200
         bugsnagPerfConfig.internal.performWorkInterval = 60
     }

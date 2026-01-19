@@ -111,7 +111,7 @@ void BugsnagPerformanceImpl::earlyConfigure(BSGEarlyConfiguration *config) noexc
     };
 
     // Check if app is built in debug mode
-    isDebugMode_ = config.isDebugMode;
+    isDevelopment_ = config.isDevelopment;
 }
 
 void BugsnagPerformanceImpl::earlySetup() noexcept {
@@ -137,7 +137,7 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
 
 void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::configure()");
-    performWorkInterval_ = (isDebugMode_ == YES || config.debugMode == YES) ? WORK_INTERVAL_DEBUG_MODE_SECONDS : config.internal.performWorkInterval;
+    performWorkInterval_ = (isDevelopment_ == YES || config.isDevelopment == YES) ? WORK_INTERVAL_DEBUG_MODE_SECONDS : config.internal.performWorkInterval;
     probabilityValueExpiresAfterSeconds_ = config.internal.probabilityValueExpiresAfterSeconds;
     probabilityRequestsPauseForSeconds_ = config.internal.probabilityRequestsPauseForSeconds;
     maxPackageContentLength_ = config.internal.maxPackageContentLength;
