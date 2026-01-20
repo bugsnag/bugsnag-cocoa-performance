@@ -14,6 +14,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         logInfo(">>>>>>>>>> Fixture app has launched <<<<<<<<<<")
+
+        if #unavailable(iOS 13.0) {
+            let fixture = Fixture()
+            let customViewController = fixture.processSavedStartupConfig()
+            let defaultViewController = ViewController()
+            if (customViewController == nil) {
+                 defaultViewController.setFixture(fixture: fixture)
+            }
+            window = UIWindow(frame: UIScreen.main.bounds)
+            window?.rootViewController = customViewController != nil ? customViewController : defaultViewController
+            window?.makeKeyAndVisible()
+        }
+
         return true
     }
 }

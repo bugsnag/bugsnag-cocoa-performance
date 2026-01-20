@@ -183,6 +183,19 @@ Then('a span string attribute {string} matches the regex {string}') do |attribut
   attribute_values.map { |v| Maze.check.match pattern, v }
 end
 
+Then('the span named {string} integer attribute {string} is greater than {int}') do |spanName, attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') }
+  Maze.check.true(selected_attribute['value']['intValue'].to_f > expected)
+end
+
+Then('the span named {string} integer attribute {string} exists') do |spanName, attribute|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| span['name'] == spanName && a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?)
+end
+
 Then('a span integer attribute {string} is greater than {int}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
@@ -204,6 +217,12 @@ Then('a span integer attribute {string} is less than {int}') do |attribute, expe
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('the span named {string} float attribute {string} is greater than {float}') do |spanName, attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('doubleValue') }
+  Maze.check.true(selected_attribute['value']['doubleValue'].to_f > expected)
+end
 
 Then('a span float attribute {string} is greater than {float}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
@@ -283,6 +302,21 @@ def get_array_attribute_contents(attribute)
   return array_attributes[0]
 end
 
+def get_array_attribute_contents_named(spanName, attribute)
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == spanName }
+  selected_attribute = span['attributes'].find { |a| a['key'].eql?(attribute) &&
+                                                     a['value'].has_key?('arrayValue') &&
+                                                     a['value']['arrayValue'].has_key?('values') }
+  array_attributes = selected_attribute['value']['arrayValue']['values']
+  return array_attributes
+end
+
+Then('the span named {string} array attribute {string} is not empty') do |name, attribute|
+  array_contents = get_array_attribute_contents_named(name, attribute)
+  Maze.check.false(array_contents.empty?)
+end
+
 Then('a span array attribute {string} is empty') do |attribute|
   array_contents = get_array_attribute_contents(attribute)
   Maze.check.true(array_contents.empty?)
@@ -319,6 +353,20 @@ Then('a span named {string} ended before a span named {string} started') do |nam
   Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['startTimeUnixNano'].to_i)
 end
 
+Then('a span named {string} ended at the same time as a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i == second_span['endTimeUnixNano'].to_i)
+end
+
+Then('a span named {string} ended before a span named {string}') do |name1, name2|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  first_span = spans.find { |span| span['name'] == name1 }
+  second_span = spans.find { |span| span['name'] == name2 }
+  Maze.check.true(first_span['endTimeUnixNano'].to_i < second_span['endTimeUnixNano'].to_i)
+end
+
 Then('a span named {string} ended after a span named {string}') do |name1, name2|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   first_span = spans.find { |span| span['name'] == name1 }
@@ -331,6 +379,41 @@ Then('a span named {string} duration is equal or less than {float}') do |name, m
   span = spans.find { |span| span['name'] == name }
   duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
   Maze.check.true(duration <= maxDuration)
+end
+
+Then('a span named {string} duration is equal or greater than {float}') do |name, minDuration|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |span| span['name'] == name }
+  duration = (span['endTimeUnixNano'].to_i - span['startTimeUnixNano'].to_i)/1000000000
+  Maze.check.true(duration >= minDuration)
+end
+
+When('I wait for exactly {int} span(s)') do |span_count|
+  assert_received_exactly_spans span_count, Maze::Server.list_for('traces')
+end
+
+def assert_received_exactly_spans(span_count, list)
+  timeout = Maze.config.receive_requests_wait
+  wait = Maze::Wait.new(timeout: timeout)
+
+  received = wait.until { spans_from_request_list(list).size == span_count }
+  received_count = spans_from_request_list(list).size
+
+  unless received
+    raise Test::Unit::AssertionFailedError.new <<-MESSAGE
+    Expected #{span_count} spans but received #{received_count} within the #{timeout}s timeout.
+    This could indicate that:
+    - Bugsnag crashed with a fatal error.
+    - Bugsnag did not make the requests that it should have done.
+    - The requests were made, but not deemed to be valid (e.g. missing integrity header).
+    - The requests made were prevented from being received due to a network or other infrastructure issue.
+    Please check the Maze Runner and device logs to confirm.)
+    MESSAGE
+  end
+
+  wait = Maze::Wait.new(timeout: 5)
+
+  Maze.check.operator(span_count, :==, received_count, "#{received_count} spans received")
 end
 
 Then('a span double attribute {string} equals {float}') do |attribute, value|
@@ -357,4 +440,38 @@ def spans_from_request_list(list)
       .flat_map { |r| r['scopeSpans'] }
       .flat_map { |s| s['spans'] }
       .select { |s| !s.nil? }
+end
+
+Then('the difference between "Bugsnag-Sent-At" of first and last request is at most {int} seconds') do |max_diff_s|
+  list = Maze::Server.list_for("traces")
+  requestListSize = list.size_all
+  req1 = list.get(0)[:request]
+  req2 = list.get(requestListSize - 1)[:request]
+  req1sec = 100000
+  req2sec = 100000
+
+  # DateTime.parse throws ArgumentError if it can't parse the string
+  if dt = DateTime.iso8601(req1["Bugsnag-Sent-At"]) rescue false
+    req1sec = dt.hour * 3600 + dt.min * 60 + dt.second
+  end
+  if dt = DateTime.iso8601(req2["Bugsnag-Sent-At"]) rescue false
+    req2sec = dt.hour * 3600 + dt.min * 60 + dt.second
+  end
+  diff = (req1sec - req2sec).abs
+  Maze.check.true(diff <= max_diff_s)
+end
+
+When("I relaunch the app after shutdown") do
+  max_attempts = 20
+  attempts = 0
+  manager = Maze::Api::Appium::AppManager.new
+  state = manager.state
+  until (attempts >= max_attempts) || state == :not_running
+    attempts += 1
+    state = manager.state
+    sleep 0.5
+  end
+  $logger.warn "App state #{state} instead of not_running after 10s" unless state == :not_running
+
+  manager.activate
 end

@@ -2,7 +2,7 @@
 //  ReleaseStageNotEnabledScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 17/03/2023.
+//  Created by Robert Bartoszewski on 17/03/2023.
 //
 
 import BugsnagPerformance

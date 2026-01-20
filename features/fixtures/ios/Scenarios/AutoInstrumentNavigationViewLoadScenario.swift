@@ -2,7 +2,7 @@
 //  AutoInstrumentNavigationViewLoadScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 16/06/2023.
+//  Created by Robert Bartoszewski on 16/06/2023.
 //
 
 import Foundation

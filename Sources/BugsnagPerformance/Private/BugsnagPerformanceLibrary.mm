@@ -46,6 +46,7 @@ void BugsnagPerformanceLibrary::configureLibrary(BugsnagPerformanceConfiguration
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: apiKey = %@", config.apiKey);
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: endpoint = %@", config.endpoint);
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentAppStarts = %d", config.autoInstrumentAppStarts);
+        BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentAppStartsLegacy = %d", config.autoInstrumentAppStartsLegacy);
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentViewControllers = %d", config.autoInstrumentViewControllers);
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: autoInstrumentNetworkRequests = %d", config.autoInstrumentNetworkRequests);
         BSGLogDebug(@"BugsnagPerformanceLibrary::configureLibrary: appVersion = %@", config.appVersion);

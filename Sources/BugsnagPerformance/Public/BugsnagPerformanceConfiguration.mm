@@ -77,8 +77,10 @@ static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
         _apiKey = [apiKey copy];
         _endpoint = DefaultEndpointForKey(apiKey);
         _autoInstrumentAppStarts = YES;
+        _autoInstrumentAppStartsLegacy = NO;
         _autoInstrumentViewControllers = YES;
         _autoInstrumentNetworkRequests = YES;
+        _isDevelopment = NO;
         _enabledMetrics = [BugsnagPerformanceEnabledMetrics new];
         _onSpanStartCallbacks = [NSMutableArray array];
         _onSpanEndCallbacks = [NSMutableArray array];
@@ -172,8 +174,10 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     auto endpoint = BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[@"endpoint"]);
     auto tracePropagationUrls = BSGDynamicCast<NSArray<NSString *>>(bugsnagPerformanceConfiguration[@"tracePropagationUrls"]);
     auto autoInstrumentAppStarts = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStarts"]);
+    auto autoInstrumentAppStartsLegacy = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentAppStartsLegacy"]);
     auto autoInstrumentViewControllers = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentViewControllers"]);
     auto autoInstrumentNetworkRequests = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentNetworkRequests"]);
+    auto isDevelopment = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"debug"]);
     auto autoInstrumentRendering = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"autoInstrumentRendering"]);
     auto samplingProbability = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"samplingProbability"]);
     auto attributeArrayLengthLimit = BSGDynamicCast<NSNumber>(bugsnagPerformanceConfiguration[@"attributeArrayLengthLimit"]);
@@ -209,6 +213,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     if (autoInstrumentAppStarts != nil) {
         configuration.autoInstrumentAppStarts = [autoInstrumentAppStarts boolValue];
     }
+    if (autoInstrumentAppStartsLegacy != nil) {
+        configuration.autoInstrumentAppStartsLegacy = [autoInstrumentAppStartsLegacy boolValue];
+    }
     if (autoInstrumentViewControllers != nil) {
         configuration.autoInstrumentViewControllers = [autoInstrumentViewControllers boolValue];
     }
@@ -217,6 +224,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
     }
     if (autoInstrumentRendering != nil) {
         configuration.enabledMetrics.rendering = [autoInstrumentRendering boolValue];
+    }
+    if (isDevelopment != nil) {
+        configuration.isDevelopment = [isDevelopment boolValue];
     }
     if (samplingProbability != nil) {
         configuration.samplingProbability = samplingProbability;

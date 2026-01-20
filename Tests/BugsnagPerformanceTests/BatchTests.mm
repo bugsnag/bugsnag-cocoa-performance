@@ -29,9 +29,11 @@ static BugsnagPerformanceSpan *newSpanData() {
                                     samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
+                                 conditionsToEndOnClose:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan * _Nonnull) {}
                                            onSpanClosed:^(BugsnagPerformanceSpan * _Nonnull) {}
-                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+                                          onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }
+                                        onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 - (void)testDrainAllow {

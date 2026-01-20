@@ -8,6 +8,7 @@
 
 #import "BSGPluginManager.h"
 #import "BugsnagPerformancePluginContext+Private.h"
+#import "BugsnagPerformanceConfiguration+Private.h"
 #import "Logging.h"
 
 @interface BSGPluginManager ()
@@ -22,20 +23,33 @@
 
 @implementation BSGPluginManager
 
-- (instancetype)initWithConfiguration:(BugsnagPerformanceConfiguration *)configuration
-                    compositeProvider:(BSGCompositeSpanControlProvider *)compositeProvider
-                 onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
-                   onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks
+- (instancetype)initWithCompositeProvider:(BSGCompositeSpanControlProvider *)compositeProvider
+                     onSpanStartCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *)onSpanStartCallbacks
+                       onSpanEndCallbacks:(BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *)onSpanEndCallbacks
 {
     self = [super init];
     if (self) {
-        _configuration = configuration;
         _compositeProvider = compositeProvider;
         _onSpanStartCallbacks = onSpanStartCallbacks;
         _onSpanEndCallbacks = onSpanEndCallbacks;
         _installedPlugins = [NSMutableArray array];
     }
     return self;
+}
+
+- (void)configure:(BugsnagPerformanceConfiguration *)config {
+    self.configuration = config;
+    
+    // Install user-provided plugins
+    [self installPlugins:config.plugins];
+    
+    // Add callbacks from configuration
+    for(BugsnagPerformanceSpanStartCallback callback in config.onSpanStartCallbacks) {
+        [self.onSpanStartCallbacks addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
+    for(BugsnagPerformanceSpanEndCallback callback in config.onSpanEndCallbacks) {
+        [self.onSpanEndCallbacks addObject:callback priority:BugsnagPerformancePriorityMedium];
+    }
 }
 
 - (void)installPlugins:(NSArray<id<BugsnagPerformancePlugin>> *)plugins {
