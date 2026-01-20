@@ -1,0 +1,66 @@
+# The scenarios in this file are skipped for swizzling premain mode as it doesn't support Swift Generics
+
+Feature: Automatic instrumentation spans AutoInstrumentGenericViewLoadScenario
+  Scenario: AutoInstrumentGenericViewLoadScenario
+    Given I run "AutoInstrumentGenericViewLoadScenario"
+    And I wait to receive at least 18 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * every span field "kind" equals 1
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.AutoInstrumentGenericViewLoadScenario_ViewController<Fixture.AutoInstrumentGenericViewLoadScenario_GenericsClass>"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"
+
+  Scenario: AutoInstrumentGenericViewLoadScenario2
+    Given I run "AutoInstrumentGenericViewLoadScenario2"
+    And I wait to receive at least 18 spans
+    Then the trace "Content-Type" header equals "application/json"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.ViewController"
+    * a span field "name" equals "[ViewLoad/UIKit]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/loadView]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLoad]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillAppear]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/View appearing]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidAppear]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/viewWillLayoutSubviews]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/Subview layout]/Fixture.GenericViewController<Swift.Int>"
+    * a span field "name" equals "[ViewLoadPhase/viewDidLayoutSubviews]/Fixture.GenericViewController<Swift.Int>"
+    * every span field "kind" equals 1
+    * a span string attribute "bugsnag.span.category" equals "view_load"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.ViewController"
+    * a span string attribute "bugsnag.view.name" equals "Fixture.GenericViewController<Swift.Int>"
+    * a span bool attribute "bugsnag.span.first_class" is true
+    * a span string attribute "bugsnag.view.type" equals "UIKit"
+    * the trace payload field "resourceSpans.0.resource" string attribute "service.name" matches the regex "com.bugsnag.fixtures.cocoaperformance(xcframework)?"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.name" equals "bugsnag.performance.cocoa"
+    * the trace payload field "resourceSpans.0.resource" string attribute "telemetry.sdk.version" matches the regex "[0-9]+\.[0-9]+\.[0-9]+"

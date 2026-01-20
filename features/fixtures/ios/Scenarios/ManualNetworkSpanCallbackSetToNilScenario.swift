@@ -2,7 +2,7 @@
 //  ManualNetworkSpanCallbackSetToNilScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 21/06/2024.
+//  Created by Robert Bartoszewski on 21/06/2024.
 //
 
 import BugsnagPerformance

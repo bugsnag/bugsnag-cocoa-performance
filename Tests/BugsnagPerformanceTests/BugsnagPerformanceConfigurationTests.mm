@@ -139,6 +139,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"attributeCountLimit": @50,
                 @"tracePropagationUrls": performanceTracePropagationUrls,
                 @"autoInstrumentAppStarts": @(NO),
+                @"autoInstrumentAppStartsLegacy": @(YES),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
                 @"autoInstrumentRendering": @(NO),
@@ -158,6 +159,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertEqual(config.attributeCountLimit, (NSUInteger)50);
     [self assertConfig:config tracePropagationUrlsAre:performanceTracePropagationUrls];
     XCTAssertFalse(config.autoInstrumentAppStarts);
+    XCTAssertTrue(config.autoInstrumentAppStartsLegacy);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
     XCTAssertFalse(config.enabledMetrics.rendering);
@@ -184,6 +186,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
                 @"attributeCountLimit": @50,
                 @"tracePropagationUrls": performanceTracePropagationUrls,
                 @"autoInstrumentAppStarts": @(NO),
+                @"autoInstrumentAppStartsLegacy": @(YES),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
                 @"autoInstrumentRendering": @(YES),
@@ -204,6 +207,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertEqual(config.attributeCountLimit, (NSUInteger)50);
     [self assertConfig:config tracePropagationUrlsAre:performanceTracePropagationUrls];
     XCTAssertFalse(config.autoInstrumentAppStarts);
+    XCTAssertTrue(config.autoInstrumentAppStartsLegacy);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
     XCTAssertTrue(config.enabledMetrics.rendering);
@@ -220,6 +224,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
             @"performance": @{
                 @"endpoint": performanceEndpoint,
                 @"autoInstrumentAppStarts": @(NO),
+                @"autoInstrumentAppStartsLegacy": @(YES),
                 @"autoInstrumentViewControllers": @(NO),
                 @"autoInstrumentNetworkRequests": @(YES),
                 @"autoInstrumentRendering": @(YES),
@@ -235,6 +240,7 @@ static NSArray *const bugsnagEnabledReleaseStages = @[bugsnagReleaseStage1, bugs
     XCTAssertTrue([config.enabledReleaseStages containsObject:bugsnagReleaseStage2]);
     XCTAssertEqualObjects([config.endpoint description], performanceEndpoint);
     XCTAssertFalse(config.autoInstrumentAppStarts);
+    XCTAssertTrue(config.autoInstrumentAppStartsLegacy);
     XCTAssertFalse(config.autoInstrumentViewControllers);
     XCTAssertTrue(config.autoInstrumentNetworkRequests);
     XCTAssertTrue(config.enabledMetrics.rendering);

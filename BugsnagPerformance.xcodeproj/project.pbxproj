@@ -52,7 +52,6 @@
 		094FA7472B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */; };
 		094FA7482B10EDE700112ED4 /* BugsnagPerformanceSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 094FA7322B10EDE600112ED4 /* BugsnagPerformanceSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		094FA7522B10EEB600112ED4 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
-		09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09509B742ADFE9A900A358EC /* TracerTests.mm */; };
 		096CBC172B1752F700534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */; };
 		09856B9E2B9606A500620907 /* BugsnagPerformanceSwiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */; };
 		0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */ = {isa = PBXBuildFile; fileRef = 0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */; };
@@ -76,12 +75,53 @@
 		09F23A8F2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */; };
 		09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */; };
 		09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */ = {isa = PBXBuildFile; fileRef = 09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */; };
+		1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */; };
+		1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */; };
+		1C68DB992E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */; };
+		1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */; };
+		1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */; };
+		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };
 		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
 		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
 		960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		962CE7CE2E60766000380522 /* ViewLoadInstrumentationStateRepository.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7CD2E60765C00380522 /* ViewLoadInstrumentationStateRepository.h */; };
+		962CE7D02E60766E00380522 /* ViewLoadInstrumentationStateRepositoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7CF2E60766800380522 /* ViewLoadInstrumentationStateRepositoryImpl.h */; };
+		962CE7D32E60768400380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7D22E60768000380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm */; };
+		962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */; };
+		962CE7DD2E60987600380522 /* ViewLoadEarlyPhaseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7DC2E60986300380522 /* ViewLoadEarlyPhaseHandler.h */; };
+		962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7DE2E60987A00380522 /* ViewLoadEarlyPhaseHandlerImpl.h */; };
+		962CE7E12E60988800380522 /* ViewLoadEarlyPhaseHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7E02E60988500380522 /* ViewLoadEarlyPhaseHandlerImpl.mm */; };
+		962CE7E72E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE7E62E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.mm */; };
+		962CE7E82E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7E52E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h */; };
+		962CE7E92E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE7E42E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h */; };
+		962CE8042E6519D900380522 /* NetworkInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8032E6519CE00380522 /* NetworkInstrumentationState.h */; };
+		962CE8062E6519E200380522 /* NetworkInstrumentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8052E6519DF00380522 /* NetworkInstrumentationState.m */; };
+		962CE8082E651A0100380522 /* NetworkInstrumentationStateRepository.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8072E6519F800380522 /* NetworkInstrumentationStateRepository.h */; };
+		962CE80A2E651A0C00380522 /* NetworkInstrumentationStateRepositoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8092E651A0700380522 /* NetworkInstrumentationStateRepositoryImpl.h */; };
+		962CE80C2E651A1600380522 /* NetworkInstrumentationStateRepositoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE80B2E651A1300380522 /* NetworkInstrumentationStateRepositoryImpl.mm */; };
+		962CE80F2E6521F800380522 /* BSGURLSessionPerformanceDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */; };
+		962CE8112E65224300380522 /* BSGURLSessionPerformanceDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */; };
+		962CE8182E65FD4300380522 /* NetworkSwizzlingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8172E65FD3900380522 /* NetworkSwizzlingHandler.h */; };
+		962CE81A2E65FD4E00380522 /* NetworkSwizzlingHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8192E65FD4900380522 /* NetworkSwizzlingHandlerImpl.h */; };
+		962CE81C2E65FD5300380522 /* NetworkSwizzlingHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE81B2E65FD5200380522 /* NetworkSwizzlingHandlerImpl.mm */; };
+		962CE81F2E66D23600380522 /* NetworkInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */; };
+		962CE8212E66D24200380522 /* NetworkInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */; };
+		962CE8232E66D25100380522 /* NetworkInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */; };
+		962CE8262E67188700380522 /* NetworkEarlyPhaseHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */; };
+		962CE8282E67189800380522 /* NetworkEarlyPhaseHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */; };
+		962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */; };
+		962CE82C2E67376300380522 /* NetworkLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */; };
+		962CE82E2E673A9400380522 /* NetworkLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */; };
+		962CE8302E673A9900380522 /* NetworkLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */; };
+		962CE8332E67970600380522 /* NetworkSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8322E6796FC00380522 /* NetworkSpanFactory.h */; };
+		962CE8352E67972300380522 /* NetworkSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 962CE8342E67971A00380522 /* NetworkSpanFactoryImpl.h */; };
+		962CE8372E67972A00380522 /* NetworkSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 962CE8362E67972800380522 /* NetworkSpanFactoryImpl.mm */; };
 		962D7B342C7DEDD0004330E4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962D7B332C7DEDD0004330E4 /* QuartzCore.framework */; };
 		962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */; };
 		963726BB2DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 963726B92DE8D97000C739E6 /* BugsnagPerformanceSpanControlProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -109,6 +149,33 @@
 		963828BF2E3C0BAC00404F3A /* BugsnagPerformanceNamedSpans.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA8E5ED62E2FC3E80049F7AB /* BugsnagPerformanceNamedSpans.framework */; };
 		963828C42E3C175900404F3A /* BugsnagPerformanceNamedSpansTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */; };
 		963828C62E3CFE2400404F3A /* BugsnagPerformanceNamedSpans.h in Headers */ = {isa = PBXBuildFile; fileRef = 963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		963829082E547D1A00404F3A /* ViewLoadInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */; };
+		9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */; };
+		9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */; };
+		9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */; };
+		963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */; };
+		963829142E54960F00404F3A /* AppStartupSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829132E54960400404F3A /* AppStartupSpanFactory.h */; };
+		963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */; };
+		963829182E54972C00404F3A /* AppStartupSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */; };
+		9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */; };
+		9638291D2E54B4A200404F3A /* AppStartupLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */; };
+		9638291F2E54B4AB00404F3A /* AppStartupLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */; };
+		963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */; };
+		963829232E5542B500404F3A /* AppStartupInstrumentationStateSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */; };
+		963829272E55E5C500404F3A /* ViewLoadSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829262E55E5B900404F3A /* ViewLoadSpanFactory.h */; };
+		963829292E55E5DB00404F3A /* ViewLoadSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829282E55E5D100404F3A /* ViewLoadSpanFactoryImpl.h */; };
+		9638292B2E55E5E800404F3A /* ViewLoadSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */; };
+		9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */; };
+		963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */; };
+		963829342E5614D200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */; };
+		963829362E5623E200404F3A /* ViewLoadSwizzlingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */; };
+		963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */; };
+		9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */; };
+		9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */; };
+		9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */ = {isa = PBXBuildFile; fileRef = 9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */; };
+		963829412E5726DF00404F3A /* ViewLoadLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */; };
+		963829432E57537100404F3A /* ViewLoadLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */; };
+		963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */; };
 		964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */; };
 		964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */ = {isa = PBXBuildFile; fileRef = 964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */; };
@@ -123,13 +190,33 @@
 		966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */ = {isa = PBXBuildFile; fileRef = 966634DB2C8A39C1004A934D /* FrozenFrameData.mm */; };
 		966DD5012A211D7F002030B2 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		966DD5022A211D7F002030B2 /* BugsnagPerformance.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		967949B62E97CC9E005FD87F /* SpanLifecycleHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */; };
+		967949B82E97CCA9005FD87F /* SpanLifecycleHandlerImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */; };
+		967949BA2E97D5A5005FD87F /* SpanLifecycleHandlerImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */; };
+		967949BD2E99373E005FD87F /* SpanStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949BC2E993735005FD87F /* SpanStore.h */; };
+		967949BF2E993749005FD87F /* SpanStoreImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 967949BE2E993742005FD87F /* SpanStoreImpl.h */; };
+		967949C12E993750005FD87F /* SpanStoreImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 967949C02E99374E005FD87F /* SpanStoreImpl.mm */; };
 		967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */; };
 		968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = 968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */; };
 		968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = 968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */; };
+		969EE0F12E78730900600F63 /* PlainSpanFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */; };
+		969EE0F32E78731300600F63 /* PlainSpanFactoryImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */; };
+		969EE0F52E78731C00600F63 /* PlainSpanFactoryImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */; };
+		969EE0FA2E789E5400600F63 /* PlainSpanFactoryCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0F92E789E4C00600F63 /* PlainSpanFactoryCallbacks.h */; };
+		969EE0FC2E78A67600600F63 /* PlainSpanFactoryCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0FB2E78A66E00600F63 /* PlainSpanFactoryCallbacks.mm */; };
+		969EE0FE2E794A0700600F63 /* ViewLoadSpanFactoryCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 969EE0FD2E7949FD00600F63 /* ViewLoadSpanFactoryCallbacks.h */; };
+		969EE1002E794A1100600F63 /* ViewLoadSpanFactoryCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 969EE0FF2E794A0D00600F63 /* ViewLoadSpanFactoryCallbacks.mm */; };
 		96A143C22E80D3CB009138C3 /* NamedSpansStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C12E80D3BA009138C3 /* NamedSpansStore.h */; };
 		96A143C42E80D3DD009138C3 /* NamedSpansStore.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */; };
 		96A143C62E80DDEB009138C3 /* BSGNamedSpanState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */; };
 		96A143CA2E81BEB5009138C3 /* BSGNamedSpanState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */; };
+		96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */; };
+		96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */; };
+		96BB66C72EAEA78A00AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BB66C62EAEA78300AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h */; };
+		96BB66C92EAEA79200AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96BB66C82EAEA79000AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm */; };
+		96BB66CD2EAEB1A400AB3C93 /* ViewLoadLoadingIndicatorState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BB66CC2EAEB19D00AB3C93 /* ViewLoadLoadingIndicatorState.h */; };
+		96BB66CF2EAEB1AE00AB3C93 /* ViewLoadLoadingIndicatorState.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96BB66CE2EAEB1AC00AB3C93 /* ViewLoadLoadingIndicatorState.mm */; };
+		96D090D32EEB05CD00BAA6D4 /* BSGPhasedStartup.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */; };
 		96D415F329E6ADC500AEE435 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F229E6ADC500AEE435 /* AppDelegate.swift */; };
 		96D415F729E6ADC500AEE435 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D415F629E6ADC500AEE435 /* ViewController.swift */; };
 		96D415FA29E6ADC500AEE435 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 96D415F829E6ADC500AEE435 /* Main.storyboard */; };
@@ -141,6 +228,9 @@
 		96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */; };
 		96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */ = {isa = PBXBuildFile; fileRef = 96D55C822A1EBA35006D1F29 /* SpanActivityState.h */; };
 		96D55C882A1EE26A006D1F29 /* SpanStackingHandlerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */; };
+		96F05DA02EDF22C400E58887 /* AppStartupStateValidatorImpl.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */; };
+		96F05DA12EDF22C400E58887 /* AppStartupStateValidatorImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */; };
+		96F05DA22EDF22C400E58887 /* AppStartupStateValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */; };
 		96F1292B2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 96F1292A2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		96F1292D2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */; };
 		96F1292F2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */; };
@@ -159,10 +249,8 @@
 		CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */; };
 		CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */; };
-		CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */; };
 		CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */ = {isa = PBXBuildFile; fileRef = CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */; };
 		CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */; };
-		CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */; };
 		CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = CB572EA829BB783200FD7A2A /* AppStateTracker.h */; };
 		CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = CB572EA929BB783200FD7A2A /* AppStateTracker.m */; };
 		CB68FAB92A3C27B9005B2CDB /* PersistentDeviceID.h in Headers */ = {isa = PBXBuildFile; fileRef = CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */; };
@@ -179,8 +267,6 @@
 		CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */; };
 		CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */; };
 		CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */; };
-		CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */; };
-		CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */; };
 		CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */ = {isa = PBXBuildFile; fileRef = CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */; };
 		CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */; };
 		CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */ = {isa = PBXBuildFile; fileRef = CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */; };
@@ -390,7 +476,6 @@
 		094FA7352B10EDE600112ED4 /* BugsnagPerformanceSwift.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = BugsnagPerformanceSwift.docc; sourceTree = "<group>"; };
 		094FA73B2B10EDE700112ED4 /* BugsnagPerformanceSwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceSwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		094FA7422B10EDE700112ED4 /* BugsnagPerformanceSwiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUITests.swift; sourceTree = "<group>"; };
-		09509B742ADFE9A900A358EC /* TracerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracerTests.mm; sourceTree = "<group>"; };
 		096CBC152B1752F100534F0C /* BugsnagPerformanceSwiftUIInstrumentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceSwiftUIInstrumentation.swift; sourceTree = "<group>"; };
 		0986B7BF2B287C9D00BD2CA3 /* WeakSpansList.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WeakSpansList.mm; sourceTree = "<group>"; };
 		0987F2772C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanContext.h; sourceTree = "<group>"; };
@@ -417,6 +502,15 @@
 		09F23A8E2CE3521D00F0D769 /* BugsnagSwiftToolsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagSwiftToolsImpl.swift; sourceTree = "<group>"; };
 		09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceCrossTalkAPI.h; sourceTree = "<group>"; };
 		09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceCrossTalkAPI.mm; sourceTree = "<group>"; };
+		1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceLoadingIndicatorView.h; sourceTree = "<group>"; };
+		1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceLoadingIndicatorView.mm; sourceTree = "<group>"; };
+		1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanControl.h; sourceTree = "<group>"; };
+		1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceAppStartSpanControl+Private.h"; sourceTree = "<group>"; };
+		1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartSpanControl.mm; sourceTree = "<group>"; };
+		1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartSpanQuery.h; sourceTree = "<group>"; };
+		1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartSpanQuery.mm; sourceTree = "<group>"; };
+		1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceAppStartTypePlugin.h; sourceTree = "<group>"; };
+		1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartTypePlugin.mm; sourceTree = "<group>"; };
 		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
 		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -424,6 +518,38 @@
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugsnagPerformanceTrackedViewController.swift; sourceTree = "<group>"; };
 		960EECF22B24C89A009FAA11 /* BugsnagPerformanceTrackedViewContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceTrackedViewContainer.h; sourceTree = "<group>"; };
+		962CE7CD2E60765C00380522 /* ViewLoadInstrumentationStateRepository.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationStateRepository.h; sourceTree = "<group>"; };
+		962CE7CF2E60766800380522 /* ViewLoadInstrumentationStateRepositoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationStateRepositoryImpl.h; sourceTree = "<group>"; };
+		962CE7D22E60768000380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadInstrumentationStateRepositoryImpl.mm; sourceTree = "<group>"; };
+		962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceLoadingIndicatorView+Private.h"; sourceTree = "<group>"; };
+		962CE7DC2E60986300380522 /* ViewLoadEarlyPhaseHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadEarlyPhaseHandler.h; sourceTree = "<group>"; };
+		962CE7DE2E60987A00380522 /* ViewLoadEarlyPhaseHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadEarlyPhaseHandlerImpl.h; sourceTree = "<group>"; };
+		962CE7E02E60988500380522 /* ViewLoadEarlyPhaseHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadEarlyPhaseHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE7E42E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorsHandler.h; sourceTree = "<group>"; };
+		962CE7E52E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorsHandlerImpl.h; sourceTree = "<group>"; };
+		962CE7E62E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLoadingIndicatorsHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE8032E6519CE00380522 /* NetworkInstrumentationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationState.h; sourceTree = "<group>"; };
+		962CE8052E6519DF00380522 /* NetworkInstrumentationState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkInstrumentationState.m; sourceTree = "<group>"; };
+		962CE8072E6519F800380522 /* NetworkInstrumentationStateRepository.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationStateRepository.h; sourceTree = "<group>"; };
+		962CE8092E651A0700380522 /* NetworkInstrumentationStateRepositoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationStateRepositoryImpl.h; sourceTree = "<group>"; };
+		962CE80B2E651A1300380522 /* NetworkInstrumentationStateRepositoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkInstrumentationStateRepositoryImpl.mm; sourceTree = "<group>"; };
+		962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceDelegate.h; sourceTree = "<group>"; };
+		962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGURLSessionPerformanceDelegate.mm; sourceTree = "<group>"; };
+		962CE8172E65FD3900380522 /* NetworkSwizzlingHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSwizzlingHandler.h; sourceTree = "<group>"; };
+		962CE8192E65FD4900380522 /* NetworkSwizzlingHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSwizzlingHandlerImpl.h; sourceTree = "<group>"; };
+		962CE81B2E65FD5200380522 /* NetworkSwizzlingHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkSwizzlingHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationSystemUtils.h; sourceTree = "<group>"; };
+		962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
+		962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkEarlyPhaseHandler.h; sourceTree = "<group>"; };
+		962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkEarlyPhaseHandlerImpl.h; sourceTree = "<group>"; };
+		962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkEarlyPhaseHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkLifecycleHandler.h; sourceTree = "<group>"; };
+		962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
+		962CE8322E6796FC00380522 /* NetworkSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanFactory.h; sourceTree = "<group>"; };
+		962CE8342E67971A00380522 /* NetworkSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkSpanFactoryImpl.h; sourceTree = "<group>"; };
+		962CE8362E67972800380522 /* NetworkSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NetworkSpanFactoryImpl.mm; sourceTree = "<group>"; };
 		962D7B332C7DEDD0004330E4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.4.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		962F80F129DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMicrobenchmarkTests.swift; sourceTree = "<group>"; };
 		963726B82DE8D97000C739E6 /* BugsnagPerformanceSpanControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanControl.h; sourceTree = "<group>"; };
@@ -449,6 +575,33 @@
 		963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BSGPluginManager.m; sourceTree = "<group>"; };
 		963828BE2E3C0B9A00404F3A /* BugsnagPerformanceNamedSpansTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BugsnagPerformanceNamedSpansTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		963828C52E3CFE1800404F3A /* BugsnagPerformanceNamedSpans.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpans.h; sourceTree = "<group>"; };
+		963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationState.h; sourceTree = "<group>"; };
+		963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadInstrumentationState.m; sourceTree = "<group>"; };
+		9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
+		9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationSystemUtils.h; sourceTree = "<group>"; };
+		963829132E54960400404F3A /* AppStartupSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactory.h; sourceTree = "<group>"; };
+		963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupSpanFactoryImpl.h; sourceTree = "<group>"; };
+		963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupSpanFactoryImpl.mm; sourceTree = "<group>"; };
+		9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupLifecycleHandler.h; sourceTree = "<group>"; };
+		9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
+		963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationStateSnapshot.h; sourceTree = "<group>"; };
+		963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStartupInstrumentationStateSnapshot.m; sourceTree = "<group>"; };
+		963829262E55E5B900404F3A /* ViewLoadSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactory.h; sourceTree = "<group>"; };
+		963829282E55E5D100404F3A /* ViewLoadSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactoryImpl.h; sourceTree = "<group>"; };
+		9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSpanFactoryImpl.mm; sourceTree = "<group>"; };
+		9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtils.h; sourceTree = "<group>"; };
+		963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadInstrumentationSystemUtilsImpl.h; sourceTree = "<group>"; };
+		963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadInstrumentationSystemUtilsImpl.mm; sourceTree = "<group>"; };
+		963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingHandler.h; sourceTree = "<group>"; };
+		963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingHandlerImpl.h; sourceTree = "<group>"; };
+		963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSwizzlingHandlerImpl.mm; sourceTree = "<group>"; };
+		9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSwizzlingCallbacks.h; sourceTree = "<group>"; };
+		9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewLoadSwizzlingCallbacks.m; sourceTree = "<group>"; };
+		963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLifecycleHandler.h; sourceTree = "<group>"; };
+		963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
 		964B784F2D39D36900FF077D /* BugsnagPerformanceSpanCondition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceSpanCondition.h; sourceTree = "<group>"; };
 		964B78512D47D26F00FF077D /* ConditionTimeoutExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConditionTimeoutExecutor.h; sourceTree = "<group>"; };
 		964B78552D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceSpanCondition.mm; sourceTree = "<group>"; };
@@ -461,13 +614,33 @@
 		966634D62C8A365B004A934D /* FrameMetricsSnapshot.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FrameMetricsSnapshot.mm; sourceTree = "<group>"; };
 		966634D92C8A39B1004A934D /* FrozenFrameData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FrozenFrameData.h; sourceTree = "<group>"; };
 		966634DB2C8A39C1004A934D /* FrozenFrameData.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FrozenFrameData.mm; sourceTree = "<group>"; };
+		967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanLifecycleHandler.h; sourceTree = "<group>"; };
+		967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanLifecycleHandlerImpl.mm; sourceTree = "<group>"; };
+		967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanLifecycleHandlerImpl.h; sourceTree = "<group>"; };
+		967949BC2E993735005FD87F /* SpanStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanStore.h; sourceTree = "<group>"; };
+		967949BE2E993742005FD87F /* SpanStoreImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanStoreImpl.h; sourceTree = "<group>"; };
+		967949C02E99374E005FD87F /* SpanStoreImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStoreImpl.mm; sourceTree = "<group>"; };
 		967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceConfiguration+Private.h"; sourceTree = "<group>"; };
 		968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPerformanceSharedSessionProxy.h; sourceTree = "<group>"; };
 		968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGPerformanceSharedSessionProxy.mm; sourceTree = "<group>"; };
+		969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactory.h; sourceTree = "<group>"; };
+		969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactoryImpl.h; sourceTree = "<group>"; };
+		969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlainSpanFactoryImpl.mm; sourceTree = "<group>"; };
+		969EE0F92E789E4C00600F63 /* PlainSpanFactoryCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlainSpanFactoryCallbacks.h; sourceTree = "<group>"; };
+		969EE0FB2E78A66E00600F63 /* PlainSpanFactoryCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlainSpanFactoryCallbacks.mm; sourceTree = "<group>"; };
+		969EE0FD2E7949FD00600F63 /* ViewLoadSpanFactoryCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadSpanFactoryCallbacks.h; sourceTree = "<group>"; };
+		969EE0FF2E794A0D00600F63 /* ViewLoadSpanFactoryCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadSpanFactoryCallbacks.mm; sourceTree = "<group>"; };
 		96A143C12E80D3BA009138C3 /* NamedSpansStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NamedSpansStore.h; sourceTree = "<group>"; };
 		96A143C32E80D3D8009138C3 /* NamedSpansStore.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = NamedSpansStore.mm; sourceTree = "<group>"; };
 		96A143C52E80DDE6009138C3 /* BSGNamedSpanState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGNamedSpanState.h; sourceTree = "<group>"; };
 		96A143C92E81BEB0009138C3 /* BSGNamedSpanState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGNamedSpanState.mm; sourceTree = "<group>"; };
+		96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppStartupInstrumentationState.h; sourceTree = "<group>"; };
+		96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupInstrumentationState.mm; sourceTree = "<group>"; };
+		96BB66C62EAEA78300AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorsHandlerCallbacks.h; sourceTree = "<group>"; };
+		96BB66C82EAEA79000AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLoadingIndicatorsHandlerCallbacks.mm; sourceTree = "<group>"; };
+		96BB66CC2EAEB19D00AB3C93 /* ViewLoadLoadingIndicatorState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewLoadLoadingIndicatorState.h; sourceTree = "<group>"; };
+		96BB66CE2EAEB1AC00AB3C93 /* ViewLoadLoadingIndicatorState.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewLoadLoadingIndicatorState.mm; sourceTree = "<group>"; };
+		96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGPhasedStartup.h; sourceTree = "<group>"; };
 		96D415F029E6ADC500AEE435 /* BugsnagPerformanceTestsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BugsnagPerformanceTestsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96D415F229E6ADC500AEE435 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		96D415F629E6ADC500AEE435 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -482,6 +655,9 @@
 		96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandler.mm; sourceTree = "<group>"; };
 		96D55C822A1EBA35006D1F29 /* SpanActivityState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanActivityState.h; sourceTree = "<group>"; };
 		96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanStackingHandlerTests.mm; sourceTree = "<group>"; };
+		96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupStateValidator.h; sourceTree = "<group>"; };
+		96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStartupStateValidatorImpl.h; sourceTree = "<group>"; };
+		96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppStartupStateValidatorImpl.mm; sourceTree = "<group>"; };
 		96F1292A2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceRemoteSpanContext.h; sourceTree = "<group>"; };
 		96F1292C2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceRemoteSpanContext.mm; sourceTree = "<group>"; };
 		96F1292E2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagPerformanceRemoteSpanContextTests.m; sourceTree = "<group>"; };
@@ -500,10 +676,8 @@
 		CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceErrors.h; sourceTree = "<group>"; };
 		CB0AD76B296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceConfigurationTests.mm; sourceTree = "<group>"; };
 		CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanTests.mm; sourceTree = "<group>"; };
-		CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSession+Instrumentation.mm"; sourceTree = "<group>"; };
 		CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGURLSessionPerformanceProxy.mm; sourceTree = "<group>"; };
 		CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSGURLSessionPerformanceProxy.h; sourceTree = "<group>"; };
-		CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSession+Instrumentation.h"; sourceTree = "<group>"; };
 		CB572EA829BB783200FD7A2A /* AppStateTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppStateTracker.h; sourceTree = "<group>"; };
 		CB572EA929BB783200FD7A2A /* AppStateTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppStateTracker.m; sourceTree = "<group>"; };
 		CB68FAB72A3C27B9005B2CDB /* PersistentDeviceID.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PersistentDeviceID.h; sourceTree = "<group>"; };
@@ -519,13 +693,10 @@
 		CB7FD935299D330500499E13 /* SpanOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanOptions.h; sourceTree = "<group>"; };
 		CBA22C942A0137230066A2C1 /* EarlyConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EarlyConfiguration.h; sourceTree = "<group>"; };
 		CBA22C952A0137230066A2C1 /* EarlyConfiguration.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfiguration.mm; sourceTree = "<group>"; };
-		CBA22C982A03EA300066A2C1 /* NetworkCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkCommon.h; sourceTree = "<group>"; };
 		CBA686CB2A41AE2700C7BD39 /* BugsnagPerformanceTestsApp-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceTestsApp-Bridging-Header.h"; sourceTree = "<group>"; };
 		CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCUtils.h; sourceTree = "<group>"; };
 		CBB48A3B295EE1E10044E9AC /* ObjCUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjCUtils.mm; sourceTree = "<group>"; };
 		CBC90C4429C84DEB00280884 /* Targets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Targets.h; sourceTree = "<group>"; };
-		CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURLSessionTask+Instrumentation.h"; sourceTree = "<group>"; };
-		CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "NSURLSessionTask+Instrumentation.mm"; sourceTree = "<group>"; };
 		CBE0873029FA984C007455F2 /* BugsnagPerformanceViewType.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceViewType.mm; sourceTree = "<group>"; };
 		CBE0873129FA984C007455F2 /* BugsnagPerformanceViewType+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceViewType+Private.h"; sourceTree = "<group>"; };
 		CBE8EA14294B528100702950 /* BugsnagPerformanceImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceImpl.h; sourceTree = "<group>"; };
@@ -683,9 +854,12 @@
 		0122C21629019770002D243C /* BugsnagPerformance */ = {
 			isa = PBXGroup;
 			children = (
+				1C68DB9C2E535C64002621D1 /* BugsnagPerformanceAppStartSpanQuery.h */,
+				1C68DB922E535229002621D1 /* BugsnagPerformanceAppStartSpanControl.h */,
 				0122C21A29019770002D243C /* BugsnagPerformance.h */,
 				0122C21929019770002D243C /* BugsnagPerformanceConfiguration.h */,
 				CB0AD76929657381002A3FB6 /* BugsnagPerformanceErrors.h */,
+				1C3C0C602E2922000037B416 /* BugsnagPerformanceLoadingIndicatorView.h */,
 				0921F0292A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h */,
 				963726DB2DF0B43500C739E6 /* BugsnagPerformancePlugin.h */,
 				963726DC2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h */,
@@ -707,9 +881,12 @@
 		0122C21B29019770002D243C /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				1C68DBA02E535D01002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm */,
+				1C68DB982E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm */,
 				0122C21D29019770002D243C /* BugsnagPerformance.mm */,
 				0122C21C29019770002D243C /* BugsnagPerformanceConfiguration.mm */,
 				CB0AD7672965734F002A3FB6 /* BugsnagPerformanceErrors.m */,
+				1C60EB442E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm */,
 				0921F02A2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m */,
 				963726DF2DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m */,
 				963726C72DEAB1FC00C739E6 /* BugsnagPerformancePriority.m */,
@@ -728,12 +905,16 @@
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
+				96D090D22EEB05CD00BAA6D4 /* BSGPhasedStartup.h */,
 				963726E52DF1DFBA00C739E6 /* BSGPluginManager.h */,
 				963726E72DF1DFCB00C739E6 /* BSGPluginManager.m */,
 				963726CD2DEAB33D00C739E6 /* BSGPrioritizedStore.h */,
 				963726CF2DEAB36600C739E6 /* BSGPrioritizedStore.mm */,
 				098FC8452D2EB8E8001B627D /* BSGPSystemInfo.h */,
 				098FC8442D2EB8E8001B627D /* BSGPSystemInfo.mm */,
+				1C68DB942E53528D002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h */,
+				1C68DBA22E535DEE002621D1 /* BugsnagPerformanceAppStartTypePlugin.h */,
+				1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */,
 				967F6F1729C3782D0054EED8 /* BugsnagPerformanceConfiguration+Private.h */,
 				09FFD43E2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h */,
 				09FFD43F2BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm */,
@@ -741,6 +922,7 @@
 				CBE8EA15294B528100702950 /* BugsnagPerformanceImpl.mm */,
 				CB78819B29E587CE00A58906 /* BugsnagPerformanceLibrary.h */,
 				CB78819A29E587CE00A58906 /* BugsnagPerformanceLibrary.mm */,
+				962CE7D42E60967500380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h */,
 				963726E12DF101DF00C739E6 /* BugsnagPerformancePluginContext+Private.h */,
 				963726C92DEAB23E00C739E6 /* BugsnagPerformancePriority+Private.h */,
 				963726CB2DEAB25200C739E6 /* BugsnagPerformancePriority+Private.m */,
@@ -768,8 +950,6 @@
 				CBEC51BF296DB311009C0CE3 /* JSON.mm */,
 				965FBD142DF24D3100D6BACB /* Logging.h */,
 				098FC8772D3E8D43001B627D /* Metrics.h */,
-				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
-				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
 				96F9010E2EE8175B0026F5B9 /* NSTimer+MainThread.h */,
 				96F901102EE817690026F5B9 /* NSTimer+MainThread.m */,
 				CBB48A3A295EE1E10044E9AC /* ObjCUtils.h */,
@@ -802,10 +982,13 @@
 				1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */,
 				1C7852A32E5F697D00BB8E2D /* SpanContext.mm */,
 				963726C42DEAB14D00C739E6 /* SpanControl */,
+				969EE0EE2E7872A600600F63 /* SpanFactory */,
 				0122C22329019770002D243C /* SpanKind.h */,
+				967949B42E97CC7F005FD87F /* SpanLifecycle */,
 				CB7FD935299D330500499E13 /* SpanOptions.h */,
 				96D55C7D2A1EA5A8006D1F29 /* SpanStackingHandler.h */,
 				96D55C7F2A1EA5C6006D1F29 /* SpanStackingHandler.mm */,
+				967949BB2E99372C005FD87F /* SpanStore */,
 				CBEBE59129F2783C00BF0B4F /* Swizzle.h */,
 				CBEBE59029F2783C00BF0B4F /* Swizzle.mm */,
 				098FC8532D37A08D001B627D /* SystemInfoSampler.h */,
@@ -827,15 +1010,11 @@
 		0122C22929019770002D243C /* Instrumentation */ = {
 			isa = PBXGroup;
 			children = (
-				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
-				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				963829032E547BA400404F3A /* AppStartupInstrumentation */,
 				CBEBE59829F671A800BF0B4F /* Instrumentation.h */,
 				CBEBE59929F671A800BF0B4F /* Instrumentation.mm */,
 				CB34771929068C350033759C /* NetworkInstrumentation */,
-				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
-				0122C22A29019770002D243C /* NetworkInstrumentation.mm */,
-				0122C22D29019770002D243C /* ViewLoadInstrumentation.h */,
-				0122C22F29019770002D243C /* ViewLoadInstrumentation.mm */,
+				963829052E547C2900404F3A /* ViewLoadInstrumentation */,
 			);
 			path = Instrumentation;
 			sourceTree = "<group>";
@@ -891,7 +1070,6 @@
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
 				098FC87A2D3FD095001B627D /* TestHelpers.h */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
-				09509B742ADFE9A900A358EC /* TracerTests.mm */,
 				09B473092B2313570024CF11 /* WeakSpansListTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
@@ -959,6 +1137,60 @@
 			path = BugsnagPerformanceTestsSwift;
 			sourceTree = "<group>";
 		};
+		962CE8022E6519C500380522 /* State */ = {
+			isa = PBXGroup;
+			children = (
+				962CE8032E6519CE00380522 /* NetworkInstrumentationState.h */,
+				962CE8052E6519DF00380522 /* NetworkInstrumentationState.m */,
+				962CE8072E6519F800380522 /* NetworkInstrumentationStateRepository.h */,
+				962CE8092E651A0700380522 /* NetworkInstrumentationStateRepositoryImpl.h */,
+				962CE80B2E651A1300380522 /* NetworkInstrumentationStateRepositoryImpl.mm */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		962CE80D2E6521DD00380522 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				962CE80E2E6521E800380522 /* BSGURLSessionPerformanceDelegate.h */,
+				962CE8102E65224100380522 /* BSGURLSessionPerformanceDelegate.mm */,
+				09D59E182BDFE0D900199E1B /* NetworkHeaderInjector.h */,
+				09D59E192BDFE0D900199E1B /* NetworkHeaderInjector.mm */,
+				962CE81E2E66D22800380522 /* NetworkInstrumentationSystemUtils.h */,
+				962CE8202E66D23C00380522 /* NetworkInstrumentationSystemUtilsImpl.h */,
+				962CE8222E66D24F00380522 /* NetworkInstrumentationSystemUtilsImpl.mm */,
+				962CE8172E65FD3900380522 /* NetworkSwizzlingHandler.h */,
+				962CE8192E65FD4900380522 /* NetworkSwizzlingHandlerImpl.h */,
+				962CE81B2E65FD5200380522 /* NetworkSwizzlingHandlerImpl.mm */,
+				962CE8122E6523A600380522 /* Proxy */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		962CE8122E6523A600380522 /* Proxy */ = {
+			isa = PBXGroup;
+			children = (
+				968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */,
+				968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */,
+				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
+				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
+			);
+			path = Proxy;
+			sourceTree = "<group>";
+		};
+		962CE8242E67185D00380522 /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				962CE8252E67187C00380522 /* NetworkEarlyPhaseHandler.h */,
+				962CE8272E67189100380522 /* NetworkEarlyPhaseHandlerImpl.h */,
+				962CE8292E67189D00380522 /* NetworkEarlyPhaseHandlerImpl.mm */,
+				962CE82B2E67375900380522 /* NetworkLifecycleHandler.h */,
+				962CE82D2E673A8D00380522 /* NetworkLifecycleHandlerImpl.h */,
+				962CE82F2E673A9700380522 /* NetworkLifecycleHandlerImpl.mm */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
 		963726C42DEAB14D00C739E6 /* SpanControl */ = {
 			isa = PBXGroup;
 			children = (
@@ -966,6 +1198,103 @@
 				963726C32DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.m */,
 			);
 			path = SpanControl;
+			sourceTree = "<group>";
+		};
+		963829032E547BA400404F3A /* AppStartupInstrumentation */ = {
+			isa = PBXGroup;
+			children = (
+				0122C22C29019770002D243C /* AppStartupInstrumentation.h */,
+				0122C22B29019770002D243C /* AppStartupInstrumentation.mm */,
+				963829192E54B46B00404F3A /* Lifecycle */,
+				963829042E547C0700404F3A /* State */,
+				9638290B2E5487EC00404F3A /* System */,
+			);
+			path = AppStartupInstrumentation;
+			sourceTree = "<group>";
+		};
+		963829042E547C0700404F3A /* State */ = {
+			isa = PBXGroup;
+			children = (
+				96A25F412D6BE42B00A18116 /* AppStartupInstrumentationState.h */,
+				96A25F422D6BE42B00A18116 /* AppStartupInstrumentationState.mm */,
+				963829202E55429B00404F3A /* AppStartupInstrumentationStateSnapshot.h */,
+				963829222E5542B000404F3A /* AppStartupInstrumentationStateSnapshot.m */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		963829052E547C2900404F3A /* ViewLoadInstrumentation */ = {
+			isa = PBXGroup;
+			children = (
+				9638293F2E5726C400404F3A /* Lifecycle */,
+				963829062E547CFF00404F3A /* State */,
+				9638292C2E56145200404F3A /* System */,
+				0122C22D29019770002D243C /* ViewLoadInstrumentation.h */,
+				0122C22F29019770002D243C /* ViewLoadInstrumentation.mm */,
+			);
+			path = ViewLoadInstrumentation;
+			sourceTree = "<group>";
+		};
+		963829062E547CFF00404F3A /* State */ = {
+			isa = PBXGroup;
+			children = (
+				963829072E547D0F00404F3A /* ViewLoadInstrumentationState.h */,
+				963829092E547D2100404F3A /* ViewLoadInstrumentationState.m */,
+				962CE7CD2E60765C00380522 /* ViewLoadInstrumentationStateRepository.h */,
+				962CE7CF2E60766800380522 /* ViewLoadInstrumentationStateRepositoryImpl.h */,
+				962CE7D22E60768000380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		9638290B2E5487EC00404F3A /* System */ = {
+			isa = PBXGroup;
+			children = (
+				963829102E548DBA00404F3A /* AppStartupInstrumentationSystemUtils.h */,
+				9638290C2E5487F800404F3A /* AppStartupInstrumentationSystemUtilsImpl.h */,
+				9638290E2E54880D00404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		963829192E54B46B00404F3A /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				9638291A2E54B47C00404F3A /* AppStartupLifecycleHandler.h */,
+				9638291C2E54B49B00404F3A /* AppStartupLifecycleHandlerImpl.h */,
+				9638291E2E54B4A800404F3A /* AppStartupLifecycleHandlerImpl.mm */,
+				96F05D9D2EDF22C400E58887 /* AppStartupStateValidator.h */,
+				96F05D9E2EDF22C400E58887 /* AppStartupStateValidatorImpl.h */,
+				96F05D9F2EDF22C400E58887 /* AppStartupStateValidatorImpl.mm */,
+			);
+			path = Lifecycle;
+			sourceTree = "<group>";
+		};
+		9638292C2E56145200404F3A /* System */ = {
+			isa = PBXGroup;
+			children = (
+				9638292D2E56148500404F3A /* ViewLoadInstrumentationSystemUtils.h */,
+				963829312E5614B200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h */,
+				963829332E5614CE00404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm */,
+				9638293B2E56282D00404F3A /* ViewLoadSwizzlingCallbacks.h */,
+				9638293D2E56284700404F3A /* ViewLoadSwizzlingCallbacks.m */,
+				963829352E5623DB00404F3A /* ViewLoadSwizzlingHandler.h */,
+				963829372E5623E900404F3A /* ViewLoadSwizzlingHandlerImpl.h */,
+				963829392E5623F800404F3A /* ViewLoadSwizzlingHandlerImpl.mm */,
+			);
+			path = System;
+			sourceTree = "<group>";
+		};
+		9638293F2E5726C400404F3A /* Lifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				96BB66CB2EAEAA7600AB3C93 /* EarlyPhase */,
+				96BB66CA2EAEAA5C00AB3C93 /* LoadingIndicators */,
+				963829402E5726D400404F3A /* ViewLoadLifecycleHandler.h */,
+				963829422E57536B00404F3A /* ViewLoadLifecycleHandlerImpl.h */,
+				963829442E57537600404F3A /* ViewLoadLifecycleHandlerImpl.mm */,
+			);
+			path = Lifecycle;
 			sourceTree = "<group>";
 		};
 		966634D82C8A3939004A934D /* FrameRateMetrics */ = {
@@ -979,6 +1308,105 @@
 				966634DB2C8A39C1004A934D /* FrozenFrameData.mm */,
 			);
 			path = FrameRateMetrics;
+			sourceTree = "<group>";
+		};
+		967949B42E97CC7F005FD87F /* SpanLifecycle */ = {
+			isa = PBXGroup;
+			children = (
+				967949B52E97CC95005FD87F /* SpanLifecycleHandler.h */,
+				967949B92E97D59B005FD87F /* SpanLifecycleHandlerImpl.h */,
+				967949B72E97CCA6005FD87F /* SpanLifecycleHandlerImpl.mm */,
+			);
+			path = SpanLifecycle;
+			sourceTree = "<group>";
+		};
+		967949BB2E99372C005FD87F /* SpanStore */ = {
+			isa = PBXGroup;
+			children = (
+				967949BC2E993735005FD87F /* SpanStore.h */,
+				967949BE2E993742005FD87F /* SpanStoreImpl.h */,
+				967949C02E99374E005FD87F /* SpanStoreImpl.mm */,
+			);
+			path = SpanStore;
+			sourceTree = "<group>";
+		};
+		969EE0EE2E7872A600600F63 /* SpanFactory */ = {
+			isa = PBXGroup;
+			children = (
+				969EE0F72E78738F00600F63 /* AppStartup */,
+				969EE0F82E78739600600F63 /* Network */,
+				969EE0EF2E7872F900600F63 /* Plain */,
+				969EE0F62E78738600600F63 /* ViewLoad */,
+			);
+			path = SpanFactory;
+			sourceTree = "<group>";
+		};
+		969EE0EF2E7872F900600F63 /* Plain */ = {
+			isa = PBXGroup;
+			children = (
+				969EE0F02E7872FF00600F63 /* PlainSpanFactory.h */,
+				969EE0F92E789E4C00600F63 /* PlainSpanFactoryCallbacks.h */,
+				969EE0FB2E78A66E00600F63 /* PlainSpanFactoryCallbacks.mm */,
+				969EE0F22E78730D00600F63 /* PlainSpanFactoryImpl.h */,
+				969EE0F42E78731900600F63 /* PlainSpanFactoryImpl.mm */,
+			);
+			path = Plain;
+			sourceTree = "<group>";
+		};
+		969EE0F62E78738600600F63 /* ViewLoad */ = {
+			isa = PBXGroup;
+			children = (
+				963829262E55E5B900404F3A /* ViewLoadSpanFactory.h */,
+				969EE0FD2E7949FD00600F63 /* ViewLoadSpanFactoryCallbacks.h */,
+				969EE0FF2E794A0D00600F63 /* ViewLoadSpanFactoryCallbacks.mm */,
+				963829282E55E5D100404F3A /* ViewLoadSpanFactoryImpl.h */,
+				9638292A2E55E5E300404F3A /* ViewLoadSpanFactoryImpl.mm */,
+			);
+			path = ViewLoad;
+			sourceTree = "<group>";
+		};
+		969EE0F72E78738F00600F63 /* AppStartup */ = {
+			isa = PBXGroup;
+			children = (
+				963829132E54960400404F3A /* AppStartupSpanFactory.h */,
+				963829152E54971F00404F3A /* AppStartupSpanFactoryImpl.h */,
+				963829172E54972A00404F3A /* AppStartupSpanFactoryImpl.mm */,
+			);
+			path = AppStartup;
+			sourceTree = "<group>";
+		};
+		969EE0F82E78739600600F63 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				962CE8322E6796FC00380522 /* NetworkSpanFactory.h */,
+				962CE8342E67971A00380522 /* NetworkSpanFactoryImpl.h */,
+				962CE8362E67972800380522 /* NetworkSpanFactoryImpl.mm */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		96BB66CA2EAEAA5C00AB3C93 /* LoadingIndicators */ = {
+			isa = PBXGroup;
+			children = (
+				962CE7E42E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h */,
+				96BB66C62EAEA78300AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h */,
+				96BB66C82EAEA79000AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm */,
+				962CE7E52E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h */,
+				962CE7E62E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.mm */,
+				96BB66CC2EAEB19D00AB3C93 /* ViewLoadLoadingIndicatorState.h */,
+				96BB66CE2EAEB1AC00AB3C93 /* ViewLoadLoadingIndicatorState.mm */,
+			);
+			path = LoadingIndicators;
+			sourceTree = "<group>";
+		};
+		96BB66CB2EAEAA7600AB3C93 /* EarlyPhase */ = {
+			isa = PBXGroup;
+			children = (
+				962CE7DC2E60986300380522 /* ViewLoadEarlyPhaseHandler.h */,
+				962CE7DE2E60987A00380522 /* ViewLoadEarlyPhaseHandlerImpl.h */,
+				962CE7E02E60988500380522 /* ViewLoadEarlyPhaseHandlerImpl.mm */,
+			);
+			path = EarlyPhase;
 			sourceTree = "<group>";
 		};
 		96D415F129E6ADC500AEE435 /* BugsnagPerformanceTestsApp */ = {
@@ -1024,15 +1452,11 @@
 		CB34771929068C350033759C /* NetworkInstrumentation */ = {
 			isa = PBXGroup;
 			children = (
-				CB34771C29068C350033759C /* BSGURLSessionPerformanceProxy.h */,
-				CB34771B29068C350033759C /* BSGURLSessionPerformanceProxy.mm */,
-				968AA5FA2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h */,
-				968AA5FC2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm */,
-				CBA22C982A03EA300066A2C1 /* NetworkCommon.h */,
-				CB34771D29068C350033759C /* NSURLSession+Instrumentation.h */,
-				CB34771A29068C350033759C /* NSURLSession+Instrumentation.mm */,
-				CBE0872629F806C2007455F2 /* NSURLSessionTask+Instrumentation.h */,
-				CBE0872729F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm */,
+				962CE8242E67185D00380522 /* Lifecycle */,
+				0122C22E29019770002D243C /* NetworkInstrumentation.h */,
+				0122C22A29019770002D243C /* NetworkInstrumentation.mm */,
+				962CE8022E6519C500380522 /* State */,
+				962CE80D2E6521DD00380522 /* System */,
 			);
 			path = NetworkInstrumentation;
 			sourceTree = "<group>";
@@ -1117,22 +1541,38 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				967949B62E97CC9E005FD87F /* SpanLifecycleHandler.h in Headers */,
+				9638291D2E54B4A200404F3A /* AppStartupLifecycleHandlerImpl.h in Headers */,
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
 				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				966634D52C8A3647004A934D /* FrameMetricsSnapshot.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */,
 				963726DD2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h in Headers */,
+				963829412E5726DF00404F3A /* ViewLoadLifecycleHandler.h in Headers */,
+				962CE8332E67970600380522 /* NetworkSpanFactory.h in Headers */,
+				96BB66C72EAEA78A00AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.h in Headers */,
 				963726DE2DF0B43500C739E6 /* BugsnagPerformancePlugin.h in Headers */,
 				0122C24C29019770002D243C /* NetworkInstrumentation.h in Headers */,
+				962CE8352E67972300380522 /* NetworkSpanFactoryImpl.h in Headers */,
+				962CE7CE2E60766000380522 /* ViewLoadInstrumentationStateRepository.h in Headers */,
+				967949BD2E99373E005FD87F /* SpanStore.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
+				962CE7E82E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h in Headers */,
+				962CE7E92E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
+				9638292E2E56149100404F3A /* ViewLoadInstrumentationSystemUtils.h in Headers */,
 				CB7881A129E698BF00A58906 /* PhasedStartup.h in Headers */,
+				96F05DA12EDF22C400E58887 /* AppStartupStateValidatorImpl.h in Headers */,
+				96F05DA22EDF22C400E58887 /* AppStartupStateValidator.h in Headers */,
 				01A414D12913C238003152A4 /* Reachability.h in Headers */,
+				963829292E55E5DB00404F3A /* ViewLoadSpanFactoryImpl.h in Headers */,
 				01EAF980291AAF19007AC627 /* Utils.h in Headers */,
+				9638290D2E54880100404F3A /* AppStartupInstrumentationSystemUtilsImpl.h in Headers */,
 				015836C4291264E0002F54C8 /* Version.h in Headers */,
 				01A58C0E29092D25006E4DF7 /* Sampler.h in Headers */,
+				96A25F432D6BE42B00A18116 /* AppStartupInstrumentationState.h in Headers */,
 				0122C23929019770002D243C /* BugsnagPerformanceViewType.h in Headers */,
 				09FFD4402BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.h in Headers */,
 				0122C23A29019770002D243C /* BugsnagPerformanceConfiguration.h in Headers */,
@@ -1143,59 +1583,98 @@
 				CB68FAB92A3C27B9005B2CDB /* PersistentDeviceID.h in Headers */,
 				CBF7C5E1297A8E9100D47719 /* Gzip.h in Headers */,
 				96D55C832A1EBA35006D1F29 /* SpanActivityState.h in Headers */,
+				96D090D32EEB05CD00BAA6D4 /* BSGPhasedStartup.h in Headers */,
 				CBE0873329FA984C007455F2 /* BugsnagPerformanceViewType+Private.h in Headers */,
+				1C68DB9D2E535C67002621D1 /* BugsnagPerformanceAppStartSpanQuery.h in Headers */,
 				CBEC51D62976BCAD009C0CE3 /* Filesystem.h in Headers */,
 				964B78502D39D36900FF077D /* BugsnagPerformanceSpanCondition.h in Headers */,
+				1C68DBA32E535DF2002621D1 /* BugsnagPerformanceAppStartTypePlugin.h in Headers */,
+				962CE8262E67188700380522 /* NetworkEarlyPhaseHandler.h in Headers */,
+				969EE0FA2E789E5400600F63 /* PlainSpanFactoryCallbacks.h in Headers */,
 				0987F2792C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.h in Headers */,
+				962CE7D02E60766E00380522 /* ViewLoadInstrumentationStateRepositoryImpl.h in Headers */,
 				964B78522D47D26F00FF077D /* ConditionTimeoutExecutor.h in Headers */,
+				969EE0F32E78731300600F63 /* PlainSpanFactoryImpl.h in Headers */,
 				098FC8542D37A08D001B627D /* SystemInfoSampler.h in Headers */,
 				CBEC51C0296DB312009C0CE3 /* JSON.h in Headers */,
 				09B473072B23087D0024CF11 /* WeakSpansList.h in Headers */,
 				96F1292B2DCCB9B900A6FB2B /* BugsnagPerformanceRemoteSpanContext.h in Headers */,
+				962CE8282E67189800380522 /* NetworkEarlyPhaseHandlerImpl.h in Headers */,
+				967949BF2E993749005FD87F /* SpanStoreImpl.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
+				962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
+				962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */,
 				964B785F2D504FD800FF077D /* BugsnagPerformanceSpanCondition+Private.h in Headers */,
 				963726C62DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.h in Headers */,
 				1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */,
 				0122C24A29019770002D243C /* AppStartupInstrumentation.h in Headers */,
 				CB04969B2915194E0097E526 /* OtlpUploader.h in Headers */,
+				962CE82C2E67376300380522 /* NetworkLifecycleHandler.h in Headers */,
+				962CE81F2E66D23600380522 /* NetworkInstrumentationSystemUtils.h in Headers */,
+				963829082E547D1A00404F3A /* ViewLoadInstrumentationState.h in Headers */,
 				966634D12C8909BB004A934D /* FrameMetricsCollector.h in Headers */,
 				0122C25029019770002D243C /* BugsnagPerformanceSpan+Private.h in Headers */,
 				09D59E1A2BDFE0D900199E1B /* NetworkHeaderInjector.h in Headers */,
+				963829432E57537100404F3A /* ViewLoadLifecycleHandlerImpl.h in Headers */,
 				0122C23F29019770002D243C /* OtlpTraceEncoding.h in Headers */,
 				0122C24229019770002D243C /* SpanKind.h in Headers */,
 				098FC84E2D350E60001B627D /* FixedLengthDequeue.h in Headers */,
 				CB78819D29E587CE00A58906 /* BugsnagPerformanceLibrary.h in Headers */,
+				967949BA2E97D5A5005FD87F /* SpanLifecycleHandlerImpl.h in Headers */,
 				098FC8462D2EB8E8001B627D /* BSGPSystemInfo.h in Headers */,
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
+				963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
 				963726E62DF1DFC300C739E6 /* BSGPluginManager.h in Headers */,
 				CBB48A3C295EE1E10044E9AC /* ObjCUtils.h in Headers */,
 				96D55C812A1EB5F4006D1F29 /* SpanStackingHandler.h in Headers */,
+				96BB66CD2EAEB1A400AB3C93 /* ViewLoadLoadingIndicatorState.h in Headers */,
 				015836C129125E7A002F54C8 /* ResourceAttributes.h in Headers */,
+				962CE7DD2E60987600380522 /* ViewLoadEarlyPhaseHandler.h in Headers */,
+				962CE8042E6519D900380522 /* NetworkInstrumentationState.h in Headers */,
 				CBE8EA1A294B5AB800702950 /* Worker.h in Headers */,
 				CBE8EA16294B528100702950 /* BugsnagPerformanceImpl.h in Headers */,
 				963726E22DF101E700C739E6 /* BugsnagPerformancePluginContext+Private.h in Headers */,
 				967F6F1829C3783B0054EED8 /* BugsnagPerformanceConfiguration+Private.h in Headers */,
+				963829362E5623E200404F3A /* ViewLoadSwizzlingHandler.h in Headers */,
+				963829272E55E5C500404F3A /* ViewLoadSpanFactory.h in Headers */,
 				0122C24129019770002D243C /* IdGenerator.h in Headers */,
+				1C68DB932E535241002621D1 /* BugsnagPerformanceAppStartSpanControl.h in Headers */,
+				963829142E54960F00404F3A /* AppStartupSpanFactory.h in Headers */,
+				962CE81A2E65FD4E00380522 /* NetworkSwizzlingHandlerImpl.h in Headers */,
 				CBEBE59A29F671A800BF0B4F /* Instrumentation.h in Headers */,
 				CBE8EA1E294B5E1500702950 /* Batch.h in Headers */,
+				962CE80A2E651A0C00380522 /* NetworkInstrumentationStateRepositoryImpl.h in Headers */,
+				1C68DB952E535290002621D1 /* BugsnagPerformanceAppStartSpanControl+Private.h in Headers */,
+				962CE8182E65FD4300380522 /* NetworkSwizzlingHandler.h in Headers */,
 				CBEBE59329F2783C00BF0B4F /* Swizzle.h in Headers */,
+				962CE8082E651A0100380522 /* NetworkInstrumentationStateRepository.h in Headers */,
+				969EE0FE2E794A0700600F63 /* ViewLoadSpanFactoryCallbacks.h in Headers */,
 				96F9010F2EE817620026F5B9 /* NSTimer+MainThread.h in Headers */,
 				CBEC51BC296D9EEE009C0CE3 /* PersistentState.h in Headers */,
 				0122C23829019770002D243C /* BugsnagPerformanceSpan.h in Headers */,
+				962CE8212E66D24200380522 /* NetworkInstrumentationSystemUtilsImpl.h in Headers */,
+				9638293C2E56284200404F3A /* ViewLoadSwizzlingCallbacks.h in Headers */,
 				966634DA2C8A39B1004A934D /* FrozenFrameData.h in Headers */,
 				968AA5FB2CCA5A9200BA69CF /* BSGPerformanceSharedSessionProxy.h in Headers */,
 				CB0AD76A296573FC002A3FB6 /* BugsnagPerformanceErrors.h in Headers */,
+				969EE0F12E78730900600F63 /* PlainSpanFactory.h in Headers */,
 				0122C23B29019770002D243C /* BugsnagPerformance.h in Headers */,
+				962CE80F2E6521F800380522 /* BSGURLSessionPerformanceDelegate.h in Headers */,
 				0122C24B29019770002D243C /* ViewLoadInstrumentation.h in Headers */,
+				963829382E5623F100404F3A /* ViewLoadSwizzlingHandlerImpl.h in Headers */,
+				1C3C0C612E2922080037B416 /* BugsnagPerformanceLoadingIndicatorView.h in Headers */,
 				CBEC51B8296D8386009C0CE3 /* Persistence.h in Headers */,
-				CB34772129068C350033759C /* NSURLSession+Instrumentation.h in Headers */,
-				CBE0872829F806C2007455F2 /* NSURLSessionTask+Instrumentation.h in Headers */,
+				963829212E5542A700404F3A /* AppStartupInstrumentationStateSnapshot.h in Headers */,
+				9638291B2E54B48E00404F3A /* AppStartupLifecycleHandler.h in Headers */,
+				963829112E548DBE00404F3A /* AppStartupInstrumentationSystemUtils.h in Headers */,
+				963829322E5614C000404F3A /* ViewLoadInstrumentationSystemUtilsImpl.h in Headers */,
+				962CE82E2E673A9400380522 /* NetworkLifecycleHandlerImpl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1439,7 +1918,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					B4A4A4DE1EA43C6C4D6D3894 = {
-						LastSwiftMigration = 1540;
+						LastSwiftMigration = 1630;
 					};
 					DA8E5ED52E2FC3E80049F7AB = {
 						CreatedOnToolsVersion = 16.2;
@@ -1570,7 +2049,6 @@
 				09E313042BF363020081F219 /* CrossTalkTests.mm in Sources */,
 				CB747D21299E5458003CA1B4 /* TimeTests.mm in Sources */,
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
-				09509B752ADFE9A900A358EC /* TracerTests.mm in Sources */,
 				098FC8792D3FADFE001B627D /* SpanAttributesTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
@@ -1612,64 +2090,96 @@
 			buildActionMask = 2147483647;
 			files = (
 				96F1292D2DCD141700A6FB2B /* BugsnagPerformanceRemoteSpanContext.mm in Sources */,
+				96BB66C92EAEA79200AB3C93 /* ViewLoadLoadingIndicatorsHandlerCallbacks.mm in Sources */,
+				962CE8372E67972A00380522 /* NetworkSpanFactoryImpl.mm in Sources */,
+				1C68DB992E535A88002621D1 /* BugsnagPerformanceAppStartSpanControl.mm in Sources */,
 				CB0AD7682965734F002A3FB6 /* BugsnagPerformanceErrors.m in Sources */,
 				0122C24E29019770002D243C /* OtlpTraceEncoding.mm in Sources */,
 				098FC8472D2EB8E8001B627D /* BSGPSystemInfo.mm in Sources */,
 				0122C24929019770002D243C /* AppStartupInstrumentation.mm in Sources */,
+				9638290A2E547D2300404F3A /* ViewLoadInstrumentationState.m in Sources */,
+				969EE1002E794A1100600F63 /* ViewLoadSpanFactoryCallbacks.mm in Sources */,
+				963829452E57537900404F3A /* ViewLoadLifecycleHandlerImpl.mm in Sources */,
 				0122C24429019770002D243C /* Tracer.mm in Sources */,
+				962CE8112E65224300380522 /* BSGURLSessionPerformanceDelegate.mm in Sources */,
+				967949B82E97CCA9005FD87F /* SpanLifecycleHandlerImpl.mm in Sources */,
 				CB04969829150D860097E526 /* OtlpPackage.mm in Sources */,
 				0122C23D29019770002D243C /* BugsnagPerformance.mm in Sources */,
+				9638293E2E56284E00404F3A /* ViewLoadSwizzlingCallbacks.m in Sources */,
+				96A25F442D6BE42B00A18116 /* AppStartupInstrumentationState.mm in Sources */,
 				CBEC51D72976BCAD009C0CE3 /* Filesystem.mm in Sources */,
 				966634D32C8909D9004A934D /* FrameMetricsCollector.mm in Sources */,
+				963829342E5614D200404F3A /* ViewLoadInstrumentationSystemUtilsImpl.mm in Sources */,
 				963726CC2DEAB25600C739E6 /* BugsnagPerformancePriority+Private.m in Sources */,
+				962CE7D32E60768400380522 /* ViewLoadInstrumentationStateRepositoryImpl.mm in Sources */,
 				CB7FD932299D2F7700499E13 /* BugsnagPerformanceSpanOptions.m in Sources */,
 				CBEC51BD296D9EEE009C0CE3 /* PersistentState.mm in Sources */,
 				CBEC51B9296D8386009C0CE3 /* Persistence.mm in Sources */,
+				963829232E5542B500404F3A /* AppStartupInstrumentationStateSnapshot.m in Sources */,
 				CB572EAB29BB783200FD7A2A /* AppStateTracker.m in Sources */,
 				CBE8EA17294B528100702950 /* BugsnagPerformanceImpl.mm in Sources */,
 				966634DC2C8A39C1004A934D /* FrozenFrameData.mm in Sources */,
+				9638293A2E56240900404F3A /* ViewLoadSwizzlingHandlerImpl.mm in Sources */,
 				0122C23E29019770002D243C /* BugsnagPerformanceSpan.mm in Sources */,
 				0987F27A2C32D4AD00777FD8 /* BugsnagPerformanceSpanContext.mm in Sources */,
 				09F23A8D2CE351ED00F0D769 /* BugsnagSwiftTools.m in Sources */,
+				962CE8302E673A9900380522 /* NetworkLifecycleHandlerImpl.mm in Sources */,
 				968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */,
+				967949C12E993750005FD87F /* SpanStoreImpl.mm in Sources */,
 				964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
-				CB34771E29068C350033759C /* NSURLSession+Instrumentation.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
 				CB78819C29E587CE00A58906 /* BugsnagPerformanceLibrary.mm in Sources */,
 				963726E02DF0B4AD00C739E6 /* BugsnagPerformancePluginContext.m in Sources */,
 				96F901112EE817700026F5B9 /* NSTimer+MainThread.m in Sources */,
 				098FC8552D37A08D001B627D /* SystemInfoSampler.mm in Sources */,
+				1C68DBA12E535D06002621D1 /* BugsnagPerformanceAppStartSpanQuery.mm in Sources */,
 				963726C82DEAB1FC00C739E6 /* BugsnagPerformancePriority.m in Sources */,
 				0122C23C29019770002D243C /* BugsnagPerformanceConfiguration.mm in Sources */,
 				963726D02DEAB36B00C739E6 /* BSGPrioritizedStore.mm in Sources */,
+				962CE7E72E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.mm in Sources */,
 				CBEBE59229F2783C00BF0B4F /* Swizzle.mm in Sources */,
 				963726E82DF1DFD100C739E6 /* BSGPluginManager.m in Sources */,
+				962CE7E12E60988800380522 /* ViewLoadEarlyPhaseHandlerImpl.mm in Sources */,
 				CBA22C972A0137230066A2C1 /* EarlyConfiguration.mm in Sources */,
 				963726C52DEAB14D00C739E6 /* BSGCompositeSpanControlProvider.m in Sources */,
+				9638291F2E54B4AB00404F3A /* AppStartupLifecycleHandlerImpl.mm in Sources */,
 				09FFD4412BEE3DE2009B0E04 /* BugsnagPerformanceCrossTalkAPI.mm in Sources */,
+				962CE80C2E651A1600380522 /* NetworkInstrumentationStateRepositoryImpl.mm in Sources */,
 				CBEC51C1296DB312009C0CE3 /* JSON.mm in Sources */,
+				96F05DA02EDF22C400E58887 /* AppStartupStateValidatorImpl.mm in Sources */,
 				963726BF2DE8D99E00C739E6 /* BugsnagPerformanceSpanQuery.m in Sources */,
+				1C60EB452E43F4BE00D46E88 /* BugsnagPerformanceLoadingIndicatorView.mm in Sources */,
 				CBEBE59B29F671A800BF0B4F /* Instrumentation.mm in Sources */,
+				1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */,
 				0986B7C02B287C9D00BD2CA3 /* WeakSpansList.mm in Sources */,
+				962CE8232E66D25100380522 /* NetworkInstrumentationSystemUtilsImpl.mm in Sources */,
 				96D4160C29F276E400AEE435 /* SpanAttributesProvider.mm in Sources */,
+				9638290F2E54881000404F3A /* AppStartupInstrumentationSystemUtilsImpl.mm in Sources */,
 				CB68FABA2A3C27B9005B2CDB /* PersistentDeviceID.mm in Sources */,
 				CBF7C5E2297A8E9100D47719 /* Gzip.m in Sources */,
 				0122C24829019770002D243C /* NetworkInstrumentation.mm in Sources */,
+				962CE8062E6519E200380522 /* NetworkInstrumentationState.m in Sources */,
+				962CE82A2E67189F00380522 /* NetworkEarlyPhaseHandlerImpl.mm in Sources */,
 				0122C24D29019770002D243C /* ViewLoadInstrumentation.mm in Sources */,
 				015836C229125E7A002F54C8 /* ResourceAttributes.mm in Sources */,
 				1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */,
+				96BB66CF2EAEB1AE00AB3C93 /* ViewLoadLoadingIndicatorState.mm in Sources */,
 				01A414D22913C238003152A4 /* Reachability.mm in Sources */,
+				962CE81C2E65FD5300380522 /* NetworkSwizzlingHandlerImpl.mm in Sources */,
+				969EE0F52E78731C00600F63 /* PlainSpanFactoryImpl.mm in Sources */,
 				96D55C802A1EA5C6006D1F29 /* SpanStackingHandler.mm in Sources */,
 				CB34771F29068C350033759C /* BSGURLSessionPerformanceProxy.mm in Sources */,
 				09D59E1B2BDFE0D900199E1B /* NetworkHeaderInjector.mm in Sources */,
+				969EE0FC2E78A67600600F63 /* PlainSpanFactoryCallbacks.mm in Sources */,
 				CB04969C2915194E0097E526 /* OtlpUploader.mm in Sources */,
+				9638292B2E55E5E800404F3A /* ViewLoadSpanFactoryImpl.mm in Sources */,
 				CBE0873229FA984C007455F2 /* BugsnagPerformanceViewType.mm in Sources */,
-				CBE0872929F806C2007455F2 /* NSURLSessionTask+Instrumentation.mm in Sources */,
 				CBB48A3D295EE1E10044E9AC /* ObjCUtils.mm in Sources */,
 				0921F02C2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.m in Sources */,
 				966634D72C8A365B004A934D /* FrameMetricsSnapshot.mm in Sources */,
+				963829182E54972C00404F3A /* AppStartupSpanFactoryImpl.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1819,7 +2329,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1841,7 +2351,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1875,7 +2385,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -1911,7 +2421,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -1939,7 +2449,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -1963,7 +2473,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -1995,7 +2505,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2031,7 +2541,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2063,7 +2573,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2093,7 +2603,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2302,7 +2812,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2322,7 +2832,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2344,7 +2854,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2366,7 +2876,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2398,7 +2908,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2429,7 +2939,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2470,7 +2980,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;
@@ -2533,7 +3043,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 1.16.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;

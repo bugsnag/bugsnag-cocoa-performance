@@ -38,9 +38,11 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                     samplingProbability:1.0
                                     attributeCountLimit:128
                                          metricsOptions:metricsOptions
+                                 conditionsToEndOnClose:@[]
                                            onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                            onSpanClosed:onEnded
-                                          onSpanBlocked:onBlocked];
+                                          onSpanBlocked:onBlocked
+                                        onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
 }
 
 - (void)testStartEndUnset {
@@ -318,9 +320,11 @@ static BugsnagPerformanceSpan *spanWithStartTime(CFAbsoluteTime startTime, SpanL
                                          samplingProbability:1.0
                                          attributeCountLimit:5
                                               metricsOptions:metricsOptions
+                                      conditionsToEndOnClose:@[]
                                                 onSpanEndSet:^(BugsnagPerformanceSpan *) {}
                                                 onSpanClosed:^(BugsnagPerformanceSpan *) {}
-                                               onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }];
+                                               onSpanBlocked:^BugsnagPerformanceSpanCondition * _Nullable(BugsnagPerformanceSpan * _Nonnull, NSTimeInterval) { return nil; }
+                                             onSpanCancelled:^(BugsnagPerformanceSpan * _Nonnull) {}];
 
     // Note: "bugsnag.sampling.p" is automatically added.
 

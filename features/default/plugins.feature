@@ -42,3 +42,25 @@ Feature: Plugins
       | attribute    | type      | value |
       | span_count   | intValue  | 3     |
       | plugin_start | boolValue | true  |
+
+  Scenario: App start type plugin correctly changes the span name
+    Given I run "AppStartTypeScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]customType"
+
+  Scenario: App start type plugin wont change span name if it's too late
+    Given I run "AppStartTypeLateScenario"
+    Then I relaunch the app after shutdown
+    And I wait for 4 seconds
+    And I wait to receive a span named "[AppStart/iOSCold]"
+
+  Scenario: App start type plugin correctly changes the span name early
+    Given I run "AppStartTypeEarlyScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]AppStartTypeEarlyScenario"
+
+  Scenario: App start type plugin correctly changes the span name during data loading phase of the first view
+    Given I run "AppStartTypeLoadingScenario"
+    Then I relaunch the app after shutdown
+    And I wait to receive a span named "[AppStart/iOSCold]AppStartTypeLoadingScenario"
+

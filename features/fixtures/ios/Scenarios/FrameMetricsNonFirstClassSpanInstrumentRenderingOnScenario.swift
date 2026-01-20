@@ -2,7 +2,7 @@
 //  FrameMetricsNonFirstClassSpanInstrumentRenderingOnScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 27/09/2024.
+//  Created by Robert Bartoszewski on 27/09/2024.
 //
 
 import Bugsnag

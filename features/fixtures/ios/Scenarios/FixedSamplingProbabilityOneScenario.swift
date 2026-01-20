@@ -2,7 +2,7 @@
 //  ServiceNameScenario.swift
 //  Fixture
 //
-//  Created by Robert B on 20/08/2024.
+//  Created by Robert Bartoszewski on 20/08/2024.
 //
 
 import BugsnagPerformance

@@ -75,11 +75,15 @@ OBJC_EXPORT
 
 @property (nonatomic) BOOL autoInstrumentAppStarts;
 
+@property (nonatomic) BOOL autoInstrumentAppStartsLegacy;
+
 @property (nonatomic) BOOL autoInstrumentViewControllers;
 
 @property (nonatomic) BOOL autoInstrumentNetworkRequests;
 
 @property (nonatomic) BOOL autoInstrumentRendering DEPRECATED_ATTRIBUTE;
+
+@property (nonatomic) BOOL isDevelopment;
 
 @property(nonatomic,strong) BugsnagPerformanceEnabledMetrics *enabledMetrics;
 

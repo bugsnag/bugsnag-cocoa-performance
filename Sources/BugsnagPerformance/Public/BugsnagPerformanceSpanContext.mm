@@ -44,4 +44,12 @@
     return self.traceId.lo;
 }
 
+- (SpanId)parentId {
+    return 0;
+}
+
+- (BOOL)isParentOf:(BugsnagPerformanceSpanContext *)other {
+    return other.parentId == self.spanId && other.traceIdHi == self.traceIdHi && other.traceIdLo == self.traceIdLo;
+}
+
 @end

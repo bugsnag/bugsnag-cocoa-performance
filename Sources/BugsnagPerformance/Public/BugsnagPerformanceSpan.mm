@@ -38,9 +38,11 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
          samplingProbability:(double) samplingProbability
          attributeCountLimit:(NSUInteger)attributeCountLimit
               metricsOptions:(MetricsOptions)metricsOptions
+      conditionsToEndOnClose:(NSArray<BugsnagPerformanceSpanCondition *> *)conditionsToEndOnClose
                 onSpanEndSet:(SpanLifecycleCallback) onSpanEndSet
                 onSpanClosed:(SpanLifecycleCallback) onSpanClosed
-                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked {
+                onSpanBlocked:(SpanBlockedCallback) onSpanBlocked
+             onSpanCancelled:(nonnull SpanLifecycleCallback)onSpanCancelled {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _actuallyStartedAt = CFAbsoluteTimeGetCurrent();
         _actuallyEndedAt = CFABSOLUTETIME_INVALID;
@@ -54,6 +56,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         _onSpanEndSet = onSpanEndSet;
         _onSpanClosed = onSpanClosed;
         _onSpanBlocked = onSpanBlocked;
+        _onSpanCancelled = onSpanCancelled;
         _kind = SPAN_KIND_INTERNAL;
         _samplingProbability = samplingProbability;
         _state = SpanStateOpen;
@@ -65,8 +68,12 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         }
         _attributes[@"bugsnag.sampling.p"] = @(1.0);
         _metricsOptions = metricsOptions;
+        _conditionsToEndOnClose = conditionsToEndOnClose;
+        for (BugsnagPerformanceSpanCondition *condition in conditionsToEndOnClose) {
+            [condition upgrade];
+        }
         _wasStartOrEndTimeProvided = isCFAbsoluteTimeValid(startAbsTime);
-        _activeConditions = [NSMutableArray new];
+        _activeConditions = [NSMutableArray array];
     }
     return self;
 }
@@ -78,6 +85,9 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     BSGLogTrace(@"BugsnagPerformanceSpan.dealloc %@", self.name);
     if (self.onDumped) {
         self.onDumped(self.spanId);
+    }
+    for (BugsnagPerformanceSpanCondition *condition in _conditionsToEndOnClose) {
+        [condition cancel];
     }
     BugsnagPerformanceSpan *clone = [self clone];
     switch(self.onSpanDestroyAction) {
@@ -180,6 +190,13 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 
 - (void)endOnDestroy {
     self.onSpanDestroyAction = OnSpanDestroyEnd;
+}
+
+- (void)cancel {
+    [self abortUnconditionally];
+    if (self.onSpanCancelled) {
+        self.onSpanCancelled(self);
+    }
 }
 
 - (BugsnagPerformanceSpanCondition *_Nullable)blockWithTimeout:(NSTimeInterval)timeout {
@@ -325,19 +342,20 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
 }
 
 - (instancetype)clone {
-    BugsnagPerformanceSpan *copy = [[BugsnagPerformanceSpan alloc]
-                                    initWithName:self.name
-                                         traceId:self.traceId
-                                          spanId:self.spanId
-                                        parentId:self.parentId
-                                       startTime:self.startAbsTime
-                                      firstClass:self.firstClass
-                             samplingProbability:self.samplingProbability
-                             attributeCountLimit:self.attributeCountLimit
-                                  metricsOptions:self.metricsOptions
-                                    onSpanEndSet:self.onSpanEndSet
-                                    onSpanClosed:self.onSpanClosed
-                                   onSpanBlocked:self.onSpanBlocked];
+    BugsnagPerformanceSpan *copy = [[BugsnagPerformanceSpan alloc] initWithName:self.name
+                                                                        traceId:self.traceId
+                                                                         spanId:self.spanId
+                                                                       parentId:self.parentId
+                                                                      startTime:self.startAbsTime
+                                                                     firstClass:self.firstClass
+                                                            samplingProbability:self.samplingProbability
+                                                            attributeCountLimit:self.attributeCountLimit
+                                                                 metricsOptions:self.metricsOptions
+                                                         conditionsToEndOnClose:@[]
+                                                                   onSpanEndSet:self.onSpanEndSet
+                                                                   onSpanClosed:self.onSpanClosed
+                                                                  onSpanBlocked:self.onSpanBlocked
+                                                                onSpanCancelled:self.onSpanCancelled];
     
     // Copy additional state that's not set during initialization
     @synchronized (self) {
