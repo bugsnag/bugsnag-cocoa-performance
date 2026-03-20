@@ -64,14 +64,30 @@ public:
         onFilesystemError = onFilesystemErrorCallback;
     }
 
+    /**
+     * Disable all filesystem operations for the lifetime of this instance.
+     * Used when the top-level persistence directory cannot be created.
+     */
+    void disableFilesystemIO() noexcept { filesystemDisabled_ = true; }
+
 private:
     NSString *baseDir_{nil};
     dispatch_time_t maxRetryAge_{0};
     void (^onFilesystemError)(){nullptr};
 
+    bool filesystemDisabled_{false};
+    bool hasReportedFilesystemDisabled_{false};
+
     void remove(NSString *filename) noexcept;
     NSString *fullPath(NSString *filename) noexcept;
     void ensureBaseDirExists() noexcept;
+
+    void reportFilesystemDisabledOnce() noexcept {
+        if (!hasReportedFilesystemDisabled_) {
+            hasReportedFilesystemDisabled_ = true;
+            onFilesystemError();
+        }
+    }
 };
 
 }

@@ -209,13 +209,23 @@ void BugsnagPerformanceImpl::start() noexcept {
     __block auto blockThis = this;
 
     persistence_->start();
+    bool persistenceUsable = persistence_->isUsable();
 
-    if (configuration_.internal.clearPersistenceOnStart) {
+    if (!persistenceUsable) {
+        BSGLogWarning(@"BugsnagPerformance persistence is unavailable; disabling file-backed features (retry queue, persistent state, device id)");
+        retryQueue_->disableFilesystemIO();
+    }
+
+    if (persistenceUsable && configuration_.internal.clearPersistenceOnStart) {
         persistence_->clearPerformanceData();
     }
 
-    persistentState_->start();
-    deviceID_->start();
+    if (persistenceUsable) {
+        persistentState_->start();
+        deviceID_->start();
+    }
+
+    // Always start in-memory components and networking.
     traceEncoding_.start();
     spanLifecycleHandler_->start();
 
@@ -234,7 +244,10 @@ void BugsnagPerformanceImpl::start() noexcept {
         blockThis->onProbabilityChanged(newProbability);
     });
     
-    double samplingProbability = persistentState_->probability();
+    double samplingProbability = 1.0;
+    if (persistenceUsable) {
+        samplingProbability = persistentState_->probability();
+    }
     if (configuration_.samplingProbability != nil) {
         samplingProbability = [configuration_.samplingProbability doubleValue];
     }
@@ -418,6 +431,11 @@ bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
 #pragma mark Event Reactions
 
 void BugsnagPerformanceImpl::onFilesystemError() noexcept {
+    // If persistence couldn't be initialized, clearing persistence would just cause more failing I/O.
+    // In that case the retry queue is already disabled and we should fail fast/no-op.
+    if (!persistence_->isUsable()) {
+        return;
+    }
     persistence_->clearPerformanceData();
 }
 
