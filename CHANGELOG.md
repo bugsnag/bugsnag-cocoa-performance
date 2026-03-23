@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug Fixes
+
+* Don't attempt file operations when top-level directory creation failed
+  [570](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/570)
+
 ## 2.0.0 (2026-01-20)
 
 ### Enhancements
