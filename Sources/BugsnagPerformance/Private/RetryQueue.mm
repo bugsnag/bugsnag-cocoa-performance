@@ -162,9 +162,14 @@ void RetryQueue::ensureBaseDirExists() noexcept {
         reportFilesystemDisabledOnce();
         return;
     }
+    if (attemptedDirCreation_) {
+        return;
+    }
+    attemptedDirCreation_ = true;
     NSError *error = [Filesystem ensurePathExists:baseDir_];
     if (error != nil) {
         BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
-        onFilesystemError();
+        filesystemDisabled_ = true;
+        reportFilesystemDisabledOnce();
     }
 }

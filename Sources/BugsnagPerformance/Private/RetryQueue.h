@@ -77,6 +77,7 @@ private:
 
     bool filesystemDisabled_{false};
     bool hasReportedFilesystemDisabled_{false};
+    bool attemptedDirCreation_{false};
 
     void remove(NSString *filename) noexcept;
     NSString *fullPath(NSString *filename) noexcept;

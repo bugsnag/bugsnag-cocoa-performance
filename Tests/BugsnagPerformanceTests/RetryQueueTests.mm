@@ -157,32 +157,26 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
 
     RetryQueue queue(self.filePath);
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
-    queue.preStartSetup();
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
-    XCTAssertFalse(isDir);
-    queue.start();
 
     __block int callCount = 0;
     queue.setOnFilesystemError(^{
         callCount++;
     });
 
-    callCount = 0;
-    queue.sweep();
-    XCTAssertNotEqual(0, callCount);
+    queue.preStartSetup();
+    XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
+    XCTAssertFalse(isDir);
+    queue.start();
 
-    callCount = 0;
     queue.list();
-    XCTAssertNotEqual(0, callCount);
+    XCTAssertEqual(callCount, 2); // list triggers callback again
 
-    callCount = 0;
     OtlpPackage package(1, [NSData new], @{});
     queue.add(package);
-    XCTAssertNotEqual(0, callCount);
+    XCTAssertEqual(callCount, 2); // add does not trigger callback again
 
-    callCount = 0;
     queue.remove(1);
-    XCTAssertEqual(0, callCount);
+    XCTAssertEqual(callCount, 2); // remove does not trigger callback
 }
 
 - (void)testDisabledFilesystemIO {
