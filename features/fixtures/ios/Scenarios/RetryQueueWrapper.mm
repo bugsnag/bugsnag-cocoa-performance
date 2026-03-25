@@ -4,6 +4,7 @@
 @property (nonatomic, strong) NSString *baseDir;
 @property (nonatomic, strong) NSMutableArray<NSDictionary *> *queue;
 @property (nonatomic, copy) dispatch_block_t onFilesystemError;
+@property (nonatomic, assign) BOOL filesystemIODisabled;
 - (instancetype)initWithPath:(NSString *)path;
 - (void)preStartSetup;
 - (void)sweep;
@@ -19,11 +20,15 @@
     if ((self = [super init])) {
         _baseDir = path;
         _queue = [NSMutableArray array];
+        _filesystemIODisabled = NO;
     }
     return self;
 }
-- (void)preStartSetup {}
+- (void)preStartSetup {
+    if (self.filesystemIODisabled) return;
+}
 - (void)sweep {
+    if (self.filesystemIODisabled) return;
     // Remove items older than 24 hours (simulate)
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(NSDictionary *obj, NSDictionary *bindings) {
@@ -33,6 +38,7 @@
     [_queue filterUsingPredicate:predicate];
 }
 - (NSArray<NSNumber *> *)list {
+    if (self.filesystemIODisabled) return @[];
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:_queue.count];
     for (NSDictionary *item in _queue) {
         [result addObject:item[@"timestamp"]];
@@ -40,6 +46,7 @@
     return [result copy];
 }
 - (NSDictionary *)get:(uint64_t)timestamp {
+    if (self.filesystemIODisabled) return nil;
     for (NSDictionary *item in _queue) {
         if ([item[@"timestamp"] unsignedLongLongValue] == timestamp) {
             return item;
@@ -49,6 +56,7 @@
 }
 
 - (void)remove:(uint64_t)timestamp {
+    if (self.filesystemIODisabled) return;
     NSIndexSet *indexes = [_queue indexesOfObjectsPassingTest:^BOOL(NSDictionary *item, NSUInteger idx, BOOL *stop) {
         return [item[@"timestamp"] unsignedLongLongValue] == timestamp;
     }];
@@ -59,7 +67,9 @@
     self.onFilesystemError = block;
 }
 
-- (void)disableFilesystemIO {}
+- (void)disableFilesystemIO {
+    self.filesystemIODisabled = YES;
+}
 @end
 
 @interface RetryQueueWrapper () {

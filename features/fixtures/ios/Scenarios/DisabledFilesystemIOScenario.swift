@@ -25,7 +25,8 @@ class DisabledFilesystemIOScenario: Scenario {
         queue = RetryQueueWrapper(path: testFilePath)
         queue?.setOnFilesystemError { [weak self] in self?.filesystemErrorCallCount += 1 }
         queue?.disableFilesystemIO()
-
+        // Assert no file exists after disabling IO
+        assert(!fm.fileExists(atPath: testFilePath), "Retry queue file should not exist after disabling IO")
         // Now call all queue operations
         queue?.preStartSetup()
         queue?.sweep()
