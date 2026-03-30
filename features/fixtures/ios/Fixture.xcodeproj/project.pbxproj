@@ -129,8 +129,6 @@
 		DA95ABF32E3A7E52001E6B0E /* NamedSpansPluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */; };
 		DAC7DD672E3CBED10091961A /* BugsnagPerformanceNamedSpans in Frameworks */ = {isa = PBXBuildFile; productRef = DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */; };
 		DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */; };
-		E11073C62F704896005F31F5 /* DisabledFilesystemIOScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11073C52F704896005F31F5 /* DisabledFilesystemIOScenario.swift */; };
-		E1960FB82F70180800773FB9 /* RetryQueueWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1960FB72F70180800773FB9 /* RetryQueueWrapper.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -262,9 +260,6 @@
 		DA85961D2DF718C800905922 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedSpansPluginScenario.swift; sourceTree = "<group>"; };
 		DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
-		E11073C52F704896005F31F5 /* DisabledFilesystemIOScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisabledFilesystemIOScenario.swift; sourceTree = "<group>"; };
-		E1960FB62F70180800773FB9 /* RetryQueueWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetryQueueWrapper.h; sourceTree = "<group>"; };
-		E1960FB72F70180800773FB9 /* RetryQueueWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RetryQueueWrapper.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,7 +387,6 @@
 				969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */,
 				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 				1C8CB8C02EC3C970007BF492 /* DebugModeScenario.swift */,
-				E11073C52F704896005F31F5 /* DisabledFilesystemIOScenario.swift */,
 				09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */,
 				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
 				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
@@ -440,8 +434,6 @@
 				CBE43A9829A8EFA3000B4205 /* ProbabilityExpiryScenario.swift */,
 				967F6F1929C4AD300054EED8 /* ReleaseStageNotEnabledScenario.swift */,
 				09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */,
-				E1960FB62F70180800773FB9 /* RetryQueueWrapper.h */,
-				E1960FB72F70180800773FB9 /* RetryQueueWrapper.mm */,
 				CBF62108291A4F47004BEE0B /* RetryScenario.swift */,
 				01A58C1429096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift */,
 				01FE4DC428E1AF9600D1F239 /* Scenario.swift */,
@@ -611,7 +603,6 @@
 				CBE6B66B28FD66B400D1CF78 /* ManualNetworkSpanScenario.swift in Sources */,
 				098C3B2D2C523EC5006F9886 /* OnEndCallbackScenario.swift in Sources */,
 				098808E02B10A6E400DC1677 /* ManualViewLoadPhaseScenario.swift in Sources */,
-				E11073C62F704896005F31F5 /* DisabledFilesystemIOScenario.swift in Sources */,
 				01FE4DC528E1AF9600D1F239 /* Scenario.swift in Sources */,
 				96A25F3C2D6BC98100A18116 /* AutoInstrumentAppStartsWithViewLoadScenario.swift in Sources */,
 				96CD493D2EB2F85000E03155 /* AutoInstrumentAppStartsLoadingScenario.swift in Sources */,
@@ -651,7 +642,6 @@
 				966CF1BC2EEBA41300774E2B /* AppStartLegacyStartAfterAppStartScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,
-				E1960FB82F70180800773FB9 /* RetryQueueWrapper.mm in Sources */,
 				9691A9DD2CA5E61500707CDF /* FrameMetricsAutoInstrumentRenderingOffScenario.swift in Sources */,
 				09637A452B0B883B00F4F776 /* FixtureConfig.swift in Sources */,
 				CBC90CE429D1BDE400280884 /* AutoInstrumentSubViewLoadScenario.swift in Sources */,
