@@ -4,8 +4,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface RetryQueueWrapper : NSObject
 
-@property (nonatomic, assign) BOOL filesystemIODisabled;
-
 - (instancetype)initWithPath:(NSString *)path;
 - (void)preStartSetup;
 - (void)sweep;
