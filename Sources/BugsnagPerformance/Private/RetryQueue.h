@@ -65,30 +65,24 @@ public:
     }
 
     /**
-     * Disable all filesystem operations for the lifetime of this instance.
-     * Used when the top-level persistence directory cannot be created.
+     * Disable any filesystem IO performed by the retry queue (used in tests/fixtures).
      */
-    void disableFilesystemIO() noexcept { filesystemDisabled_ = true; }
+    void disableFilesystemIO() noexcept;
+
+    /**
+     * Returns whether filesystem IO is disabled.
+     */
+    bool filesystemIODisabled() noexcept;
 
 private:
     NSString *baseDir_{nil};
     dispatch_time_t maxRetryAge_{0};
     void (^onFilesystemError)(){nullptr};
-
-    bool filesystemDisabled_{false};
-    bool hasReportedFilesystemDisabled_{false};
-    bool attemptedDirCreation_{false};
+    bool filesystemIODisabled_{false};
 
     void remove(NSString *filename) noexcept;
     NSString *fullPath(NSString *filename) noexcept;
     void ensureBaseDirExists() noexcept;
-
-    void reportFilesystemDisabledOnce() noexcept {
-        if (!hasReportedFilesystemDisabled_) {
-            hasReportedFilesystemDisabled_ = true;
-            onFilesystemError();
-        }
-    }
 };
 
 }

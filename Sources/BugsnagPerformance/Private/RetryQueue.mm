@@ -44,18 +44,10 @@ void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
 }
 
 void RetryQueue::preStartSetup() noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return;
-    }
     [Filesystem ensurePathExists:baseDir_];
 }
 
 void RetryQueue::sweep() noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return;
-    }
     ensureBaseDirExists();
     NSError *error = nil;
     auto contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:baseDir_ error:&error];
@@ -78,10 +70,6 @@ void RetryQueue::sweep() noexcept {
 }
 
 std::vector<dispatch_time_t> RetryQueue::list() noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return {};
-    }
     ensureBaseDirExists();
     NSError *error = nil;
     std::vector<dispatch_time_t> timestamps;
@@ -89,7 +77,6 @@ std::vector<dispatch_time_t> RetryQueue::list() noexcept {
     if (contents == nil) {
         BSGLogError(@"error while fetching retry queue contents: %@", error);
         onFilesystemError();
-        return {};
     } else {
         for (NSString *filename in contents) {
             auto ts = timestampFromFilename(filename);
@@ -106,12 +93,6 @@ std::vector<dispatch_time_t> RetryQueue::list() noexcept {
 }
 
 std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return nullptr;
-    }
-    ensureBaseDirExists();
-
     // If this fails, we don't care why. Just delete the file.
     NSData *contents = [NSData dataWithContentsOfFile:fullPath(filenameFromTimestamp(ts))
                                               options:0 error:nil];
@@ -130,10 +111,6 @@ std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
 }
 
 void RetryQueue::add(OtlpPackage &package) noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return;
-    }
     ensureBaseDirExists();
     auto data = package.serialize();
     NSError *error = nil;
@@ -158,18 +135,17 @@ NSString * RetryQueue::fullPath(NSString *filename) noexcept {
 }
 
 void RetryQueue::ensureBaseDirExists() noexcept {
-    if (filesystemDisabled_) {
-        reportFilesystemDisabledOnce();
-        return;
-    }
-    if (attemptedDirCreation_) {
-        return;
-    }
-    attemptedDirCreation_ = true;
     NSError *error = [Filesystem ensurePathExists:baseDir_];
     if (error != nil) {
         BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
-        filesystemDisabled_ = true;
-        reportFilesystemDisabledOnce();
+        if (onFilesystemError != nullptr) { onFilesystemError(); }
     }
+}
+
+void RetryQueue::disableFilesystemIO() noexcept {
+    filesystemIODisabled_ = true;
+}
+
+bool RetryQueue::filesystemIODisabled() noexcept {
+    return filesystemIODisabled_;
 }
