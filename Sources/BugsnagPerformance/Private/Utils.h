@@ -136,5 +136,26 @@ static inline NSURLRequest *getTaskRequest(NSURLSessionTask *task, NSError **err
     return getTaskCurrentRequest(task, error);
 }
 
+/**
+ * Returns the Bugsnag dictionary from the given info dictionary, or nil if there is none.
+ *
+ * This will look for both "Bugsnag" and "bugsnag" keys, preferring "Bugsnag" if both are present.
+ */
+static inline NSDictionary *BSGSelectedBugsnagDict(NSDictionary *info) {
+    if (info == nil) {
+        return nil;
+    }
+    // Prefer capitalized key (some Info.plist tools rename the key to 'Bugsnag').
+    id capitalized = info[@"Bugsnag"];
+    if ([capitalized isKindOfClass:[NSDictionary class]]) {
+        return (NSDictionary *)capitalized;
+    }
+    id lowercase = info[@"bugsnag"];
+    if ([lowercase isKindOfClass:[NSDictionary class]]) {
+        return (NSDictionary *)lowercase;
+    }
+    return nil;
+}
+
 
 }
