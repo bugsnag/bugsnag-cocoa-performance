@@ -44,7 +44,16 @@ void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
 }
 
 void RetryQueue::preStartSetup() noexcept {
-    [Filesystem ensurePathExists:baseDir_];
+    // Use the injected ensurePath function instead of calling Filesystem directly.
+    if (ensurePathFunc_) {
+        NSError *error = ensurePathFunc_(baseDir_);
+        if (error != nil) {
+            BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
+            onFilesystemError();
+        }
+    } else {
+        [Filesystem ensurePathExists:baseDir_];
+    }
 }
 
 void RetryQueue::sweep() noexcept {
@@ -135,17 +144,21 @@ NSString * RetryQueue::fullPath(NSString *filename) noexcept {
 }
 
 void RetryQueue::ensureBaseDirExists() noexcept {
-    NSError *error = [Filesystem ensurePathExists:baseDir_];
-    if (error != nil) {
-        BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
-        if (onFilesystemError != nullptr) { onFilesystemError(); }
+    if (ensurePathFunc_) {
+        NSError *error = ensurePathFunc_(baseDir_);
+        if (error != nil) {
+            BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
+            onFilesystemError();
+        }
+    } else {
+        NSError *error = [Filesystem ensurePathExists:baseDir_];
+        if (error != nil) {
+            BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
+            onFilesystemError();
+        }
     }
 }
 
-void RetryQueue::disableFilesystemIO() noexcept {
-    filesystemIODisabled_ = true;
-}
-
-bool RetryQueue::filesystemIODisabled() noexcept {
-    return filesystemIODisabled_;
+void RetryQueue::setEnsurePathExistsHandler(std::function<NSError *(NSString *)> handler) noexcept {
+    ensurePathFunc_ = handler;
 }

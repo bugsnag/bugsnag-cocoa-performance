@@ -9,48 +9,12 @@
 #import "RetryQueue.h"
 #import "Persistence.h"
 #import "Filesystem.h"
-#import "Swizzle.h"
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
 
 using namespace bugsnag;
 
-// Swizzling helpers for Filesystem+ensurePathExists
-static BOOL gShouldFailEnsurePathExists = NO;
-static IMP gOriginalEnsurePathExistsIMP = NULL;
-
-static void SwizzleEnsurePathExists(void) {
-    using namespace bugsnag;
-    Class cls = [Filesystem class];
-    SEL selector = @selector(ensurePathExists:);
-
-    // Use centralized helper to set class method impl and get the original IMP back
-    gOriginalEnsurePathExistsIMP = ObjCSwizzle::setClassMethodImplementation(
-        cls,
-        selector,
-        ^NSError *(id _self, NSString *path) {
-            (void)_self; (void)path;
-            if (gShouldFailEnsurePathExists) {
-                return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
-            }
-            if (gOriginalEnsurePathExistsIMP) {
-                NSError * (*origFunc)(id, SEL, NSString *) = (NSError *(*)(id, SEL, NSString *))gOriginalEnsurePathExistsIMP;
-                return origFunc(_self, selector, path);
-            }
-            return nil;
-        }
-    );
-}
-
-static void RestoreEnsurePathExists(void) {
-    if (gOriginalEnsurePathExistsIMP) {
-        Class cls = [Filesystem class];
-        SEL selector = @selector(ensurePathExists:);
-        Method method = class_getClassMethod(cls, selector);
-        method_setImplementation(method, gOriginalEnsurePathExistsIMP);
-        gOriginalEnsurePathExistsIMP = NULL;
-    }
-}
+// Tests use per-instance dependency injection to simulate filesystem behaviour.
 
 @interface StorageManagerTests : FileBasedTest
 @end
@@ -59,20 +23,24 @@ static void RestoreEnsurePathExists(void) {
 
 - (void)setUp {
     [super setUp];
-    SwizzleEnsurePathExists();
 }
 
 - (void)tearDown {
-    RestoreEnsurePathExists();
-    gShouldFailEnsurePathExists = NO;
+    // no global cleanup required
     [super tearDown];
 }
 
 // Directory creation succeeds – normal behaviour
 - (void)testDirectoryCreationSucceeds {
-    gShouldFailEnsurePathExists = NO;
     __block BOOL errorCallbackCalled = NO;
     bugsnag::RetryQueue queue(self.filePath);
+    std::atomic_bool shouldFail(false);
+    queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
+        if (shouldFail.load()) {
+            return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+        }
+        return [Filesystem ensurePathExists:path];
+    });
     queue.setOnFilesystemError(^{ errorCallbackCalled = YES; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
@@ -90,9 +58,15 @@ static void RestoreEnsurePathExists(void) {
 
 // Directory creation fails at startup – storage disabled flag set
 - (void)testDirectoryCreationFailsStorageDisabled {
-    gShouldFailEnsurePathExists = YES;
     __block BOOL errorCallbackCalled = NO;
     bugsnag::RetryQueue queue(self.filePath);
+    std::atomic_bool shouldFail(true);
+    queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
+        if (shouldFail.load()) {
+            return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+        }
+        return [Filesystem ensurePathExists:path];
+    });
     queue.setOnFilesystemError(^{ errorCallbackCalled = YES; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
@@ -106,9 +80,15 @@ static void RestoreEnsurePathExists(void) {
 
 // Directory creation fails – no subsequent file writes attempted
 - (void)testNoFileWritesAfterDirCreationFailure {
-    gShouldFailEnsurePathExists = YES;
     __block int errorCallbackCount = 0;
     bugsnag::RetryQueue queue(self.filePath);
+    std::atomic_bool shouldFail(true);
+    queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
+        if (shouldFail.load()) {
+            return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+        }
+        return [Filesystem ensurePathExists:path];
+    });
     queue.setOnFilesystemError(^{ errorCallbackCount++; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
@@ -122,9 +102,15 @@ static void RestoreEnsurePathExists(void) {
 
 // Directory creation fails – no repeated directory creation attempts
 - (void)testNoRepeatedDirCreationAttempts {
-    gShouldFailEnsurePathExists = YES;
     __block int errorCallbackCount = 0;
     bugsnag::RetryQueue queue(self.filePath);
+    std::atomic_bool shouldFail(true);
+    queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
+        if (shouldFail.load()) {
+            return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+        }
+        return [Filesystem ensurePathExists:path];
+    });
     queue.setOnFilesystemError(^{ errorCallbackCount++; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
@@ -136,16 +122,22 @@ static void RestoreEnsurePathExists(void) {
 
 // Directory temporarily unavailable, then available: one-shot disable
 - (void)testOneShotDisableAfterInitialFailure {
-    gShouldFailEnsurePathExists = YES;
     __block int errorCallbackCount = 0;
     bugsnag::RetryQueue queue(self.filePath);
+    std::atomic_bool shouldFail(true);
+    queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
+        if (shouldFail.load()) {
+            return [NSError errorWithDomain:@"test" code:1 userInfo:nil];
+        }
+        return [Filesystem ensurePathExists:path];
+    });
     queue.setOnFilesystemError(^{ errorCallbackCount++; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
     // First sweep while filesystem is unavailable should trigger the filesystem error callback once
     queue.sweep();
     // Now simulate that ensurePathExists would succeed (filesystem becomes available)
-    gShouldFailEnsurePathExists = NO;
+    shouldFail.store(false);
     // Second sweep may or may not increase the error callback count; ensure at least one error was reported
     queue.sweep();
     XCTAssertTrue(errorCallbackCount >= 1);
