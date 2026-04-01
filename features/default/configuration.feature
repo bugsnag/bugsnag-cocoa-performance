@@ -45,8 +45,16 @@ Feature: Configuration overrides
     And I run "FixedSamplingProbabilityZeroScenario"
     And I should receive no traces
     
+  @custom
   Scenario: Covering precedence of "Bugsnag" vs "bugsnag" plist keys, fallback behavior
     When I run "ManualSpanScenario"
     And I wait to receive an error
     Then the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
+    And the event "app.releaseStage" equals "staging"
+
+  @custom
+  Scenario: Custom configuration precedence (explicit custom fixture)
+    Given I run "CustomPlistPrecedenceScenario"
+    And I wait to receive an error
+    Then the error "Bugsnag-API-Key" header equals "custom-api-key-0000000000000000000000000000"
     And the event "app.releaseStage" equals "staging"
