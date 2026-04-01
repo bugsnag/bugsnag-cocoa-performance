@@ -135,8 +135,7 @@ private let _filesystem_swizzle_installer: Void = {
     FilesystemSwizzle.installSwizzle()
 }()
 
-// Convenience Scenario extension so Maze Runner can invoke these methods via existing generic steps
-extension Scenario {
+class FilesystemSwizzleScenario: Scenario {
     @objc func maze_set_swizzle_mode(_ args: String) {
         if let data = args.data(using: .utf8),
            let dict = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {

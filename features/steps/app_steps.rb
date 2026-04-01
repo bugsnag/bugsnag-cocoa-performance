@@ -67,26 +67,6 @@ When('I invoke {string} with parameter {string}') do |method_name, arg1|
   run_command("invoke_method", { method:method_name, arguments:[arg1] })
 end
 
-# New wrappers so feature files can use descriptive Given/When steps instead of direct driver invocations
-Given('the storage swizzle mode is {string} with {int} attempts') do |mode, attempts|
-  param = "{\"mode\":\"#{mode}\",\"attempts\":#{attempts}}"
-  run_command("invoke_method", { method: "maze_set_swizzle_mode", arguments: [param] })
-end
-
-Given('startup storage directories exist') do
-  # Performs the same startup creation used by existing driver commands
-  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
-end
-
-When('I perform startup storage directory creation') do
-  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
-end
-
-When('I request to write file {string} with payload {string}') do |filename, payload|
-  param = "{\"filename\":\"#{filename}\",\"payload\":\"#{payload}\"}"
-  run_command("invoke_method", { method: "maze_request_write:", arguments: [param] })
-end
-
 When('I switch to the web browser for {int} second(s)') do |duration|
   run_command("background", { duration:duration.to_s })
 end
@@ -494,4 +474,29 @@ When("I relaunch the app after shutdown") do
   $logger.warn "App state #{state} instead of not_running after 10s" unless state == :not_running
 
   manager.activate
+end
+
+Given('the storage swizzle mode is {string} with {int} attempts') do |mode, attempts|
+  # Ensure the dedicated scenario that implements the helpers is loaded
+  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
+  param = "{\"mode\":\"#{mode}\",\"attempts\":#{attempts}}"
+  run_command("invoke_method", { method: "maze_set_swizzle_mode", arguments: [param] })
+end
+
+Given('startup storage directories exist') do
+  # Ensure the dedicated scenario that implements the helpers is loaded
+  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
+  # Performs the same startup creation used by existing driver commands
+  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
+end
+
+When('I perform startup storage directory creation') do
+  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
+  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
+end
+
+When('I request to write file {string} with payload {string}') do |filename, payload|
+  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
+  param = "{\"filename\":\"#{filename}\",\"payload\":\"#{payload}\"}"
+  run_command("invoke_method", { method: "maze_request_write:", arguments: [param] })
 end
