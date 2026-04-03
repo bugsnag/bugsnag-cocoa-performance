@@ -86,21 +86,7 @@
     }
 }
 
-- (void)earlyConfigure:(BSGEarlyConfiguration *)config {
 
-}
-
-- (void)earlySetup {
-
-}
-
-- (void)configure:(BugsnagPerformanceConfiguration *)config {
-    self.initialRecurringWorkDelay = config.internal.initialRecurringWorkDelay;
-}
-
-- (void)preStartSetup {
-
-}
 
 - (void) start {
     self.isStarted = true;

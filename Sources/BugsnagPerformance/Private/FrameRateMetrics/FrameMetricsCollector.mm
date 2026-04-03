@@ -72,27 +72,7 @@ static const CGFloat kSlowFrameRatioThreshold = 1.3;
     }
 }
 
-#pragma mark BSGPhasedStartup
 
-- (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
-
-- (void)earlySetup {
-    self.autoInstrumentRendering = true;
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(didRenderFrame:)];
-    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-}
-
-- (void)configure:(BugsnagPerformanceConfiguration *)config {
-    self.autoInstrumentRendering = config.enabledMetrics.rendering;
-}
-
-- (void)start {
-    if (!self.autoInstrumentRendering) {
-        [self abortFrameMetricsCollection];
-    }
-}
-
-- (void)preStartSetup {}
 
 #pragma mark Private
 

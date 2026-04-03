@@ -127,19 +127,7 @@ typedef void (^ViewLoadCallback)(BugsnagPerformanceSpan *, UIViewController *);
     return self.spanStackingHandler->findSpanForCategory(categoryName);
 }
 
-#pragma mark BSGPhasedStartup
 
-- (void)earlyConfigure:(BSGEarlyConfiguration *)config {}
-
-- (void)earlySetup {}
-
-- (void)configure:(BugsnagPerformanceConfiguration *)config {
-    self.configuration = config;
-}
-
-- (void)start {}
-
-- (void)preStartSetup {}
 
 #pragma mark Internal Functionality
 
