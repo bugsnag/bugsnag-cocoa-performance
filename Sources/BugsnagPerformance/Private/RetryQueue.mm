@@ -101,6 +101,7 @@ std::vector<dispatch_time_t> RetryQueue::list() noexcept {
 }
 
 std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
+    ensureBaseDirExists();
     if (storageDisabled_) {
         return nullptr;
     }

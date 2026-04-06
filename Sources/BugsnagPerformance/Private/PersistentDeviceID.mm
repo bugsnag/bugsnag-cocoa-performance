@@ -172,6 +172,10 @@ NSString *PersistentDeviceID::getFilePath() {
 }
 
 NSError *PersistentDeviceID::load() {
+    if (persistence_ && !persistence_->isUsable()) {
+        return nil;
+    }
+
     NSError *error = nil;
     NSDictionary *dict = JSON::fileToDictionary(getFilePath(), &error);
     if (error != nil) {
@@ -184,6 +188,10 @@ NSError *PersistentDeviceID::load() {
 }
 
 NSError *PersistentDeviceID::save() {
+    if (persistence_ && !persistence_->isUsable()) {
+        return nil;
+    }
+
     NSError *error = [Filesystem ensurePathExists:persistenceDir_];
     if (error != nil) {
         return error;

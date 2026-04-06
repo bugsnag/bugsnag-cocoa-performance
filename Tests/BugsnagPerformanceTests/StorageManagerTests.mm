@@ -128,7 +128,10 @@ using namespace bugsnag;
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
     queue.sweep();
-    queue.add(*(new bugsnag::OtlpPackage(1, [@"testdata" dataUsingEncoding:NSUTF8StringEncoding], @{})));
+    
+    bugsnag::OtlpPackage package(1, [@"testdata" dataUsingEncoding:NSUTF8StringEncoding], @{});
+    queue.add(package);
+    
     // Error callback may be called twice: once for sweep, once for add
     XCTAssertTrue(errorCallbackCount >= 1);
     BOOL isDir = NO;

@@ -417,6 +417,14 @@ bool BugsnagPerformanceImpl::sweepTracerTask() noexcept {
 #pragma mark Event Reactions
 
 void BugsnagPerformanceImpl::onFilesystemError() noexcept {
+    if (!persistence_) {
+        return;
+    }
+    if (!persistence_->isUsable()) {
+        // Persistence is already unavailable (e.g., top-level dir creation failed),
+        // so avoid additional failing filesystem operations.
+        return;
+    }
     persistence_->clearPerformanceData();
 }
 
