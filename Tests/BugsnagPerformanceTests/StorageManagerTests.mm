@@ -53,7 +53,7 @@ using namespace bugsnag;
     queue.add(package);
     // File should exist in directory
     NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:nil];
-    XCTAssertTrue(contents.count >= 1); // Directory may be empty if add() is async
+    XCTAssertTrue(contents.count >= 1);
 }
 
 // Directory creation fails at startup – storage disabled flag set

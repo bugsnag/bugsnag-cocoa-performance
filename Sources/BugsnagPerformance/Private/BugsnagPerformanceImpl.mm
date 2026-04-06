@@ -14,6 +14,7 @@
 #import "SpanAttributesProvider.h"
 #import "SpanStackingHandler.h"
 #import "BugsnagPerformanceCrossTalkAPI.h"
+#import "Utils.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
