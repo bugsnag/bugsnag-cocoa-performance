@@ -44,20 +44,15 @@ void RetryQueue::configure(BugsnagPerformanceConfiguration *config) noexcept {
 }
 
 void RetryQueue::preStartSetup() noexcept {
-    // Use the injected ensurePath function instead of calling Filesystem directly.
-    if (ensurePathFunc_) {
-        NSError *error = ensurePathFunc_(baseDir_);
-        if (error != nil) {
-            BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
-            onFilesystemError();
-        }
-    } else {
-        [Filesystem ensurePathExists:baseDir_];
-    }
+    ensureBaseDirExists();
 }
 
 void RetryQueue::sweep() noexcept {
     ensureBaseDirExists();
+    if (storageDisabled_) {
+        return;
+    }
+    
     NSError *error = nil;
     auto contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:baseDir_ error:&error];
     if (contents == nil) {
@@ -80,6 +75,10 @@ void RetryQueue::sweep() noexcept {
 
 std::vector<dispatch_time_t> RetryQueue::list() noexcept {
     ensureBaseDirExists();
+    if (storageDisabled_) {
+        return {};
+    }
+    
     NSError *error = nil;
     std::vector<dispatch_time_t> timestamps;
     auto contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:baseDir_ error:&error];
@@ -102,6 +101,9 @@ std::vector<dispatch_time_t> RetryQueue::list() noexcept {
 }
 
 std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
+    if (storageDisabled_) {
+        return nullptr;
+    }
     // If this fails, we don't care why. Just delete the file.
     NSData *contents = [NSData dataWithContentsOfFile:fullPath(filenameFromTimestamp(ts))
                                               options:0 error:nil];
@@ -121,6 +123,10 @@ std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
 
 void RetryQueue::add(OtlpPackage &package) noexcept {
     ensureBaseDirExists();
+    if (storageDisabled_) {
+        return;
+    }
+    
     auto data = package.serialize();
     NSError *error = nil;
     NSString *filePath = fullPath(filenameFromTimestamp(package.timestamp));
@@ -131,6 +137,9 @@ void RetryQueue::add(OtlpPackage &package) noexcept {
 }
 
 void RetryQueue::remove(dispatch_time_t ts) noexcept {
+    if (storageDisabled_) {
+        return;
+    }
     remove(filenameFromTimestamp(ts));
 }
 
@@ -144,15 +153,22 @@ NSString * RetryQueue::fullPath(NSString *filename) noexcept {
 }
 
 void RetryQueue::ensureBaseDirExists() noexcept {
+    if (storageDisabled_) {
+        return;
+    }
+
+    NSError *error = nil;
     if (ensurePathFunc_) {
-        NSError *error = ensurePathFunc_(baseDir_);
-        if (error != nil) {
-            BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
-            onFilesystemError();
-        }
+        error = ensurePathFunc_(baseDir_);
     } else {
-        NSError *error = [Filesystem ensurePathExists:baseDir_];
-        if (error != nil) {
+        error = [Filesystem ensurePathExists:baseDir_];
+    }
+
+    if (error != nil) {
+        storageDisabled_ = true;
+
+        if (!didNotifyStorageError_) {
+            didNotifyStorageError_ = true;
             BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
             onFilesystemError();
         }

@@ -79,6 +79,9 @@ private:
     NSString *fullPath(NSString *filename) noexcept;
     void ensureBaseDirExists() noexcept;
     std::function<NSError *(NSString *)> ensurePathFunc_;
+    
+    bool storageDisabled_{false};
+    bool didNotifyStorageError_{false};
 };
 
 }

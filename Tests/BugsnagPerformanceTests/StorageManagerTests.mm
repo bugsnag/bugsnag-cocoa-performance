@@ -135,7 +135,7 @@ using namespace bugsnag;
     XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDir]);
 }
 
-// Directory creation fails – directory creation attempts may repeat (current behavior)
+// Directory creation fails – directory creation attempts should NOT repeat (storage disabled)
 - (void)testNoRepeatedDirCreationAttempts {
     __block int errorCallbackCount = 0;
 
@@ -158,13 +158,12 @@ using namespace bugsnag;
     queue.sweep();
     queue.sweep();
 
-    // Current implementation: will attempt directory creation multiple times.
-    XCTAssertTrue(ensureCalls >= 3);
+    // New behavior: only the startup attempt occurs; later calls do not retry filesystem ops
+    XCTAssertEqual(1, ensureCalls);
 
-    // Current implementation: may call error callback multiple times.
-    XCTAssertTrue(errorCallbackCount >= 1);
+    // New behavior: notify once (or at least once) and then stop spamming
+    XCTAssertEqual(1, errorCallbackCount);
 
-    // Directory should not be created
     BOOL isDir = NO;
     XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDir]);
 }
