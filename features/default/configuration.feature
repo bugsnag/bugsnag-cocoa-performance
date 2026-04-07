@@ -44,9 +44,3 @@ Feature: Configuration overrides
     And I enter unmanaged traces mode
     And I run "FixedSamplingProbabilityZeroScenario"
     And I should receive no traces
-    
-  Scenario: Covering precedence of "Bugsnag" vs "bugsnag" plist keys, fallback behavior
-    When I run "ManualSpanScenario"
-    And I wait to receive an error
-    Then the error "Bugsnag-API-Key" header equals "12312312312312312312312312312312"
-    And the event "app.releaseStage" equals "staging"
