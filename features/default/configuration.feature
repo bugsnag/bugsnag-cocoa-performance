@@ -44,4 +44,3 @@ Feature: Configuration overrides
     And I enter unmanaged traces mode
     And I run "FixedSamplingProbabilityZeroScenario"
     And I should receive no traces
-    
