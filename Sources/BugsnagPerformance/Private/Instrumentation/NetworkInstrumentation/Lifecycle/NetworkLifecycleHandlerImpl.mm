@@ -8,6 +8,7 @@
 
 #import "NetworkLifecycleHandlerImpl.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Utils.h"
 
 using namespace bugsnag;
 
@@ -160,14 +161,38 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
         return false;
     }
     auto request = systemUtils_->taskRequest(task, error);
+    // Defensive guard: if request or URL is missing, don't record.
+    // (This avoids crashes and avoids creating misleading spans.)
+    if (request == nil || request.URL == nil)
+    {
+        return false;
+    }
+    
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     if (httpResponse.statusCode == 0) {
         return false;
     }
 
-    if (ignoreBaseEndpoint.length > 0 && [request.URL.absoluteString hasPrefix:ignoreBaseEndpoint]) {
-        return false;
-    }
-    return true;
+    // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
+    // as: config.endpoint.absoluteString.
+    //
+    // We parse it into an NSURL and compare it to the actual request.URL.
+    if (ignoreBaseEndpoint.length > 0) {
+        // Convert endpoint string back into NSURL form.
+        NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
+        
+        // If we have both URLs and they match by scheme+host+port+path,
+        // it means the SDK is talking to its own OTLP collector endpoint.
+        if (endpointURL != nil && request.URL != nil &&
+            BSGURLsMatchSchemeHostPortPath(request.URL, endpointURL)) {
+             BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
+            
+            // Return false so the caller cancels/drops the span.
+             return false;
+         }
+     }
+    
+    // Otherwise, this is normal customer/app traffic and we should record it.
+     return true;
 }
