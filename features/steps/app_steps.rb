@@ -475,3 +475,19 @@ When("I relaunch the app after shutdown") do
 
   manager.activate
 end
+
+# Used by E2E tests to confirm the SDK does NOT record a network span for trace-upload URLs (e.g. /v1/traces).
+# We add it because maze-runner already has only the positive regex step, and we need the negative (“no span matches”) check too.
+Then('no span string attribute {string} matches the regex {string}') do |attribute, pattern|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span|
+    span['attributes'].find { |a|
+      a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+    }
+  }.compact
+
+  attribute_values = selected_attributes.map { |a| a['value']['stringValue'] }
+  matched = attribute_values.any? { |v| Regexp.new(pattern).match?(v) }
+
+  Maze.check.false(matched)
+end
