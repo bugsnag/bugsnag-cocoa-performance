@@ -152,45 +152,49 @@ NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationStat
 
 bool
 NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
-                                                      NSString *ignoreBaseEndpoint,
-                                                      NSError **error) noexcept {
+                                                     NSString *ignoreBaseEndpoint,
+                                                     NSError **error) noexcept
+{
     if (task.error != nil) {
         return false;
     }
-    if (task.response == nil) {
-        return false;
-    }
-    
+
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     // Non-HTTP responses or statusCode 0 should not be recorded.
+    // (If task.response is nil or not HTTP, httpResponse will be nil.)
     if (httpResponse == nil || httpResponse.statusCode == 0) {
         return false;
     }
-    
+
     auto request = systemUtils_->taskRequest(task, error);
+
     // If request/URL is missing, we can't apply the internal-endpoint filter,
     // but we should still keep the already-started span.
-    if (request == nil || request.URL == nil)
-    {
+    if (request == nil || request.URL == nil) {
         return true;
     }
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
-    // as: config.endpoint.absoluteString.
-    //
-    // We parse it into an NSURL and compare it to the actual request.URL.
+    // as config.endpoint.absoluteString. Parse once and cache to avoid
+    // repeated allocations on the hot path.
     if (ignoreBaseEndpoint.length > 0) {
-        // Convert endpoint string back into NSURL form.
-        NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
+        static NSString *cachedIgnoreBaseEndpoint = nil;
+        static NSURL *cachedIgnoreBaseEndpointURL = nil;
 
-        // If we have both URLs and they match by scheme+host+port+path,
-        // it means the SDK is talking to its own OTLP collector endpoint.
+        if (cachedIgnoreBaseEndpoint == nil ||
+            ![cachedIgnoreBaseEndpoint isEqualToString:ignoreBaseEndpoint]) {
+            cachedIgnoreBaseEndpoint = [ignoreBaseEndpoint copy];
+            cachedIgnoreBaseEndpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
+        }
+
+        NSURL *endpointURL = cachedIgnoreBaseEndpointURL;
+
+        // If the URLs match by scheme+host+port+path, it means the SDK is
+        // talking to its own OTLP collector endpoint.
         if (endpointURL != nil &&
             BSGURLsMatchSchemeHostPortPath(request.URL, endpointURL)) {
             BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
-
-            // Return false so the caller cancels/drops the span.
             return false;
         }
     }
