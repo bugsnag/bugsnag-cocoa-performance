@@ -59,9 +59,18 @@ class BSGURLsMatchScenario: Scenario {
             return comps.url
 
         case "explicit_port":
-            if comps.port == nil {
-                let scheme = comps.scheme?.lowercased() ?? ""
-                comps.port = (scheme == "https") ? 443 : (scheme == "http" ? 80 : nil)
+            // Only meaningful when the configured endpoint is on the scheme default port.
+            // Maze defaults to 9339, so skip this case in that environment.
+            let scheme = (comps.scheme ?? "").lowercased()
+            let defaultPort = (scheme == "https") ? 443 : (scheme == "http" ? 80 : nil)
+
+            // If endpoint already uses a non-default port, this case can't test implicit vs explicit.
+            if let p = comps.port, defaultPort != nil, p != defaultPort {
+                return nil // caller should ignore this example
+            }
+
+            if comps.port == nil, let dp = defaultPort {
+                comps.port = dp
             }
             return comps.url
 

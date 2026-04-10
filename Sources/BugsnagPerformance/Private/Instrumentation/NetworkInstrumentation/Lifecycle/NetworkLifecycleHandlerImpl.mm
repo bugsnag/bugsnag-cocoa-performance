@@ -153,8 +153,7 @@ NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationStat
 bool
 NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
                                                      NSString *ignoreBaseEndpoint,
-                                                     NSError **error) noexcept
-{
+                                                     NSError **error) noexcept {
     if (task.error != nil) {
         return false;
     }
@@ -176,8 +175,7 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     }
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
-    // as config.endpoint.absoluteString. Parse once and cache to avoid
-    // repeated allocations on the hot path.
+    // as config.endpoint.absoluteString. Parse it and compare against request.URL.
     if (ignoreBaseEndpoint.length > 0) {
         NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
 
