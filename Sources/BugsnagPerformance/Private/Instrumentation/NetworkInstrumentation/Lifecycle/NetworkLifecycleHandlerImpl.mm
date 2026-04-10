@@ -161,17 +161,18 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
         return false;
     }
     auto request = systemUtils_->taskRequest(task, error);
-    // Defensive guard: if request or URL is missing, don't record.
-    // (This avoids crashes and avoids creating misleading spans.)
+    // If request/URL is missing, we can't apply the internal-endpoint filter,
+    // but we should still keep the already-started span.
     if (request == nil || request.URL == nil)
     {
-        return false;
+        return true;
     }
     
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
-    if (httpResponse.statusCode == 0) {
-        return true;
+    // Non-HTTP responses or statusCode 0 should not be recorded.
+    if (httpResponse == nil || httpResponse.statusCode == 0) {
+        return false;
     }
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
