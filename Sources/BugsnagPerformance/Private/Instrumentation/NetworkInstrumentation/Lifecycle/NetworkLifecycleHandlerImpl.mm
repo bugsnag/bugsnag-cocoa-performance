@@ -160,19 +160,20 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     if (task.response == nil) {
         return false;
     }
-    auto request = systemUtils_->taskRequest(task, error);
-    // If request/URL is missing, we can't apply the internal-endpoint filter,
-    // but we should still keep the already-started span.
-    if (request == nil || request.URL == nil)
-    {
-        return true;
-    }
     
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     // Non-HTTP responses or statusCode 0 should not be recorded.
     if (httpResponse == nil || httpResponse.statusCode == 0) {
         return false;
+    }
+    
+    auto request = systemUtils_->taskRequest(task, error);
+    // If request/URL is missing, we can't apply the internal-endpoint filter,
+    // but we should still keep the already-started span.
+    if (request == nil || request.URL == nil)
+    {
+        return true;
     }
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
@@ -182,18 +183,18 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     if (ignoreBaseEndpoint.length > 0) {
         // Convert endpoint string back into NSURL form.
         NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
-        
+
         // If we have both URLs and they match by scheme+host+port+path,
         // it means the SDK is talking to its own OTLP collector endpoint.
-        if (endpointURL != nil && request.URL != nil &&
+        if (endpointURL != nil &&
             BSGURLsMatchSchemeHostPortPath(request.URL, endpointURL)) {
-             BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
-            
+            BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
+
             // Return false so the caller cancels/drops the span.
-             return false;
-         }
-     }
-    
+            return false;
+        }
+    }
+
     // Otherwise, this is normal customer/app traffic and we should record it.
-     return true;
+    return true;
 }
