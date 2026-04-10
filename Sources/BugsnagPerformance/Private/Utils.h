@@ -164,6 +164,10 @@ static inline NSString *BSGNormalizePath(NSString *p) {
 // - If not, use the default port for http/https (80/443).
 // - If scheme is unknown, return -1.
 static inline NSInteger BSGNormalizedPort(NSURL *u) {
+    if (u == nil) {
+        return -1;
+    }
+
     // If the URL explicitly includes a port, use it
     if (u.port != nil) return u.port.integerValue;
 

@@ -179,16 +179,7 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     // as config.endpoint.absoluteString. Parse once and cache to avoid
     // repeated allocations on the hot path.
     if (ignoreBaseEndpoint.length > 0) {
-        static NSString *cachedIgnoreBaseEndpoint = nil;
-        static NSURL *cachedIgnoreBaseEndpointURL = nil;
-
-        if (cachedIgnoreBaseEndpoint == nil ||
-            ![cachedIgnoreBaseEndpoint isEqualToString:ignoreBaseEndpoint]) {
-            cachedIgnoreBaseEndpoint = [ignoreBaseEndpoint copy];
-            cachedIgnoreBaseEndpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
-        }
-
-        NSURL *endpointURL = cachedIgnoreBaseEndpointURL;
+        NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
 
         // If the URLs match by scheme+host+port+path, it means the SDK is
         // talking to its own OTLP collector endpoint.
