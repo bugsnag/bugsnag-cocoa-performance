@@ -129,6 +129,7 @@
 		DA95ABF32E3A7E52001E6B0E /* NamedSpansPluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */; };
 		DAC7DD672E3CBED10091961A /* BugsnagPerformanceNamedSpans in Frameworks */ = {isa = PBXBuildFile; productRef = DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */; };
 		DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */; };
+		E1867E302F896CD0003E23A4 /* StorageDirectoryScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1867E2F2F896CD0003E23A4 /* StorageDirectoryScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -260,6 +261,7 @@
 		DA85961D2DF718C800905922 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedSpansPluginScenario.swift; sourceTree = "<group>"; };
 		DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
+		E1867E2F2F896CD0003E23A4 /* StorageDirectoryScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageDirectoryScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -444,6 +446,7 @@
 				964B785C2D504D4800FF077D /* SpanConditionsConditionTimedOutScenario.swift */,
 				96986D9F2D50654500A44C34 /* SpanConditionsMultipleConditionsScenario.swift */,
 				96986D9D2D5060E600A44C34 /* SpanConditionsSimpleConditionScenario.swift */,
+				E1867E2F2F896CD0003E23A4 /* StorageDirectoryScenario.swift */,
 				09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */,
 			);
 			path = Scenarios;
@@ -639,6 +642,7 @@
 				09F025072BA08804007D9F73 /* ObjCURLSession.m in Sources */,
 				0988B5392CAD36C500D131B1 /* InfraCheckMinimalBugsnagScenario.swift in Sources */,
 				1CFB95492EA798DC00025C16 /* AppStartTypeLateScenario.swift in Sources */,
+				E1867E302F896CD0003E23A4 /* StorageDirectoryScenario.swift in Sources */,
 				966CF1BC2EEBA41300774E2B /* AppStartLegacyStartAfterAppStartScenario.swift in Sources */,
 				CBC90CDE29CDCFF700280884 /* FirstClassNoScenario.swift in Sources */,
 				CBC90C4329C466BD00280884 /* ForceUBSan.m in Sources */,

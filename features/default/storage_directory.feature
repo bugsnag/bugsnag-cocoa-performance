@@ -3,7 +3,7 @@ Feature: Storage directory creation behavior
   I want the SDK to mark storage disabled and avoid writes/retries accordingly
 
   Background:
-    When I load scenario "InfraCheckMinimalBugsnagScenario"
+    When I load scenario "StorageDirectoryScenario"
 
   Scenario: Directory creation succeeds - normal behaviour
     Given the storage swizzle mode is "ok" with 0 attempts
