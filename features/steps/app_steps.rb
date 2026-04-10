@@ -491,3 +491,41 @@ Then('no span string attribute {string} matches the regex {string}') do |attribu
 
   Maze.check.false(matched)
 end
+
+#Waits (polls) until Maze receives a span whose http.url (or other string attribute) matches the regex, avoiding timing-related failures from immediate checks.
+#Needed because background spans (e.g., /idem-command) may arrive first, so “wait to receive at least 1 span” doesn’t guarantee our test request’s span has been exported yet.
+Then('I wait to receive a span where the string attribute {string} matches the regex {string}') do |attribute, pattern|
+  list = Maze::Server.list_for('traces')
+  timeout = Maze.config.receive_requests_wait
+  wait = Maze::Wait.new(timeout: timeout)
+
+  received = wait.until do
+    spans = spans_from_request_list(list)
+    attrs = spans.map { |span|
+      span['attributes'].find { |a|
+        a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+      }
+    }.compact
+
+    values = attrs.map { |a| a['value']['stringValue'] }
+    values.any? { |v| Regexp.new(pattern).match?(v) }
+  end
+
+  unless received
+    spans = spans_from_request_list(list)
+    attrs = spans.map { |span|
+      span['attributes'].find { |a|
+        a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+      }
+    }.compact
+    values = attrs.map { |a| a['value']['stringValue'] }
+
+    raise Test::Unit::AssertionFailedError.new <<-MESSAGE
+Expected to receive a span where attribute "#{attribute}" matches /#{pattern}/ within #{timeout}s,
+but did not.
+
+Seen values:
+#{values.join("\n")}
+    MESSAGE
+  end
+end

@@ -171,7 +171,7 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
 
     if (httpResponse.statusCode == 0) {
-        return false;
+        return true;
     }
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate

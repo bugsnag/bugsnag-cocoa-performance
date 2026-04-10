@@ -70,19 +70,14 @@ class BSGURLsMatchScenario: Scenario {
             return comps.url
 
         case "different_path":
-            // Build a base URL from tracesURL but WITHOUT its path/query/fragment
-            // so we can hit a different endpoint on the same host.
-            guard var baseComps = URLComponents(url: fixtureConfig.tracesURL,
-                                                resolvingAgainstBaseURL: false) else {
+            guard var reflectComps = URLComponents(url: fixtureConfig.reflectURL,
+                                                   resolvingAgainstBaseURL: false) else {
                 return nil
             }
-            
-            baseComps.path = ""
-            baseComps.query = nil
-            baseComps.fragment = nil
-            
-            guard let baseURL = baseComps.url else { return nil }
-            return baseURL.appendingPathComponent("ping")
+            reflectComps.queryItems = (reflectComps.queryItems ?? []) + [
+                URLQueryItem(name: "bsg_case", value: "different_path")
+            ]
+            return reflectComps.url
 
         case "host_mismatch":
             comps.host = "example2.com"
