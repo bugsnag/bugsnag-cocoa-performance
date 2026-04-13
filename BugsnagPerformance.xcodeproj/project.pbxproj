@@ -306,6 +306,7 @@
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
+		E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -737,6 +738,7 @@
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
 		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
 		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
+		E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfigurationInfoPlistTests.mm; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1052,6 +1054,7 @@
 				964B785A2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm */,
 				96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */,
 				09E313032BF363020081F219 /* CrossTalkTests.mm */,
+				E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */,
 				CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */,
 				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
 				CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */,
@@ -2030,6 +2033,7 @@
 				96F129312DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm in Sources */,
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
+				E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
 				963726DA2DEFBA5A00C739E6 /* BSGCompositeSpanControlProviderTests.m in Sources */,

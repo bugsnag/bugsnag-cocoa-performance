@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Support Pascal case plist configuration values.
+  [#571](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/571)
+
 ## 2.0.0 (2026-01-20)
 
 ### Enhancements
