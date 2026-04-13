@@ -28,9 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (instancetype) initWithBundleDictionary:(NSDictionary *)dict earlyPhaseStartTime:(CFAbsoluteTime)startTime;
 
-+ (NSDictionary * _Nullable)bsg_loadConfigWithBundle:(NSBundle *)bundle;
-+ (NSDictionary * _Nullable)bsg_loadConfigFromInfoDictionary:(NSDictionary * _Nullable)infoDictionary;
-
 @property(nonatomic, readonly) BOOL enableSwizzling;
 @property(nonatomic, readonly) BOOL swizzleViewLoadPreMain;
 @property(nonatomic, readwrite) BOOL appWasLaunchedPreWarmed;
