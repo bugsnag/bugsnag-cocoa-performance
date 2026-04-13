@@ -8,6 +8,11 @@ Changelog
 * Don't attempt file operations when top-level directory creation failed
   [570](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/570)
 
+### Bug fixes
+
+* Support Pascal case plist configuration values.
+  [#571](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/571)
+
 ## 2.0.0 (2026-01-20)
 
 ### Enhancements
