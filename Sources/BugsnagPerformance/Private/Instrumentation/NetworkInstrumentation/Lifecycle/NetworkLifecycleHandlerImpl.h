@@ -35,7 +35,7 @@ public:
     void onTaskResume(NSURLSessionTask *task) noexcept;
     void onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
                                           NSURLSessionTaskMetrics *metrics,
-                                          NSString *ignoreBaseEndpoint) noexcept;
+                                          NSURL *ignoreBaseEndpoint) noexcept;
     
 private:
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
@@ -64,7 +64,7 @@ private:
     void endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept;
     
     bool shouldRecordFinishedTask(NSURLSessionTask *task,
-                                  NSString *ignoreBaseEndpoint,
+                                  NSURL *ignoreBaseEndpoint,
                                   NSError **error) noexcept;
     
     NetworkLifecycleHandlerImpl() = delete;

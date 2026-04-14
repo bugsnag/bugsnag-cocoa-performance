@@ -1,3 +1,11 @@
+//
+//  UtilsTests.mm
+//  BugsnagPerformance-iOSTests
+//
+//  Created by Meiyalagan on 14.04.26.
+//  Copyright © 2026 Bugsnag. All rights reserved.
+//
+
 #import "TestHelpers.h"
 #import "Utils.h"
 

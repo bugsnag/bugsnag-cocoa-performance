@@ -44,7 +44,7 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
 void
 NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
                                                               NSURLSessionTaskMetrics *metrics,
-                                                              NSString *ignoreBaseEndpoint) noexcept {
+                                                              NSURL *ignoreBaseEndpoint) noexcept {
     auto state = repository_->getInstrumentationState(task);
     if (state.overallSpan == nil) {
         return;
@@ -152,7 +152,7 @@ NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationStat
 
 bool
 NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
-                                                     NSString *ignoreBaseEndpoint,
+                                                      NSURL *ignoreBaseEndpoint,
                                                      NSError **error) noexcept {
     if (task.error != nil) {
         return false;
@@ -176,17 +176,11 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
 
     // ignoreBaseEndpoint is passed in from BSGURLSessionPerformanceDelegate
     // as config.endpoint.absoluteString. Parse it and compare against request.URL.
-    if (ignoreBaseEndpoint.length > 0) {
-        NSURL *endpointURL = [NSURL URLWithString:ignoreBaseEndpoint];
-
-        // If the URLs match by scheme+host+port+path, it means the SDK is
-        // talking to its own OTLP collector endpoint.
-        if (endpointURL != nil &&
-            BSGURLsMatchSchemeHostPortPath(request.URL, endpointURL)) {
-            BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
-            return false;
-        }
-    }
+    if (ignoreBaseEndpoint != nil &&
+           BSGURLsMatchSchemeHostPortPath(request.URL, ignoreBaseEndpoint)) {
+           BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
+           return false;
+       }
 
     // Otherwise, this is normal customer/app traffic and we should record it.
     return true;
