@@ -13,7 +13,6 @@ Examples:
     | query          |
     | scheme_case    |
     | host_case      |
-    | explicit_port  |
 
 Scenario Outline: URLs that should NOT match the configured traces endpoint (network span should be recorded)
     Given I run "BSGURLsMatchScenario"
