@@ -12,7 +12,6 @@
 
 @property(readwrite,nonatomic) BOOL isEnabled;
 @property(readonly,nonatomic) std::shared_ptr<NetworkLifecycleHandler> lifecycleHandler;
-@property(readwrite,strong,nonatomic) NSString *baseEndpointStr;
 @property(nonatomic, strong, nullable) NSURL *baseEndpointURL;
 
 @end
@@ -38,7 +37,6 @@
 
 - (void)configure:(BugsnagPerformanceConfiguration *)config {
     self.isEnabled &= config.autoInstrumentNetworkRequests;
-    self.baseEndpointStr = config.endpoint.absoluteString;
     // Cache once (best: no parsing)
     self.baseEndpointURL = config.endpoint;
 }
