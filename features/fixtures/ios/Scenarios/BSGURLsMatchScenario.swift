@@ -80,10 +80,7 @@ class BSGURLsMatchScenario: Scenario {
             let current = comps.scheme?.lowercased()
             let newScheme = (current == "https") ? "http" : "https"
             comps.scheme = newScheme
-            // If an explicit port was present, keep it; otherwise clear port so defaults apply for new scheme
-            if comps.port == nil {
-                // Leave nil so URLComponents uses no explicit port (default inferred by consumers)
-            }
+            // Preserve any explicit port; if no port was set, leave it unset.
             return comps.url
 
         default:
