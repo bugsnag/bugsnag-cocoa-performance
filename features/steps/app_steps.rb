@@ -479,11 +479,11 @@ end
 # Used by E2E tests to confirm the SDK does NOT record a network span for trace-upload URLs (e.g. /v1/traces).
 # We add it because maze-runner already has only the positive regex step, and we need the negative (“no span matches”) check too.
 #
-# Note: We use a short, explicit window (instead of Maze.config.receive_requests_wait) to avoid adding the full
-# receive timeout to every scenario/example and slowing down the test suite.
+# Note: Use the configured receive window so this absence check covers the same export/receive delay as other
+# request-based assertions and does not pass early if trace export is delayed.
 Then('no span string attribute {string} matches the regex {string}') do |attribute, pattern|
   list = Maze::Server.list_for('traces')
-  timeout = 2.0
+  timeout = Maze.config.receive_requests_wait
   regex = Regexp.new(pattern)
 
   deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
