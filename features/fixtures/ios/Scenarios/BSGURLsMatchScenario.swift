@@ -95,7 +95,7 @@ class BSGURLsMatchScenario: Scenario {
     @objc func runCase(_ caseName: String) {
         guard let url = buildURL(for: caseName) else {
             logError("BSGURLsMatchScenario: Failed to build URL for case \(caseName)")
-            return
+            fatalError("BSGURLsMatchScenario: Failed to build URL for case \(caseName)")
         }
 
         logDebug("BSGURLsMatchScenario.runCase(\(caseName)): Requesting URL \(url.absoluteString)")

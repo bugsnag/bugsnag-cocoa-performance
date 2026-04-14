@@ -483,13 +483,15 @@ end
 # receive timeout to every scenario/example and slowing down the test suite.
 Then('no span string attribute {string} matches the regex {string}') do |attribute, pattern|
   list = Maze::Server.list_for('traces')
-  timeout = 2.0 # seconds (short negative-check window to keep Maze runs fast)
+  timeout = 2.0
   regex = Regexp.new(pattern)
 
   deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
   seen_values = []
 
   loop do
+    break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
     spans = spans_from_request_list(list)
     selected_attributes = spans.map { |span|
       span['attributes'].find { |a|
@@ -510,7 +512,6 @@ Seen values:
       MESSAGE
     end
 
-    break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
     sleep 0.1
   end
 end
