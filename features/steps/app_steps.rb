@@ -475,28 +475,3 @@ When("I relaunch the app after shutdown") do
 
   manager.activate
 end
-
-Given('the storage swizzle mode is {string} with {int} attempts') do |mode, attempts|
-  # Ensure the dedicated scenario that implements the helpers is loaded
-  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
-  param = "{\"mode\":\"#{mode}\",\"attempts\":#{attempts}}"
-  run_command("invoke_method", { method: "maze_set_swizzle_mode", arguments: [param] })
-end
-
-Given('startup storage directories exist') do
-  # Ensure the dedicated scenario that implements the helpers is loaded
-  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
-  # Performs the same startup creation used by existing driver commands
-  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
-end
-
-When('I perform startup storage directory creation') do
-  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
-  run_command("invoke_method", { method: "maze_perform_startup_creation", arguments: [] })
-end
-
-When('I request to write file {string} with payload {string}') do |filename, payload|
-  run_command("load_scenario", { scenario: "FilesystemSwizzleScenario" })
-  param = "{\"filename\":\"#{filename}\",\"payload\":\"#{payload}\"}"
-  run_command("invoke_method", { method: "maze_request_write:", arguments: [param] })
-end
