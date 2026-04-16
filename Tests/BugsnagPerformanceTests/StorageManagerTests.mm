@@ -11,6 +11,7 @@
 #import "Filesystem.h"
 #import <XCTest/XCTest.h>
 #import <objc/runtime.h>
+#import <atomic>
 
 using namespace bugsnag;
 
@@ -34,6 +35,7 @@ using namespace bugsnag;
 - (void)testDirectoryCreationSucceeds {
     __block BOOL errorCallbackCalled = NO;
     bugsnag::RetryQueue queue(self.filePath);
+
     std::atomic_bool shouldFail(false);
     queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
         if (shouldFail.load()) {
@@ -41,19 +43,28 @@ using namespace bugsnag;
         }
         return [Filesystem ensurePathExists:path];
     });
+
     queue.setOnFilesystemError(^{ errorCallbackCalled = YES; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
     queue.preStartSetup();
-    // Directory should be created
+
+    // Assert directory exists and is a directory
     BOOL isDir = NO;
-    [[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDir];
+    BOOL pathExists = [[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDir];
+    XCTAssertTrue(pathExists);
+    XCTAssertTrue(isDir);
+
     // Add a span (simulate file write)
     NSData *data = [@"testdata" dataUsingEncoding:NSUTF8StringEncoding];
     bugsnag::OtlpPackage package(1, data, @{});
     queue.add(package);
+
     // File should exist in directory
     NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:nil];
     XCTAssertTrue(contents.count >= 1);
+
+    // Success path should NOT call filesystem error callback
+    XCTAssertFalse(errorCallbackCalled);
 }
 
 // Directory creation fails at startup – storage disabled flag set
@@ -117,6 +128,7 @@ using namespace bugsnag;
 - (void)testNoFileWritesAfterDirCreationFailure {
     __block int errorCallbackCount = 0;
     bugsnag::RetryQueue queue(self.filePath);
+
     std::atomic_bool shouldFail(true);
     queue.setEnsurePathExistsHandler([&shouldFail](NSString *path) -> NSError * {
         if (shouldFail.load()) {
@@ -124,16 +136,22 @@ using namespace bugsnag;
         }
         return [Filesystem ensurePathExists:path];
     });
+
     queue.setOnFilesystemError(^{ errorCallbackCount++; });
     queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
+
+    // First failure: should notify once and disable
     queue.preStartSetup();
+
+    // These should be no-ops once storage is disabled (no extra callback spam)
     queue.sweep();
-    
+
     bugsnag::OtlpPackage package(1, [@"testdata" dataUsingEncoding:NSUTF8StringEncoding], @{});
     queue.add(package);
-    
-    // Error callback may be called twice: once for sweep, once for add
-    XCTAssertTrue(errorCallbackCount >= 1);
+
+    // New behavior: notify once on first failure, then stop
+    XCTAssertEqual(1, errorCallbackCount);
+
     BOOL isDir = NO;
     XCTAssertFalse([[NSFileManager defaultManager] fileExistsAtPath:self.filePath isDirectory:&isDir]);
 }

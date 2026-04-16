@@ -49,10 +49,10 @@ void RetryQueue::preStartSetup() noexcept {
 
 void RetryQueue::sweep() noexcept {
     ensureBaseDirExists();
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return;
     }
-    
+
     NSError *error = nil;
     auto contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:baseDir_ error:&error];
     if (contents == nil) {
@@ -75,10 +75,10 @@ void RetryQueue::sweep() noexcept {
 
 std::vector<dispatch_time_t> RetryQueue::list() noexcept {
     ensureBaseDirExists();
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return {};
     }
-    
+
     NSError *error = nil;
     std::vector<dispatch_time_t> timestamps;
     auto contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:baseDir_ error:&error];
@@ -102,9 +102,10 @@ std::vector<dispatch_time_t> RetryQueue::list() noexcept {
 
 std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
     ensureBaseDirExists();
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return nullptr;
     }
+
     // If this fails, we don't care why. Just delete the file.
     NSData *contents = [NSData dataWithContentsOfFile:fullPath(filenameFromTimestamp(ts))
                                               options:0 error:nil];
@@ -124,10 +125,10 @@ std::unique_ptr<OtlpPackage> RetryQueue::get(dispatch_time_t ts) noexcept {
 
 void RetryQueue::add(OtlpPackage &package) noexcept {
     ensureBaseDirExists();
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return;
     }
-    
+
     auto data = package.serialize();
     NSError *error = nil;
     NSString *filePath = fullPath(filenameFromTimestamp(package.timestamp));
@@ -138,7 +139,7 @@ void RetryQueue::add(OtlpPackage &package) noexcept {
 }
 
 void RetryQueue::remove(dispatch_time_t ts) noexcept {
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return;
     }
     remove(filenameFromTimestamp(ts));
@@ -154,7 +155,7 @@ NSString * RetryQueue::fullPath(NSString *filename) noexcept {
 }
 
 void RetryQueue::ensureBaseDirExists() noexcept {
-    if (storageDisabled_) {
+    if (storageDisabled_.load(std::memory_order_acquire)) {
         return;
     }
 
@@ -166,10 +167,13 @@ void RetryQueue::ensureBaseDirExists() noexcept {
     }
 
     if (error != nil) {
-        storageDisabled_ = true;
+        storageDisabled_.store(true, std::memory_order_release);
 
-        if (!didNotifyStorageError_) {
-            didNotifyStorageError_ = true;
+        // notify once, thread-safely
+        const bool alreadyNotified =
+            didNotifyStorageError_.exchange(true, std::memory_order_acq_rel);
+
+        if (!alreadyNotified) {
             BSGLogError(@"error while creating base dir %@: %@", baseDir_, error);
             onFilesystemError();
         }

@@ -14,6 +14,7 @@
 #import <vector>
 #import <memory>
 #import <functional>
+#import <atomic>
 
 namespace bugsnag {
 
@@ -80,8 +81,8 @@ private:
     void ensureBaseDirExists() noexcept;
     std::function<NSError *(NSString *)> ensurePathFunc_;
     
-    bool storageDisabled_{false};
-    bool didNotifyStorageError_{false};
+    std::atomic<bool> storageDisabled_{false};
+    std::atomic<bool> didNotifyStorageError_{false};
 };
 
 }
