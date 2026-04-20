@@ -17,6 +17,22 @@ using namespace bugsnag;
 
 @implementation PersistenceTests
 
+// Helper to list non-hidden entries in a directory
+static NSArray<NSString *> *visibleContents(NSString *path) {
+    NSError *err = nil;
+    NSArray<NSString *> *all = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&err];
+    if (all == nil) {
+        return @[];
+    }
+    NSMutableArray<NSString *> *res = [NSMutableArray array];
+    for (NSString *name in all) {
+        if (![name hasPrefix:@"."]) {
+            [res addObject:name];
+        }
+    }
+    return res;
+}
+
 - (void)testBugsnagPerformancePersistence {
     auto fm = [NSFileManager defaultManager];
     BOOL isDir = false;
@@ -24,14 +40,17 @@ using namespace bugsnag;
     NSString *expectedBasePath = [self.filePath stringByAppendingPathComponent:
                                   [NSString stringWithFormat:@"bugsnag-performance-%@",
                                    NSBundle.mainBundle.bundleIdentifier]];
-    auto persistence = Persistence(self.filePath);
+    // Construct in-place to avoid copy/move (std::atomic member deletes copy ctor).
+    Persistence persistence(self.filePath);
     XCTAssertEqualObjects([expectedBasePath stringByAppendingPathComponent:@"v1"], persistence.bugsnagPerformanceDir());
-    XCTAssertFalse([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
-
-    persistence.start();
+    // Constructor probes and creates the performance dir, so it should exist already.
     XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
+
+    NSArray *visible = visibleContents(expectedBasePath);
+    // Constructor creates the versioned subdirectory (v1) inside the top-level performance dir.
+    XCTAssertEqual(1U, visible.count);
+    XCTAssertEqualObjects(@"v1", visible[0]);
     XCTAssertNil(error);
 
     auto internalFile = [expectedBasePath stringByAppendingPathComponent:@"a"];
@@ -56,14 +75,14 @@ using namespace bugsnag;
     NSString *expectedBasePath = [self.filePath stringByAppendingPathComponent:
                                   [NSString stringWithFormat:@"bugsnag-shared-%@",
                                    NSBundle.mainBundle.bundleIdentifier]];
-    auto persistence = Persistence(self.filePath);
+    // Construct in-place to avoid copy/move (std::atomic member deletes copy ctor).
+    Persistence persistence(self.filePath);
     XCTAssertEqualObjects(expectedBasePath, persistence.bugsnagSharedDir());
-    XCTAssertFalse([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
-
-    persistence.start();
+    // Constructor probes and creates the shared dir as well.
     XCTAssertTrue([fm fileExistsAtPath:expectedBasePath isDirectory:&isDir]);
     XCTAssertTrue(isDir);
-    XCTAssertEqual(0U, [fm contentsOfDirectoryAtPath:expectedBasePath error:&error].count);
+    NSArray *visibleShared = visibleContents(expectedBasePath);
+    XCTAssertEqual(0U, visibleShared.count);
     XCTAssertNil(error);
 
     auto internalFile = [expectedBasePath stringByAppendingPathComponent:@"a"];

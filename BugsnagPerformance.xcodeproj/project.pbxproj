@@ -306,8 +306,9 @@
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
-		E1D932B32F726422008BE463 /* StorageManagerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1D932B22F726422008BE463 /* StorageManagerTests.mm */; };
 		E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */; };
+		E1D932B32F726422008BE463 /* StorageManagerTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1D932B22F726422008BE463 /* StorageManagerTests.mm */; };
+		E1FFE8C22F96AC5700B003FA /* PersistenceUsabilityTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1FFE8C12F96AC5700B003FA /* PersistenceUsabilityTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -739,8 +740,9 @@
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
 		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
 		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
-		E1D932B22F726422008BE463 /* StorageManagerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = StorageManagerTests.mm; sourceTree = "<group>"; };
 		E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfigurationInfoPlistTests.mm; sourceTree = "<group>"; };
+		E1D932B22F726422008BE463 /* StorageManagerTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = StorageManagerTests.mm; sourceTree = "<group>"; };
+		E1FFE8C12F96AC5700B003FA /* PersistenceUsabilityTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PersistenceUsabilityTests.mm; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1064,6 +1066,7 @@
 				CBEC51DE29782471009C0CE3 /* OtlpPackageTests.mm */,
 				0122C26029019C05002D243C /* OtlpTraceEncodingTests.mm */,
 				CBEC51CD296EEF52009C0CE3 /* PersistenceTests.mm */,
+				E1FFE8C12F96AC5700B003FA /* PersistenceUsabilityTests.mm */,
 				CB68FABB2A3C4208005B2CDB /* PersistentDeviceIDTest.mm */,
 				CBEC51C4296ED8BA009C0CE3 /* PersistentStateTests.mm */,
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
@@ -2043,6 +2046,7 @@
 				963726DA2DEFBA5A00C739E6 /* BSGCompositeSpanControlProviderTests.m in Sources */,
 				963726D72DEFB2CC00C739E6 /* BSGPrioritizedStoreTests.m in Sources */,
 				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
+				E1FFE8C22F96AC5700B003FA /* PersistenceUsabilityTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
 				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
