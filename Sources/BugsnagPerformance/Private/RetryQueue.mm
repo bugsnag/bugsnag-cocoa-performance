@@ -180,6 +180,11 @@ void RetryQueue::ensureBaseDirExists() noexcept {
     }
 }
 
+void RetryQueue::disableFilesystemIO() noexcept {
+    storageDisabled_.store(true, std::memory_order_release);
+    // Ensure we don't repeatedly notify the higher-level handler — leave didNotifyStorageError_ as-is.
+}
+
 void RetryQueue::setEnsurePathExistsHandler(std::function<NSError *(NSString *)> handler) noexcept {
     ensurePathFunc_ = handler;
 }

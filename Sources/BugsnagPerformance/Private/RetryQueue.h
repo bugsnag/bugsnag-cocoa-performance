@@ -71,6 +71,9 @@ public:
     // Set a per-instance handler for ensurePathExists (used by tests to inject failures).
     void setEnsurePathExistsHandler(std::function<NSError *(NSString *)> handler) noexcept;
 
+    // Disable all filesystem IO for this retry queue instance (idempotent).
+    void disableFilesystemIO() noexcept;
+
 private:
     NSString *baseDir_{nil};
     dispatch_time_t maxRetryAge_{0};

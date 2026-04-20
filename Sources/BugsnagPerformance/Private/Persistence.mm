@@ -11,6 +11,11 @@
 #import "Persistence.h"
 #import "Filesystem.h"
 #import "Utils.h"
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <string.h>
+#include <limits.h>
 
 using namespace bugsnag;
 
@@ -23,10 +28,93 @@ static NSString *bugsnagSharedPath(NSString *topLevelDir) {
     return [topLevelDir stringByAppendingFormat:@"/bugsnag-shared-%@", [[NSBundle mainBundle] bundleIdentifier]];
 }
 
+// Helper: ensure the directory exists (Filesystem) and verify we can write a small test file.
+// Returns true if writable (or created and writable), false otherwise.
+static bool ensurePathExistsAndWritable(NSString *dirPath, const char *testFileName, const char *logLabel) {
+    NSError *err = nil;
+    if ((err = [Filesystem ensurePathExists:dirPath]) != nil) {
+        BSGLogDebug(@"Persistence ctor: failed to create %s %@: %@", logLabel, dirPath, err);
+        return false;
+    }
+
+    // Build C test path into a stack buffer to avoid NSString allocations.
+    const char *base = [dirPath fileSystemRepresentation];
+    if (base == NULL) {
+        BSGLogDebug(@"Persistence ctor: unable to get fileSystemRepresentation for %s %@", logLabel, dirPath);
+        return false;
+    }
+
+    // Fast-path: if the directory is writable per access(), avoid doing a write test.
+    // access() is cheap and sufficient for the common case; if it indicates not writable,
+    // fall back to the more reliable write test.
+    if (access(base, W_OK) == 0) {
+        return true;
+    }
+
+    char cpath[PATH_MAX];
+    // Ensure we don't overflow PATH_MAX; snprintf truncates if necessary.
+    int n = snprintf(cpath, sizeof(cpath), "%s/%s", base, testFileName);
+    if (n < 0 || (size_t)n >= sizeof(cpath)) {
+        BSGLogDebug(@"Persistence ctor: test path too long for %s %@", logLabel, dirPath);
+        return false;
+    }
+
+    // Open with user-only permissions and close-on-exec to be robust and minimal.
+    int fd = open(cpath, O_CREAT | O_TRUNC | O_WRONLY | O_CLOEXEC, S_IRUSR | S_IWUSR);
+    if (fd < 0) {
+        int e = errno;
+        BSGLogDebug(@"Persistence ctor: open(%s) failed for %s %@: errno=%d (%s)", testFileName, logLabel, dirPath, e, strerror(e));
+        return false;
+    }
+
+    ssize_t wrote = write(fd, "t", 1);
+    int savedErr = errno;
+    close(fd);
+
+    if (wrote != 1) {
+        BSGLogDebug(@"Persistence ctor: write failed for %s %@: errno=%d (%s)", logLabel, dirPath, savedErr, strerror(savedErr));
+        // best-effort cleanup
+        unlink(cpath);
+        return false;
+    }
+
+    // Cleanup
+    unlink(cpath);
+    return true;
+}
+
 Persistence::Persistence(NSString *topLevelDir) noexcept
 : bugsnagSharedDir_(bugsnagSharedPath(topLevelDir))
 , bugsnagPerformanceDir_(bugsnagPerformancePath(topLevelDir))
-{}
+{
+    bool usable = true;
+
+    BSGLogDebug(@"Persistence ctor: topLevelDir=%@", topLevelDir);
+    BSGLogDebug(@"Persistence ctor: computed performanceDir=%@", bugsnagPerformanceDir_);
+    BSGLogDebug(@"Persistence ctor: computed sharedDir=%@", bugsnagSharedDir_);
+
+    // Check performance top-level, versioned dir, and retry-queue
+    if (!ensurePathExistsAndWritable(bugsnagPerformanceDir_, ".bsg_write_test", "performance dir")) {
+        usable = false;
+    } else {
+        NSString *versionedDir = [bugsnagPerformanceDir_ stringByAppendingPathComponent:BUGSNAG_PERFORMANCE_PERSISTENCE_VERSION];
+        if (!ensurePathExistsAndWritable(versionedDir, ".bsg_write_test_versioned", "versioned performance dir")) {
+            usable = false;
+        } else {
+            NSString *retryQueueDir = [versionedDir stringByAppendingPathComponent:@"retry-queue"];
+            if (!ensurePathExistsAndWritable(retryQueueDir, ".bsg_write_test_retry", "retry-queue dir")) {
+                usable = false;
+            }
+        }
+    }
+
+    // Check shared dir
+    if (!ensurePathExistsAndWritable(bugsnagSharedDir_, ".bsg_write_test_shared", "shared dir")) {
+        usable = false;
+    }
+
+    isUsable_.store(usable, std::memory_order_release);
+}
 
 void Persistence::start() noexcept {
     NSError *error = nil;
@@ -43,7 +131,7 @@ void Persistence::start() noexcept {
 
     // If we can't create the top-level directories, persistence-backed features can't work.
     // The library should continue running in network-only mode, but must avoid repeated failing I/O.
-    isUsable_ = usable;
+    isUsable_.store(usable, std::memory_order_release);
 }
 
 NSString *Persistence::bugsnagSharedDir(void) noexcept {

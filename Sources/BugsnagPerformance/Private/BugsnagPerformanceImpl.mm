@@ -124,6 +124,11 @@ void BugsnagPerformanceImpl::earlySetup() noexcept {
     resourceAttributes_->earlySetup();
     networkHeaderInjector_->earlySetup();
     retryQueue_->earlySetup();
+    // If Persistence couldn't create top-level dirs earlier, proactively disable retry queue IO
+    // to avoid repeated failing filesystem operations and noisy logs.
+    if (persistence_ && !persistence_->isUsable()) {
+        retryQueue_->disableFilesystemIO();
+    }
     batch_->earlySetup();
     spanLifecycleHandler_->earlySetup();
     instrumentation_->earlySetup();
