@@ -156,7 +156,8 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
 }
 
 + (instancetype)loadConfigWithInfoDictionary:(NSDictionary * _Nullable)infoDictionary {
-    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(infoDictionary[@"bugsnag"]);
+    // Use centralized helper to pick the bugsnag dict (prefers 'bugsnag', falls back to 'Bugsnag')
+    __block auto bugsnagConfiguration = BSGDynamicCast<NSDictionary>(BSGSelectedBugsnagDict(infoDictionary));
     __block auto bugsnagPerformanceConfiguration = BSGDynamicCast<NSDictionary>(bugsnagConfiguration[@"performance"]);
     NSString *(^getSharedConfigValue)(NSString *) = ^NSString *(NSString *property) {
         return BSGDynamicCast<NSString>(bugsnagPerformanceConfiguration[property] ?: bugsnagConfiguration[property]);
