@@ -21,7 +21,6 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcodebuild.log
 
 ## Obj-C/Swift specific
 *.hmap
@@ -94,15 +93,14 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Bugsnag
-appium_server.log
 maze_output
 BugsnagTests-*.xcresult
 logs/*
+*.log
 
 # Other
 .DS_Store
 features/fixtures/ios/Fixture/Info.plist
-maze-runner.log
 Gemfile.lock
 .idea/
 bugsnag-cocoa-performance.iml
