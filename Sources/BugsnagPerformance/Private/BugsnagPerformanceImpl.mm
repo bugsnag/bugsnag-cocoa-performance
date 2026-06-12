@@ -8,6 +8,7 @@
 
 #import "BugsnagPerformanceImpl.h"
 #import "BugsnagPerformanceConfiguration+Private.h"
+#import "BugsnagPerformancePriority+Private.h"
 
 #import "OtlpTraceEncoding.h"
 #import "Utils.h"
@@ -26,6 +27,25 @@ using namespace bugsnag;
 static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
 static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
 static constexpr NSTimeInterval WORK_INTERVAL_DEBUG_MODE_SECONDS = 5;
+
+// Category value written onto every app-session span so other code can identify them.
+static NSString * const BSGSpanCategoryAppSession = @"app_session";
+
+// Normalise a caller-supplied session-type string into a safe CamelCase identifier.
+static NSString *sanitizeSessionTypeIdentifier(NSString *sessionType) {
+    NSCharacterSet *separators = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
+    if ([sessionType rangeOfCharacterFromSet:separators].location == NSNotFound && sessionType.length > 0) {
+        return sessionType;
+    }
+    NSMutableString *out = [NSMutableString string];
+    for (NSString *part in [sessionType componentsSeparatedByCharactersInSet:separators]) {
+        if (part.length == 0) { continue; }
+        NSString *low = part.lowercaseString;
+        [out appendString:[low stringByReplacingCharactersInRange:NSMakeRange(0,1)
+                                                       withString:[[low substringToIndex:1] uppercaseString]]];
+    }
+    return out.length > 0 ? out : @"Session";
+}
 
 static NSString *getPersistenceDir() {
     // Persistent data in bugsnag-performance can handle files disappearing, so put it in the caches dir.
@@ -245,6 +265,51 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     systemInfoSampler_.start();
 
+    // Every 1 second the sampler fires its callback.  Feed the sample only into
+    // ACTIVE session accumulators (sessionAccumulators_).  Once a session span ends
+    // its accumulator is moved to finishedSessionAccumulators_ (see span-end callback
+    // registered below) so the sampler cannot add post-end samples.
+    systemInfoSampler_.setOnSampleRecorded([this](const SystemInfoSampleData &sample) {
+        std::lock_guard<std::mutex> guard(this->sessionAccumulatorsMutex_);
+        for (auto &kv : this->sessionAccumulators_) {
+            SessionAccumulatorState &state = kv.second;
+
+            BSGLogDebug(@"[BugsnagSession] sampler: feeding sample to accumulator (validCPU=%d, validMem=%d, currentCount=%llu)",
+                  (int)sample.hasValidCPUData(), (int)sample.hasValidMemoryData(),
+                  state.accumulator.processCPU.count + 1);
+            state.accumulator.addSample(sample);
+        }
+    });
+
+    // Register a span-end callback so that when any session span ends we
+    // immediately move its accumulator from the active map to the finished map.
+    // This stops the sampler from adding post-end samples and gives the
+    // batch-send worker a stable, immutable snapshot to read at upload time.
+    //
+    // Priority MAX = runs first, before any user-registered callbacks, so the
+    // snapshot is captured at the exact moment the span ended.
+    // No changes to SpanLifecycleHandlerImpl are required.
+    BugsnagPerformanceSpanEndCallback sessionSnapshotCallback = ^BOOL(BugsnagPerformanceSpan *span) {
+        if ([span hasAttribute:@"bugsnag.span.category" withValue:BSGSpanCategoryAppSession]) {
+            std::lock_guard<std::mutex> guard(this->sessionAccumulatorsMutex_);
+            auto it = this->sessionAccumulators_.find((__bridge void *)span);
+            if (it != this->sessionAccumulators_.end()) {
+                // Move snapshot: active → finished so the sampler thread stops feeding it.
+                BSGLogDebug(@"[BugsnagSession] span-end callback: moving accumulator to finished map for span=%@ ptr=%p cpu.count=%llu mem.count=%llu",
+                      span.name, (__bridge void *)span,
+                      it->second.accumulator.processCPU.count,
+                      it->second.accumulator.memory.count);
+                this->finishedSessionAccumulators_[(__bridge void *)span] = it->second;
+                this->sessionAccumulators_.erase(it);
+            } else {
+                BSGLogDebug(@"[BugsnagSession] span-end callback: span=%@ is app_session but NOT found in sessionAccumulators_ (ptr=%p, map size=%zu)",
+                      span.name, (__bridge void *)span, this->sessionAccumulators_.size());
+            }
+        }
+        return YES; // Our internal callback never discards a span.
+    };
+    [spanEndCallbacks_ addObject:sessionSnapshotCallback priority:BugsnagPerformancePriorityMax];
+
     [worker_ start];
     [frameMetricsCollector_ start];
 
@@ -319,6 +384,14 @@ BugsnagPerformanceImpl::sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *
     for (BugsnagPerformanceSpan *span in spans) {
         if (span.state != SpanStateAborted && sampler_->sampled(span)) {
             [sendableSpans addObject:span];
+        } else {
+            // Span dropped (aborted or unsampled) — clean up its accumulator from
+            // both maps so memory does not grow unboundedly.
+            if ([span hasAttribute:@"bugsnag.span.category" withValue:BSGSpanCategoryAppSession]) {
+                std::lock_guard<std::mutex> guard(sessionAccumulatorsMutex_);
+                sessionAccumulators_.erase((__bridge void *)span);
+                finishedSessionAccumulators_.erase((__bridge void *)span);
+            }
         }
     }
     return sendableSpans;
@@ -337,6 +410,117 @@ bool BugsnagPerformanceImpl::shouldSampleMemory(BugsnagPerformanceSpan *span) no
     }
     return span.metricsOptions.memory == BSGTriStateYes;
 }
+
+// ---------------------------------------------------------------------------
+// Sample-attribute helpers — keep session and non-session paths clearly separated
+// ---------------------------------------------------------------------------
+
+// Existing sampler-history path — unchanged behavior for all non-session spans.
+void BugsnagPerformanceImpl::applySampleAttributesFromHistory(BugsnagPerformanceSpan *span,
+                                                              bool isSessionSpan __unused) noexcept {
+    auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
+    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
+    if (samples.size() >= 2) {
+        if (shouldSampleCPU(span)) {
+            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
+            [span forceMutate:^() {
+                [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
+            }];
+        }
+        if (shouldSampleMemory(span)) {
+            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting memory sample attributes for span %@", span.name);
+            [span forceMutate:^() {
+                [span internalSetMultipleAttributes:spanAttributesProvider_->memorySampleAttributes(samples)];
+            }];
+        }
+    }
+}
+
+// Session-span path — reads from finishedSessionAccumulators_, which contains the
+// stable snapshot taken exactly when the span ended (sampler cannot add to it after that).
+// If the accumulator has data, use it for exact long-session stats.
+// If the accumulator is empty or missing, fall back to the session-specific samples-based
+// overloads so that the same attribute keys (min/max/mean/timestamps) are always present —
+// matching the behavior that existed before this feature was added.
+void BugsnagPerformanceImpl::applySessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept {
+    SessionMetricsAccumulator acc;
+    bool hasAcc = false;
+    {
+        std::lock_guard<std::mutex> guard(sessionAccumulatorsMutex_);
+        auto it = finishedSessionAccumulators_.find((__bridge void *)span);
+        if (it != finishedSessionAccumulators_.end()) {
+            acc = it->second.accumulator;
+            finishedSessionAccumulators_.erase(it);
+            hasAcc = true;
+        }
+    }
+
+    BSGLogDebug(@"[BugsnagSession] applySessionSpanSampleAttributes: span=%@, hasAcc=%d, hasCPU=%d, hasMem=%d, shouldCPU=%d, shouldMem=%d",
+          span.name, hasAcc,
+          hasAcc ? (int)acc.hasCPUData() : -1,
+          hasAcc ? (int)acc.hasMemoryData() : -1,
+          (int)shouldSampleCPU(span),
+          (int)shouldSampleMemory(span));
+
+    // Only use the accumulator path when it actually collected samples.
+    // If hasAcc is true but both hasCPUData and hasMemoryData are false (e.g. simulator
+    // with no valid CPU readings), fall through to the samples-based fallback below so the
+    // span still receives attributes from the sampler history ring-buffer.
+    if (hasAcc && (acc.hasCPUData() || acc.hasMemoryData())) {
+        if (shouldSampleCPU(span) && acc.hasCPUData()) {
+            BSGLogDebug(@"[BugsnagSession] Using accumulator CPU: processCPU.count=%llu", acc.processCPU.count);
+            [span forceMutate:^() {
+                NSDictionary *attributes = spanAttributesProvider_->sessionCPUSampleAttributes(acc, span.endAbsTime);
+                BSGLogDebug(@"[BugsnagSession] CPU accumulator attributes count=%lu keys=%@", (unsigned long)attributes.count, attributes.allKeys);
+                [span internalSetMultipleAttributes:attributes];
+            }];
+        }
+        if (shouldSampleMemory(span) && acc.hasMemoryData()) {
+            BSGLogDebug(@"[BugsnagSession] Using accumulator Memory: memory.count=%llu", acc.memory.count);
+            [span forceMutate:^() {
+                NSDictionary *attributes = spanAttributesProvider_->sessionMemorySampleAttributes(acc, span.endAbsTime);
+                BSGLogDebug(@"[BugsnagSession] Memory accumulator attributes count=%lu keys=%@", (unsigned long)attributes.count, attributes.allKeys);
+                [span internalSetMultipleAttributes:attributes];
+            }];
+        }
+        return;
+    }
+
+    // Fallback: accumulator not found, or has no data.
+    // Use the session-specific samples-based overloads — these produce the same rich
+    // attribute set (min/max/mean/timestamps) as the accumulator path, sourced from
+    // the sampler history window. This exactly matches the attribute payload that was
+    // produced before the accumulator feature was introduced, so no attributes are lost.
+    auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
+    BSGLogDebug(@"[BugsnagSession] Fallback to history: sampleCount=%zu, startedAt=%f, endedAt=%f",
+          samples.size(), (double)span.actuallyStartedAt, (double)span.actuallyEndedAt);
+    if (samples.empty()) {
+        BSGLogDebug(@"[BugsnagSession] WARNING: No samples found in history — no metrics will be attached to session span");
+        return;
+    }
+    if (shouldSampleCPU(span)) {
+        [span forceMutate:^() {
+            NSDictionary *attributes = spanAttributesProvider_->sessionCPUSampleAttributes(samples, span.endAbsTime);
+            BSGLogDebug(@"[BugsnagSession] CPU history attributes count=%lu keys=%@", (unsigned long)attributes.count, attributes.allKeys);
+            [span internalSetMultipleAttributes:attributes];
+        }];
+    }
+    if (shouldSampleMemory(span)) {
+        [span forceMutate:^() {
+            NSDictionary *attributes = spanAttributesProvider_->sessionMemorySampleAttributes(samples, span.endAbsTime);
+            BSGLogDebug(@"[BugsnagSession] Memory history attributes count=%lu keys=%@", (unsigned long)attributes.count, attributes.allKeys);
+            [span internalSetMultipleAttributes:attributes];
+        }];
+    }
+    BSGLogDebug(@"[BugsnagSession] Final span attributes after applying session metrics: %@", span.attributes);
+}
+
+// Non-session spans — delegates to the unchanged history path.
+void BugsnagPerformanceImpl::applyNonSessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept {
+    applySampleAttributesFromHistory(span, false);
+}
+
+// ---------------------------------------------------------------------------
 
 bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask()");
@@ -359,22 +543,13 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)((SAMPLER_INTERVAL_SECONDS + 0.5) * NSEC_PER_SEC)),
                    dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), ^{
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Delayed %f seconds, now getting system info", SAMPLER_INTERVAL_SECONDS + 0.5);
-        for(BugsnagPerformanceSpan *span: spans) {
-            auto samples = systemInfoSampler_.samplesAroundTimePeriod(span.actuallyStartedAt, span.actuallyEndedAt);
-            BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): System info sample size = %zu", samples.size());
-            if (samples.size() >= 2) {
-                if (shouldSampleCPU(span)) {
-                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting CPU sample attributes for span %@", span.name);
-                    [span forceMutate:^() {
-                        [span internalSetMultipleAttributes:spanAttributesProvider_->cpuSampleAttributes(samples)];
-                    }];
-                }
-                if (shouldSampleMemory(span)) {
-                    BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Getting memory sample attributes for span %@", span.name);
-                    [span forceMutate:^() {
-                        [span internalSetMultipleAttributes:spanAttributesProvider_->memorySampleAttributes(samples)];
-                    }];
-                }
+        for (BugsnagPerformanceSpan *span: spans) {
+            // Session spans get their metrics from the running accumulator (exact, no ring-buffer limit).
+            // All other span types keep the original sampler-history-based behavior unchanged.
+            if ([span hasAttribute:@"bugsnag.span.category" withValue:BSGSpanCategoryAppSession]) {
+                applySessionSpanSampleAttributes(span);
+            } else {
+                applyNonSessionSpanSampleAttributes(span);
             }
         }
 
@@ -564,6 +739,29 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startCustomSpan(NSString *name, 
     auto options = SpanOptions(optionsIn);
     auto span = tracer_->startCustomSpan(name, options);
     [span internalSetMultipleAttributes:spanAttributesProvider_->customSpanAttributes()];
+    return span;
+}
+
+BugsnagPerformanceSpan *BugsnagPerformanceImpl::startAppSessionSpan(NSString *sessionType) noexcept {
+    NSString *safeType = sessionType ?: @"";
+    NSString *name = [NSString stringWithFormat:@"[AppSession/%@]", sanitizeSessionTypeIdentifier(safeType)];
+
+    BugsnagPerformanceSpanOptions *optionsIn = [BugsnagPerformanceSpanOptions new];
+    [[optionsIn setMakeCurrentContext:NO] setFirstClass:BSGTriStateYes];
+    [optionsIn setParentContext:nil];
+
+    auto span = tracer_->startCustomSpan(name, SpanOptions(optionsIn));
+    [span internalSetMultipleAttributes:spanAttributesProvider_->sessionSpanAttributes(safeType)];
+
+    // Create one running accumulator that will collect every per-second sample
+    // for the entire session lifetime — fully isolated inside BugsnagPerformanceImpl,
+    // no changes required in the span lifecycle layer.
+    {
+        std::lock_guard<std::mutex> guard(sessionAccumulatorsMutex_);
+        SessionAccumulatorState state;
+        state.accumulator = SessionMetricsAccumulator(span.actuallyStartedAt);
+        sessionAccumulators_[(__bridge void *)span] = state;
+    }
     return span;
 }
 

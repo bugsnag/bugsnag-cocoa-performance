@@ -37,8 +37,10 @@
 #import "SpanFactory/Network/NetworkSpanFactoryImpl.h"
 #import "SpanLifecycle/SpanLifecycleHandlerImpl.h"
 #import "SpanStore/SpanStoreImpl.h"
+#import "SessionMetricsAccumulator.h"
 
 #import <mutex>
+#import <map>
 
 namespace bugsnag {
 
@@ -59,6 +61,8 @@ public:
     BugsnagPerformanceSpan *startCustomSpan(NSString *name) noexcept;
 
     BugsnagPerformanceSpan *startCustomSpan(NSString *name, BugsnagPerformanceSpanOptions *options) noexcept;
+
+    BugsnagPerformanceSpan *startAppSessionSpan(NSString *sessionType) noexcept;
 
     BugsnagPerformanceSpan *startViewLoadSpan(NSString *name, BugsnagPerformanceViewType viewType) noexcept;
 
@@ -138,6 +142,19 @@ private:
     bool hasCheckedAppStartDuration_{false};
     bool isDevelopment_{false};
 
+    struct SessionAccumulatorState {
+        SessionMetricsAccumulator accumulator;
+        //bool pauseOnBackground{true};
+    };
+
+    // Active session accumulators — sampler feeds these every second while span is open.
+    std::map<void *, SessionAccumulatorState> sessionAccumulators_;
+    // Finished session accumulators — snapshot moved here when span ends so the sampler
+    // stops feeding it; the batch-send worker reads from here at upload time.
+    std::map<void *, SessionAccumulatorState> finishedSessionAccumulators_;
+    std::mutex sessionAccumulatorsMutex_;
+    std::atomic<bool> isAppInBackground_{false};
+
     // Tasks
     NSArray<Task> *buildInitialTasks() noexcept;
     NSArray<Task> *buildRecurringTasks() noexcept;
@@ -166,6 +183,9 @@ private:
       sendableSpans(NSMutableArray<BugsnagPerformanceSpan *> *spans) noexcept;
     bool shouldSampleCPU(BugsnagPerformanceSpan *span) noexcept;
     bool shouldSampleMemory(BugsnagPerformanceSpan *span) noexcept;
+    void applySampleAttributesFromHistory(BugsnagPerformanceSpan *span, bool isSessionSpan) noexcept;
+    void applySessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept;
+    void applyNonSessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept;
 
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };

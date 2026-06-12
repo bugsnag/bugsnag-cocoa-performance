@@ -12,6 +12,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <vector>
 #import <mutex>
+#import <functional>
 #import "BSGPSystemInfo.h"
 #import "FixedLengthDequeue.h"
 #import "PhasedStartup.h"
@@ -86,6 +87,14 @@ public:
      */
     std::vector<SystemInfoSampleData> samplesAroundTimePeriod(CFAbsoluteTime startTime, CFAbsoluteTime endTime);
 
+    void setOnSampleRecorded(std::function<void(const SystemInfoSampleData &)> callback) noexcept {
+        // recordMutex_ is held by the sampler thread whenever recordSample() runs,
+        // so protecting onSampleRecorded_ with the same lock prevents a data race
+        // between this setter (main thread) and the sampler read (sampler thread).
+        std::lock_guard<std::mutex> guard(recordMutex_);
+        onSampleRecorded_ = std::move(callback);
+    }
+
 private:
     CFAbsoluteTime calculateAppStartTime();
     void recordSample();
@@ -113,6 +122,9 @@ private:
     time_value_t lastSampleProcessCPU_{0};
     time_value_t lastSampleMainThreadCPU_{0};
     time_value_t lastSampleMonitorThreadCPU_{0};
+    // Optional callback — invoked (outside samplesMutex_) after each valid sample is stored.
+    // Must be set before the sampler thread fires (or protected by recordMutex_ — see setOnSampleRecorded).
+    std::function<void(const SystemInfoSampleData &)> onSampleRecorded_;
 };
 
 }

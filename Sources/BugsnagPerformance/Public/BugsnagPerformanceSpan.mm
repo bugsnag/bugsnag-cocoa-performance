@@ -46,6 +46,8 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
     if ((self = [super initWithTraceId:traceId spanId:spanId])) {
         _actuallyStartedAt = CFAbsoluteTimeGetCurrent();
         _actuallyEndedAt = CFABSOLUTETIME_INVALID;
+        // Ensure endAbsTime is marked invalid until an end time is set.
+        _endAbsTime = CFABSOLUTETIME_INVALID;
         _startClock = currentMonotonicClockNsecIfUnset(startAbsTime);
         _name = name;
         _parentId = parentId;
