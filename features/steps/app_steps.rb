@@ -475,3 +475,21 @@ When("I relaunch the app after shutdown") do
 
   manager.activate
 end
+
+And('I close the app') do
+  begin
+    manager = Maze::Api::Appium::AppManager.new
+    manager.terminate
+  rescue NoMethodError
+    begin
+      Maze.driver.terminate_app('com.bugsnag.fixture')
+    rescue NoMethodError
+      driver = Maze.driver.respond_to?(:driver) ? Maze.driver.driver : Maze.driver
+      driver.terminate_app('com.bugsnag.fixture')
+    end
+  end
+end
+Then('I should receive no spans') do
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  raise Test::Unit::AssertionFailedError, "Expected 0 spans but received #{spans.size}" unless spans.empty?
+end

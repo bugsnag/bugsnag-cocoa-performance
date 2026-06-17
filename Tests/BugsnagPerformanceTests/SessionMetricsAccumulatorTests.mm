@@ -6,7 +6,7 @@
  //  - SessionMetricsAccumulator (running min/max/sum/count for CPU and memory)
  //  - SpanAttributesProvider accumulator-based overloads
 //
-
+#import <XCTest/XCTest.h>
 #import "TestHelpers.h"
 #import "../../Sources/BugsnagPerformance/Private/AppStateTracker.h"
 #import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceImpl.h"
@@ -341,8 +341,8 @@ static SystemInfoSampleData makeSample(CFAbsoluteTime t,
      auto impl = std::make_unique<bugsnag::BugsnagPerformanceImpl>(
          std::make_shared<bugsnag::Reachability>(), [AppStateTracker new]);
  
-     BugsnagPerformanceSpan *s1 = impl->startAppSessionSpan(@"Session1", true);
-     BugsnagPerformanceSpan *s2 = impl->startAppSessionSpan(@"Session2", true);
+     BugsnagPerformanceSpan *s1 = impl->startAppSessionSpan(@"Session1");
+     BugsnagPerformanceSpan *s2 = impl->startAppSessionSpan(@"Session2");
  
      [s1 end];
      [s2 end];
