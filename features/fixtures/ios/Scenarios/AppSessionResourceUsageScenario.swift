@@ -19,6 +19,7 @@ class AppSessionResourceUsageScenario: Scenario {
         let shouldAbort = toBool(string: scenarioConfig["abort_span"])
         let workDur = toDouble(string: scenarioConfig["work_duration"])
         let workThread = scenarioConfig["work_on_thread"] ?? "main"
+        let concurrentSessionType = scenarioConfig["concurrent_session_type"]
         NSLog("App session_type=\(sessionType), duration=\(duration), abort=\(shouldAbort)")
         if sessionType == "manual session" {
             // Scenario 1: simple manual span
@@ -45,6 +46,22 @@ class AppSessionResourceUsageScenario: Scenario {
             )
             sessionSpan?.setAttribute("bugsnag.span.category", withValue: "app_session")
             sessionSpan?.setAttribute("bugsnag.app_session.name", withValue: sessionTypeId)
+            // --- Concurrent session support ---
+            var concurrentSpan: BugsnagPerformanceSpan?
+            if let concurrentType = concurrentSessionType, !concurrentType.isEmpty {
+                let concurrentTypeId = toPascalCase(concurrentType)
+                let concurrentSpanName = "[AppSession/\(concurrentTypeId)]"
+                NSLog("App Starting concurrent session span: \(concurrentSpanName)")
+                let concurrentOpts = BugsnagPerformanceSpanOptions()
+                _ = concurrentOpts.setFirstClass(.yes)
+                _ = concurrentOpts.setMakeCurrentContext(false)
+                concurrentSpan = BugsnagPerformance.startSpan(
+                    name: concurrentSpanName,
+                    options: concurrentOpts
+                )
+                concurrentSpan?.setAttribute("bugsnag.span.category", withValue: "app_session")
+                concurrentSpan?.setAttribute("bugsnag.app_session.name", withValue: concurrentTypeId)
+            }
             // CPU work if configured
             if workDur > 0 {
                 NSLog("App Doing CPU work for \(workDur)s on \(workThread)")
@@ -66,6 +83,12 @@ class AppSessionResourceUsageScenario: Scenario {
                 sessionSpan?.end()
             }
             sessionSpan = nil
+            // --- End concurrent session span ---
+            if let activeConc = concurrentSpan {
+                NSLog("App Ending concurrent session span")
+                activeConc.end()
+                concurrentSpan = nil
+            }
             waitForBrowserstack()
         }
     }

@@ -112,3 +112,131 @@ Scenario: Force-terminated app session span is not sent
     And I close the app
     And I wait for 5 seconds
     Then I should receive no spans
+    
+Scenario: CPU and memory aggregates satisfy min ≤ mean ≤ max
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "memoryMetrics" to "true"
+    And I configure bugsnag "cpuMetrics" to "true"
+    And I configure scenario "session_type" to "full metrics session"
+    And I configure scenario "span_duration" to "3.0"
+    And I configure scenario "work_duration" to "2.0"
+    And I configure scenario "work_on_thread" to "main"
+    And I configure scenario "variant_name" to "MinMeanMax"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 1 span
+    Then a span field "name" equals "[AppSession/FullMetricsSession]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span integer attribute "bugsnag.system.memory.spaces.device.min" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.max" is greater than 0
+    * a span float attribute "bugsnag.system.cpu_min_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_total" is greater than 0.0
+    
+Scenario: Single sample produces min equals max equals mean
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "memoryMetrics" to "true"
+    And I configure bugsnag "cpuMetrics" to "true"
+    And I configure scenario "session_type" to "single sample session"
+    And I configure scenario "span_duration" to "0.1"
+    And I configure scenario "work_duration" to "0.05"
+    And I configure scenario "work_on_thread" to "main"
+    And I configure scenario "variant_name" to "SingleSample"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 1 span
+    Then a span field "name" equals "[AppSession/SingleSampleSession]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span integer attribute "bugsnag.system.memory.spaces.device.min" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.max" is greater than 0
+    * a span float attribute "bugsnag.system.cpu_min_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_total" is greater than 0.0
+    
+Scenario: CPU disabled but memory enabled produces CPU absent and memory present
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "memoryMetrics" to "true"
+    And I configure bugsnag "cpuMetrics" to "false"
+    And I configure scenario "session_type" to "memory only session"
+    And I configure scenario "span_duration" to "2.5"
+    And I configure scenario "variant_name" to "MemoryOnly"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 1 span
+    Then a span field "name" equals "[AppSession/MemoryOnlySession]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.min" is greater than 0
+    * a span integer attribute "bugsnag.system.memory.spaces.device.max" is greater than 0
+    * every span attribute "bugsnag.system.cpu_mean_total" does not exist
+    * every span attribute "bugsnag.system.cpu_min_total" does not exist
+    * every span attribute "bugsnag.system.cpu_max_total" does not exist
+    
+Scenario: Memory disabled but CPU enabled produces memory absent and CPU present
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "cpuMetrics" to "true"
+    And I configure bugsnag "memoryMetrics" to "false"
+    And I configure scenario "session_type" to "cpu only session"
+    And I configure scenario "span_duration" to "2.5"
+    And I configure scenario "work_duration" to "2.0"
+    And I configure scenario "work_on_thread" to "main"
+    And I configure scenario "variant_name" to "CPUOnly"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 1 span
+    Then a span field "name" equals "[AppSession/CPUOnlySession]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_min_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_total" is greater than 0.0
+    * every span attribute "bugsnag.system.memory.spaces.device.mean" does not exist
+    * every span attribute "bugsnag.system.memory.spaces.device.min" does not exist
+    * every span attribute "bugsnag.system.memory.spaces.device.max" does not exist
+    
+Scenario: App session span contains all CPU sub-metrics
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "cpuMetrics" to "true"
+    And I configure bugsnag "memoryMetrics" to "false"
+    And I configure scenario "session_type" to "cpu sub-metrics session"
+    And I configure scenario "span_duration" to "3.0"
+    And I configure scenario "work_duration" to "2.5"
+    And I configure scenario "work_on_thread" to "main"
+    And I configure scenario "variant_name" to "CPUSubMetrics"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 1 span
+    Then a span field "name" equals "[AppSession/CPUSubMetricsSession]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_min_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_total" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_mean_main_thread" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_min_main_thread" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_main_thread" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_mean_overhead" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_min_overhead" is greater than 0.0
+    * a span float attribute "bugsnag.system.cpu_max_overhead" is greater than 0.0
+    
+Scenario: Two concurrent app sessions deliver independently with separate metrics
+    Given I load scenario "AppSessionResourceUsageScenario"
+    And I configure bugsnag "memoryMetrics" to "true"
+    And I configure bugsnag "cpuMetrics" to "true"
+    And I configure scenario "session_type" to "concurrent session A"
+    And I configure scenario "concurrent_session_type" to "concurrent session B"
+    And I configure scenario "span_duration" to "3.0"
+    And I configure scenario "work_duration" to "2.0"
+    And I configure scenario "work_on_thread" to "main"
+    And I configure scenario "variant_name" to "Concurrent"
+    And I start bugsnag
+    And I run the loaded scenario
+    And I wait to receive at least 2 spans
+    Then a span field "name" equals "[AppSession/ConcurrentSessionA]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
+    And a span field "name" equals "[AppSession/ConcurrentSessionB]"
+    * a span string attribute "bugsnag.span.category" equals "app_session"
+    * a span integer attribute "bugsnag.system.memory.spaces.device.mean" is greater than 0
+    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
