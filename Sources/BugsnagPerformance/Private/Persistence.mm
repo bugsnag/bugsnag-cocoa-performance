@@ -30,12 +30,20 @@ Persistence::Persistence(NSString *topLevelDir) noexcept
 
 void Persistence::start() noexcept {
     NSError *error = nil;
+    bool usable = true;
+
     if ((error = [Filesystem ensurePathExists:bugsnagPerformanceDir_]) != nil) {
         BSGLogError(@"error while initializing bugsnag performance persistence dir: %@", error);
+        usable = false;
     }
     if ((error = [Filesystem ensurePathExists:bugsnagSharedDir_]) != nil) {
         BSGLogError(@"error while initializing bugsnag shared persistence dir: %@", error);
+        usable = false;
     }
+
+    // If we can't create the top-level directories, persistence-backed features can't work.
+    // The library should continue running in network-only mode, but must avoid repeated failing I/O.
+    isUsable_ = usable;
 }
 
 NSString *Persistence::bugsnagSharedDir(void) noexcept {

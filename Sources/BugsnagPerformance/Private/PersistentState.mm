@@ -27,6 +27,11 @@ void PersistentState::setProbability(double probability) noexcept {
 
 NSError *PersistentState::persist() noexcept {
     std::lock_guard<std::mutex> guard(mutex_);
+
+    if (!persistence_->isUsable()) {
+        return nil;
+    }
+
     NSError *error = [Filesystem ensurePathExists:persistentStateDir_];
     if (error != nil) {
         return error;
@@ -45,6 +50,11 @@ void PersistentState::preStartSetup() noexcept {
     persistentStateDir_ = persistence_->bugsnagPerformanceDir();
     jsonFilePath_ = [persistentStateDir_ stringByAppendingPathComponent:@"persistent-state.json"];
 
+    if (!persistence_->isUsable()) {
+        // Persistence unavailable: keep configured probability_ in memory for this session.
+        return;
+    }
+
     NSError *error = nil;
     NSDictionary *dict = JSON::fileToDictionary(jsonFilePath_, &error);
     if (dict == nil) {
@@ -57,4 +67,3 @@ void PersistentState::preStartSetup() noexcept {
         probability_ = probability.doubleValue;
     }
 }
-

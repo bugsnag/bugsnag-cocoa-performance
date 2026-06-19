@@ -150,35 +150,36 @@ static inline dispatch_time_t currentTimeMinusNanoseconds(dispatch_time_t nanose
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL isDir = false;
 
-    // Put a file in place of where RetryQueue will try to create a directory.
     XCTAssertTrue([[NSData new] writeToFile:self.filePath atomically:YES]);
     XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
     XCTAssertFalse(isDir);
 
     RetryQueue queue(self.filePath);
-    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
-    queue.preStartSetup();
-    XCTAssertTrue([fm fileExistsAtPath:self.filePath isDirectory:&isDir]);
-    XCTAssertFalse(isDir);
-    queue.start();
 
     __block int callCount = 0;
     queue.setOnFilesystemError(^{
         callCount++;
     });
 
+    queue.configure([[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"11111111111111111111111111111111"]);
+
+    // First failure should trigger callback once and disable storage
+    queue.preStartSetup();
+    XCTAssertEqual(1, callCount);
+
+    // After disable, no repeated callbacks
     callCount = 0;
     queue.sweep();
-    XCTAssertNotEqual(0, callCount);
+    XCTAssertEqual(0, callCount);
 
     callCount = 0;
     queue.list();
-    XCTAssertNotEqual(0, callCount);
+    XCTAssertEqual(0, callCount);
 
     callCount = 0;
     OtlpPackage package(1, [NSData new], @{});
     queue.add(package);
-    XCTAssertNotEqual(0, callCount);
+    XCTAssertEqual(0, callCount);
 
     callCount = 0;
     queue.remove(1);

@@ -10,6 +10,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 namespace bugsnag {
 
 class Persistence {
@@ -18,6 +20,13 @@ public:
     Persistence(NSString *topLevelDir) noexcept;
 
     void start() noexcept;
+
+    /**
+     * Returns true if the SDK's persistence directories were successfully created and are usable.
+     * When false, file-backed features (retry queue, persistent state/device id) should be disabled
+     * to avoid repeated failing filesystem operations.
+     */
+    bool isUsable(void) const noexcept { return isUsable_; }
 
     // Clear all "performance" data. "shared" data is unaffected.
     NSError *clearPerformanceData(void) noexcept;
@@ -31,6 +40,9 @@ public:
 private:
     NSString *bugsnagSharedDir_{nil};
     NSString *bugsnagPerformanceDir_{nil};
+    bool isUsable_{true};
 };
 
 }
+
+NS_ASSUME_NONNULL_END

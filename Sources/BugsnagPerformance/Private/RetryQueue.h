@@ -10,8 +10,11 @@
 
 #import "OtlpPackage.h"
 #import "PhasedStartup.h"
+#import "Filesystem.h"
 #import <vector>
 #import <memory>
+#import <functional>
+#import <atomic>
 
 namespace bugsnag {
 
@@ -22,6 +25,7 @@ public:
     RetryQueue(NSString *path) noexcept
     : baseDir_(path)
     , onFilesystemError(^{})
+    , ensurePathFunc_([](NSString *p) -> NSError * { return [Filesystem ensurePathExists:p]; })
     {}
 
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
@@ -64,6 +68,9 @@ public:
         onFilesystemError = onFilesystemErrorCallback;
     }
 
+    // Set a per-instance handler for ensurePathExists (used by tests to inject failures).
+    void setEnsurePathExistsHandler(std::function<NSError *(NSString *)> handler) noexcept;
+
 private:
     NSString *baseDir_{nil};
     dispatch_time_t maxRetryAge_{0};
@@ -72,6 +79,10 @@ private:
     void remove(NSString *filename) noexcept;
     NSString *fullPath(NSString *filename) noexcept;
     void ensureBaseDirExists() noexcept;
+    std::function<NSError *(NSString *)> ensurePathFunc_;
+    
+    std::atomic<bool> storageDisabled_{false};
+    std::atomic<bool> didNotifyStorageError_{false};
 };
 
 }

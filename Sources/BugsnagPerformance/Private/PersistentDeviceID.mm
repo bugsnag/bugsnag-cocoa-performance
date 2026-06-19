@@ -172,6 +172,10 @@ NSString *PersistentDeviceID::getFilePath() {
 }
 
 NSError *PersistentDeviceID::load() {
+    if (persistence_ && !persistence_->isUsable()) {
+        return nil;
+    }
+
     NSError *error = nil;
     NSDictionary *dict = JSON::fileToDictionary(getFilePath(), &error);
     if (error != nil) {
@@ -184,6 +188,10 @@ NSError *PersistentDeviceID::load() {
 }
 
 NSError *PersistentDeviceID::save() {
+    if (persistence_ && !persistence_->isUsable()) {
+        return nil;
+    }
+
     NSError *error = [Filesystem ensurePathExists:persistenceDir_];
     if (error != nil) {
         return error;
@@ -197,7 +205,10 @@ NSError *PersistentDeviceID::save() {
 
 void PersistentDeviceID::preStartSetup() noexcept {
     persistenceDir_ = persistence_->bugsnagSharedDir();
-    load();
+
+    if (persistence_->isUsable()) {
+        load();
+    }
 
     bool requiresSave = false;
     if (externalDeviceID_.length == 0) {
@@ -210,7 +221,7 @@ void PersistentDeviceID::preStartSetup() noexcept {
         requiresSave = true;
     }
 
-    if (requiresSave) {
+    if (requiresSave && persistence_->isUsable()) {
         save();
     }
 }
