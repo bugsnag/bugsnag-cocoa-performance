@@ -8,6 +8,7 @@
 
 #import "NetworkLifecycleHandlerImpl.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Utils.h"
 
 using namespace bugsnag;
 
@@ -43,7 +44,7 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
 void
 NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
                                                               NSURLSessionTaskMetrics *metrics,
-                                                              NSString *ignoreBaseEndpoint) noexcept {
+                                                              NSURL *ignoreBaseEndpoint) noexcept {
     auto state = repository_->getInstrumentationState(task);
     if (state.overallSpan == nil) {
         return;
@@ -151,23 +152,35 @@ NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationStat
 
 bool
 NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
-                                                      NSString *ignoreBaseEndpoint,
+                                                      NSURL *ignoreEndpointURL,
                                                       NSError **error) noexcept {
     if (task.error != nil) {
         return false;
     }
-    if (task.response == nil) {
-        return false;
-    }
-    auto request = systemUtils_->taskRequest(task, error);
+    
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
-
-    if (httpResponse.statusCode == 0) {
+    
+    // Non-HTTP responses or statusCode 0 should not be recorded.
+    // (If task.response is nil or not HTTP, httpResponse will be nil.)
+    if (httpResponse == nil || httpResponse.statusCode == 0) {
         return false;
     }
-
-    if (ignoreBaseEndpoint.length > 0 && [request.URL.absoluteString hasPrefix:ignoreBaseEndpoint]) {
+    
+    auto request = systemUtils_->taskRequest(task, error);
+    
+    // If request/URL is missing, we can't apply the internal-endpoint filter,
+    // but we should still keep the already-started span.
+    if (request == nil || request.URL == nil) {
+        return true;
+    }
+    
+    // ignoreEndpointURL is cached from config.endpoint in BSGURLSessionPerformanceDelegate
+    // and passed through to avoid per-request URL parsing on this hot path.
+    if (ignoreEndpointURL != nil &&
+        BSGURLsMatchSchemeHostPortPath(request.URL, ignoreEndpointURL)) {
+        BSGLogDebug(@"Skipping network span for internal upload %@", request.URL);
         return false;
     }
+    
     return true;
 }

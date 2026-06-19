@@ -475,3 +475,82 @@ When("I relaunch the app after shutdown") do
 
   manager.activate
 end
+
+# Used by E2E tests to confirm the SDK does NOT record a network span for trace-upload URLs (e.g. /v1/traces).
+# We add it because maze-runner already has only the positive regex step, and we need the negative (“no span matches”) check too.
+#
+# Note: Use the configured receive window so this absence check covers the same export/receive delay as other
+# request-based assertions and does not pass early if trace export is delayed.
+Then('no span string attribute {string} matches the regex {string}') do |attribute, pattern|
+  list = Maze::Server.list_for('traces')
+  timeout = Maze.config.receive_requests_wait
+  regex = Regexp.new(pattern)
+
+  deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + timeout
+  seen_values = []
+
+  loop do
+    break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
+
+    spans = spans_from_request_list(list)
+    selected_attributes = spans.map { |span|
+      span['attributes'].find { |a|
+        a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+      }
+    }.compact
+
+    seen_values = selected_attributes.map { |a| a['value']['stringValue'] }
+    matched_value = seen_values.find { |value| regex.match?(value) }
+
+    if matched_value
+      raise Test::Unit::AssertionFailedError.new <<-MESSAGE
+Expected not to receive a span where attribute "#{attribute}" matches /#{pattern}/ within #{timeout}s,
+but received a matching value: #{matched_value}
+
+Seen values:
+#{seen_values.join("\n")}
+      MESSAGE
+    end
+
+    sleep 0.1
+  end
+end
+
+# Waits (polls) until Maze receives a span whose http.url (or other string attribute) matches the regex, avoiding timing-related failures from immediate checks.
+# Because background spans (e.g., /idem-command) may arrive first, so “wait to receive at least 1 span” doesn’t guarantee our test request’s span has been exported yet.
+Then('I wait to receive a span where the string attribute {string} matches the regex {string}') do |attribute, pattern|
+  list = Maze::Server.list_for('traces')
+  timeout = Maze.config.receive_requests_wait
+  wait = Maze::Wait.new(timeout: timeout)
+  regex = Regexp.new(pattern)
+
+  received = wait.until do
+    spans = spans_from_request_list(list)
+    attrs = spans.map { |span|
+      span['attributes'].find { |a|
+        a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+      }
+    }.compact
+
+    values = attrs.map { |a| a['value']['stringValue'] }
+    values.any? { |v| regex.match?(v) }
+  end
+
+  unless received
+    spans = spans_from_request_list(list)
+    attrs = spans.map { |span|
+      span['attributes'].find { |a|
+        a['key'].eql?(attribute) && a['value'].has_key?('stringValue')
+      }
+    }.compact
+    values = attrs.map { |a| a['value']['stringValue'] }
+
+    raise Test::Unit::AssertionFailedError.new <<-MESSAGE
+Expected to receive a span where attribute "#{attribute}" matches /#{pattern}/ within #{timeout}s,
+but did not.
+
+Seen values:
+#{values.join("\n")}
+    MESSAGE
+  end
+end

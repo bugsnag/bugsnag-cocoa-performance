@@ -306,6 +306,7 @@
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
+		E1810B532F85823400DF6D0B /* UtilsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1810B522F85823400DF6D0B /* UtilsTests.mm */; };
 		E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */; };
 /* End PBXBuildFile section */
 
@@ -738,6 +739,7 @@
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
 		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
 		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
+		E1810B522F85823400DF6D0B /* UtilsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UtilsTests.mm; sourceTree = "<group>"; };
 		E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfigurationInfoPlistTests.mm; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1073,6 +1075,7 @@
 				CB2B8A9A2A0924A50054FBBE /* SpanTests.mm */,
 				098FC87A2D3FD095001B627D /* TestHelpers.h */,
 				CB747D20299E5458003CA1B4 /* TimeTests.mm */,
+				E1810B522F85823400DF6D0B /* UtilsTests.mm */,
 				09B473092B2313570024CF11 /* WeakSpansListTests.mm */,
 				CB0AD75A295F27DD002A3FB6 /* WorkerTests.mm */,
 			);
@@ -2056,6 +2059,7 @@
 				098FC8792D3FADFE001B627D /* SpanAttributesTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
+				E1810B532F85823400DF6D0B /* UtilsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
 				96F1292F2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m in Sources */,
 			);

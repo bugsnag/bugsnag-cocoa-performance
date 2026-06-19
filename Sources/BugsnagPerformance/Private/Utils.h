@@ -136,6 +136,83 @@ static inline NSURLRequest *getTaskRequest(NSURLSessionTask *task, NSError **err
     return getTaskCurrentRequest(task, error);
 }
 
+// Normalizes URL path so "/v1/traces" and "/v1/traces/" are treated as the same.
+// Also ensures empty/nil paths become "/".
+static inline NSString *BSGNormalizePath(NSString *p) {
+    // If the path is nil or empty, treat it as root "/"
+    if (p == nil || p.length == 0) return @"/";
+
+    // If it's already "/", return it as-is
+    if ([p isEqualToString:@"/"]) return @"/";
+
+    // If path ends with "/", remove the trailing slash
+    // Example: "/v1/traces/" -> "/v1/traces"
+    if ([p hasSuffix:@"/"]) {
+        p = [p substringToIndex:p.length - 1];
+
+        // If removing "/" makes it empty, treat it as root
+        if (p.length == 0) return @"/";
+    }
+
+    // Return the normalized path
+    return p;
+}
+
+// Returns an explicit port number for a URL.
+//
+// - If URL explicitly contains a port (e.g. https://x:8443/), return it.
+// - If not, use the default port for http/https (80/443).
+// - If scheme is unknown, return -1.
+static inline NSInteger BSGNormalizedPort(NSURL *u) {
+    if (u == nil) {
+        return -1;
+    }
+
+    // If the URL explicitly includes a port, use it
+    if (u.port != nil) return u.port.integerValue;
+
+    // Otherwise infer default port from scheme
+    NSString *s = u.scheme.lowercaseString ?: @"";
+    if ([s isEqualToString:@"https"]) return 443;
+    if ([s isEqualToString:@"http"]) return 80;
+
+    // Unknown scheme -> can't reliably infer default port
+    return -1;
+}
+
+// Compares two URLs to see if they represent the same endpoint
+// by matching: scheme + host + port + (normalized) path.
+//
+// This intentionally ignores query parameters and fragments.
+// Example: ".../v1/traces?x=y" still matches ".../v1/traces".
+static inline bool BSGURLsMatchSchemeHostPortPath(NSURL *a, NSURL *b) {
+    // If either URL is nil, they cannot match
+    if (!a || !b) return false;
+
+    // Extract scheme/host safely (use "" if nil so comparisons don't crash)
+    NSString *aScheme = a.scheme ?: @"";
+    NSString *bScheme = b.scheme ?: @"";
+    NSString *aHost = a.host ?: @"";
+    NSString *bHost = b.host ?: @"";
+
+    // Scheme comparison: case-insensitive (HTTPS vs https)
+    if ([aScheme caseInsensitiveCompare:bScheme] != NSOrderedSame) return false;
+
+    // Host comparison: case-insensitive (domain names are case-insensitive)
+    if ([aHost caseInsensitiveCompare:bHost] != NSOrderedSame) return false;
+
+    // Compare normalized ports (explicit ports match defaults properly)
+    NSInteger ap = BSGNormalizedPort(a);
+    NSInteger bp = BSGNormalizedPort(b);
+    if (ap != bp) return false;
+
+    // Normalize paths to avoid trailing-slash mismatches
+    NSString *aPath = BSGNormalizePath(a.path);
+    NSString *bPath = BSGNormalizePath(b.path);
+
+    // If normalized paths match exactly, consider it a match
+    return [aPath isEqualToString:bPath];
+}
 /**
  * Returns the Bugsnag dictionary from the given info dictionary, or nil if there is none.
  *
@@ -156,6 +233,5 @@ static inline NSDictionary *BSGSelectedBugsnagDict(NSDictionary *info) {
     }
     return nil;
 }
-
 
 }
