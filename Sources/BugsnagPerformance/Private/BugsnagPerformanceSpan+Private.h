@@ -60,6 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) SpanKind kind;
 @property (nonatomic,readwrite) BOOL isMutable;
 @property (nonatomic,readwrite) BOOL hasBeenProcessed;
+@property (nonatomic,readwrite) BOOL isAppSessionSpan;
 @property (nonatomic,readonly) BOOL isBlocked;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;

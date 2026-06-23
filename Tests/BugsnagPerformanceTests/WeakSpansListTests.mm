@@ -74,4 +74,30 @@ static BugsnagPerformanceSpan *createSpan() {
     XCTAssertEqual(2U, list.count());
 }
 
+- (void)testPerformActionAndCompactKeepsSpansThatRemainOpen {
+    WeakSpansList list;
+    BugsnagPerformanceSpan *customSpan = createSpan();
+    BugsnagPerformanceSpan *sessionSpan = createSpan();
+    BugsnagPerformanceSpan *networkSpan = createSpan();
+    sessionSpan.isAppSessionSpan = YES;
+    
+    list.add(customSpan);
+    list.add(sessionSpan);
+    list.add(networkSpan);
+    
+    list.performActionAndCompact(^(BugsnagPerformanceSpan *span) {
+        if (!span.isAppSessionSpan) {
+            [span abortIfOpen];
+        }
+    });
+    
+    XCTAssertEqual(1U, list.count());
+    XCTAssertEqual(SpanStateAborted, customSpan.state);
+    XCTAssertEqual(SpanStateOpen, sessionSpan.state);
+    XCTAssertEqual(SpanStateAborted, networkSpan.state);
+    
+    [sessionSpan end];
+    list.performActionAndCompact(nil);
+    XCTAssertEqual(0U, list.count());
+}
 @end

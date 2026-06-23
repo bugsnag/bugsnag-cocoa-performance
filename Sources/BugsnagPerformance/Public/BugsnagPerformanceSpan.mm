@@ -368,6 +368,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         copy.kind = self.kind;
         copy.isMutable = self.isMutable;
         copy.hasBeenProcessed = self.hasBeenProcessed;
+        copy.isAppSessionSpan = self.isAppSessionSpan;
         copy.wasStartOrEndTimeProvided = self.wasStartOrEndTimeProvided;
         copy.state = self.state;
         copy.startClock = self.startClock;

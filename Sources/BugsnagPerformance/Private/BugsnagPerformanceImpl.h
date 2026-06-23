@@ -171,6 +171,8 @@ private:
     void onProbabilityChanged(double newProbability) noexcept;
     void onFilesystemError() noexcept;
     void onWorkInterval() noexcept;
+    void onSpanEndSet(BugsnagPerformanceSpan *span) noexcept;
+    void onSpanDiscarded(BugsnagPerformanceSpan *span) noexcept;
     void onAppEnteredForeground() noexcept;
     void onAppEnteredBackground() noexcept;
 
@@ -186,7 +188,10 @@ private:
     void applySampleAttributesFromHistory(BugsnagPerformanceSpan *span, bool isSessionSpan) noexcept;
     void applySessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept;
     void applyNonSessionSpanSampleAttributes(BugsnagPerformanceSpan *span) noexcept;
-
+    bool hasActiveSessionAccumulators() noexcept;
+    bool shouldAccumulateSessionSample() noexcept;
+    bool isBackgroundSessionAccumulationAllowed() noexcept;
+    
 public: // For testing
     void testing_setProbability(double probability) { onProbabilityChanged(probability); };
     NSUInteger testing_getViewControllersToSpansCount() { return viewControllersToSpans_.count; };

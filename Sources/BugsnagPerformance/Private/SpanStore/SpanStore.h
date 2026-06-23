@@ -20,6 +20,7 @@ public:
     virtual void addNewSpan(BugsnagPerformanceSpan *span, bool makeCurrentContext) noexcept = 0;
     virtual void removeSpan(BugsnagPerformanceSpan *span) noexcept = 0;
     virtual void performActionAndClearOpenSpans(void (^action)(BugsnagPerformanceSpan *span)) noexcept = 0;
+    virtual void performActionAndCompactOpenSpans(void (^action)(BugsnagPerformanceSpan *span)) noexcept = 0;
     
     virtual void addSpanToBlocked(BugsnagPerformanceSpan *span) noexcept = 0;
     virtual void removeSpanFromBlocked(BugsnagPerformanceSpan *span) noexcept = 0;

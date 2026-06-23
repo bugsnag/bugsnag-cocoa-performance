@@ -32,6 +32,9 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+    // Internal SDK bookkeeping that must happen as soon as the end time is set,
+    // Before sampling or user on-span-end callbacks can discard the span.
+    onSpanEndSet_(span);
 }
 
 void
@@ -84,6 +87,7 @@ SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept
         return;
     }
     batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
+    onSpanDiscarded_(span);
     if (span.isBlocked) {
         store_->removeSpanFromBlocked(span);
     }
@@ -92,7 +96,7 @@ SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept
 void
 SpanLifecycleHandlerImpl::onAppEnteredBackground() noexcept {
     if (isStarted_) {
-        abortAllOpenSpans();
+        abortOpenSpansOnBackground();
     }
 }
 
@@ -205,6 +209,7 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
         }
         if (!sampler_->sampled(span)) {
             [span abortUnconditionally];
+            onSpanDiscarded_(span);
             continue;
         }
         [span forceMutate:^() {
@@ -212,6 +217,7 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
         }];
         if (span.state == SpanStateAborted) {
             [span abortUnconditionally];
+            onSpanDiscarded_(span);
             continue;
         }
 
@@ -227,6 +233,15 @@ SpanLifecycleHandlerImpl::abortAllOpenSpans() noexcept {
 }
 
 void
+SpanLifecycleHandlerImpl::abortOpenSpansOnBackground() noexcept {
+    store_->performActionAndCompactOpenSpans(^(BugsnagPerformanceSpan *span) {
+        if (!span.isAppSessionSpan) {
+            [span abortIfOpen];
+        }
+    });
+}
+
+void
 SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexcept {
     @synchronized (span) {
         for (BugsnagPerformanceSpanCondition *condition in span.conditionsToEndOnClose) {
@@ -237,11 +252,13 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
     store_->removeSpan(span);
 
     if(span.state == SpanStateAborted) {
+        onSpanDiscarded_(span);
         return;
     }
 
     if (!sampler_->sampled(span)) {
         [span abortUnconditionally];
+        onSpanDiscarded_(span);
         return;
     }
 
@@ -250,6 +267,7 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
             callOnSpanEndCallbacks(span);
         }];
         if (span.state == SpanStateAborted) {
+            onSpanDiscarded_(span);
             return;
         }
     }

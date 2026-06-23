@@ -27,6 +27,7 @@ public:
     void removeSpanFromBlocked(BugsnagPerformanceSpan *span) noexcept;
     void performActionAndClearOpenSpans(void (^action)(BugsnagPerformanceSpan *span)) noexcept;
     bool hasSpanOnCurrentStack(NSString *attribute, NSString *value) noexcept;
+    void performActionAndCompactOpenSpans(void (^action)(BugsnagPerformanceSpan *span)) noexcept;
     void sweep() noexcept;
     
 private:
