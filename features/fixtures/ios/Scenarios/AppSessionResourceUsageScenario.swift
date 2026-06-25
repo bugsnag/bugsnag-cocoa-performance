@@ -63,6 +63,7 @@ class AppSessionResourceUsageScenario: Scenario {
                 Thread.sleep(forTimeInterval: 0.5)
                 childSpan.end()
             }
+            
             Thread.sleep(forTimeInterval: duration)
             if shouldAbort {
                 sessionSpan = nil
@@ -72,11 +73,10 @@ class AppSessionResourceUsageScenario: Scenario {
             sessionSpan = nil
             // --- End concurrent session span ---
             if let activeConc = concurrentSpan {
-                // Delay to let SDK flush first span
-                Thread.sleep(forTimeInterval: 2.0)
                 activeConc.end()
                 concurrentSpan = nil
             }
+            
             // Give SDK time to flush all spans before Maze Runner checks
             Thread.sleep(forTimeInterval: 5.0)
             waitForBrowserstack()
