@@ -19,7 +19,6 @@ class AppSessionResourceUsageScenario: Scenario {
         let workDur = toDouble(string: scenarioConfig["work_duration"])
         let workThread = scenarioConfig["work_on_thread"] ?? "main"
         let concurrentSessionType = scenarioConfig["concurrent_session_type"]
-        NSLog("App session_type=\(sessionType), duration=\(duration), abort=\(shouldAbort)")
         if sessionType == "manual session" {
             // Scenario 1: simple manual span
             let opts = BugsnagPerformanceSpanOptions()
@@ -34,17 +33,14 @@ class AppSessionResourceUsageScenario: Scenario {
         } else {
             // Use the real app session API — SDK handles span name, category,
             // and attaches resource usage aggregation (mean, min, max)
-            NSLog("App Starting app session span with type: \(sessionType)")
             self.sessionSpan = BugsnagPerformance.startAppSessionSpan(sessionType)
             // --- Concurrent session support ---
             var concurrentSpan: BugsnagPerformanceSpan?
             if let concurrentType = concurrentSessionType, !concurrentType.isEmpty {
-                NSLog("App Starting concurrent app session span with type: \(concurrentType)")
                 concurrentSpan = BugsnagPerformance.startAppSessionSpan(concurrentType)
             }
             // CPU work if configured
             if workDur > 0 {
-                NSLog("App Doing CPU work for \(workDur)s on \(workThread)")
                 if workThread == "main" {
                     doBusyWork(forDuration: workDur)
                 } else {
@@ -56,7 +52,6 @@ class AppSessionResourceUsageScenario: Scenario {
             }
             // Child span support (for parent check scenario)
             if toBool(string: scenarioConfig["create_child_span"]) {
-                NSLog("App Creating independent child span")
                 let childOpts = BugsnagPerformanceSpanOptions()
                 _ = childOpts.setFirstClass(.yes)
                 _ = childOpts.setMakeCurrentContext(false)
@@ -67,14 +62,11 @@ class AppSessionResourceUsageScenario: Scenario {
                 childSpan.setAttribute("bugsnag.span.category", withValue: "custom")
                 Thread.sleep(forTimeInterval: 0.5)
                 childSpan.end()
-                NSLog("App Child span ended")
             }
             Thread.sleep(forTimeInterval: duration)
             if shouldAbort {
-                NSLog("App Aborting session span")
                 sessionSpan = nil
             } else {
-                NSLog("App Ending session span")
                 sessionSpan?.end()
             }
             sessionSpan = nil
@@ -82,7 +74,6 @@ class AppSessionResourceUsageScenario: Scenario {
             if let activeConc = concurrentSpan {
                 // Delay to let SDK flush first span
                 Thread.sleep(forTimeInterval: 2.0)
-                NSLog("App Ending concurrent session span")
                 activeConc.end()
                 concurrentSpan = nil
             }
