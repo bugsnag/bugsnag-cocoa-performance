@@ -11,16 +11,14 @@ import BugsnagPerformance
 class AppSessionResourceUsageScenario: Scenario {
     var sessionSpan: BugsnagPerformanceSpan?
     override func run() {
-        // Read config from scenarioConfig dictionary (NOT instance properties)
         let sessionType = scenarioConfig["session_type"] ?? "manual session"
         let duration = toDouble(string: scenarioConfig["span_duration"]) > 0
-            ? toDouble(string: scenarioConfig["span_duration"])
-            : 5.0
+        ? toDouble(string: scenarioConfig["span_duration"])
+        : 5.0
         let shouldAbort = toBool(string: scenarioConfig["abort_span"])
         let workDur = toDouble(string: scenarioConfig["work_duration"])
         let workThread = scenarioConfig["work_on_thread"] ?? "main"
         let concurrentSessionType = scenarioConfig["concurrent_session_type"]
-        NSLog("App session_type=\(sessionType), duration=\(duration), abort=\(shouldAbort)")
         if sessionType == "manual session" {
             // Scenario 1: simple manual span
             let opts = BugsnagPerformanceSpanOptions()
@@ -33,38 +31,16 @@ class AppSessionResourceUsageScenario: Scenario {
             sessionSpan?.end()
             waitForBrowserstack()
         } else {
-            // Scenarios 2-5, 7: app session spans
-            let sessionTypeId = toPascalCase(sessionType)
-            let appSessionSpanName = "[AppSession/\(sessionTypeId)]"
-            NSLog("App Starting session span: \(appSessionSpanName)")
-            let opts = BugsnagPerformanceSpanOptions()
-            _ = opts.setFirstClass(.yes)
-            _ = opts.setMakeCurrentContext(false)
-            self.sessionSpan = BugsnagPerformance.startSpan(
-                name: appSessionSpanName,
-                options: opts
-            )
-            sessionSpan?.setAttribute("bugsnag.span.category", withValue: "app_session")
-            sessionSpan?.setAttribute("bugsnag.app_session.name", withValue: sessionTypeId)
+            // Use the real app session API — SDK handles span name, category,
+            // and attaches resource usage aggregation (mean, min, max)
+            self.sessionSpan = BugsnagPerformance.startAppSessionSpan(sessionType)
             // --- Concurrent session support ---
             var concurrentSpan: BugsnagPerformanceSpan?
             if let concurrentType = concurrentSessionType, !concurrentType.isEmpty {
-                let concurrentTypeId = toPascalCase(concurrentType)
-                let concurrentSpanName = "[AppSession/\(concurrentTypeId)]"
-                NSLog("App Starting concurrent session span: \(concurrentSpanName)")
-                let concurrentOpts = BugsnagPerformanceSpanOptions()
-                _ = concurrentOpts.setFirstClass(.yes)
-                _ = concurrentOpts.setMakeCurrentContext(false)
-                concurrentSpan = BugsnagPerformance.startSpan(
-                    name: concurrentSpanName,
-                    options: concurrentOpts
-                )
-                concurrentSpan?.setAttribute("bugsnag.span.category", withValue: "app_session")
-                concurrentSpan?.setAttribute("bugsnag.app_session.name", withValue: concurrentTypeId)
+                concurrentSpan = BugsnagPerformance.startAppSessionSpan(concurrentType)
             }
             // CPU work if configured
             if workDur > 0 {
-                NSLog("App Doing CPU work for \(workDur)s on \(workThread)")
                 if workThread == "main" {
                     doBusyWork(forDuration: workDur)
                 } else {
@@ -74,36 +50,37 @@ class AppSessionResourceUsageScenario: Scenario {
                     Thread.sleep(forTimeInterval: workDur)
                 }
             }
+            // Child span support (for parent check scenario)
+            if toBool(string: scenarioConfig["create_child_span"]) {
+                let childOpts = BugsnagPerformanceSpanOptions()
+                _ = childOpts.setFirstClass(.yes)
+                _ = childOpts.setMakeCurrentContext(false)
+                let childSpan = BugsnagPerformance.startSpan(
+                    name: "ChildSpanInsideSession",
+                    options: childOpts
+                )
+                childSpan.setAttribute("bugsnag.span.category", withValue: "custom")
+                Thread.sleep(forTimeInterval: 0.5)
+                childSpan.end()
+            }
+            
             Thread.sleep(forTimeInterval: duration)
             if shouldAbort {
-                NSLog("App Aborting session span")
                 sessionSpan = nil
             } else {
-                NSLog("App Ending session span")
                 sessionSpan?.end()
             }
             sessionSpan = nil
             // --- End concurrent session span ---
             if let activeConc = concurrentSpan {
-                NSLog("App Ending concurrent session span")
                 activeConc.end()
                 concurrentSpan = nil
             }
+            
+            // Give SDK time to flush all spans before Maze Runner checks
+            Thread.sleep(forTimeInterval: 5.0)
             waitForBrowserstack()
         }
-    }
-    func toPascalCase(_ input: String) -> String {
-        let acronyms: Set<String> = ["cpu", "gpu", "api", "url", "id"]
-        return input
-            .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { !$0.isEmpty }
-            .map { word in
-                if acronyms.contains(word.lowercased()) {
-                    return word.uppercased()
-                }
-                return word.prefix(1).uppercased() + word.dropFirst()
-            }
-            .joined()
     }
     func doBusyWork(forDuration duration: TimeInterval) {
         let end = Date(timeIntervalSinceNow: duration)
