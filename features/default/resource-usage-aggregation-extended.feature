@@ -1,10 +1,3 @@
-//
-//  resource-usage-aggregation-extended.feature
-//  BugsnagPerformance
-//
-//  Created by Meiyalagan Ramadurai on 01/07/26.
-//
-
 Feature: Foreground App Session Span - Extended Validations
 
   Scenario: App session span contains all CPU sub-metrics with range validation
