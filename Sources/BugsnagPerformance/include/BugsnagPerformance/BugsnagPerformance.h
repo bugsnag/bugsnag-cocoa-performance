@@ -41,11 +41,6 @@ OBJC_EXPORT
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options NS_SWIFT_NAME(startSpan(name:options:));
 
-/**
- * Starts a manual app session span with an explicit background sampling policy.
- *
- * @param sessionType A user-defined session label.
- */
 + (BugsnagPerformanceSpan *)startAppSessionSpan:(NSString *)sessionType
   NS_SWIFT_NAME(startAppSessionSpan(_:));
 
