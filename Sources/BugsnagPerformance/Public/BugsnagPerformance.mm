@@ -34,9 +34,6 @@ using namespace bugsnag;
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startCustomSpan(name, options);
 }
 
-// startAppSessionSpan: is intentionally not declared in the public header.
-// It remains here for future re-exposure: to make it public again, simply add the
-// declaration back to BugsnagPerformance.h.
 + (BugsnagPerformanceSpan *)startAppSessionSpan:(NSString *)sessionType {
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startAppSessionSpan(sessionType);
 }
