@@ -139,8 +139,13 @@ void SystemInfoSampler::recordSample() {
     lastSampledAtTime_ = sample.sampledAt;
 
     if (sample.hasValidData()) {
-        std::lock_guard<std::mutex> guard(samplesMutex_);
-        samples_.push_back(sample);
+        {
+            std::lock_guard<std::mutex> guard(samplesMutex_);
+            samples_.push_back(sample);
+        }
+        if (onSampleRecorded_) {
+            onSampleRecorded_(sample);
+        }
     }
 }
 

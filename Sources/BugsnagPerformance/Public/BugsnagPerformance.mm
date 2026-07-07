@@ -34,6 +34,10 @@ using namespace bugsnag;
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startCustomSpan(name, options);
 }
 
++ (BugsnagPerformanceSpan *)startAppSessionSpan:(NSString *)sessionType {
+    return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startAppSessionSpan(sessionType);
+}
+
 + (BugsnagPerformanceSpan *)startViewLoadSpanWithName:(NSString *)name viewType:(BugsnagPerformanceViewType)viewType {
     return BugsnagPerformanceLibrary::getBugsnagPerformanceImpl()->startViewLoadSpan(name, viewType);
 }

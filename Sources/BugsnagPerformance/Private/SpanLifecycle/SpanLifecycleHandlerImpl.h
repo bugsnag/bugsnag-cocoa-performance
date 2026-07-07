@@ -33,7 +33,9 @@ public:
                              FrameMetricsCollector *frameMetricsCollector,
                              BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
                              BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
-                             void (^onSpanStarted)()) noexcept
+                             void (^onSpanStarted)(),
+                             void (^onSpanEndSet)(BugsnagPerformanceSpan *span),
+                             void (^onSpanDiscarded)(BugsnagPerformanceSpan *span)) noexcept
     : sampler_(sampler)
     , store_(store)
     , conditionTimeoutExecutor_(conditionTimeoutExecutor)
@@ -42,7 +44,9 @@ public:
     , frameMetricsCollector_(frameMetricsCollector)
     , onSpanStartCallbacks_(onSpanStartCallbacks)
     , onSpanEndCallbacks_(onSpanEndCallbacks)
-    , onSpanStarted_(onSpanStarted) {}
+    , onSpanStarted_(onSpanStarted)
+    , onSpanEndSet_(onSpanEndSet)
+    , onSpanDiscarded_(onSpanDiscarded) {}
     
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
@@ -70,6 +74,8 @@ private:
     FrameMetricsCollector *frameMetricsCollector_;
     bool isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
+    void (^onSpanEndSet_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
+    void (^onSpanDiscarded_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
     
     std::shared_ptr<Batch> batch_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
@@ -85,6 +91,7 @@ private:
                                NSTimeInterval endTime,
                                BugsnagPerformanceSpanContext *parentContext) noexcept;
     void abortAllOpenSpans() noexcept;
+    void abortOpenSpansOnBackground() noexcept;
     void reprocessEarlySpans() noexcept;
     
     SpanLifecycleHandlerImpl() = delete;

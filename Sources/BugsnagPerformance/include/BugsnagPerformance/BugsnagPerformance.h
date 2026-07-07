@@ -41,6 +41,9 @@ OBJC_EXPORT
 
 + (BugsnagPerformanceSpan *)startSpanWithName:(NSString *)name options:(BugsnagPerformanceSpanOptions *)options NS_SWIFT_NAME(startSpan(name:options:));
 
++ (BugsnagPerformanceSpan *)startAppSessionSpan:(NSString *)sessionType
+  NS_SWIFT_NAME(startAppSessionSpan(_:));
+
 + (BugsnagPerformanceSpanContext *)currentContext;
 
 @end

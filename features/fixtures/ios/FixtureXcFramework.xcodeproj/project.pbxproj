@@ -131,6 +131,7 @@
 		DAC7DD6C2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */; };
 		DAC7DD6D2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DADB14F72DDF852B0006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */; };
+		E1A5A6412FE052BB00A663EA /* AppSessionResourceUsageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -280,6 +281,7 @@
 		DA95ABF42E3A7FBA001E6B0E /* NamedSpansPluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedSpansPluginScenario.swift; sourceTree = "<group>"; };
 		DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceNamedSpans.xcframework; path = ../../../BugsnagPerformanceNamedSpans.xcframework; sourceTree = "<group>"; };
 		DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
+		E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionResourceUsageScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -364,6 +366,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				96D090D62EEB3E1D00BAA6D4 /* AppStartInterruptedScenario.swift */,
 				966CF1BD2EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift */,
@@ -645,6 +648,7 @@
 				966CF1C12EEBA46700774E2B /* AppStartLegacyDelayedStartScenario.swift in Sources */,
 				966CF1C22EEBA46700774E2B /* AppStartLegacyScenario.swift in Sources */,
 				966CF1C32EEBA46700774E2B /* AppStartLegacyStartAfterAppStartScenario.swift in Sources */,
+				E1A5A6412FE052BB00A663EA /* AppSessionResourceUsageScenario.swift in Sources */,
 				966CF1C42EEBA46700774E2B /* AppStartLegacyInterruptedScenario.swift in Sources */,
 				CB2B8A9D2A0CCEF90054FBBE /* AutoInstrumentFileURLRequestScenario.swift in Sources */,
 				091B95722CA179AC007DC8A9 /* AutoInstrumentNetworkPreStartScenario.swift in Sources */,

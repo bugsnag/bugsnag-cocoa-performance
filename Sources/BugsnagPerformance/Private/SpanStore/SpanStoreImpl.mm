@@ -38,6 +38,11 @@ SpanStoreImpl::performActionAndClearOpenSpans(void (^action)(BugsnagPerformanceS
     potentiallyOpenSpans_->performActionAndClear(action);
 }
 
+void
+SpanStoreImpl::performActionAndCompactOpenSpans(void (^action)(BugsnagPerformanceSpan *span)) noexcept {
+    potentiallyOpenSpans_->performActionAndCompact(action);
+}
+
 bool
 SpanStoreImpl::hasSpanOnCurrentStack(NSString *attribute, NSString *value) noexcept {
     return spanStackingHandler_->hasSpanWithAttribute(attribute, value);

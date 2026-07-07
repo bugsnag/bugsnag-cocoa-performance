@@ -69,6 +69,30 @@ public:
         [spans_ removeAllObjects];
     }
 
+    // Run an action against tracked spans, then keep only spans that are still
+    // open. this lets background handling preserve AppSessionSpans without
+    // lossing track of then for later ending/processing.
+    void performActionAndCompact(void (^action)(BugsnagPerformanceSpan *span)) noexcept {
+        std::lock_guard<std::mutex> guard(mutex_);
+        if (action) {
+            for (BSGWeakSpanPointer *ptr in spans_) {
+                __strong auto span = ptr.span;
+                if (span) {
+                    action(span);
+                }
+            }
+        }
+        
+        auto openSpans = [NSMutableArray arrayWithCapacity:spans_.count];
+        for (BSGWeakSpanPointer *ptr in spans_) {
+            BugsnagPerformanceSpan *span = ptr.span;
+            if (span != nil && span.state == SpanStateOpen) {
+                [openSpans addObject:ptr];
+            }
+        }
+        spans_ = openSpans;
+    }
+    
     NSUInteger count() noexcept {
         std::lock_guard<std::mutex> guard(mutex_);
         return spans_.count;

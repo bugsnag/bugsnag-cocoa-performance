@@ -9,6 +9,9 @@ import UIKit
 import SwiftUI
 import BugsnagPerformance
 
+// Global reference to store the active session span for testing
+var globalSessionSpan: BugsnagPerformanceSpan?
+
 class ViewController: UIViewController {
 
     @IBAction func showGenericView(_ sender: Any) {
@@ -40,5 +43,12 @@ class ViewController: UIViewController {
         let waitTime = arc4random() % 900000
         usleep(100000 + waitTime)
         span.end()
+    }
+    
+    @IBAction func DoSessionSpan(_ sender: Any) {
+        globalSessionSpan = BugsnagPerformance.startAppSessionSpan("my session span")
+        // Navigate to Session Span Test Flow
+        let endVC = SessionEndViewController()
+        navigationController?.pushViewController(endVC, animated: true)
     }
 }
