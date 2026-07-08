@@ -9,6 +9,7 @@
 #import "SpanAttributesProvider.h"
 #import <Foundation/Foundation.h>
 #import "Utils.h"
+#import <algorithm>
 #if TARGET_OS_IOS
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
@@ -20,6 +21,29 @@ static NSDictionary *accessTechnologyMappingDictionary();
 // https://stackoverflow.com/questions/58426438/what-is-key-in-cttelephonynetworkinfo-servicesubscribercellularproviders-and-c
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
+static NSString * const BSGSpanCategoryAppSession = @"app_session";
+
+static NSString *sanitizeSessionTypeIdentifier(NSString *sessionType) {
+    NSCharacterSet *separatorCharacterSet = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
+    NSRange sepRange = [sessionType rangeOfCharacterFromSet:separatorCharacterSet];
+    if (sepRange.location == NSNotFound && sessionType.length > 0) {
+        return sessionType;
+    }
+
+    NSMutableString *sanitized = [NSMutableString string];
+    for (NSString *component in [sessionType componentsSeparatedByCharactersInSet:separatorCharacterSet]) {
+        if (component.length == 0) {
+            continue;
+        }
+
+        NSString *lowercasedComponent = component.lowercaseString;
+        NSString *capitalizedComponent = [lowercasedComponent stringByReplacingCharactersInRange:NSMakeRange(0, 1)
+                                                                                       withString:[[lowercasedComponent substringToIndex:1] uppercaseString]];
+        [sanitized appendString:capitalizedComponent];
+    }
+
+    return sanitized.length > 0 ? sanitized : @"Session";
+}
 
 SpanAttributesProvider::SpanAttributesProvider() noexcept {};
 
@@ -238,6 +262,14 @@ SpanAttributesProvider::customSpanAttributes() noexcept {
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::sessionSpanAttributes(NSString *sessionType) noexcept {
+    return @{
+        @"bugsnag.span.category": BSGSpanCategoryAppSession,
+        @"bugsnag.app_session.name": sanitizeSessionTypeIdentifier(sessionType ?: @""),
+    }.mutableCopy;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
     auto process = [[NSMutableArray alloc] initWithCapacity:samples.size()];
     auto mainThread = [[NSMutableArray alloc] initWithCapacity:samples.size()];
@@ -307,6 +339,96 @@ SpanAttributesProvider::cpuSampleAttributes(const std::vector<SystemInfoSampleDa
 }
 
 NSMutableDictionary *
+SpanAttributesProvider::sessionCPUSampleAttributes(const std::vector<SystemInfoSampleData> &samples,
+                                                   CFAbsoluteTime endTime) noexcept {
+    uint64_t processSampleCount = 0;
+    double processTotal = 0;
+    double processMin = 0;
+    double processMax = 0;
+    uint64_t mainThreadSampleCount = 0;
+    double mainThreadTotal = 0;
+    double mainThreadMin = 0;
+    double mainThreadMax = 0;
+    uint64_t monitorThreadSampleCount = 0;
+    double monitorThreadTotal = 0;
+    double monitorThreadMin = 0;
+    double monitorThreadMax = 0;
+
+    for (const auto &sample: samples) {
+        if (!sample.isSampledAtValid()) {
+            continue;
+        }
+
+        if (sample.isProcessCPUPctValid()) {
+            if (processSampleCount == 0) {
+                processMin = sample.processCPUPct;
+                processMax = sample.processCPUPct;
+            } else {
+                processMin = std::min(processMin, sample.processCPUPct);
+                processMax = std::max(processMax, sample.processCPUPct);
+            }
+            processSampleCount++;
+            processTotal += sample.processCPUPct;
+        }
+
+        if (sample.isMainThreadCPUPctValid()) {
+            if (mainThreadSampleCount == 0) {
+                mainThreadMin = sample.mainThreadCPUPct;
+                mainThreadMax = sample.mainThreadCPUPct;
+            } else {
+                mainThreadMin = std::min(mainThreadMin, sample.mainThreadCPUPct);
+                mainThreadMax = std::max(mainThreadMax, sample.mainThreadCPUPct);
+            }
+            mainThreadSampleCount++;
+            mainThreadTotal += sample.mainThreadCPUPct;
+        }
+
+        if (sample.isMonitorThreadCPUPctValid()) {
+            if (monitorThreadSampleCount == 0) {
+                monitorThreadMin = sample.monitorThreadCPUPct;
+                monitorThreadMax = sample.monitorThreadCPUPct;
+            } else {
+                monitorThreadMin = std::min(monitorThreadMin, sample.monitorThreadCPUPct);
+                monitorThreadMax = std::max(monitorThreadMax, sample.monitorThreadCPUPct);
+            }
+            monitorThreadSampleCount++;
+            monitorThreadTotal += sample.monitorThreadCPUPct;
+        }
+    }
+
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if (processSampleCount == 0) {
+        return result;
+    }
+
+    NSNumber *endTimestamp = @(CFAbsoluteTimeToUTCNanos(endTime));
+    double processMean = processTotal / (double)processSampleCount;
+    result[@"bugsnag.system.cpu_measures_timestamps"] = @[endTimestamp];
+    result[@"bugsnag.system.cpu_measures_total"] = @[@(processMean)];
+    result[@"bugsnag.system.cpu_mean_total"] = @(processMean);
+    result[@"bugsnag.system.cpu_min_total"] = @(processMin);
+    result[@"bugsnag.system.cpu_max_total"] = @(processMax);
+
+    if (mainThreadSampleCount > 0) {
+        double mainThreadMean = mainThreadTotal / (double)mainThreadSampleCount;
+        result[@"bugsnag.system.cpu_measures_main_thread"] = @[@(mainThreadMean)];
+        result[@"bugsnag.system.cpu_mean_main_thread"] = @(mainThreadMean);
+        result[@"bugsnag.system.cpu_min_main_thread"] = @(mainThreadMin);
+        result[@"bugsnag.system.cpu_max_main_thread"] = @(mainThreadMax);
+    }
+
+    if (monitorThreadSampleCount > 0) {
+        double monitorThreadMean = monitorThreadTotal / (double)monitorThreadSampleCount;
+        result[@"bugsnag.system.cpu_measures_overhead"] = @[@(monitorThreadMean)];
+        result[@"bugsnag.system.cpu_mean_overhead"] = @(monitorThreadMean);
+        result[@"bugsnag.system.cpu_min_overhead"] = @(monitorThreadMin);
+        result[@"bugsnag.system.cpu_max_overhead"] = @(monitorThreadMax);
+    }
+
+    return result;
+}
+
+NSMutableDictionary *
 SpanAttributesProvider::memorySampleAttributes(const std::vector<SystemInfoSampleData> &samples) noexcept {
     auto memory = [[NSMutableArray alloc] initWithCapacity:samples.size()];
     auto timestamps = [[NSMutableArray alloc] initWithCapacity:samples.size()];
@@ -341,5 +463,107 @@ SpanAttributesProvider::memorySampleAttributes(const std::vector<SystemInfoSampl
         @"bugsnag.system.memory.spaces.device.size": @(memorySize),
         @"bugsnag.system.memory.spaces.device.used": memory,
         @"bugsnag.system.memory.spaces.device.mean": @(memoryUseTotal / memorySampleCount),
+    }.mutableCopy;
+}
+
+// ---------------------------------------------------------------------------
+// Accumulator-based overloads (no ring-buffer data loss for long sessions)
+// ---------------------------------------------------------------------------
+
+NSMutableDictionary *
+SpanAttributesProvider::sessionCPUSampleAttributes(const SessionMetricsAccumulator &acc,
+                                                   CFAbsoluteTime endTime) noexcept {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    if (!acc.processCPU.hasData()) {
+        return result;
+    }
+
+    NSNumber *endTimestamp = @(CFAbsoluteTimeToUTCNanos(endTime));
+    const double processMean      = acc.processCPU.mean();
+    result[@"bugsnag.system.cpu_measures_timestamps"] = @[endTimestamp];
+    result[@"bugsnag.system.cpu_measures_total"]      = @[@(processMean)];
+    result[@"bugsnag.system.cpu_mean_total"]          = @(processMean);
+    result[@"bugsnag.system.cpu_min_total"]           = @(acc.processCPU.min);
+    result[@"bugsnag.system.cpu_max_total"]           = @(acc.processCPU.max);
+
+    if (acc.mainThreadCPU.hasData()) {
+        const double mainMean = acc.mainThreadCPU.mean();
+        result[@"bugsnag.system.cpu_measures_main_thread"] = @[@(mainMean)];
+        result[@"bugsnag.system.cpu_mean_main_thread"]     = @(mainMean);
+        result[@"bugsnag.system.cpu_min_main_thread"]      = @(acc.mainThreadCPU.min);
+        result[@"bugsnag.system.cpu_max_main_thread"]      = @(acc.mainThreadCPU.max);
+    }
+
+    if (acc.monitorThreadCPU.hasData()) {
+        const double monitorMean = acc.monitorThreadCPU.mean();
+        result[@"bugsnag.system.cpu_measures_overhead"] = @[@(monitorMean)];
+        result[@"bugsnag.system.cpu_mean_overhead"]     = @(monitorMean);
+        result[@"bugsnag.system.cpu_min_overhead"]      = @(acc.monitorThreadCPU.min);
+        result[@"bugsnag.system.cpu_max_overhead"]      = @(acc.monitorThreadCPU.max);
+    }
+
+    return result;
+}
+
+NSMutableDictionary *
+SpanAttributesProvider::sessionMemorySampleAttributes(const SessionMetricsAccumulator &acc,
+                                                      CFAbsoluteTime endTime) noexcept {
+    if (!acc.memory.hasData()) {
+        return [NSMutableDictionary new];
+    }
+
+    NSNumber *endTimestamp = @(CFAbsoluteTimeToUTCNanos(endTime));
+    return @{
+        @"bugsnag.system.memory.timestamps":              @[endTimestamp],
+        @"bugsnag.system.memory.spaces.device.size":      @(acc.memory.lastTotalSize),
+        @"bugsnag.system.memory.spaces.device.used":      @[@(acc.memory.mean())],
+        @"bugsnag.system.memory.spaces.device.mean":      @(acc.memory.mean()),
+        @"bugsnag.system.memory.spaces.device.min":       @(acc.memory.min),
+        @"bugsnag.system.memory.spaces.device.max":       @(acc.memory.max),
+    }.mutableCopy;
+}
+
+// ---------------------------------------------------------------------------
+
+NSMutableDictionary *
+SpanAttributesProvider::sessionMemorySampleAttributes(const std::vector<SystemInfoSampleData> &samples,
+                                                      CFAbsoluteTime endTime) noexcept {
+    uint64_t memorySampleCount = 0;
+    uint64_t memoryUseTotal = 0;
+    uint64_t memorySize = 0;
+    uint64_t memoryMin = 0;
+    uint64_t memoryMax = 0;
+
+    for (const auto &sample: samples) {
+        if (!sample.isSampledAtValid() || !sample.isPhysicalMemoryInUseValid()) {
+            continue;
+        }
+
+        memorySize = sample.physicalMemoryBytesTotal;
+        if (memorySampleCount == 0) {
+            memoryMin = sample.physicalMemoryBytesInUse;
+            memoryMax = sample.physicalMemoryBytesInUse;
+        } else {
+            memoryMin = std::min(memoryMin, sample.physicalMemoryBytesInUse);
+            memoryMax = std::max(memoryMax, sample.physicalMemoryBytesInUse);
+        }
+
+        memorySampleCount++;
+        memoryUseTotal += sample.physicalMemoryBytesInUse;
+    }
+
+    if (memorySampleCount == 0) {
+        return [NSMutableDictionary new];
+    }
+
+    uint64_t memoryMean = memoryUseTotal / memorySampleCount;
+    NSNumber *endTimestamp = @(CFAbsoluteTimeToUTCNanos(endTime));
+    return @{
+        @"bugsnag.system.memory.timestamps": @[endTimestamp],
+        @"bugsnag.system.memory.spaces.device.size": @(memorySize),
+        @"bugsnag.system.memory.spaces.device.used": @[@(memoryMean)],
+        @"bugsnag.system.memory.spaces.device.mean": @(memoryMean),
+        @"bugsnag.system.memory.spaces.device.min": @(memoryMin),
+        @"bugsnag.system.memory.spaces.device.max": @(memoryMax),
     }.mutableCopy;
 }

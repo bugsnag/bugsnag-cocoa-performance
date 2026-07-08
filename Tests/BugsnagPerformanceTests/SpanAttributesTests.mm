@@ -7,6 +7,9 @@
 //
 
 #import "TestHelpers.h"
+#import "../../Sources/BugsnagPerformance/Private/AppStateTracker.h"
+#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceImpl.h"
+#import "../../Sources/BugsnagPerformance/Private/Reachability.h"
 #import "../../Sources/BugsnagPerformance/Private/SpanAttributesProvider.h"
 
 using namespace bugsnag;
@@ -172,6 +175,29 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"custom");
 }
 
+- (void)testSessionSpanAttributes {
+    SpanAttributesProvider provider;
+
+    auto attributes = provider.sessionSpanAttributes(@"Playback");
+    XCTAssertEqual(2U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"app_session");
+    XCTAssertEqualObjects(attributes[@"bugsnag.app_session.name"], @"Playback");
+}
+
+- (void)testSessionSpanAttributesAreSanitized {
+    SpanAttributesProvider provider;
+
+    auto attributes = provider.sessionSpanAttributes(@"Active Usage");
+    XCTAssertEqualObjects(attributes[@"bugsnag.app_session.name"], @"ActiveUsage");
+}
+
+- (void)testSessionSpanAttributesFallbackForEmptyInput {
+    SpanAttributesProvider provider;
+
+    auto attributes = provider.sessionSpanAttributes(@"");
+    XCTAssertEqualObjects(attributes[@"bugsnag.app_session.name"], @"Session");
+}
+
 - (void)testCPUSampleAttributesInsufficient {
     SpanAttributesProvider provider;
 
@@ -282,6 +308,56 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_timestamps"], expectedTimestamps);
     XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_total"], expectedProcess);
     XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_total"], @25.0);
+}
+
+- (void)testSessionCPUSampleAttributes {
+    SpanAttributesProvider provider;
+    std::vector<SystemInfoSampleData> samples = {
+        SystemInfoSampleData(1),
+        SystemInfoSampleData(2),
+    };
+
+    samples[0].processCPUPct = 10;
+    samples[0].mainThreadCPUPct = 20;
+    samples[0].monitorThreadCPUPct = 30;
+
+    samples[1].processCPUPct = 40;
+    samples[1].mainThreadCPUPct = 50;
+    samples[1].monitorThreadCPUPct = 60;
+
+    auto attributes = provider.sessionCPUSampleAttributes(samples, 12);
+    XCTAssertEqual(13U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_timestamps"], (@[@978307212000000000]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_total"], (@[@25.0]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_total"], @25.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_min_total"], @10.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_max_total"], @40.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_main_thread"], (@[@35.0]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_main_thread"], @35.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_min_main_thread"], @20.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_max_main_thread"], @50.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_overhead"], (@[@45.0]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_overhead"], @45.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_min_overhead"], @30.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_max_overhead"], @60.0);
+}
+
+- (void)testSessionCPUSampleAttributesWithSingleSample {
+    SpanAttributesProvider provider;
+    std::vector<SystemInfoSampleData> samples = {
+        SystemInfoSampleData(1),
+    };
+
+    samples[0].processCPUPct = 10;
+    samples[0].mainThreadCPUPct = 20;
+    samples[0].monitorThreadCPUPct = 30;
+
+    auto attributes = provider.sessionCPUSampleAttributes(samples, 11);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_timestamps"], (@[@978307211000000000]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_measures_total"], (@[@10.0]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_mean_total"], @10.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_min_total"], @10.0);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.cpu_max_total"], @10.0);
 }
 
 - (void)testCPUSampleAttributesMainThreadOnly {
@@ -437,6 +513,48 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.size"], @100);
     XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.used"], expectedMemory);
     XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.mean"], @65.0);
+}
+
+- (void)testSessionMemorySampleAttributes {
+    SpanAttributesProvider provider;
+    std::vector<SystemInfoSampleData> samples = {
+        SystemInfoSampleData(11),
+        SystemInfoSampleData(12),
+    };
+
+    samples[0].physicalMemoryBytesTotal = 100;
+    samples[0].physicalMemoryBytesInUse = 80;
+    samples[1].physicalMemoryBytesTotal = 100;
+    samples[1].physicalMemoryBytesInUse = 50;
+
+    auto attributes = provider.sessionMemorySampleAttributes(samples, 13);
+    XCTAssertEqual(6U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.timestamps"], (@[@978307213000000000]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.size"], @100);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.used"], (@[@65]));
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.mean"], @65);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.min"], @50);
+    XCTAssertEqualObjects(attributes[@"bugsnag.system.memory.spaces.device.max"], @80);
+}
+
+- (void)testStartSessionSpanDoesNotBecomeCurrentContext {
+    auto impl = std::make_unique<bugsnag::BugsnagPerformanceImpl>(std::make_shared<bugsnag::Reachability>(), [AppStateTracker new]);
+
+    BugsnagPerformanceSpan *sessionSpan = impl->startAppSessionSpan(@"Active Usage");
+    XCTAssertEqualObjects(sessionSpan.name, @"[AppSession/ActiveUsage]");
+    XCTAssertEqualObjects(sessionSpan.attributes[@"bugsnag.span.category"], @"app_session");
+    XCTAssertEqualObjects(sessionSpan.attributes[@"bugsnag.app_session.name"], @"ActiveUsage");
+    XCTAssertEqual(sessionSpan.firstClass, BSGTriStateYes);
+    XCTAssertEqual(sessionSpan.parentId, (SpanId)0);
+    XCTAssertNil(impl->currentContext());
+
+    BugsnagPerformanceSpan *customSpan = impl->startCustomSpan(@"child");
+    XCTAssertEqual(customSpan.parentId, (SpanId)0);
+    XCTAssertEqual(customSpan.spanId, impl->currentContext().spanId);
+
+    [customSpan end];
+    XCTAssertNil(impl->currentContext());
+    [sessionSpan end];
 }
 
 

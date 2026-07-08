@@ -306,6 +306,8 @@
 		DA8E5EF42E2FC45B0049F7AB /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		DA8E5EFF2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DA9BB1CB2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */; };
+		E15559F82FD2750D00D51E68 /* SessionMetricsAccumulator.h in Headers */ = {isa = PBXBuildFile; fileRef = E15559F72FD2750500D51E68 /* SessionMetricsAccumulator.h */; };
+		E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -737,6 +739,9 @@
 		DA8E5EFD2E2FCA020049F7AB /* BugsnagPerformanceNamedSpansPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagPerformanceNamedSpansPlugin.h; sourceTree = "<group>"; };
 		DA8E5F0F2E2FCDED0049F7AB /* BugsnagPerformanceNamedSpansTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceNamedSpansTests.mm; sourceTree = "<group>"; };
 		DA9BB1CA2E40CC19009A7D25 /* BugsnagPerformanceNamedSpansPlugin+Private.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BugsnagPerformanceNamedSpansPlugin+Private.h"; sourceTree = "<group>"; };
+		E15559F42FD2716700D51E68 /* SessionMetricsAccumulatorTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SessionMetricsAccumulatorTests.mm; sourceTree = "<group>"; };
+		E15559F72FD2750500D51E68 /* SessionMetricsAccumulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionMetricsAccumulator.h; sourceTree = "<group>"; };
+		E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = EarlyConfigurationInfoPlistTests.mm; sourceTree = "<group>"; };
 		EDE8339F2AF550E20042A78F /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = Sources/BugsnagPerformance/resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -974,6 +979,7 @@
 				CBEC51DA2976F1F9009C0CE3 /* RetryQueue.h */,
 				CBEC51DB2976F1F9009C0CE3 /* RetryQueue.mm */,
 				01A58C0C29092D25006E4DF7 /* Sampler.h */,
+				E15559F72FD2750500D51E68 /* SessionMetricsAccumulator.h */,
 				96D55C822A1EBA35006D1F29 /* SpanActivityState.h */,
 				01A414CB2913C0F0003152A4 /* SpanAttributes.h */,
 				01A414CC2913C0F0003152A4 /* SpanAttributes.mm */,
@@ -1052,6 +1058,7 @@
 				964B785A2D4C20C000FF077D /* BugsnagPerformanceSpanConditionTests.mm */,
 				96F129302DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm */,
 				09E313032BF363020081F219 /* CrossTalkTests.mm */,
+				E1AE2B5B2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm */,
 				CBEC51C8296ED98F009C0CE3 /* FileBasedTest.h */,
 				CBEC51C9296ED98F009C0CE3 /* FileBasedTest.m */,
 				CBEC51D82976D54B009C0CE3 /* FilesystemTests.m */,
@@ -1064,6 +1071,7 @@
 				01A414C42912B93F003152A4 /* ResourceAttributesTests.mm */,
 				CBEC51E029793B1E009C0CE3 /* RetryQueueTests.mm */,
 				01A58C10290931A5006E4DF7 /* SamplerTests.mm */,
+				E15559F42FD2716700D51E68 /* SessionMetricsAccumulatorTests.mm */,
 				098FC8782D3FADFE001B627D /* SpanAttributesTests.mm */,
 				CB747D1E299E4984003CA1B4 /* SpanOptionsTests.mm */,
 				96D55C872A1EE26A006D1F29 /* SpanStackingHandlerTests.mm */,
@@ -1603,6 +1611,7 @@
 				967949BF2E993749005FD87F /* SpanStoreImpl.h in Headers */,
 				09F23A8C2CE351ED00F0D769 /* BugsnagSwiftTools.h in Headers */,
 				0921F02B2A67CBD600C764EB /* BugsnagPerformanceNetworkRequestInfo.h in Headers */,
+				E15559F82FD2750D00D51E68 /* SessionMetricsAccumulator.h in Headers */,
 				962CE7D52E60967A00380522 /* BugsnagPerformanceLoadingIndicatorView+Private.h in Headers */,
 				963726CA2DEAB24900C739E6 /* BugsnagPerformancePriority+Private.h in Headers */,
 				962CE7DF2E60988100380522 /* ViewLoadEarlyPhaseHandlerImpl.h in Headers */,
@@ -2030,6 +2039,7 @@
 				96F129312DCD325E00A6FB2B /* BugsnagPerformanceSpanTests.mm in Sources */,
 				CBEC51E129793B1E009C0CE3 /* RetryQueueTests.mm in Sources */,
 				01A58C11290931A5006E4DF7 /* SamplerTests.mm in Sources */,
+				E1AE2B5C2F76F9FA00019D5A /* EarlyConfigurationInfoPlistTests.mm in Sources */,
 				CBEC51C5296ED8BA009C0CE3 /* PersistentStateTests.mm in Sources */,
 				CBEC51CC296EDA2D009C0CE3 /* FileBasedTest.m in Sources */,
 				963726DA2DEFBA5A00C739E6 /* BSGCompositeSpanControlProviderTests.m in Sources */,
@@ -2329,7 +2339,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2351,7 +2361,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2385,7 +2395,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2421,7 +2431,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2449,7 +2459,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -2473,7 +2483,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -2505,7 +2515,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2541,7 +2551,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceSwiftUI;
@@ -2573,7 +2583,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2603,7 +2613,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformance;
 				PRODUCT_NAME = BugsnagPerformance;
 				SDKROOT = iphoneos;
@@ -2812,7 +2822,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2832,7 +2842,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7W9PZ27Y5F;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2854,7 +2864,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2876,7 +2886,7 @@
 				GCC_WARN_PEDANTIC = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bugsnag.BugsnagPerformance-iOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2908,7 +2918,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2939,7 +2949,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceTestsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -2980,7 +2990,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;
@@ -3043,7 +3053,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LOCALIZATION_PREFERS_STRING_CATALOGS = NO;
-				MARKETING_VERSION = 2.0.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bugsnag.BugsnagPerformanceNamedSpans;

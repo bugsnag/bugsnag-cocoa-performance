@@ -129,6 +129,7 @@
 		DA95ABF32E3A7E52001E6B0E /* NamedSpansPluginScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */; };
 		DAC7DD672E3CBED10091961A /* BugsnagPerformanceNamedSpans in Frameworks */ = {isa = PBXBuildFile; productRef = DAC7DD662E3CBED10091961A /* BugsnagPerformanceNamedSpans */; };
 		DADB14F92DE08A030006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */; };
+		E1A5A6432FE05B9F00A663EA /* AppSessionResourceUsageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5A6422FE05B9F00A663EA /* AppSessionResourceUsageScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -260,6 +261,7 @@
 		DA85961D2DF718C800905922 /* PluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginScenario.swift; sourceTree = "<group>"; };
 		DA95ABF22E3A7E52001E6B0E /* NamedSpansPluginScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NamedSpansPluginScenario.swift; sourceTree = "<group>"; };
 		DADB14F82DE08A030006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
+		E1A5A6422FE05B9F00A663EA /* AppSessionResourceUsageScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionResourceUsageScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -341,6 +343,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				E1A5A6422FE05B9F00A663EA /* AppSessionResourceUsageScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				96D090D42EEB3DA700BAA6D4 /* AppStartInterruptedScenario.swift */,
 				96D090DC2EEB89F400BAA6D4 /* AppStartLegacyDelayedStartScenario.swift */,
@@ -618,6 +621,7 @@
 				96F901092EE7B7FF0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift in Sources */,
 				CB572EAD29BB829800FD7A2A /* BackgroundForegroundScenario.swift in Sources */,
 				96EB8B502EB26B4400DDBF86 /* StartupEnabledMetrics.swift in Sources */,
+				E1A5A6432FE05B9F00A663EA /* AppSessionResourceUsageScenario.swift in Sources */,
 				96D090DD2EEB89F500BAA6D4 /* AppStartLegacyDelayedStartScenario.swift in Sources */,
 				966634E02C9DE384004A934D /* FrameMetricsSlowFramesScenario.swift in Sources */,
 				CB2B8A9F2A0E80B80054FBBE /* AutoInstrumentNetworkBadAddressScenario.swift in Sources */,

@@ -19,6 +19,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         let config = BugsnagPerformanceConfiguration.loadConfig()
 
+        // Session-span testing needs raw CPU and memory samples enabled so the
+        // sampler can feed the SessionMetricsAccumulator every second.
+        //config.enabledMetrics.cpu = true
+        //config.enabledMetrics.memory = true
+
         // Disable automatic app startup instrumentation:
         //config.autoInstrumentAppStarts = false
 

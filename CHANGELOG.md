@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 3.0.0 (2026-07-07)
+
+### Enhancements
+
+* Added AppSession Span support for aggregating CPU and memory usage across manual app sessions, including long-running sessions and OS-supported background execution.
+  [#579](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/579)
+
+### Bug fixes
+
+* Support Pascal case plist configuration values.
+  [#571](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/571)
+
 ## 2.0.0 (2026-01-20)
 
 ### Enhancements
