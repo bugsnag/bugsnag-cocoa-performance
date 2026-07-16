@@ -42,7 +42,7 @@ static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes
                 },
                 @"spans": @[encoder.encode(span)],
             }],
-        }]
+        }],
     };
 }
 
