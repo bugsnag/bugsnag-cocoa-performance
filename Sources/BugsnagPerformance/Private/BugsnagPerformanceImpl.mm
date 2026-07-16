@@ -28,7 +28,7 @@
 #endif
 
 using namespace bugsnag;
-
+static NSString *BSGPrettyJSONString(id object) __attribute__((unused));
 static NSString *BSGPrettyJSONString(id object) {
     if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
         return [object description];
@@ -608,9 +608,8 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
             }
         }
         if (hasNetworkOrGraphQLSpan) {
-            NSDictionary *encodedPayloadPreview = traceEncoding_.encode(spans, resourceAttributes_->get());
             BSGLogDebug(@"Network/GraphQL upload payload preview (actual encoded /v1/traces values)=%@",
-                        BSGPrettyJSONString(encodedPayloadPreview));
+                        BSGPrettyJSONString(traceEncoding_.encode(spans, resourceAttributes_->get())));
         }
         uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     });
@@ -920,9 +919,8 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         if (graphQLSpanName != nil) {
             [graphQLAttributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
             span = tracer_->startNetworkSpan(graphQLSpanName, options, BSGTriStateYes, graphQLAttributes);
-            auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
             BSGLogDebug(@"Manually reported GraphQL response completed: status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
-                        (long)httpResponse.statusCode,
+                        (long)[BSGDynamicCast<NSHTTPURLResponse>(task.response) statusCode],
                         interval.duration * 1000.0,
                         task.countOfBytesSent,
                         task.countOfBytesReceived,
@@ -937,4 +935,3 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         [span endWithEndTime:interval.endDate];
     }
 }
-

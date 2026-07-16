@@ -12,6 +12,7 @@
 
 using namespace bugsnag;
 
+static NSString *BSGPrettyJSONString(id object) __attribute__((unused));
 static NSString *BSGPrettyJSONString(id object) {
     if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
         return [object description];
@@ -22,6 +23,27 @@ static NSString *BSGPrettyJSONString(id object) {
         return [NSString stringWithFormat:@"<unable to encode JSON preview: %@>", error];
     }
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
+                                              BugsnagPerformanceSpan *span) __attribute__((unused));
+static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
+                                              BugsnagPerformanceSpan *span) {
+    OtlpTraceEncoding encoder;
+    NSDictionary *encodeResourceAttributes = resourceAttributes != nullptr ? resourceAttributes->get() : @{};
+    return @{
+        @"resourceSpans": @[@{
+            @"resource": @{
+                @"attributes": encoder.encode(encodeResourceAttributes ?: @{}),
+            },
+            @"scopeSpans": @[@{
+                @"scope": @{
+                    @"name": @"bugsnag.performance",
+                },
+                @"spans": @[encoder.encode(span)],
+            }],
+        }]
+    };
 }
 
 void
@@ -86,51 +108,11 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *
     NSDictionary *graphQLAttributes = state.graphQLAttributes;
     if (graphQLAttributes != nil) {
         [state.overallSpan internalSetMultipleAttributes:graphQLAttributes];
-        auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
-       // auto request = systemUtils_->taskRequest(task, nil);
-        BSGLogDebug(@"GraphQL response completed: status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
-                    (long)httpResponse.statusCode,
-                    metrics.taskInterval.duration * 1000.0,
-                    task.countOfBytesSent,
-                    task.countOfBytesReceived,
-                    state.overallSpan.name,
-                    graphQLAttributes[@"bugsnag.span.category"],
-                    graphQLAttributes[@"display_name"]);
     } else {
         auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
         auto request = systemUtils_->taskRequest(task, nil);
-        BSGLogDebug(@"Network response completed: method=%@ endpoint=%@ category=network graphQLDetected=NO status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld spanName=%@",
-                    request.HTTPMethod,
-                    state.url.path.length > 0 ? state.url.path : @"/",
-                    (long)httpResponse.statusCode,
-                    metrics.taskInterval.duration * 1000.0,
-                    task.countOfBytesSent,
-                    task.countOfBytesReceived,
-                    state.overallSpan.name);
     }
     [state.overallSpan endWithEndTime:metrics.taskInterval.endDate];
-    OtlpTraceEncoding encoder;
-    NSDictionary *resourceAttributes = resourceAttributes_ != nullptr ? resourceAttributes_->get() : @{};
-    NSDictionary *encodedPayloadPreview = @{
-        @"resourceSpans": @[@{
-            @"resource": @{
-                @"attributes": encoder.encode(resourceAttributes ?: @{}),
-            },
-            @"scopeSpans": @[@{
-                @"scope": @{
-                    @"name": @"bugsnag.performance",
-                },
-                @"spans": @[encoder.encode(state.overallSpan)],
-            }],
-        }],
-    };
-    if (graphQLAttributes != nil) {
-        BSGLogDebug(@"GraphQL encoded payload preview (single-span OTLP shape; real resource attributes are added during /v1/traces upload)=%@",
-                    BSGPrettyJSONString(encodedPayloadPreview));
-    } else {
-        BSGLogDebug(@"Network encoded payload preview (single-span OTLP shape; real resource attributes are added during /v1/traces upload)=%@",
-                    BSGPrettyJSONString(encodedPayloadPreview));
-    }
     repository_->setInstrumentationState(task, nil);
 }
 
