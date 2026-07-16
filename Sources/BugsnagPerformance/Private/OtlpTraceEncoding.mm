@@ -144,6 +144,9 @@ OtlpTraceEncoding::encode(NSArray<BugsnagPerformanceSpan *> *spans, NSDictionary
                 // Semantically when InstrumentationScope isn't set, it is equivalent with
                 // an empty instrumentation scope name (unknown).
                 // @"scope": ...
+                @"scope": @{
+                    @"name": @"bugsnag.performance",
+                },
                 
                 // A list of Spans that originate from an instrumentation scope.
                 @"spans": encodedSpans,

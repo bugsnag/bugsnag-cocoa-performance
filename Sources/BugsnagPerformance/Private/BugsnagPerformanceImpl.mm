@@ -29,6 +29,18 @@
 
 using namespace bugsnag;
 
+static NSString *BSGPrettyJSONString(id object) {
+    if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
+        return [object description];
+    }
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:&error];
+    if (data == nil) {
+        return [NSString stringWithFormat:@"<unable to encode JSON preview: %@>", error];
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
 static constexpr double SAMPLER_INTERVAL_SECONDS = 1.0;
 static constexpr double SAMPLER_HISTORY_SECONDS = 10 * 60;
 static constexpr NSTimeInterval WORK_INTERVAL_DEBUG_MODE_SECONDS = 5;
@@ -126,15 +138,16 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , appStateTracker_(appStateTracker)
 , viewControllersToSpans_([NSMapTable mapTableWithKeyOptions:NSMapTableWeakMemory | NSMapTableObjectPointerPersonality
                                                 valueOptions:NSMapTableStrongMemory])
+, deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
+, resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
 , instrumentation_(std::make_shared<Instrumentation>(tracer_,
                                                      appStartupSpanFactory_,
                                                      viewLoadSpanFactory_,
                                                      networkSpanFactory_,
                                                      spanAttributesProvider_,
-                                                     networkHeaderInjector_))
+                                                     networkHeaderInjector_,
+                                                     resourceAttributes_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
-, deviceID_(std::make_shared<PersistentDeviceID>(persistence_))
-, resourceAttributes_(std::make_shared<ResourceAttributes>(deviceID_))
 , systemInfoSampler_(SAMPLER_INTERVAL_SECONDS, SAMPLER_HISTORY_SECONDS)
 , networkRequestCallback_(
     ^BugsnagPerformanceNetworkRequestInfo * _Nonnull(BugsnagPerformanceNetworkRequestInfo * _Nonnull info) {
@@ -552,6 +565,20 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
 #endif
         return false;
     }
+    
+    NSMutableArray<NSString *> *spanSummaries = [NSMutableArray arrayWithCapacity:spans.count];
+    for (BugsnagPerformanceSpan *span in spans) {
+        NSString *category = BSGDynamicCast<NSString>(span.attributes[@"bugsnag.span.category"]) ?: @"<none>";
+        NSString *displayName = BSGDynamicCast<NSString>(span.attributes[@"display_name"]) ?: @"<none>";
+        [spanSummaries addObject:[NSString stringWithFormat:@"name=%@ category=%@ display_name=%@",
+                                  span.name,
+                                  category,
+                                  displayName]];
+    }
+    BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): sending %zu sampled spans to /v1/traces: %@",
+                spans.count,
+                spanSummaries);
+
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
@@ -568,10 +595,23 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
                 applyNonSessionSpanSampleAttributes(span);
             }
         }
-
+        
 #ifndef __clang_analyzer__
         BSGLogTrace(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): Sending %zu sampled spans (out of %zu)", origSpansSize, spans.count);
 #endif
+        BOOL hasNetworkOrGraphQLSpan = NO;
+        for (BugsnagPerformanceSpan *span in spans) {
+            NSString *category = BSGDynamicCast<NSString>(span.attributes[@"bugsnag.span.category"]);
+            if ([category isEqualToString:@"graphql"] || [category isEqualToString:@"network"]) {
+                hasNetworkOrGraphQLSpan = YES;
+                break;
+            }
+        }
+        if (hasNetworkOrGraphQLSpan) {
+            NSDictionary *encodedPayloadPreview = traceEncoding_.encode(spans, resourceAttributes_->get());
+            BSGLogDebug(@"Network/GraphQL upload payload preview (actual encoded /v1/traces values)=%@",
+                        BSGPrettyJSONString(encodedPayloadPreview));
+        }
         uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
     });
 
@@ -858,7 +898,10 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
 
     NSError *errorFromGetRequest = nil;
     NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
-
+    BSGLogDebug(@"BugsnagPerformanceImpl::reportNetworkSpan() method=%@ endpoint=%@",
+                req.HTTPMethod,
+                req.URL.path.length > 0 ? req.URL.path : @"/");
+    
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = req.URL;
     bool userVetoedTracing = false;
@@ -872,8 +915,26 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         SpanOptions options;
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
-        span = tracer_->startNetworkSpan(name, options);
+        auto graphQLAttributes = spanAttributesProvider_->graphQLAttributes(req, info.url);
+        NSString *graphQLSpanName = spanAttributesProvider_->graphQLSpanName(info.url, graphQLAttributes);
+        if (graphQLSpanName != nil) {
+            [graphQLAttributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
+            span = tracer_->startNetworkSpan(graphQLSpanName, options, BSGTriStateYes, graphQLAttributes);
+            auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
+            BSGLogDebug(@"Manually reported GraphQL response completed: status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
+                        (long)httpResponse.statusCode,
+                        interval.duration * 1000.0,
+                        task.countOfBytesSent,
+                        task.countOfBytesReceived,
+                        graphQLSpanName,
+                        graphQLAttributes[@"bugsnag.span.category"],
+                        graphQLAttributes[@"display_name"]);
+        } else {
+            span = tracer_->startNetworkSpan(name, options);
+        }
         [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
+        if (graphQLSpanName != nil) [span internalSetMultipleAttributes:graphQLAttributes];
         [span endWithEndTime:interval.endDate];
     }
 }
+
