@@ -108,9 +108,6 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *
     NSDictionary *graphQLAttributes = state.graphQLAttributes;
     if (graphQLAttributes != nil) {
         [state.overallSpan internalSetMultipleAttributes:graphQLAttributes];
-    } else {
-        auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
-        auto request = systemUtils_->taskRequest(task, nil);
     }
     [state.overallSpan endWithEndTime:metrics.taskInterval.endDate];
     repository_->setInstrumentationState(task, nil);
