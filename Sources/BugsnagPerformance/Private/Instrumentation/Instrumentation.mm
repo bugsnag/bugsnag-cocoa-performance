@@ -112,7 +112,8 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
 
 std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
                                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) {
+                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
+                                                                     std::shared_ptr<ResourceAttributes> resourceAttributes) {
     auto repository = std::make_shared<NetworkInstrumentationStateRepositoryImpl>();
     auto systemUtils = std::make_shared<NetworkInstrumentationSystemUtilsImpl>();
     auto swizzlingHandler = std::make_shared<NetworkSwizzlingHandlerImpl>();
@@ -122,7 +123,8 @@ std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared
                                                                           earlyPhaseHandler,
                                                                           systemUtils,
                                                                           repository,
-                                                                          networkHeaderInjector);
+                                                                          networkHeaderInjector,
+                                                                          resourceAttributes);
     auto delegate = [[BSGURLSessionPerformanceDelegate alloc] initWithLifecycleHandler:lifecycleHandler];
     return std::make_shared<NetworkInstrumentation>(systemUtils,
                                                     swizzlingHandler,

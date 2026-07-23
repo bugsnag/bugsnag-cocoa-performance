@@ -8,8 +8,43 @@
 
 #import "NetworkLifecycleHandlerImpl.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../OtlpTraceEncoding.h"
 
 using namespace bugsnag;
+
+static NSString *BSGPrettyJSONString(id object) __attribute__((unused));
+static NSString *BSGPrettyJSONString(id object) {
+    if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
+        return [object description];
+    }
+    NSError *error = nil;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:&error];
+    if (data == nil) {
+        return [NSString stringWithFormat:@"<unable to encode JSON preview: %@>", error];
+    }
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
+                                              BugsnagPerformanceSpan *span) __attribute__((unused));
+static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
+                                              BugsnagPerformanceSpan *span) {
+    OtlpTraceEncoding encoder;
+    NSDictionary *encodeResourceAttributes = resourceAttributes != nullptr ? resourceAttributes->get() : @{};
+    return @{
+        @"resourceSpans": @[@{
+            @"resource": @{
+                @"attributes": encoder.encode(encodeResourceAttributes ?: @{}),
+            },
+            @"scopeSpans": @[@{
+                @"scope": @{
+                    @"name": @"bugsnag.performance",
+                },
+                @"spans": @[encoder.encode(span)],
+            }],
+        }],
+    };
+}
 
 void
 NetworkLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled,
@@ -34,9 +69,21 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
         return;
     }
     auto state = initializeStateAndSaveIfNotVetoed(task,
-                                                   req.HTTPMethod,
-                                                   req.URL,
+                                                   req,
                                                    errorFromGetRequest);
+    if (state.graphQLAttributes != nil) {
+        BSGLogDebug(@"GraphQL span started: method=%@ endpoint=%@ name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
+                    req.HTTPMethod,
+                    state.url.path.length > 0 ? state.url.path : @"/",
+                    state.overallSpan.name,
+                    state.graphQLAttributes[@"bugsnag.span.category"],
+                    state.graphQLAttributes[@"display_name"]);
+    } else {
+        BSGLogDebug(@"Network span started: method=%@ endpoint=%@ category=network graphQLDetected=NO spanName=%@",
+                    req.HTTPMethod,
+                    state.url.path.length > 0 ? state.url.path : @"/",
+                    state.overallSpan.name);
+    }
     networkHeaderInjector_->injectTraceParentIfMatches(task, state.overallSpan);
 }
 
@@ -56,9 +103,16 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *
     }
     
     [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(nil, task, metrics, error)];
+    // Network completion attributes contain the default network category. Reapply the
+    // GraphQL classification after them without reparsing the request body.
+    NSDictionary *graphQLAttributes = state.graphQLAttributes;
+    if (graphQLAttributes != nil) {
+        [state.overallSpan internalSetMultipleAttributes:graphQLAttributes];
+    }
     [state.overallSpan endWithEndTime:metrics.taskInterval.endDate];
     repository_->setInstrumentationState(task, nil);
 }
+
 
 #pragma mark Helpers
 
@@ -120,16 +174,30 @@ NetworkLifecycleHandlerImpl::reportInternalErrorSpan(NSString *httpMethod,
     [span end];
 }
 
-NetworkInstrumentationState * 
+NetworkInstrumentationState *
 NetworkLifecycleHandlerImpl::initializeStateAndSaveIfNotVetoed(NSURLSessionTask *task,
-                                                               NSString *httpMethod,
-                                                               NSURL *originalUrl,
+                                                               NSURLRequest *request,
                                                                NSError *error) noexcept {
     auto state = [NetworkInstrumentationState new];
-    state.url = originalUrl;
+    state.url = request.URL;
     updateState(state);
     if (!state.hasBeenVetoed) {
-        state.overallSpan = spanFactory_->startOverallNetworkSpan(httpMethod, state.url, error);
+        auto graphQLAttributes = spanAttributesProvider_->graphQLAttributes(request, state.url);
+        NSString *graphQLSpanName = spanAttributesProvider_->graphQLSpanName(state.url, graphQLAttributes);
+        if (graphQLSpanName != nil) {
+            [graphQLAttributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
+            state.graphQLAttributes = graphQLAttributes;
+            SpanOptions options;
+            options.makeCurrentContext = false;
+            auto initialAttributes = spanAttributesProvider_->networkSpanUrlAttributes(state.url, error);
+            [initialAttributes addEntriesFromDictionary:graphQLAttributes];
+            state.overallSpan = spanFactory_->startNetworkSpan(graphQLSpanName,
+                                                               options,
+                                                               BSGTriStateYes,
+                                                               initialAttributes);
+        } else {
+            state.overallSpan = spanFactory_->startOverallNetworkSpan(request.HTTPMethod, state.url, error);
+        }
         repository_->setInstrumentationState(task, state);
         earlyPhaseHandler_->onNewStateCreated(state);
         return state;

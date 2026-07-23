@@ -22,6 +22,8 @@ static NSDictionary *accessTechnologyMappingDictionary();
 static NSString * const networkSubtypeKey = @"0000000100000001";
 static NSString * const connectionTypeCell = @"cell";
 static NSString * const BSGSpanCategoryAppSession = @"app_session";
+static const NSUInteger graphQLMaximumBodySize = 64 * 1024;
+static const NSUInteger graphQLMaximumOperationNameLength = 256;
 
 static NSString *sanitizeSessionTypeIdentifier(NSString *sessionType) {
     NSCharacterSet *separatorCharacterSet = [[NSCharacterSet alphanumericCharacterSet] invertedSet];
@@ -126,6 +128,194 @@ static void addNonZero(NSMutableDictionary *dict, NSString *key, NSNumber *value
     }
 }
 
+static BOOL isGraphQLNameCharacter(unichar character, BOOL firstCharacter) {
+    BOOL isLetter = (character >= 'A' && character <= 'Z') || (character >= 'a' && character <= 'z');
+    return isLetter || character == '_' || (!firstCharacter && character >= '0' && character <= '9');
+}
+
+static NSString *validatedGraphQLOperationName(id value) {
+    if (![value isKindOfClass:NSString.class]) return nil;
+    NSString *name = value;
+    if (name.length == 0 || name.length > graphQLMaximumOperationNameLength) return nil;
+    for (NSUInteger index = 0; index < name.length; index++) {
+        if (!isGraphQLNameCharacter([name characterAtIndex:index], index == 0)) return nil;
+    }
+    return name;
+}
+
+static NSUInteger skipGraphQLIgnoredCharacters(NSString *document, NSUInteger index) {
+    while (index < document.length) {
+        unichar character = [document characterAtIndex:index];
+        if ([[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:character] || character == ',' || character == 0xFEFF) {
+            index++;
+        } else if (character == '#') {
+            while (index < document.length && [document characterAtIndex:index] != '\n' && [document characterAtIndex:index] != '\r') index++;
+        } else {
+            break;
+        }
+    }
+    return index;
+}
+
+static NSString *readGraphQLName(NSString *document, NSUInteger *index) {
+    NSUInteger start = *index;
+    if (start >= document.length || !isGraphQLNameCharacter([document characterAtIndex:start], YES)) return nil;
+    (*index)++;
+    while (*index < document.length && isGraphQLNameCharacter([document characterAtIndex:*index], NO)) (*index)++;
+    return [document substringWithRange:NSMakeRange(start, *index - start)];
+}
+
+static NSUInteger skipGraphQLString(NSString *document, NSUInteger index) {
+    BOOL blockString = index + 2 < document.length && [document characterAtIndex:index + 1] == '"' && [document characterAtIndex:index + 2] == '"';
+    index += blockString ? 3 : 1;
+    while (index < document.length) {
+        if (blockString && index + 2 < document.length && [document characterAtIndex:index] == '"' &&
+            [document characterAtIndex:index + 1] == '"' && [document characterAtIndex:index + 2] == '"') return index + 3;
+        unichar character = [document characterAtIndex:index++];
+        if (!blockString && character == '\\' && index < document.length) index++;
+        else if (!blockString && character == '"') return index;
+    }
+    return index;
+}
+
+static void extractGraphQLOperation(NSString *document,
+                                    NSString *requestedOperationName,
+                                    NSString **operationType,
+                                    NSString **operationName) {
+    // The ED requires query as the fallback when the document does not expose an
+    // explicit query, mutation, or subscription keyword.
+    *operationType = @"query";
+    *operationName = requestedOperationName;
+    if (![document isKindOfClass:NSString.class] || document.length == 0) return;
+    NSUInteger index = 0;
+    NSUInteger selectionDepth = 0;
+    BOOL atDefinitionStart = YES;
+    while (index < document.length) {
+        index = skipGraphQLIgnoredCharacters(document, index);
+        if (index >= document.length) break;
+        unichar character = [document characterAtIndex:index];
+        if (character == '"') {
+            index = skipGraphQLString(document, index);
+            atDefinitionStart = NO;
+        } else if (character == '{') {
+            if (selectionDepth == 0 && atDefinitionStart && requestedOperationName == nil) {
+                *operationType = @"query";
+                return;
+            }
+            selectionDepth++;
+            atDefinitionStart = NO;
+            index++;
+        } else if (character == '}') {
+            if (selectionDepth > 0 && --selectionDepth == 0) atDefinitionStart = YES;
+            index++;
+        } else if (selectionDepth == 0 && atDefinitionStart && isGraphQLNameCharacter(character, YES)) {
+            NSString *token = readGraphQLName(document, &index);
+            BOOL isOperation = [token isEqualToString:@"query"] || [token isEqualToString:@"mutation"] || [token isEqualToString:@"subscription"];
+            if (isOperation) {
+                index = skipGraphQLIgnoredCharacters(document, index);
+                NSString *declaredName = readGraphQLName(document, &index);
+                if (requestedOperationName == nil || [declaredName isEqualToString:requestedOperationName]) {
+                    *operationType = token;
+                    if (requestedOperationName == nil) *operationName = validatedGraphQLOperationName(declaredName);
+                    return;
+                }
+            }
+            atDefinitionStart = NO;
+        } else {
+            index++;
+        }
+    }
+}
+
+static BOOL dataContainsGraphQLJSONKey(NSData *data) {
+    static NSArray<NSData *> *operationKeys;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        operationKeys = @[
+            (NSData * _Nonnull)[@"\"query\"" dataUsingEncoding:NSUTF8StringEncoding],
+            (NSData * _Nonnull)[@"\"mutation\"" dataUsingEncoding:NSUTF8StringEncoding],
+            (NSData * _Nonnull)[@"\"subscription\"" dataUsingEncoding:NSUTF8StringEncoding],
+        ];
+    });
+    for (NSData *key in operationKeys) {
+        if ([data rangeOfData:key options:0 range:NSMakeRange(0, data.length)].location != NSNotFound) return YES;
+    }
+    return NO;
+}
+
+static BOOL isGraphQLEndpointPath(NSString *path) {
+    for (NSString *component in path.pathComponents) {
+        if ([component caseInsensitiveCompare:@"graphql"] == NSOrderedSame) return YES;
+    }
+    return NO;
+}
+
+static BOOL addGraphQLDocumentAttributes(NSMutableDictionary *attributes,
+                                         NSString *document,
+                                         NSString *requestedName,
+                                         NSString *hintedType,
+                                         NSURL *url) {
+    if (url == nil) return NO;
+    // Avoid false positives: endpoint/content-type hints alone are not enough
+    // to construct GraphQL semantics. We only classify when a readable GraphQL
+    // document is available. This keeps ordinary HTTP traffic in the existing
+    // network category, as required by the ED.
+    if (![document isKindOfClass:NSString.class] ||
+        document.length == 0 ||
+        [document rangeOfString:@"{"].location == NSNotFound) {
+        return NO;
+    }
+    NSString *endpoint = url.path.length > 0 ? url.path : @"/";
+    NSString *operationType = nil;
+    NSString *operationName = nil;
+    extractGraphQLOperation(document,
+                            validatedGraphQLOperationName(requestedName),
+                            &operationType,
+                            &operationName);
+    if (hintedType.length > 0 && [operationType isEqualToString:@"query"] &&
+        [document rangeOfString:@"mutation" options:NSCaseInsensitiveSearch].location == NSNotFound &&
+        [document rangeOfString:@"subscription" options:NSCaseInsensitiveSearch].location == NSNotFound) {
+        operationType = hintedType;
+    }
+
+    attributes[@"bugsnag.span.category"] = @"graphql";
+    attributes[@"bugsnag.span.first_class"] = @YES;
+    // These two values are temporary SDK metadata used to construct the internal
+    // span name. Callers remove them before attaching attributes to the span.
+    attributes[@"graphql.operation.type"] = operationType;
+    if (operationName != nil) attributes[@"graphql.operation.name"] = operationName;
+    attributes[@"display_name"] = operationName == nil
+        ? [NSString stringWithFormat:@"%@ %@", operationType, endpoint]
+        : [NSString stringWithFormat:@"%@ %@ (%@)", operationType, endpoint, operationName];
+    BSGLogDebug(@"GraphQL operation extracted: endpoint=%@ operationType=%@ operationName=%@ displayName=%@",
+                endpoint,
+                operationType,
+                operationName ?: @"<anonymous>",
+                attributes[@"display_name"]);
+    BSGLogDebug(@"GraphQL request detected: endpoint=%@ operationType=%@ operationName=%@ attributes=%@",
+                endpoint,
+                operationType,
+                operationName ?: @"<anonymous>",
+                attributes);
+    return YES;
+}
+
+static BOOL addGraphQLPayloadAttributes(NSMutableDictionary *attributes, NSDictionary *payload, NSURL *url) {
+    NSArray<NSString *> *keys = @[@"query", @"mutation", @"subscription"];
+    for (NSString *key in keys) {
+        NSString *document = [payload[key] isKindOfClass:NSString.class] ? payload[key] : nil;
+        if (document.length > 0 && [document rangeOfString:@"{"].location != NSNotFound) {
+            NSString *hintedType = [key isEqualToString:@"query"] ? nil : key;
+            return addGraphQLDocumentAttributes(attributes,
+                                                document,
+                                                payload[@"operationName"],
+                                                hintedType,
+                                                url);
+        }
+    }
+    return NO;
+}
+
 static uint64_t CFAbsoluteTimeToUTCNanos(CFAbsoluteTime time) {
     return (uint64_t)((time + kCFAbsoluteTimeIntervalSince1970) * NSEC_PER_SEC);
 }
@@ -164,6 +354,119 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
     addNonZero(attributes, @"http.response_content_length", @(task.countOfBytesReceived));
     return attributes;
 }
+
+NSMutableDictionary *
+SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reportedURL) noexcept {
+    auto attributes = [NSMutableDictionary new];
+    @try {
+        NSString *method = request.HTTPMethod.uppercaseString;
+        NSString *contentType = [[request valueForHTTPHeaderField:@"Content-Type"] lowercaseString];
+        BOOL graphQLContentType = [contentType rangeOfString:@"application/graphql"].location != NSNotFound;
+        NSString *reportedPath = reportedURL.path ?: @"";
+        BOOL graphQLEndpoint = isGraphQLEndpointPath(reportedPath);
+
+        if ([method isEqualToString:@"GET"]) {
+            NSURL *url = request.URL;
+            NSString *queryString = url.query;
+            if (url != nil && queryString.length > 0 && queryString.length <= graphQLMaximumBodySize) {
+                NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:NO];
+                NSMutableDictionary *payload = [NSMutableDictionary new];
+                for (NSURLQueryItem *item in components.queryItems) {
+                    if ([item.name isEqualToString:@"query"] ||
+                        [item.name isEqualToString:@"mutation"] ||
+                        [item.name isEqualToString:@"subscription"] ||
+                        [item.name isEqualToString:@"operationName"]) {
+                        payload[item.name] = item.value;
+                    }
+                }
+                if (addGraphQLPayloadAttributes(attributes, payload, reportedURL)) return attributes;
+            }
+            if (graphQLContentType || graphQLEndpoint) {
+                BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=GET request had GraphQL hint but no readable query parameter",
+                            method,
+                            reportedURL.path.length > 0 ? reportedURL.path : @"/");
+            }
+            return attributes;
+        }
+        if (![method isEqualToString:@"POST"]) return attributes;
+        if (request.HTTPBodyStream != nil) {
+            BSGLogDebug(@"GraphQL request was not inspected: streamed POST bodies are unsupported; request remains category=network");
+            return attributes;
+        }
+        BOOL jsonContentType = contentType.length == 0 || [contentType rangeOfString:@"json"].location != NSNotFound;
+        if (!jsonContentType && !graphQLContentType && !graphQLEndpoint) {
+            BSGLogDebug(@"GraphQL request was not inspected: non-JSON Content-Type");
+            return attributes;
+        }
+        NSData *body = request.HTTPBody;
+        if (body.length == 0) {
+            if (graphQLContentType || graphQLEndpoint) {
+                BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=GraphQL hint present but request body is empty",
+                            method,
+                            reportedURL.path.length > 0 ? reportedURL.path : @"/");
+            }
+            return attributes;
+        }
+        if (body.length > graphQLMaximumBodySize) {
+            BSGLogDebug(@"GraphQL request was not inspected: body size %lu exceeds the %lu-byte limit",
+                        (unsigned long)body.length,
+                        (unsigned long)graphQLMaximumBodySize);
+            return attributes;
+        }
+
+        if (graphQLContentType) {
+            NSString *document = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+            addGraphQLDocumentAttributes(attributes, document, nil, nil, reportedURL);
+            return attributes;
+        }
+
+        if (dataContainsGraphQLJSONKey(body)) {
+            BSGLogDebug(@"GraphQL JSON candidate found: method=POST endpoint=%@ bodyBytes=%lu",
+                        reportedURL.path.length > 0 ? reportedURL.path : @"/",
+                        (unsigned long)body.length);
+            id json = [NSJSONSerialization JSONObjectWithData:body options:0 error:nil];
+            if ([json isKindOfClass:NSDictionary.class]) {
+                if (addGraphQLPayloadAttributes(attributes, json, reportedURL)) return attributes;
+            }
+            // Batches remain out of scope even when the endpoint path contains /graphql.
+            if ([json isKindOfClass:NSArray.class]) return attributes;
+            BSGLogDebug(@"GraphQL candidate did not expose usable operation metadata");
+        }
+        if (graphQLEndpoint) {
+            id endpointJSON = jsonContentType
+                ? [NSJSONSerialization JSONObjectWithData:body options:0 error:nil]
+                : nil;
+            if ([endpointJSON isKindOfClass:NSArray.class]) return attributes;
+            NSString *requestedName = [endpointJSON isKindOfClass:NSDictionary.class]
+                ? endpointJSON[@"operationName"]
+                : nil;
+            (void)requestedName;
+            BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=/graphql endpoint body did not contain a readable GraphQL document",
+                        method,
+                        reportedURL.path.length > 0 ? reportedURL.path : @"/");
+        }
+        if (attributes.count == 0) {
+            BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ contentType=%@ reason=no GraphQL URL/content-type/query body signal; request remains category=network",
+                        method,
+                        reportedURL.path.length > 0 ? reportedURL.path : @"/",
+                        contentType.length > 0 ? contentType : @"none");
+        }
+    } @catch (NSException *exception) {
+        BSGLogDebug(@"Could not inspect request for GraphQL attributes: %@", exception.reason);
+        [attributes removeAllObjects];
+    }
+    return attributes;
+}
+
+NSString *
+SpanAttributesProvider::graphQLSpanName(NSURL *reportedURL, NSDictionary *attributes) noexcept {
+    (void)reportedURL;
+    if (![attributes[@"bugsnag.span.category"] isEqualToString:@"graphql"]) return nil;
+    NSString *operationType = attributes[@"graphql.operation.type"] ?: @"query";
+    NSString *operationName = attributes[@"graphql.operation.name"] ?: @"<anonymous>";
+    return [NSString stringWithFormat:@"[GraphQL] %@:%@", operationType, operationName];
+}
+
 
 NSMutableDictionary *
 SpanAttributesProvider::networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept {

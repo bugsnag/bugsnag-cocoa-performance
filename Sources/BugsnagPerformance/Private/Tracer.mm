@@ -51,6 +51,14 @@ Tracer::startNetworkSpan(NSString *httpMethod,
 }
 
 BugsnagPerformanceSpan *
+Tracer::startNetworkSpan(NSString *spanName,
+                         const SpanOptions &options,
+                         BSGTriState firstClass,
+                         NSDictionary *attributes) noexcept {
+    return networkSpanFactory_->startNetworkSpan(spanName, options, firstClass, attributes);
+}
+
+BugsnagPerformanceSpan *
 Tracer::startViewLoadPhaseSpan(NSString *className,
                                NSString *phase,
                                BugsnagPerformanceSpanContext *parentContext,

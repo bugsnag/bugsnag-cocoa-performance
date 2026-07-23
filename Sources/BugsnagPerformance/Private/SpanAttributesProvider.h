@@ -20,7 +20,9 @@ public:
     NSMutableDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
     NSMutableDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
                                                NSError *encounteredError) noexcept;
-    
+    NSMutableDictionary *graphQLAttributes(NSURLRequest *request, NSURL *reportedURL) noexcept;
+    NSString *graphQLSpanName(NSURL *reportedURL, NSDictionary *graphQLAttributes) noexcept;
+
     NSMutableDictionary *internalErrorAttributes(NSError *encounteredError) noexcept;
     
     NSMutableDictionary *initialAppStartSpanAttributes() noexcept;
