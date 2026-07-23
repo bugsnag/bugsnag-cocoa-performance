@@ -153,7 +153,8 @@ class GraphQLDetectScenario: Scenario {
     // MARK: - Scenario 8: GET Request with Query Params
 
     private func runGETRequestScenario() {
-        sendGETToReflect(path: "/graphql?query={user{id}}&operationName=GetUser")
+        let path = "/graphql?query=%7Buser%7Bid%7D%7D&operationName=GetUser"
+            sendGETToReflect(path: path)
     }
 
     // MARK: - Scenario 9: Multiple Operations
@@ -232,10 +233,12 @@ class GraphQLDetectScenario: Scenario {
 
     /// Send a POST request to the Maze Runner reflect endpoint
     private func sendPOSTToReflect(path: String, contentType: String, body: String, timeout: TimeInterval = 60.0) {
-        let url = URL(string: path, relativeTo: fixtureConfig.reflectURL)!
+        guard let url = URL(string: path, relativeTo: fixtureConfig.reflectURL) else {
+            NSLog("GraphQLDetect: sendPOSTToReflect - invalid URL for path: \(path)")
+            return
+        }
         sendPOST(url: url, contentType: contentType, body: body, timeout: timeout)
     }
-
     /// Send a POST request to an arbitrary URL
     private func sendPOST(url: URL, contentType: String, body: String, timeout: TimeInterval = 60.0) {
         var request = URLRequest(url: url)
@@ -246,33 +249,33 @@ class GraphQLDetectScenario: Scenario {
 
         let semaphore = DispatchSemaphore(value: 0)
 
-        let task = URLSession.shared.dataTask(with: request) { _, response, error in
+        URLSession.shared.dataTask(with: request) { _, response, error in
             if let httpResponse = response as? HTTPURLResponse {
                 NSLog("GraphQLDetect: POST \(url) -> \(httpResponse.statusCode)")
             } else if let error = error {
                 NSLog("GraphQLDetect: POST \(url) -> error: \(error.localizedDescription)")
             }
             semaphore.signal()
-        }
-        task.resume()
+        }.resume()
+
         semaphore.wait()
     }
 
     /// Send a GET request to the Maze Runner reflect endpoint
     private func sendGETToReflect(path: String) {
-        let url = URL(string: path, relativeTo: fixtureConfig.reflectURL)!
-
+        guard let url = URL(string: path, relativeTo: fixtureConfig.reflectURL) else {
+            NSLog("GraphQLDetect: sendGETToReflect - invalid URL for path: \(path)")
+            return
+        }
         let semaphore = DispatchSemaphore(value: 0)
-
-        let task = URLSession.shared.dataTask(with: url) { _, response, error in
+        URLSession.shared.dataTask(with: url) { _, response, error in
             if let httpResponse = response as? HTTPURLResponse {
                 NSLog("GraphQLDetect: GET \(url) -> \(httpResponse.statusCode)")
             } else if let error = error {
                 NSLog("GraphQLDetect: GET \(url) -> error: \(error.localizedDescription)")
             }
             semaphore.signal()
-        }
-        task.resume()
+        }.resume()
         semaphore.wait()
     }
 }
