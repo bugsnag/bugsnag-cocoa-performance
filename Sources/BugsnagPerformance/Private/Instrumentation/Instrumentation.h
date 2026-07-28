@@ -22,7 +22,6 @@
 #import "../SpanFactory/ViewLoad/ViewLoadSpanFactory.h"
 #import "../SpanFactory/Network/NetworkSpanFactory.h"
 #import "AppStartupInstrumentation/State/AppStartupInstrumentationStateSnapshot.h"
-#import "../ResourceAttributes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,8 +35,7 @@ std::shared_ptr<ViewLoadInstrumentation> createViewLoadInstrumentation(std::shar
 
 std::shared_ptr<NetworkInstrumentation> createNetworkInstrumentation(std::shared_ptr<NetworkSpanFactory> spanFactory,
                                                                      std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
-                                                                     std::shared_ptr<ResourceAttributes> resourceAttributes);
+                                                                     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector);
 
 namespace bugsnag {
 
@@ -48,11 +46,10 @@ public:
                     std::shared_ptr<ViewLoadSpanFactory> viewLoadSpanFactory,
                     std::shared_ptr<NetworkSpanFactory> networkSpanFactory,
                     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider,
-                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
-                    std::shared_ptr<ResourceAttributes> resourceAttributes) noexcept
+                    std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : appStartupInstrumentation_(createAppStartupInstrumentation(appStartupSpanFactory, spanAttributesProvider))
     , viewLoadInstrumentation_(createViewLoadInstrumentation(viewLoadSpanFactory, spanAttributesProvider))
-    , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector, resourceAttributes))
+    , networkInstrumentation_(createNetworkInstrumentation(networkSpanFactory, spanAttributesProvider, networkHeaderInjector))
     {
         tracer->setGetAppStartInstrumentationState([=]{ return appStartupInstrumentation_->stateSnapshot(); });
     }

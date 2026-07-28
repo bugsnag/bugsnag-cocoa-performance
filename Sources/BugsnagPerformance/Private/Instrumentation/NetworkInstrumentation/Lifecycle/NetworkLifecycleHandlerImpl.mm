@@ -8,43 +8,8 @@
 
 #import "NetworkLifecycleHandlerImpl.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
-#import "../../../OtlpTraceEncoding.h"
 
 using namespace bugsnag;
-
-static NSString *BSGPrettyJSONString(id object) __attribute__((unused));
-static NSString *BSGPrettyJSONString(id object) {
-    if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
-        return [object description];
-    }
-    NSError *error = nil;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:object options:NSJSONWritingPrettyPrinted error:&error];
-    if (data == nil) {
-        return [NSString stringWithFormat:@"<unable to encode JSON preview: %@>", error];
-    }
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}
-
-static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
-                                              BugsnagPerformanceSpan *span) __attribute__((unused));
-static NSDictionary *BSGEncodedPayloadPreview(std::shared_ptr<ResourceAttributes> resourceAttributes,
-                                              BugsnagPerformanceSpan *span) {
-    OtlpTraceEncoding encoder;
-    NSDictionary *encodeResourceAttributes = resourceAttributes != nullptr ? resourceAttributes->get() : @{};
-    return @{
-        @"resourceSpans": @[@{
-            @"resource": @{
-                @"attributes": encoder.encode(encodeResourceAttributes ?: @{}),
-            },
-            @"scopeSpans": @[@{
-                @"scope": @{
-                    @"name": @"bugsnag.performance",
-                },
-                @"spans": @[encoder.encode(span)],
-            }],
-        }],
-    };
-}
 
 void
 NetworkLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled,

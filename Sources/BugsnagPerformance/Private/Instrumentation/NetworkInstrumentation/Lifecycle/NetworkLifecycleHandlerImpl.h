@@ -13,7 +13,6 @@
 #import "../../../SpanFactory/Network/NetworkSpanFactory.h"
 #import "../System/NetworkInstrumentationSystemUtils.h"
 #import "../System/NetworkHeaderInjector.h"
-#import "../../../ResourceAttributes.h"
 
 namespace bugsnag {
 
@@ -24,15 +23,13 @@ public:
                                 std::shared_ptr<NetworkEarlyPhaseHandler> earlyPhaseHandler,
                                 std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils,
                                 std::shared_ptr<NetworkInstrumentationStateRepository> repository,
-                                std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector,
-                                std::shared_ptr<ResourceAttributes> resourceAttributes) noexcept
+                                std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector) noexcept
     : spanAttributesProvider_(spanAttributesProvider)
     , spanFactory_(spanFactory)
     , earlyPhaseHandler_(earlyPhaseHandler)
     , systemUtils_(systemUtils)
     , repository_(repository)
-    , networkHeaderInjector_(networkHeaderInjector)
-    , resourceAttributes_(resourceAttributes) {}
+    , networkHeaderInjector_(networkHeaderInjector) {}
     
     void onInstrumentationConfigured(bool isEnabled, BugsnagPerformanceNetworkRequestCallback callback) noexcept;
     void onTaskResume(NSURLSessionTask *task) noexcept;
@@ -47,7 +44,6 @@ private:
     std::shared_ptr<NetworkInstrumentationSystemUtils> systemUtils_;
     std::shared_ptr<NetworkInstrumentationStateRepository> repository_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
-    std::shared_ptr<ResourceAttributes> resourceAttributes_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_{nil};
     
     void updateState(NetworkInstrumentationState *state);

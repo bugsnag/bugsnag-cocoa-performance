@@ -360,8 +360,8 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
     auto attributes = [NSMutableDictionary new];
     @try {
         NSString *method = request.HTTPMethod.uppercaseString;
-        NSString *contentType = [[request valueForHTTPHeaderField:@"Content-Type"] lowercaseString];
-        BOOL graphQLContentType = [contentType rangeOfString:@"application/graphql"].location != NSNotFound;
+        NSString *contentType = [[request valueForHTTPHeaderField:@"Content-Type"] lowercaseString] ?: @"";
+        BOOL graphQLContentType = contentType.length > 0 && [contentType rangeOfString:@"application/graphql"].location != NSNotFound;
         NSString *reportedPath = reportedURL.path ?: @"";
         BOOL graphQLEndpoint = isGraphQLEndpointPath(reportedPath);
 
@@ -393,7 +393,8 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
             BSGLogDebug(@"GraphQL request was not inspected: streamed POST bodies are unsupported; request remains category=network");
             return attributes;
         }
-        BOOL jsonContentType = contentType.length == 0 || [contentType rangeOfString:@"json"].location != NSNotFound;
+        BOOL jsonContentType = contentType.length == 0 ||
+            [contentType rangeOfString:@"json"].location != NSNotFound;
         if (!jsonContentType && !graphQLContentType && !graphQLEndpoint) {
             BSGLogDebug(@"GraphQL request was not inspected: non-JSON Content-Type");
             return attributes;

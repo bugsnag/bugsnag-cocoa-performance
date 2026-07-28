@@ -145,8 +145,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
                                                      viewLoadSpanFactory_,
                                                      networkSpanFactory_,
                                                      spanAttributesProvider_,
-                                                     networkHeaderInjector_,
-                                                     resourceAttributes_))
+                                                     networkHeaderInjector_))
 , worker_([[Worker alloc] initWithInitialTasks:buildInitialTasks() recurringTasks:buildRecurringTasks()])
 , systemInfoSampler_(SAMPLER_INTERVAL_SECONDS, SAMPLER_HISTORY_SECONDS)
 , networkRequestCallback_(
@@ -566,6 +565,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
         return false;
     }
     
+#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
     NSMutableArray<NSString *> *spanSummaries = [NSMutableArray arrayWithCapacity:spans.count];
     for (BugsnagPerformanceSpan *span in spans) {
         NSString *category = BSGDynamicCast<NSString>(span.attributes[@"bugsnag.span.category"]) ?: @"<none>";
@@ -578,7 +578,8 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): sending %zu sampled spans to /v1/traces: %@",
                 spans.count,
                 spanSummaries);
-
+#endif
+    
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
