@@ -12,10 +12,10 @@ import BugsnagPerformance
 class GraphQLDetectScenario: Scenario {
     
     override func setInitialBugsnagConfiguration() {
-            super.setInitialBugsnagConfiguration()
-            // Enable network auto-instrumentation so the SDK can detect GraphQL
-            bugsnagPerfConfig.autoInstrumentNetworkRequests = true
-        }
+        super.setInitialBugsnagConfiguration()
+        // Enable network auto-instrumentation so the SDK can detect GraphQL
+        bugsnagPerfConfig.autoInstrumentNetworkRequests = true
+    }
 
     override func run() {
         // Force the automatic startup spans to be sent in a separate batch we discard
@@ -62,7 +62,16 @@ class GraphQLDetectScenario: Scenario {
     private func runDetectionScenario() {
         let contentType = scenarioConfig["content_type"] ?? "application/json"
         let body = scenarioConfig["body"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
-        let path = scenarioConfig["url_path"] ?? "/graphql"
+        let path: String = {
+            if let urlString = scenarioConfig["url"], let url = URL(string: urlString) {
+                var path = url.path.isEmpty ? "/" : url.path
+                if let query = url.query, !query.isEmpty {
+                    path += "?\(query)"
+                }
+                return path
+            }
+            return scenarioConfig["url_path"] ?? "/graphql"
+        }()
 
         sendPOSTToReflect(path: path, contentType: contentType, body: body)
     }
@@ -79,8 +88,17 @@ class GraphQLDetectScenario: Scenario {
 
     private func runDisplayNameScenario() {
         let body = scenarioConfig["body"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
-        let path = scenarioConfig["url_path"] ?? "/graphql"
-
+        let path: String = {
+            if let urlString = scenarioConfig["url"], let url = URL(string: urlString) {
+                var path = url.path.isEmpty ? "/" : url.path
+                if let query = url.query, !query.isEmpty {
+                    path += "?\(query)"
+                }
+                return path
+            }
+            return scenarioConfig["url_path"] ?? "/graphql"
+        }()
+        
         sendPOSTToReflect(path: path, contentType: "application/json", body: body)
     }
 
@@ -90,7 +108,16 @@ class GraphQLDetectScenario: Scenario {
         let method = scenarioConfig["http_method"] ?? "POST"
         let contentType = scenarioConfig["content_type"] ?? "application/json"
         let body = scenarioConfig["body"] ?? "{\"userId\": \"123\", \"action\": \"get\"}"
-        let path = scenarioConfig["url_path"] ?? "/rest/users"
+        let path: String = {
+            if let urlString = scenarioConfig["url"], let url = URL(string: urlString) {
+                var path = url.path.isEmpty ? "/" : url.path
+                if let query = url.query, !query.isEmpty {
+                    path += "?\(query)"
+                }
+                return path
+            }
+            return scenarioConfig["url_path"] ?? "/rest/users"
+        }()
 
         if method == "GET" {
             sendGETToReflect(path: path)
