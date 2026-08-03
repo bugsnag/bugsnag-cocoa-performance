@@ -39,28 +39,31 @@ static inline NSURL *DefaultEndpointForKey(NSString *apiKey) {
 @implementation BugsnagPerformanceEnabledMetrics
 
 + (instancetype) withAllEnabled {
-    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:YES cpu:YES memory:YES];
+    return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:YES cpu:YES memory:YES disk:YES];
 }
 
 - (instancetype) initWithRendering:(BOOL)rendering
                                cpu:(BOOL)cpu
-                            memory:(BOOL)memory {
+                            memory:(BOOL)memory
+                              disk:(BOOL)disk {
     if ((self = [super init])) {
         _rendering = rendering;
         _cpu = cpu;
         _memory = memory;
+        _disk = disk;
     }
     return self;
 }
 
 - (instancetype) init {
-    return [self initWithRendering:NO cpu:NO memory:NO];
+    return [self initWithRendering:NO cpu:NO memory:NO disk:NO];
 }
 
 - (instancetype) clone {
     return [[BugsnagPerformanceEnabledMetrics alloc] initWithRendering:self.rendering
                                                                    cpu:self.cpu
-                                                                memory:self.memory];
+                                                                memory:self.memory
+                                                                  disk:self.disk];
 }
 
 @end

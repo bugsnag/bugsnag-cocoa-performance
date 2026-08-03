@@ -10,12 +10,13 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 
+#import <TargetConditionals.h>
+
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
-
 /**
  * A callback that gets called whenever a span starts.
  */
@@ -33,6 +34,7 @@ OBJC_EXPORT
 @property(nonatomic) BOOL rendering; // (default NO)
 @property(nonatomic) BOOL cpu;       // (default NO)
 @property(nonatomic) BOOL memory;    // (default NO)
+@property(nonatomic) BOOL disk;      // (default NO)
 
 - (instancetype) clone;
 

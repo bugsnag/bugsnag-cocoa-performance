@@ -94,6 +94,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
+, diskIOCollector_([BSGDiskIOCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
@@ -112,6 +113,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
                                                                     plainSpanFactory_,
                                                                     batch_,
                                                                     frameMetricsCollector_,
+                                                                    diskIOCollector_,
                                                                     spanStartCallbacks_,
                                                                     spanEndCallbacks_,
                                                                     ^{ this->onSpanStarted(); },
@@ -668,10 +670,12 @@ void BugsnagPerformanceImpl::onSpanDiscarded(BugsnagPerformanceSpan *span) noexc
     finishedSessionAccumulators_.erase((__bridge void *)span);
 }
 
+#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
     this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
 }
 
+#endif
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
@@ -816,6 +820,7 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     return span;
 }
 
+#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto viewType = BugsnagPerformanceViewTypeUIKit;
@@ -827,6 +832,8 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     [viewControllersToSpans_ setObject:span forKey:controller];
 }
 
+#endif
+
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext, @[]);
@@ -834,6 +841,7 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString 
     return span;
 }
 
+#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {
     /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
      * until certain internal operations occur (such as the map resizing itself).
@@ -852,6 +860,8 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
     }
     [span endWithEndTime:endTime];
 }
+
+#endif
 
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     BugsnagPerformanceSpan *span = nil;

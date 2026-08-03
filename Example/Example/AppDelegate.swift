@@ -32,10 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Disable automatic URLSession request instrumentation:
         //config.autoInstrumentNetworkRequests = false
-
         // ... or control whether spans are created on a per-instance basis:
-        config.viewControllerInstrumentationCallback = {
-            !($0 is IgnoredViewController)
+        config.viewControllerInstrumentationCallback = { viewController in
+            !(viewController is IgnoredViewController)
         }
 
         BugsnagPerformance.start(configuration: config)

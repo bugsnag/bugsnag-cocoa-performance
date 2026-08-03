@@ -10,7 +10,9 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
+#import <TargetConditionals.h>
+
+@class BugsnagPerformanceLoadingIndicatorView;
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -28,6 +30,7 @@
 #import "Instrumentation/NetworkInstrumentation/System/NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "DiskIO/BSGDiskIOCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "SystemInfoSampler.h"
 #import "SpanControl/BSGCompositeSpanControlProvider.h"
@@ -106,6 +109,7 @@ private:
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
+    BSGDiskIOCollector *diskIOCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     BSGCompositeSpanControlProvider *spanControlProvider_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;
@@ -119,7 +123,7 @@ private:
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
-    NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
+    NSMapTable *viewControllersToSpans_;
     std::shared_ptr<Instrumentation> instrumentation_;
     Worker *worker_;
     std::shared_ptr<PersistentDeviceID> deviceID_;

@@ -15,23 +15,29 @@
 
 - (instancetype)initWithRendering:(BSGTriState)rendering
                               cpu:(BSGTriState)cpu
-                           memory:(BSGTriState)memory {
+                           memory:(BSGTriState)memory
+                             disk:(BSGTriState)disk {
     if ((self = [super init])) {
         _rendering = rendering;
         _cpu = cpu;
         _memory = memory;
+        _disk = disk;
     }
     return self;
 }
 
 - (instancetype)init {
-    return [self initWithRendering:BSGTriStateUnset cpu:BSGTriStateUnset memory:BSGTriStateUnset];
+    return [self initWithRendering:BSGTriStateUnset
+                               cpu:BSGTriStateUnset
+                            memory:BSGTriStateUnset
+                              disk:BSGTriStateUnset];
 }
 
 - (instancetype)clone {
     return [[BugsnagPerformanceSpanMetricsOptions alloc] initWithRendering:self.rendering
                                                                        cpu:self.cpu
-                                                                    memory:self.memory];
+                                                                    memory:self.memory
+                                                                      disk:self.disk];
 }
 
 @end
