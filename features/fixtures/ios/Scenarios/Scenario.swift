@@ -34,6 +34,7 @@ class Scenario: NSObject {
         logDebug("Scenario.setInitialBugsnagConfiguration()")
         bugsnagPerfConfig.internal.clearPersistenceOnStart = true
         bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 1
+        bugsnagPerfConfig.samplingProbability = 1.0
         bugsnagPerfConfig.apiKey = "12312312312312312312312312312312"
         bugsnagPerfConfig.autoInstrumentAppStarts = false
         bugsnagPerfConfig.autoInstrumentAppStartsLegacy = false
