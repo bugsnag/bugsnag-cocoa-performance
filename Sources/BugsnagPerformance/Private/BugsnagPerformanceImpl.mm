@@ -275,6 +275,10 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     if (configuration_.internal.clearPersistenceOnStart) {
         persistence_->clearPerformanceData();
+        // Clearing persistence removes on-disk state, but preStartSetup may have
+        // already loaded an old probability into memory. Re-apply configured
+        // defaults so this run does not inherit stale sampling values.
+        persistentState_->configure(configuration_);
     }
 
     persistentState_->start();
@@ -670,12 +674,10 @@ void BugsnagPerformanceImpl::onSpanDiscarded(BugsnagPerformanceSpan *span) noexc
     finishedSessionAccumulators_.erase((__bridge void *)span);
 }
 
-#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::loadingIndicatorWasAdded(BugsnagPerformanceLoadingIndicatorView *loadingViewIndicator) noexcept {
     this->instrumentation_->loadingIndicatorWasAdded(loadingViewIndicator);
 }
 
-#endif
 
 void BugsnagPerformanceImpl::onWorkInterval() noexcept {
     BSGLogTrace(@"BugsnagPerformanceImpl::onWorkInterval()");
@@ -820,7 +822,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadSpan(NSString *clas
     return span;
 }
 
-#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, BugsnagPerformanceSpanOptions *optionsIn) noexcept {
     auto options = SpanOptions(optionsIn);
     auto viewType = BugsnagPerformanceViewTypeUIKit;
@@ -832,8 +833,6 @@ void BugsnagPerformanceImpl::startViewLoadSpan(UIViewController *controller, Bug
     [viewControllersToSpans_ setObject:span forKey:controller];
 }
 
-#endif
-
 BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString *className, NSString *phase,
                                                                        BugsnagPerformanceSpanContext *parentContext) noexcept {
     auto span = tracer_->startViewLoadPhaseSpan(className, phase, parentContext, @[]);
@@ -841,7 +840,6 @@ BugsnagPerformanceSpan *BugsnagPerformanceImpl::startViewLoadPhaseSpan(NSString 
     return span;
 }
 
-#if BSG_TARGET_UIKIT
 void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDate *endTime) noexcept {
     /* Although NSMapTable supports weak keys, zeroed keys are not actually removed
      * until certain internal operations occur (such as the map resizing itself).
@@ -860,8 +858,6 @@ void BugsnagPerformanceImpl::endViewLoadSpan(UIViewController *controller, NSDat
     }
     [span endWithEndTime:endTime];
 }
-
-#endif
 
 void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics) noexcept {
     BugsnagPerformanceSpan *span = nil;
