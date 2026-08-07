@@ -45,11 +45,11 @@ class GraphQLDetectScenario: Scenario {
         case 10:
             runSafeAttributesScenario()
         case 11:
-            runFirstClassFalseScenario()
+            runFirstClassScenario()
         case 12:
             runRequestFailureScenario()
         case 13:
-            runIOSClientLibraryScenario()
+            runIOSClientGraphQLScenario()
         case 14:
             runConsistentSpanNamesScenario()
         default:
@@ -209,9 +209,9 @@ class GraphQLDetectScenario: Scenario {
                           body: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}")
     }
 
-    // MARK: - Scenario 11: first_class=false
+    // MARK: - Scenario 11: first_class=true
 
-    private func runFirstClassFalseScenario() {
+    private func runFirstClassScenario() {
         sendPOSTToReflect(path: "/graphql", contentType: "application/json",
                           body: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}")
     }
@@ -240,9 +240,9 @@ class GraphQLDetectScenario: Scenario {
         }
     }
 
-    // MARK: - Scenario 13: iOS Client Library
+    // MARK: - Scenario 13: iOS URLSession GraphQL Request
 
-    private func runIOSClientLibraryScenario() {
+    private func runIOSClientGraphQLScenario() {
         sendPOSTToReflect(path: "/graphql", contentType: "application/json",
                           body: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}")
     }

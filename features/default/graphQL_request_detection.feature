@@ -1,6 +1,6 @@
 Feature: GraphQL span detection and attribute correctness on iOS
 
-  Scenario: GraphQL detected via URL /graphql path produces correct span
+  Scenario: GraphQL detected via configured /graphql path produces correct span
     Given I load scenario "GraphQLDetectScenario"
     And I configure scenario "scenario_number" to "1"
     And I configure scenario "url_path" to "/graphql"
@@ -9,7 +9,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
     
@@ -23,7 +23,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUserProfile"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/data\] query:GetUserProfile$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
 
@@ -39,7 +39,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:FetchItems"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:FetchItems$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
 
@@ -55,7 +55,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] mutation:CreatePost"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/api/graphql\] mutation:CreatePost$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
 
@@ -71,7 +71,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] subscription:OnMessage"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/api/v1/graphql\] subscription:OnMessage$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
 
@@ -87,7 +87,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] mutation:UpdateUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/custom-endpoint\] mutation:UpdateUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
 
@@ -103,7 +103,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:BadQuery"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:BadQuery$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 1g: GraphQL span created on HTTP 500 error
@@ -118,7 +118,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] mutation:FailOp"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] mutation:FailOp$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2: Operation type extraction - operationName field priority (P1)
@@ -129,7 +129,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2b: Mutation type extracted with operationName field priority
@@ -140,7 +140,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] mutation:CreatePost"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] mutation:CreatePost$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2c: Subscription type extracted with operationName field priority
@@ -151,7 +151,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] subscription:OnMsg"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] subscription:OnMsg$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2d: Document parsing fallback (P2) when no operationName field
@@ -162,7 +162,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:FetchOrders"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:FetchOrders$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2e: Anonymous query defaults to query type
@@ -173,7 +173,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:<anonymous>"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:<anonymous>$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 2f: operationName field overrides document name
@@ -184,7 +184,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:FieldName"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:FieldName$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 3: Display name format validation
@@ -196,7 +196,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 4: Non-GraphQL REST POST retains network category
@@ -211,7 +211,8 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I run the loaded scenario
     And I wait to receive at least 1 span
     * a span string attribute "bugsnag.span.category" equals "network"
-    * every span attribute "bugsnag.graphql.operation_type" does not exist
+    * every span attribute "graphql.operation.type" does not exist
+    * every span attribute "graphql.operation.name" does not exist
 
   # Scenario 4b: JSON with "query" key that is not GraphQL retains network category
   Scenario: JSON with query key that is not GraphQL retains network category
@@ -286,7 +287,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:Get_User_Profile_V2"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:Get_User_Profile_V2$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 6c: Edge-case operation names - numeric suffix
@@ -297,7 +298,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser123"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser123$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 7: Batched GraphQL request does not crash
@@ -316,7 +317,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 9: Multiple operations create distinct spans
@@ -334,23 +335,23 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * a span bool attribute "bugsnag.span.first_class" is true
     * every span attribute "bugsnag.graphql.document" does not exist
     * every span attribute "bugsnag.graphql.variables" does not exist
-    * every span attribute "bugsnag.graphql.operationType" does not exist
-    * every span attribute "bugsnag.graphql.operationName" does not exist
+    * every span attribute "graphql.operation.type" does not exist
+    * every span attribute "graphql.operation.name" does not exist
 
-  # Scenario 11: first_class=false prevents span grouping
-  Scenario: GraphQL span with first_class false is not aggregated
+  # Scenario 11: GraphQL spans are first_class for grouping
+  Scenario: GraphQL span is first_class for grouping
     Given I load scenario "GraphQLDetectScenario"
     And I configure scenario "scenario_number" to "11"
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
     * a span string attribute "bugsnag.span.category" equals "graphql"
-    * a span bool attribute "bugsnag.span.first_class" is false
+    * a span bool attribute "bugsnag.span.first_class" is true
 
   # Scenario 12: GraphQL span created on request timeout
   Scenario: GraphQL span is created even when request times out
@@ -360,7 +361,7 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
 
   # Scenario 12b: GraphQL span created on connection refused
@@ -373,14 +374,14 @@ Feature: GraphQL span detection and attribute correctness on iOS
     And I wait for 5 seconds
     Then I should receive no spans
 
-  # Scenario 13: iOS SDK via GraphQL client library
-  Scenario: iOS SDK produces GraphQL span via supported client library without document attribute
+  # Scenario 13: iOS URLSession GraphQL request
+  Scenario: iOS SDK produces GraphQL span from URLSession request without document attribute
     Given I load scenario "GraphQLDetectScenario"
     And I configure scenario "scenario_number" to "13"
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "[GraphQL] query:GetUser"
+    Then a span field "name" matches the regex "^\[GraphQL\] \[[^\]]*/graphql\] query:GetUser$"
     * a span string attribute "bugsnag.span.category" equals "graphql"
     * every span attribute "bugsnag.graphql.document" does not exist
 

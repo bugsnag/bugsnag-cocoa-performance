@@ -84,7 +84,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"BugsnagGetUser"
                    displayName:@"query /graphql (BugsnagGetUser)"
-                      spanName:@"[GraphQL] query:BugsnagGetUser"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagGetUser"];
 }
 
 - (void)testGraphQLPostJsonNamedMutationDetected {
@@ -97,7 +97,7 @@ using namespace bugsnag;
                  operationType:@"mutation"
                  operationName:@"UpdateCart"
                    displayName:@"mutation /graphql (UpdateCart)"
-                      spanName:@"[GraphQL] mutation:UpdateCart"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:UpdateCart"];
 }
 
 - (void)testGraphQLPostJsonNamedSubscriptionDetected {
@@ -110,7 +110,7 @@ using namespace bugsnag;
                  operationType:@"subscription"
                  operationName:@"BugsnagMessageSubscription"
                    displayName:@"subscription /graphql (BugsnagMessageSubscription)"
-                      spanName:@"[GraphQL] subscription:BugsnagMessageSubscription"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] subscription:BugsnagMessageSubscription"];
 }
 
 - (void)testGraphQLGetQueryParametersDetected {
@@ -123,7 +123,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"BugsnagGetQuery"
                    displayName:@"query /graphql (BugsnagGetQuery)"
-                      spanName:@"[GraphQL] query:BugsnagGetQuery"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagGetQuery"];
 }
 
 - (void)testGraphQLApplicationGraphQLContentTypeDetected {
@@ -136,7 +136,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"BugsnagApplicationGraphQL"
                    displayName:@"query /graphql (BugsnagApplicationGraphQL)"
-                      spanName:@"[GraphQL] query:BugsnagApplicationGraphQL"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagApplicationGraphQL"];
 }
 
 - (void)testAnonymousGraphQLQueryUsesAnonymousSpanName {
@@ -152,7 +152,7 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
     XCTAssertNil(attributes[@"graphql.operation.name"]);
     XCTAssertEqualObjects(attributes[@"display_name"], @"query /graphql");
-    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] query:<anonymous>");
+    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] [api.example.com/graphql] query:<anonymous>");
 }
 
 - (void)testOperationNameFieldTakesPriority {
@@ -165,7 +165,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"SelectedOperation"
                    displayName:@"query /graphql (SelectedOperation)"
-                      spanName:@"[GraphQL] query:SelectedOperation"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:SelectedOperation"];
 }
 
 - (void)testRestJsonBodyIsNotGraphQL {
@@ -280,7 +280,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"BodyLimitExact"
                    displayName:@"query /graphql (BodyLimitExact)"
-                      spanName:@"[GraphQL] query:BodyLimitExact"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:BodyLimitExact"];
 }
 
 - (void)testGraphQLBodyOverMaximumInspectionSizeIsSkipped {
@@ -310,7 +310,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:operationName
                    displayName:[NSString stringWithFormat:@"query /graphql (%@)", operationName]
-                      spanName:[NSString stringWithFormat:@"[GraphQL] query:%@", operationName]];
+                      spanName:[NSString stringWithFormat:@"[GraphQL] [api.example.com/graphql] query:%@", operationName]];
 }
 
 - (void)testGraphQLOperationNameOverMaximumLengthUsesAnonymousFallback {
@@ -330,7 +330,7 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
     XCTAssertNil(attributes[@"graphql.operation.name"]);
     XCTAssertEqualObjects(attributes[@"display_name"], @"query /graphql");
-    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] query:<anonymous>");
+    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] [api.example.com/graphql] query:<anonymous>");
 }
 
 - (void)testGraphQLTemporaryOperationAttributesAreUsedForSpanNameOnly {
@@ -341,7 +341,7 @@ using namespace bugsnag;
 
     SpanAttributesProvider provider;
     auto attributes = provider.graphQLAttributes(request, request.URL);
-    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] query:BugsnagTemporaryAttributes");
+    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] [api.example.com/graphql] query:BugsnagTemporaryAttributes");
 
     [attributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"graphql");
@@ -370,7 +370,7 @@ using namespace bugsnag;
                  operationType:@"mutation"
                  operationName:@"CancelSubscription"
                    displayName:@"mutation /graphql (CancelSubscription)"
-                      spanName:@"[GraphQL] mutation:CancelSubscription"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:CancelSubscription"];
 }
 
 - (void)testGraphQLMutationUpgradeSubscriptionDetected {
@@ -383,7 +383,7 @@ using namespace bugsnag;
                  operationType:@"mutation"
                  operationName:@"UpgradeSubscription"
                    displayName:@"mutation /graphql (UpgradeSubscription)"
-                      spanName:@"[GraphQL] mutation:UpgradeSubscription"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:UpgradeSubscription"];
 }
 
 - (void)testGraphQLQueryGetSubscriptionStatusDetected {
@@ -396,7 +396,7 @@ using namespace bugsnag;
                  operationType:@"query"
                  operationName:@"GetSubscriptionStatus"
                    displayName:@"query /graphql (GetSubscriptionStatus)"
-                      spanName:@"[GraphQL] query:GetSubscriptionStatus"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] query:GetSubscriptionStatus"];
 }
 
 - (void)testGraphQLSubscriptionOnMessageReceivedDetected {
@@ -409,7 +409,7 @@ using namespace bugsnag;
                  operationType:@"subscription"
                  operationName:@"OnMessageReceived"
                    displayName:@"subscription /graphql (OnMessageReceived)"
-                      spanName:@"[GraphQL] subscription:OnMessageReceived"];
+                      spanName:@"[GraphQL] [api.example.com/graphql] subscription:OnMessageReceived"];
 }
 
 - (void)testInitialNetworkSpanAttributes {
@@ -442,6 +442,229 @@ using namespace bugsnag;
 
     attributes = provider.networkSpanUrlAttributes(nil, nil);
     XCTAssertEqual(0U, attributes.count);
+}
+
+- (NSMutableURLRequest *)graphQLPostRequestWithJSONObject:(id)object {
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/api"]];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    request.HTTPBody = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
+    return request;
+}
+
+- (void)testNamedGraphQLQueryContract {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{
+        @"operationName": @"GetUser",
+        @"query": @"query GetUser($id: ID!) { user(id: $id) { name } }",
+        @"variables": @{@"id": @"private-value"},
+    }];
+    NSURL *reportedURL = [NSURL URLWithString:@"https://api.example.com/graphql?key=private"];
+
+    auto attributes = provider.graphQLAttributes(request, reportedURL);
+
+    XCTAssertEqual(5U, attributes.count);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"graphql");
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.first_class"], @YES);
+    XCTAssertEqualObjects(attributes[@"display_name"], @"query /graphql (GetUser)");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.name"], @"GetUser");
+    XCTAssertEqualObjects(provider.graphQLSpanName(reportedURL, attributes), @"[GraphQL] [api.example.com/graphql] query:GetUser");
+    XCTAssertFalse([[attributes description] containsString:@"private-value"]);
+    XCTAssertFalse([[attributes description] containsString:@"query GetUser"]);
+}
+
+- (void)testDerivesGraphQLOperationNameFromDocument {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{
+        @"query": @"# comment\nmutation UpdateProfile { updateProfile { id } }",
+    }];
+    NSURL *url = request.URL;
+
+    auto attributes = provider.graphQLAttributes(request, url);
+
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"mutation");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.name"], @"UpdateProfile");
+    XCTAssertEqualObjects(attributes[@"display_name"], @"mutation /api (UpdateProfile)");
+    XCTAssertEqualObjects(provider.graphQLSpanName(url, attributes), @"[GraphQL] [example.com/api] mutation:UpdateProfile");
+}
+
+- (void)testAnonymousGraphQLQueryContract {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{@"query": @"{ viewer { id } }"}];
+    NSURL *url = [NSURL URLWithString:@"https://api.example.com/graphql"];
+
+    auto attributes = provider.graphQLAttributes(request, url);
+
+    XCTAssertEqualObjects(attributes[@"display_name"], @"query /graphql");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
+    XCTAssertNil(attributes[@"graphql.operation.name"]);
+    XCTAssertEqualObjects(provider.graphQLSpanName(url, attributes), @"[GraphQL] [api.example.com/graphql] query:<anonymous>");
+}
+
+- (void)testUnknownTypeDefaultsToQueryContract {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{
+        @"operationName": @"GetUser",
+        @"query": @"not a parseable operation { value }",
+    }];
+    NSURL *url = [NSURL URLWithString:@"https://api.example.com/graphql"];
+
+    auto attributes = provider.graphQLAttributes(request, url);
+
+    XCTAssertEqualObjects(attributes[@"display_name"], @"query /graphql (GetUser)");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.name"], @"GetUser");
+    XCTAssertEqualObjects(provider.graphQLSpanName(url, attributes), @"[GraphQL] [api.example.com/graphql] query:GetUser");
+}
+
+- (void)testSelectsRequestedOperationFromGraphQLDocument {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{
+        @"operationName": @"Second",
+        @"query": @"query First { first } subscription Second { second }",
+    }];
+    auto attributes = provider.graphQLAttributes(request, request.URL);
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"subscription");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.name"], @"Second");
+}
+
+- (void)testGraphQLEndpointNormalization {
+    SpanAttributesProvider provider;
+    NSURLRequest *request = [self graphQLPostRequestWithJSONObject:@{
+        @"operationName": @"GetUser",
+        @"query": @"query GetUser { user { id } }",
+    }];
+    NSDictionary<NSString *, NSString *> *cases = @{
+        @"https://api.example.com/graphql":             @"/graphql",
+        @"https://api.example.com/graphql?key=abc":     @"/graphql",
+        @"https://api.example.com/":                    @"/",
+        @"https://api.example.com":                     @"/",
+        @"https://api.example.com/v2/graphql":          @"/v2/graphql",
+        @"https://api.example.com/users/123/graphql":   @"/users/123/graphql",
+    };
+    for (NSString *urlString in cases) {
+        NSURL *url = [NSURL URLWithString:urlString];
+        auto attributes = provider.graphQLAttributes(request, url);
+        NSString *expectedEndpoint = [NSString stringWithFormat:@"%@%@", url.host, cases[urlString]];
+        NSString *expectedSpanName = [NSString stringWithFormat:@"[GraphQL] [%@] query:GetUser", expectedEndpoint];
+        XCTAssertEqualObjects(provider.graphQLSpanName(url, attributes), expectedSpanName);
+        NSString *expectedDisplayName = [NSString stringWithFormat:@"query %@ (GetUser)", cases[urlString]];
+        XCTAssertEqualObjects(attributes[@"display_name"], expectedDisplayName);
+    }
+}
+
+- (void)testGraphQLDetectionSignalsFromED {
+    SpanAttributesProvider provider;
+
+    // Detection via Content-Type: application/graphql
+    NSMutableURLRequest *contentType = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/api"]];
+    contentType.HTTPMethod = @"POST";
+    [contentType setValue:@"application/graphql" forHTTPHeaderField:@"Content-Type"];
+    contentType.HTTPBody = [@"mutation UpdateThing { updateThing }" dataUsingEncoding:NSUTF8StringEncoding];
+    auto attributes = provider.graphQLAttributes(contentType, contentType.URL);
+    NSString *expectedSpanName1 = @"[GraphQL] [example.com/api] mutation:UpdateThing";
+    XCTAssertEqualObjects(provider.graphQLSpanName(contentType.URL, attributes), expectedSpanName1);
+
+    // Endpoint-only URL (no body/content-type signal) should return empty attributes
+    NSMutableURLRequest *endpoint = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/api/v1/graphql"]];
+    endpoint.HTTPMethod = @"POST";
+    attributes = provider.graphQLAttributes(endpoint, endpoint.URL);
+    XCTAssertEqual(0U, attributes.count);
+    XCTAssertNil(provider.graphQLSpanName(endpoint.URL, attributes));
+
+    // Detection via JSON body key "mutation" — use explicit URL matching expected span
+    NSURL *mutationURL = [NSURL URLWithString:@"https://api.example.com/graphql"];
+    NSData *mutationBody = [NSJSONSerialization dataWithJSONObject:@{
+        @"operationName": @"UpdateThing",
+        @"mutation": @"{ updateThing }",
+    } options:0 error:nil];
+    NSMutableURLRequest *mutationKey = [NSMutableURLRequest requestWithURL:mutationURL];
+    mutationKey.HTTPMethod = @"POST";
+    [mutationKey setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    mutationKey.HTTPBody = mutationBody;
+    attributes = provider.graphQLAttributes(mutationKey, mutationKey.URL);
+    NSString *expectedSpanName2 = @"[GraphQL] [api.example.com/graphql] mutation:UpdateThing";
+    XCTAssertEqualObjects(provider.graphQLSpanName(mutationKey.URL, attributes), expectedSpanName2);
+}
+
+- (void)testGraphQLEndpointRequiresCompletePathComponent {
+    SpanAttributesProvider provider;
+    NSArray<NSString *> *ordinaryPaths = @[
+        @"https://example.com/graphqlite",
+        @"https://example.com/api/graphql-helper",
+        @"https://example.com/notgraphql",
+    ];
+    for (NSString *urlString in ordinaryPaths) {
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
+        request.HTTPMethod = @"GET";
+        XCTAssertEqual(0U, provider.graphQLAttributes(request, request.URL).count);
+    }
+
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://example.com/api/GraphQL/v1"]];
+    request.HTTPMethod = @"GET";
+    XCTAssertEqual(0U, provider.graphQLAttributes(request, request.URL).count);
+}
+
+- (void)testGraphQLOperationMetadataIsRemovedFromEmittedAttributes {
+    SpanAttributesProvider provider;
+    NSMutableDictionary *attributes = provider.graphQLAttributes(
+        [self graphQLPostRequestWithJSONObject:@{@"operationName": @"GetUser", @"query": @"query GetUser { user }"}],
+        [NSURL URLWithString:@"https://example.com/graphql"]);
+    XCTAssertNotNil(provider.graphQLSpanName(nil, attributes));
+    [attributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
+    XCTAssertNil(attributes[@"graphql.operation.type"]);
+    XCTAssertNil(attributes[@"graphql.operation.name"]);
+    XCTAssertEqualObjects(attributes[@"bugsnag.span.first_class"], @YES);
+}
+
+- (void)testGraphQLGetRequestContract {
+    SpanAttributesProvider provider;
+    NSURLComponents *components = [NSURLComponents componentsWithString:@"https://example.com/graphql"];
+    components.queryItems = @[
+        [NSURLQueryItem queryItemWithName:@"operationName" value:@"Continents"],
+        [NSURLQueryItem queryItemWithName:@"query" value:@"query Continents { continents { name } }"],
+    ];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:components.URL];
+    request.HTTPMethod = @"GET";
+    auto attributes = provider.graphQLAttributes(request, request.URL);
+    XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
+    XCTAssertEqualObjects(attributes[@"graphql.operation.name"], @"Continents");
+}
+
+- (void)testGraphQLFailOpenCasesRemainNetworkRequests {
+    SpanAttributesProvider provider;
+    NSURL *url = [NSURL URLWithString:@"https://example.com/api"];
+    NSURLRequest *rest = [self graphQLPostRequestWithJSONObject:@{@"operationName": @"not-graphql", @"value": @1}];
+    XCTAssertEqual(0U, provider.graphQLAttributes(rest, url).count);
+
+    NSURLRequest *emptyQuery = [self graphQLPostRequestWithJSONObject:@{@"query": @""}];
+    XCTAssertEqual(0U, provider.graphQLAttributes(emptyQuery, url).count);
+
+    NSMutableURLRequest *nonJSON = [self graphQLPostRequestWithJSONObject:@{@"query": @"query Test { test }"}];
+    [nonJSON setValue:@"text/plain" forHTTPHeaderField:@"Content-Type"];
+    XCTAssertEqual(0U, provider.graphQLAttributes(nonJSON, url).count);
+
+    NSMutableURLRequest *malformedJSON = [NSMutableURLRequest requestWithURL:url];
+    malformedJSON.HTTPMethod = @"POST";
+    malformedJSON.HTTPBody = [@"{\"query\":" dataUsingEncoding:NSUTF8StringEncoding];
+    XCTAssertEqual(0U, provider.graphQLAttributes(malformedJSON, url).count);
+
+    NSURLRequest *batch = [self graphQLPostRequestWithJSONObject:@[
+        @{@"operationName": @"One", @"query": @"query One { one }"},
+        @{@"operationName": @"Two", @"query": @"query Two { two }"},
+    ]];
+    XCTAssertEqual(0U, provider.graphQLAttributes(batch, url).count);
+
+    NSMutableURLRequest *oversized = [NSMutableURLRequest requestWithURL:url];
+    oversized.HTTPMethod = @"POST";
+    oversized.HTTPBody = [NSMutableData dataWithLength:64 * 1024 + 1];
+    XCTAssertEqual(0U, provider.graphQLAttributes(oversized, url).count);
+
+    NSMutableURLRequest *streamed = [NSMutableURLRequest requestWithURL:url];
+    streamed.HTTPMethod = @"POST";
+    streamed.HTTPBodyStream = [NSInputStream inputStreamWithData:[@"{\"query\":\"{ viewer }\"}" dataUsingEncoding:NSUTF8StringEncoding]];
+    XCTAssertEqual(0U, provider.graphQLAttributes(streamed, url).count);
 }
 
 - (void)testInternalErrorAttributes {

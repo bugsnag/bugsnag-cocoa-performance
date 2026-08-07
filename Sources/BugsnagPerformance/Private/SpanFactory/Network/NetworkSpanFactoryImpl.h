@@ -31,9 +31,9 @@ public:
                                              NSDictionary *attributes) noexcept;
     
     BugsnagPerformanceSpan *startNetworkSpan(NSString *spanName,
-                                              const SpanOptions &options,
-                                              BSGTriState firstClass,
-                                              NSDictionary *attributes) noexcept;
+                                             const SpanOptions &options,
+                                             BSGTriState firstClass,
+                                             NSDictionary *attributes) noexcept;
     
 private:
     std::shared_ptr<PlainSpanFactory> plainSpanFactory_;

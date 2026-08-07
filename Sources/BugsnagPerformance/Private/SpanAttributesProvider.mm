@@ -461,11 +461,13 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
 
 NSString *
 SpanAttributesProvider::graphQLSpanName(NSURL *reportedURL, NSDictionary *attributes) noexcept {
-    (void)reportedURL;
     if (![attributes[@"bugsnag.span.category"] isEqualToString:@"graphql"]) return nil;
     NSString *operationType = attributes[@"graphql.operation.type"] ?: @"query";
     NSString *operationName = attributes[@"graphql.operation.name"] ?: @"<anonymous>";
-    return [NSString stringWithFormat:@"[GraphQL] %@:%@", operationType, operationName];
+    NSString *host = reportedURL.host ?: @"";
+    NSString *path = reportedURL.path.length > 0 ? reportedURL.path : @"/";
+    NSString *endpoint = host.length > 0 ? [NSString stringWithFormat:@"%@%@", host, path] : path;
+    return [NSString stringWithFormat:@"[GraphQL] [%@] %@:%@", endpoint, operationType, operationName];
 }
 
 
