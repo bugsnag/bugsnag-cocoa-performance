@@ -52,6 +52,10 @@ class GraphQLDetectScenario: Scenario {
             runIOSClientGraphQLScenario()
         case 14:
             runConsistentSpanNamesScenario()
+        case 15:
+            runSpanIdTraceIdValidationScenario()
+        case 16:
+            runGraphQLResponseStatusScenario()
         default:
             break
         }
@@ -303,6 +307,178 @@ class GraphQLDetectScenario: Scenario {
             }
             semaphore.signal()
         }.resume()
+        semaphore.wait()
+    }
+    
+    // MARK: - Scenario 15: Span ID and Trace ID Validation
+
+    private func runSpanIdTraceIdValidationScenario() {
+        // Send 3 identical GraphQL operations
+        // Each should get a valid and distinct spanId
+        // All should have valid traceIds (same or distinct)
+        for _ in 1...3 {
+            sendPOSTToReflect(path: "/graphql", contentType: "application/json",
+                              body: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}")
+        }
+    }
+
+    // MARK: - Scenario 16: GraphQL Response Error Handling & Span Status
+
+    private func runGraphQLResponseStatusScenario() {
+        let errorType = scenarioConfig["error_type"] ?? "success"
+        let expectedStatus = Int(scenarioConfig["expected_status"] ?? "200") ?? 200
+
+        switch errorType {
+
+        case "errors_array":
+            // HTTP 200 but response body has non-empty errors array
+            // → SDK should set status.code = STATUS_CODE_ERROR
+            let responseBody = scenarioConfig["response_body"] ?? "{\"data\": null, \"errors\": [{\"message\": \"User not found\", \"path\": [\"user\"]}]}"
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: responseBody,
+                responseStatus: expectedStatus
+            )
+
+        case "partial_data_errors":
+            // HTTP 200 with partial data + non-empty errors array
+            // → SDK should set status.code = STATUS_CODE_ERROR
+            let responseBody = scenarioConfig["response_body"] ?? "{\"data\": {\"user\": {\"id\": \"1\"}}, \"errors\": [{\"message\": \"Field deprecated\"}]}"
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: responseBody,
+                responseStatus: expectedStatus
+            )
+
+        case "success":
+            // HTTP 200 with clean data, no errors key
+            // → SDK should set status.code = STATUS_CODE_OK
+            let responseBody = scenarioConfig["response_body"] ?? "{\"data\": {\"user\": {\"id\": \"1\", \"name\": \"John\"}}}"
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: responseBody,
+                responseStatus: expectedStatus
+            )
+
+        case "empty_errors":
+            // HTTP 200 with empty errors array []
+            // → SDK should set status.code = STATUS_CODE_OK
+            let responseBody = scenarioConfig["response_body"] ?? "{\"data\": {\"user\": {\"id\": \"1\"}}, \"errors\": []}"
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: responseBody,
+                responseStatus: expectedStatus
+            )
+
+        case "http_500":
+            // HTTP 500 transport error
+            // → SDK should set status.code = STATUS_CODE_ERROR
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: "{}",
+                responseStatus: expectedStatus
+            )
+
+        case "http_401":
+            // HTTP 401 unauthorized
+            // → SDK should set status.code = STATUS_CODE_ERROR
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: "{}",
+                responseStatus: expectedStatus
+            )
+
+        case "timeout":
+            // Connection timeout
+            // → SDK should set status.code = STATUS_CODE_ERROR
+            sendPOSTToReflectWithResponseBody(
+                path: "/reflect/graphql",
+                contentType: "application/json",
+                requestBody: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}",
+                responseBody: "{}",
+                responseStatus: 408,
+                timeout: 5.0
+            )
+
+        default:
+            sendPOSTToReflect(path: "/graphql",
+                              contentType: "application/json",
+                              body: "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}")
+        }
+        
+    }
+
+    /// Send a POST to reflect with a specific response body and status
+    /// Uses Maze Runner's reflect endpoint with response configuration headers
+    private func sendPOSTToReflectWithResponseBody(
+        path: String,
+        contentType: String,
+        requestBody: String,
+        responseBody: String,
+        responseStatus: Int,
+        responseDelayMs: Int? = nil,
+        timeout: TimeInterval = 60.0
+    ) {
+        guard let baseUrl = URL(string: path, relativeTo: fixtureConfig.mazeRunnerURL),
+              var components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true) else {
+            NSLog("GraphQLDetect: sendPOSTToReflectWithResponseBody - invalid URL for path: \(path)")
+            return
+        }
+
+        var queryItems = components.queryItems ?? []
+        queryItems.append(URLQueryItem(name: "status", value: String(responseStatus)))
+        queryItems.append(URLQueryItem(name: "body_b64", value: Data(responseBody.utf8).base64EncodedString()))
+        if let responseDelayMs = responseDelayMs {
+            queryItems.append(URLQueryItem(name: "delay_ms", value: String(responseDelayMs)))
+        }
+        components.queryItems = queryItems
+
+        guard let url = components.url else {
+            NSLog("GraphQLDetect: sendPOSTToReflectWithResponseBody - unable to build URL for path: \(path)")
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        request.httpBody = requestBody.data(using: .utf8)
+        request.timeoutInterval = timeout
+
+        // Tell Maze Runner reflect to respond with specific status + body
+        request.setValue(String(responseStatus), forHTTPHeaderField: "Bugsnag-Reflect-Status")
+        request.setValue(Data(responseBody.utf8).base64EncodedString(), forHTTPHeaderField: "Bugsnag-Reflect-Body-Base64")
+        if let responseDelayMs = responseDelayMs {
+            request.setValue(String(responseDelayMs), forHTTPHeaderField: "Bugsnag-Reflect-Delay-Ms")
+        }
+
+        let semaphore = DispatchSemaphore(value: 0)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let httpResponse = response as? HTTPURLResponse {
+                NSLog("GraphQLDetect: POST \(url) -> \(httpResponse.statusCode)")
+
+                // Log response body for debugging
+                if let data = data, let bodyString = String(data: data, encoding: .utf8) {
+                    NSLog("GraphQLDetect: Response body: \(bodyString)")
+                }
+            } else if let error = error {
+                NSLog("GraphQLDetect: POST \(url) -> error: \(error.localizedDescription)")
+            }
+            semaphore.signal()
+        }.resume()
+
         semaphore.wait()
     }
 }

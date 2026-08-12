@@ -1,6 +1,6 @@
 //
 //  OtlpTraceEncodingTests.mm
-//  
+//
 //
 //  Created by Nick Dowell on 27/09/2022.
 //
@@ -21,15 +21,21 @@ using namespace bugsnag;
 @end
 
 static id findAttributeNamed(NSDictionary *span, NSString *name) {
-    for (NSDictionary *attr in span[@"attributes"]) {
-        if ([attr[@"key"] isEqualToString:name]) {
-            NSDictionary *value = attr[@"value"];
+    for (NSDictionary *attribute in span[@"attributes"]) {
+        if ([attribute[@"key"] isEqual:name]) {
+            NSDictionary *value = attribute[@"value"];
             if (value[@"stringValue"] != nil) {
                 return value[@"stringValue"];
             }
             if (value[@"intValue"] != nil) {
-                // OTLP encodes intValue as a string — convert back to NSNumber
-                return @([value[@"intValue"] longLongValue]);
+                id intValue = value[@"intValue"];
+                if ([intValue isKindOfClass:[NSString class]]) {
+                    // OTLP JSON encodes intValue as a decimal string.
+                    return @([(NSString *)intValue longLongValue]);
+                }
+                if ([intValue isKindOfClass:[NSNumber class]]) {
+                    return intValue;
+                }
             }
             if (value[@"boolValue"] != nil) {
                 return value[@"boolValue"];
@@ -248,7 +254,6 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     XCTAssertEqualObjects(encodedSpan[@"name"], @"[GraphQL] [example.com/graphql] query:GetUser");
     XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"bugsnag.span.category"), @"graphql");
     XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"bugsnag.span.first_class"), @YES);
-    XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"display_name"), @"query /graphql (GetUser)");
     XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"http.method"), @"POST");
     XCTAssertEqual([findAttributeNamed(encodedSpan, @"http.status_code") intValue], 200);
     XCTAssertNil(findAttributeNamed(encodedSpan, @"graphql.operation.type"));

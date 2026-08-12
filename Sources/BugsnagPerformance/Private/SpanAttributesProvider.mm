@@ -16,6 +16,16 @@
 
 using namespace bugsnag;
 
+namespace bugsnag {
+NSString * const BSGSpanCategoryAttributeKey = @"bugsnag.span.category";
+NSString * const BSGSpanDisplayNameAttributeKey = @"display_name";
+NSString * const BSGGraphQLOperationTypeAttributeKey = @"graphql.operation.type";
+NSString * const BSGGraphQLOperationNameAttributeKey = @"graphql.operation.name";
+NSString * const BSGSpanCategoryGraphQL = @"graphql";
+NSString * const BSGSpanCategoryNetwork = @"network";
+}
+
+
 static NSDictionary *accessTechnologyMappingDictionary();
 
 // https://stackoverflow.com/questions/58426438/what-is-key-in-cttelephonynetworkinfo-servicesubscribercellularproviders-and-c
@@ -182,9 +192,7 @@ static void extractGraphQLOperation(NSString *document,
                                     NSString *requestedOperationName,
                                     NSString **operationType,
                                     NSString **operationName) {
-    // The ED requires query as the fallback when the document does not expose an
-    // explicit query, mutation, or subscription keyword.
-    *operationType = @"query";
+    *operationType = @"query";  // ← KEEP this as "query" (DO NOT set to nil here)
     *operationName = requestedOperationName;
     if (![document isKindOfClass:NSString.class] || document.length == 0) return;
     NSUInteger index = 0;
@@ -199,7 +207,8 @@ static void extractGraphQLOperation(NSString *document,
             atDefinitionStart = NO;
         } else if (character == '{') {
             if (selectionDepth == 0 && atDefinitionStart && requestedOperationName == nil) {
-                *operationType = @"query";
+                *operationType = nil;   // ← THIS IS THE ONLY CHANGE: nil instead of @"query"
+                *operationName = nil;
                 return;
             }
             selectionDepth++;
@@ -210,7 +219,9 @@ static void extractGraphQLOperation(NSString *document,
             index++;
         } else if (selectionDepth == 0 && atDefinitionStart && isGraphQLNameCharacter(character, YES)) {
             NSString *token = readGraphQLName(document, &index);
-            BOOL isOperation = [token isEqualToString:@"query"] || [token isEqualToString:@"mutation"] || [token isEqualToString:@"subscription"];
+            BOOL isOperation = [token isEqualToString:@"query"] ||
+                               [token isEqualToString:@"mutation"] ||
+                               [token isEqualToString:@"subscription"];
             if (isOperation) {
                 index = skipGraphQLIgnoredCharacters(document, index);
                 NSString *declaredName = readGraphQLName(document, &index);
@@ -278,13 +289,13 @@ static BOOL addGraphQLDocumentAttributes(NSMutableDictionary *attributes,
         operationType = hintedType;
     }
 
-    attributes[@"bugsnag.span.category"] = @"graphql";
+    attributes[BSGSpanCategoryAttributeKey] = BSGSpanCategoryGraphQL;
     attributes[@"bugsnag.span.first_class"] = @YES;
     // These two values are temporary SDK metadata used to construct the internal
     // span name. Callers remove them before attaching attributes to the span.
-    attributes[@"graphql.operation.type"] = operationType;
-    if (operationName != nil) attributes[@"graphql.operation.name"] = operationName;
-    attributes[@"display_name"] = operationName == nil
+    attributes[BSGGraphQLOperationTypeAttributeKey] = operationType;
+    if (operationName != nil) attributes[BSGGraphQLOperationNameAttributeKey] = operationName;
+    attributes[BSGSpanDisplayNameAttributeKey] = operationName == nil
         ? [NSString stringWithFormat:@"%@ %@", operationType, endpoint]
         : [NSString stringWithFormat:@"%@ %@ (%@)", operationType, endpoint, operationName];
     BSGLogDebug(@"GraphQL operation extracted: endpoint=%@ operationType=%@ operationName=%@ displayName=%@",
@@ -324,7 +335,7 @@ NSMutableDictionary *
 SpanAttributesProvider::initialNetworkSpanAttributes() noexcept {
     BSGLogTrace(@"SpanAttributesProvider::initialNetworkSpanAttributes");
     auto attributes = [NSMutableDictionary new];
-    attributes[@"bugsnag.span.category"] = @"network";
+    attributes[BSGSpanCategoryAttributeKey] = BSGSpanCategoryNetwork;
     attributes[@"http.url"] = @"unknown";
     return attributes;
 }
@@ -337,7 +348,7 @@ SpanAttributesProvider::networkSpanAttributes(NSURL *url,
     BSGLogTrace(@"SpanAttributesProvider::networkSpanAttributes(%@, task, metrics, error)", url);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
     auto attributes = [NSMutableDictionary new];
-    attributes[@"bugsnag.span.category"] = @"network";
+    attributes[BSGSpanCategoryAttributeKey] = BSGSpanCategoryNetwork;
     if (url != nil) {
         attributes[@"http.url"] = url.absoluteString;
     }
@@ -461,13 +472,27 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
 
 NSString *
 SpanAttributesProvider::graphQLSpanName(NSURL *reportedURL, NSDictionary *attributes) noexcept {
-    if (![attributes[@"bugsnag.span.category"] isEqualToString:@"graphql"]) return nil;
-    NSString *operationType = attributes[@"graphql.operation.type"] ?: @"query";
-    NSString *operationName = attributes[@"graphql.operation.name"] ?: @"<anonymous>";
+    if (![attributes[BSGSpanCategoryAttributeKey] isEqualToString:BSGSpanCategoryGraphQL]) return nil;
+    
     NSString *host = reportedURL.host ?: @"";
     NSString *path = reportedURL.path.length > 0 ? reportedURL.path : @"/";
     NSString *endpoint = host.length > 0 ? [NSString stringWithFormat:@"%@%@", host, path] : path;
-    return [NSString stringWithFormat:@"[GraphQL] [%@] %@:%@", endpoint, operationType, operationName];
+    
+    NSString *operationType = attributes[BSGGraphQLOperationTypeAttributeKey];
+    NSString *operationName = attributes[BSGGraphQLOperationNameAttributeKey];
+    
+    if (operationType.length > 0 && operationName.length > 0) {
+        // Full: [GraphQL] [endpoint] type:name
+        return [NSString stringWithFormat:@"[GraphQL] [%@] %@:%@", endpoint, operationType, operationName];
+    } else if (operationType.length > 0) {
+        // Type only: [GraphQL] [endpoint] type
+        return [NSString stringWithFormat:@"[GraphQL] [%@] %@", endpoint, operationType];
+    } else if (operationName.length > 0) {
+        // Name with no explicit type (default to query): [GraphQL] [endpoint] query:name
+        return [NSString stringWithFormat:@"[GraphQL] [%@] query:%@", endpoint, operationName];
+    }
+    // Fully anonymous: [GraphQL] [endpoint]
+    return [NSString stringWithFormat:@"[GraphQL] [%@]", endpoint];
 }
 
 

@@ -13,6 +13,8 @@
 
 using namespace bugsnag;
 
+static NSString * const BSGGraphQLResponseHasErrorsAttribute = @"bugsnag.internal.graphql.response_has_errors";
+
 static NSString * EncodeSpanId(SpanId const &spanId) {
     return [NSString stringWithFormat:@"%016llx", spanId];
 }
@@ -23,6 +25,30 @@ static NSString * EncodeTraceId(uint64_t traceIdHi, uint64_t traceIdLo) {
 
 static NSString * EncodeCFAbsoluteTime(CFAbsoluteTime time) {
     return [NSString stringWithFormat:@"%llu", absoluteTimeToNanoseconds(time)];
+}
+
+static NSString *GraphQLStatusCode(BugsnagPerformanceSpan *span) {
+    if (![span.attributes[@"bugsnag.span.category"] isEqual:@"graphql"]) {
+        return nil;
+    }
+    
+    NSNumber *graphQLResponseHasErrors =
+    BSGDynamicCast<NSNumber>(span.attributes[BSGGraphQLResponseHasErrorsAttribute]);
+    
+    if (graphQLResponseHasErrors.boolValue) {
+        return @"STATUS_CODE_ERROR";
+    }
+    
+    NSNumber *httpStatusCode =
+    BSGDynamicCast<NSNumber>(span.attributes[@"http.status_code"]);
+    
+    if (httpStatusCode == nil || httpStatusCode.integerValue <= 0) {
+        return nil;
+    }
+    
+    return httpStatusCode.integerValue < 400
+    ? @"STATUS_CODE_OK"
+    : @"STATUS_CODE_ERROR";
 }
 
 NSDictionary *
@@ -104,6 +130,11 @@ OtlpTraceEncoding::encode(BugsnagPerformanceSpan *span) noexcept {
     // Attribute keys MUST be unique (it is not allowed to have more than one
     // attribute with the same key).
     result[@"attributes"] = encode(span.attributes);
+
+    NSString *graphQLStatusCode = GraphQLStatusCode(span);
+        if (graphQLStatusCode != nil) {
+            result[@"status"] = @{@"code": graphQLStatusCode};
+        }
 
     return result;
 }
@@ -273,6 +304,12 @@ NSArray<NSDictionary *> *
 OtlpTraceEncoding::encode(NSDictionary *attributes) noexcept {
     auto result = [NSMutableArray array];
     for (NSString *key in attributes) {
+        if ([key isEqualToString:BSGGraphQLResponseHasErrorsAttribute]) {
+            continue;
+        }
+        if ([key isEqualToString:@"display_name"]) {
+            continue;
+        }
         id value = attributes[key];
         if ([value isKindOfClass:[NSString class]]) {
             encodeStringAttribute(result, key, value);
@@ -356,11 +393,12 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(NSArray<Bugsn
     auto encodedSpans = encode(spans, resourceAttributes);
 
     NSError *error = nil;
-    auto payload = [NSJSONSerialization dataWithJSONObject:encodedSpans options:0 error:&error];
-    if (!payload) {
+    NSData * _Nullable serializedPayload = [NSJSONSerialization dataWithJSONObject:encodedSpans options:0 error:&error];
+    if (!serializedPayload) {
         NSCAssert(NO, @"%@", error);
         return nullptr;
     }
+    NSData * _Nonnull payload = (NSData * _Nonnull)serializedPayload;
 
     NSMutableDictionary *headers = [@{
         @"Content-Type": @"application/json",
@@ -373,11 +411,12 @@ std::unique_ptr<OtlpPackage> OtlpTraceEncoding::buildUploadPackage(NSArray<Bugsn
     }
 
     if (payload.length > MIN_SIZE_FOR_GZIP) {
-        payload = [Gzip gzipped:(NSData * _Nonnull)payload error:&error];
-        if (payload == nil || error != nil) {
+        NSData * _Nullable compressedPayload = [Gzip gzipped:payload error:&error];
+        if (compressedPayload == nil || error != nil) {
             BSGLogError(@"error compressing payload: %@", error);
             return nullptr;
         }
+        payload = (NSData * _Nonnull)compressedPayload;
         headers[@"Content-Encoding"] = @"gzip";
     }
 

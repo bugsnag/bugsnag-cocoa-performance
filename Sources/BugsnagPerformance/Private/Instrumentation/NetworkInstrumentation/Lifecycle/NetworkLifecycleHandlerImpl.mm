@@ -8,8 +8,71 @@
 
 #import "NetworkLifecycleHandlerImpl.h"
 #import "../../../BugsnagPerformanceSpan+Private.h"
+#import "../../../Utils.h"
+#import "../../../SpanAttributesProvider.h"
 
 using namespace bugsnag;
+
+static NSString * const BSGGraphQLResponseHasErrorsAttribute = @"bugsnag.internal.graphql.response_has_errors";
+static const NSUInteger BSGMaxGraphQLResponseBodyInspectionBytes = 64 * 1024;
+
+extern "C" NSData *BSGCapturedGraphQLResponseBodyForTask(NSURLSessionTask *task);
+extern "C" void BSGClearCapturedGraphQLResponseBodyForTask(NSURLSessionTask *task);
+
+static BOOL BSGGraphQLResponseBodyHasErrors(NSData *body) {
+    if (body.length == 0 || body.length > BSGMaxGraphQLResponseBodyInspectionBytes) {
+        return NO;
+    }
+    
+    NSError *error = nil;
+    id json = [NSJSONSerialization JSONObjectWithData:body options:0 error:&error];
+    NSDictionary *dictionary = BSGDynamicCast<NSDictionary>(json);
+    NSArray *errors = BSGDynamicCast<NSArray>(dictionary[@"errors"]);
+    if (errors.count > 0) {
+        return YES;
+    }
+    if (errors != nil) {
+        return NO;
+    }
+    
+    // Some servers may return a JSON string containing encoded JSON. Parse that once more.
+    NSString *jsonString = BSGDynamicCast<NSString>(json);
+    if (dictionary == nil && jsonString.length > 0) {
+        NSData *nestedData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        if (nestedData.length > 0) {
+            id nestedJson = [NSJSONSerialization JSONObjectWithData:nestedData options:0 error:nil];
+            NSDictionary *nestedDictionary = BSGDynamicCast<NSDictionary>(nestedJson);
+            NSArray *nestedErrors = BSGDynamicCast<NSArray>(nestedDictionary[@"errors"]);
+            if (nestedErrors.count > 0) {
+                return YES;
+            }
+            if (nestedErrors != nil) {
+                return NO;
+            }
+        }
+    }
+    
+    NSString *stringBody = [[NSString alloc] initWithData:body encoding:NSUTF8StringEncoding];
+    if (stringBody.length == 0) {
+        return NO;
+    }
+    
+    NSString *normalizedBody = [[stringBody stringByReplacingOccurrencesOfString:@"\n" withString:@""]
+                                stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *looselyUnescapedBody = [normalizedBody stringByReplacingOccurrencesOfString:@"\\\"" withString:@"\""];
+    
+    BOOL hasExplicitEmptyErrorsArray = [normalizedBody containsString:@"\"errors\":[]"] ||
+    [normalizedBody containsString:@"\\\"errors\\\":[]"] ||
+    [looselyUnescapedBody containsString:@"\"errors\":[]"];
+    if (hasExplicitEmptyErrorsArray) {
+        return NO;
+    }
+    
+    BOOL hasErrorsArray = [normalizedBody containsString:@"\"errors\":["] ||
+    [normalizedBody containsString:@"\\\"errors\\\":["] ||
+    [looselyUnescapedBody containsString:@"\"errors\":["];
+    return hasErrorsArray;
+}
 
 void
 NetworkLifecycleHandlerImpl::onInstrumentationConfigured(bool isEnabled,
@@ -26,23 +89,26 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
     if (!canTraceTask(task)) {
         return;
     }
-
+    
     NSError *errorFromGetRequest = nil;
     auto req = systemUtils_->taskRequest(task, &errorFromGetRequest);
-    if (req.URL == nil) {
+    if (req == nil || req.URL == nil) {
         reportInternalErrorSpan(req.HTTPMethod, errorFromGetRequest);
         return;
     }
     auto state = initializeStateAndSaveIfNotVetoed(task,
                                                    req,
                                                    errorFromGetRequest);
+    if (state == nil) {
+        return;
+    }
     if (state.graphQLAttributes != nil) {
         BSGLogDebug(@"GraphQL span started: method=%@ endpoint=%@ name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
                     req.HTTPMethod,
                     state.url.path.length > 0 ? state.url.path : @"/",
                     state.overallSpan.name,
-                    state.graphQLAttributes[@"bugsnag.span.category"],
-                    state.graphQLAttributes[@"display_name"]);
+                    state.graphQLAttributes[BSGSpanCategoryAttributeKey],
+                    state.graphQLAttributes[BSGSpanDisplayNameAttributeKey]);
     } else {
         BSGLogDebug(@"Network span started: method=%@ endpoint=%@ category=network graphQLDetected=NO spanName=%@",
                     req.HTTPMethod,
@@ -53,27 +119,94 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
 }
 
 void
-NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(NSURLSessionTask *task,
+NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(
+                                                              NSURLSessionTask *task,
                                                               NSURLSessionTaskMetrics *metrics,
-                                                              NSString *ignoreBaseEndpoint) noexcept {
+                                                              NSString *ignoreBaseEndpoint) noexcept
+{
+    
     auto state = repository_->getInstrumentationState(task);
     if (state.overallSpan == nil) {
         return;
     }
+    
     NSError *error = nil;
+    
     if (!shouldRecordFinishedTask(task, ignoreBaseEndpoint, &error)) {
+        BSGClearCapturedGraphQLResponseBodyForTask(task);
         [state.overallSpan cancel];
         repository_->setInstrumentationState(task, nil);
         return;
     }
     
-    [state.overallSpan internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(nil, task, metrics, error)];
-    // Network completion attributes contain the default network category. Reapply the
-    // GraphQL classification after them without reparsing the request body.
+    auto networkAttributes = spanAttributesProvider_->networkSpanAttributes(nil, task, metrics, error);
+    if (networkAttributes != nil) {
+        [state.overallSpan internalSetMultipleAttributes:networkAttributes];
+    }
+    
+    // Reapply GraphQL attributes (networkSpanAttributes overwrites category).
     NSDictionary *graphQLAttributes = state.graphQLAttributes;
+    
     if (graphQLAttributes != nil) {
         [state.overallSpan internalSetMultipleAttributes:graphQLAttributes];
+        
+        NSData *responseBody = BSGCapturedGraphQLResponseBodyForTask(task);
+        
+        NSHTTPURLResponse *httpResponse =
+        BSGDynamicCast<NSHTTPURLResponse>(task.response);
+        NSInteger statusCode = httpResponse ? httpResponse.statusCode : 0;
+        
+        if (responseBody.length == 0 && statusCode > 0 && statusCode < 400) {
+            // For completion-handler-based tasks, the response body is stored
+            // by the wrapped completion handler, which fires AFTER this callback.
+            // Defer span finalization to allow body capture to complete.
+            NSDate *endTime = metrics.taskInterval.endDate;
+            auto repo = repository_;
+            
+            dispatch_after(
+                           dispatch_time(DISPATCH_TIME_NOW, (int64_t)(100 * NSEC_PER_MSEC)),
+                           dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+                               
+                               NSData *deferredBody = BSGCapturedGraphQLResponseBodyForTask(task);
+                               
+                               BSGLogDebug(
+                                           @"GraphQL deferred body check: length=%lu hasErrors=%@",
+                                           (unsigned long)deferredBody.length,
+                                           BSGGraphQLResponseBodyHasErrors(deferredBody) ? @"YES" : @"NO"
+                                           );
+                               
+                               if (BSGGraphQLResponseBodyHasErrors(deferredBody)) {
+                                   [state.overallSpan internalSetAttribute:
+                                    BSGGraphQLResponseHasErrorsAttribute
+                                                                 withValue:@YES];
+                                   BSGLogDebug(
+                                               @"GraphQL response (deferred) contained errors; "
+                                               "status will be STATUS_CODE_ERROR"
+                                               );
+                               }
+                               
+                               BSGClearCapturedGraphQLResponseBodyForTask(task);
+                               [state.overallSpan endWithEndTime:endTime];
+                               repo->setInstrumentationState(task, nil);
+                           });
+            return; // Don't end span here — deferred block will do it
+        }
+        
+        // Body available immediately (delegate-based task) or HTTP error status
+        BOOL graphQLResponseHasErrors = BSGGraphQLResponseBodyHasErrors(responseBody);
+        
+        if (graphQLResponseHasErrors) {
+            [state.overallSpan internalSetAttribute:
+             BSGGraphQLResponseHasErrorsAttribute
+                                          withValue:@YES];
+            BSGLogDebug(
+                        @"GraphQL response contained a non-empty top-level errors "
+                        "array; span status will be STATUS_CODE_ERROR."
+                        );
+        }
     }
+    
+    BSGClearCapturedGraphQLResponseBodyForTask(task);
     [state.overallSpan endWithEndTime:metrics.taskInterval.endDate];
     repository_->setInstrumentationState(task, nil);
 }
@@ -116,19 +249,19 @@ NetworkLifecycleHandlerImpl::canTraceTask(NSURLSessionTask *task) noexcept {
         BSGLogTrace(@"Task %@ has nil request but we still want to trace it and report an error", task.class);
         return true;
     }
-
+    
     NSURL *url = req.URL;
     if (url == nil) {
         BSGLogTrace(@"Task %@ request has nil URL but we still want to trace it and report an error", task.class);
         return true;
     }
-
+    
     if ([url.scheme isEqualToString:@"file"]) {
         BSGLogTrace(@"Task %@ has forbidden file scheme in URL %@, so we won't trace it", task.class, url);
         // Don't track local activity.
         return false;
     }
-
+    
     return true;
 }
 
@@ -143,19 +276,29 @@ NetworkInstrumentationState *
 NetworkLifecycleHandlerImpl::initializeStateAndSaveIfNotVetoed(NSURLSessionTask *task,
                                                                NSURLRequest *request,
                                                                NSError *error) noexcept {
+    if (request == nil) {
+        return nil;
+    }
     auto state = [NetworkInstrumentationState new];
     state.url = request.URL;
     updateState(state);
     if (!state.hasBeenVetoed) {
         auto graphQLAttributes = spanAttributesProvider_->graphQLAttributes(request, state.url);
-        NSString *graphQLSpanName = spanAttributesProvider_->graphQLSpanName(state.url, graphQLAttributes);
-        if (graphQLSpanName != nil) {
-            [graphQLAttributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
+        NSString *graphQLSpanName = graphQLAttributes != nil
+            ? spanAttributesProvider_->graphQLSpanName(state.url, graphQLAttributes)
+            : nil;
+        if (graphQLSpanName != nil && graphQLAttributes != nil) {
+            [graphQLAttributes removeObjectsForKeys:@[BSGGraphQLOperationTypeAttributeKey,
+                                                      BSGGraphQLOperationNameAttributeKey]];
             state.graphQLAttributes = graphQLAttributes;
             SpanOptions options;
             options.makeCurrentContext = false;
             auto initialAttributes = spanAttributesProvider_->networkSpanUrlAttributes(state.url, error);
-            [initialAttributes addEntriesFromDictionary:graphQLAttributes];
+            if (initialAttributes != nil) {
+                [initialAttributes addEntriesFromDictionary:graphQLAttributes];
+            } else {
+                initialAttributes = graphQLAttributes.mutableCopy;
+            }
             state.overallSpan = spanFactory_->startNetworkSpan(graphQLSpanName,
                                                                options,
                                                                BSGTriStateYes,
@@ -169,6 +312,7 @@ NetworkLifecycleHandlerImpl::initializeStateAndSaveIfNotVetoed(NSURLSessionTask 
     }
     return nil;
 }
+
 
 void
 NetworkLifecycleHandlerImpl::endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept {
@@ -194,11 +338,11 @@ NetworkLifecycleHandlerImpl::shouldRecordFinishedTask(NSURLSessionTask *task,
     }
     auto request = systemUtils_->taskRequest(task, error);
     auto httpResponse = BSGDynamicCast<NSHTTPURLResponse>(task.response);
-
+    
     if (httpResponse.statusCode == 0) {
         return false;
     }
-
+    
     if (ignoreBaseEndpoint.length > 0 && [request.URL.absoluteString hasPrefix:ignoreBaseEndpoint]) {
         return false;
     }

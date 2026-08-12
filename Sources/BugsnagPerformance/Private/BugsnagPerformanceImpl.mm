@@ -28,6 +28,7 @@
 #endif
 
 using namespace bugsnag;
+static NSString * const BSGMissingSpanAttributeValue = @"<none>";
 static NSString *BSGPrettyJSONString(id object) __attribute__((unused));
 static NSString *BSGPrettyJSONString(id object) {
     if (object == nil || ![NSJSONSerialization isValidJSONObject:object]) {
@@ -567,14 +568,14 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
     
 #if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
     NSMutableArray<NSString *> *spanSummaries = [NSMutableArray arrayWithCapacity:spans.count];
-    for (BugsnagPerformanceSpan *span in spans) {
-        NSString *category = BSGDynamicCast<NSString>(span.attributes[@"bugsnag.span.category"]) ?: @"<none>";
-        NSString *displayName = BSGDynamicCast<NSString>(span.attributes[@"display_name"]) ?: @"<none>";
-        [spanSummaries addObject:[NSString stringWithFormat:@"name=%@ category=%@ display_name=%@",
-                                  span.name,
-                                  category,
-                                  displayName]];
-    }
+        for (BugsnagPerformanceSpan *span in spans) {
+            NSString *category = BSGDynamicCast<NSString>(span.attributes[BSGSpanCategoryAttributeKey]) ?: BSGMissingSpanAttributeValue;
+            NSString *displayName = BSGDynamicCast<NSString>(span.attributes[BSGSpanDisplayNameAttributeKey]) ?: BSGMissingSpanAttributeValue;
+            [spanSummaries addObject:[NSString stringWithFormat:@"name=%@ category=%@ display_name=%@",
+                                      span.name,
+                                      category,
+                                      displayName]];
+        }
     BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): sending %zu sampled spans to /v1/traces: %@",
                 spans.count,
                 spanSummaries);
@@ -916,9 +917,12 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
         options.makeCurrentContext = false;
         options.startTime = dateToAbsoluteTime(interval.startDate);
         auto graphQLAttributes = spanAttributesProvider_->graphQLAttributes(req, info.url);
-        NSString *graphQLSpanName = spanAttributesProvider_->graphQLSpanName(info.url, graphQLAttributes);
-        if (graphQLSpanName != nil) {
-            [graphQLAttributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
+        NSString *graphQLSpanName = graphQLAttributes != nil
+            ? spanAttributesProvider_->graphQLSpanName(info.url, graphQLAttributes)
+            : nil;
+        if (graphQLSpanName != nil && graphQLAttributes != nil) {
+            [graphQLAttributes removeObjectsForKeys:@[BSGGraphQLOperationTypeAttributeKey,
+                                                      BSGGraphQLOperationNameAttributeKey]];
             span = tracer_->startNetworkSpan(graphQLSpanName, options, BSGTriStateYes, graphQLAttributes);
             BSGLogDebug(@"Manually reported GraphQL response completed: status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
                         (long)[BSGDynamicCast<NSHTTPURLResponse>(task.response) statusCode],
@@ -926,13 +930,19 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
                         task.countOfBytesSent,
                         task.countOfBytesReceived,
                         graphQLSpanName,
-                        graphQLAttributes[@"bugsnag.span.category"],
-                        graphQLAttributes[@"display_name"]);
+                        graphQLAttributes[BSGSpanCategoryAttributeKey],
+                        graphQLAttributes[BSGSpanDisplayNameAttributeKey]);
         } else {
             span = tracer_->startNetworkSpan(name, options);
         }
-        [span internalSetMultipleAttributes:spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest)];
-        if (graphQLSpanName != nil) [span internalSetMultipleAttributes:graphQLAttributes];
+        auto networkAttributes = spanAttributesProvider_->networkSpanAttributes(info.url, task, metrics, errorFromGetRequest);
+        if (networkAttributes != nil) {
+            [span internalSetMultipleAttributes:networkAttributes];
+        }
+        if (graphQLSpanName != nil && graphQLAttributes != nil) {
+            [span internalSetMultipleAttributes:graphQLAttributes];
+        }
         [span endWithEndTime:interval.endDate];
     }
 }
+

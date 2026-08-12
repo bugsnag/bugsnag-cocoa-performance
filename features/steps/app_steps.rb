@@ -493,3 +493,10 @@ Then('I should receive no spans') do
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   raise Test::Unit::AssertionFailedError, "Expected 0 spans but received #{spans.size}" unless spans.empty?
 end
+Then('a nested span field {string} equals {string}') do |field_path, expected_value|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  field_values = spans.map do |span|
+    field_path.split('.').reduce(span) { |obj, key| obj.is_a?(Hash) ? obj[key] : nil }
+  end.compact
+  raise Test::Unit::AssertionFailedError, "<#{field_values}> was expected to include\n<#{expected_value}>." unless field_values.include?(expected_value)
+end

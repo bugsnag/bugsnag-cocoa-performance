@@ -11,6 +11,14 @@
 #import "SessionMetricsAccumulator.h"
 
 namespace bugsnag {
+
+extern NSString * const BSGSpanCategoryAttributeKey;
+extern NSString * const BSGSpanDisplayNameAttributeKey;
+extern NSString * const BSGGraphQLOperationTypeAttributeKey;
+extern NSString * const BSGGraphQLOperationNameAttributeKey;
+extern NSString * const BSGSpanCategoryGraphQL;
+extern NSString * const BSGSpanCategoryNetwork;
+
 class SpanAttributesProvider {
 public:
     SpanAttributesProvider() noexcept;
