@@ -81,7 +81,20 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"BugsnagGetUser"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagGetUser"];
+                      spanName:@"GraphQL api.example.com/graphql - query:BugsnagGetUser"];
+}
+
+- (void)testGraphQLSpanNameUsesHostAndPathWithoutSchemePortQueryOrFragment {
+    SpanAttributesProvider provider;
+    NSURL *reportedURL = [NSURL URLWithString:@"https://api.example.com:8443/api/graphql?query=ignored#fragment"];
+    NSDictionary *attributes = @{
+        @"bugsnag.span.category": @"graphql",
+        @"graphql.operation.type": @"query",
+        @"graphql.operation.name": @"GetUserProfile",
+    };
+
+    XCTAssertEqualObjects(provider.graphQLSpanName(reportedURL, attributes),
+                          @"GraphQL api.example.com/api/graphql - query:GetUserProfile");
 }
 
 - (void)testGraphQLPostJsonNamedMutationDetected {
@@ -93,7 +106,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"mutation"
                  operationName:@"UpdateCart"
-                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:UpdateCart"];
+                      spanName:@"GraphQL api.example.com/graphql - mutation:UpdateCart"];
 }
 
 - (void)testGraphQLPostJsonNamedSubscriptionDetected {
@@ -105,7 +118,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"subscription"
                  operationName:@"BugsnagMessageSubscription"
-                      spanName:@"[GraphQL] [api.example.com/graphql] subscription:BugsnagMessageSubscription"];
+                      spanName:@"GraphQL api.example.com/graphql - subscription:BugsnagMessageSubscription"];
 }
 
 - (void)testGraphQLGetQueryParametersDetected {
@@ -117,7 +130,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"BugsnagGetQuery"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagGetQuery"];
+                      spanName:@"GraphQL api.example.com/graphql - query:BugsnagGetQuery"];
 }
 
 - (void)testGraphQLApplicationGraphQLContentTypeDetected {
@@ -129,7 +142,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"BugsnagApplicationGraphQL"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:BugsnagApplicationGraphQL"];
+                      spanName:@"GraphQL api.example.com/graphql - query:BugsnagApplicationGraphQL"];
 }
 
 - (void)testAnonymousGraphQLQueryUsesAnonymousSpanName {
@@ -145,7 +158,7 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
     XCTAssertNil(attributes[@"graphql.operation.name"]);
     XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes),
-                              @"[GraphQL] [api.example.com/graphql] query");
+                              @"GraphQL api.example.com/graphql - query");
 }
 
 - (void)testOperationNameFieldTakesPriority {
@@ -157,7 +170,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"SelectedOperation"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:SelectedOperation"];
+                      spanName:@"GraphQL api.example.com/graphql - query:SelectedOperation"];
 }
 
 - (void)testRestJsonBodyIsNotGraphQL {
@@ -271,7 +284,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"BodyLimitExact"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:BodyLimitExact"];
+                      spanName:@"GraphQL api.example.com/graphql - query:BodyLimitExact"];
 }
 
 - (void)testGraphQLBodyOverMaximumInspectionSizeIsSkipped {
@@ -300,7 +313,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:operationName
-                      spanName:[NSString stringWithFormat:@"[GraphQL] [api.example.com/graphql] query:%@", operationName]];
+                      spanName:[NSString stringWithFormat:@"GraphQL api.example.com/graphql - query:%@", operationName]];
 }
 
 - (void)testGraphQLOperationNameOverMaximumLengthUsesAnonymousFallback {
@@ -320,7 +333,7 @@ using namespace bugsnag;
     XCTAssertEqualObjects(attributes[@"graphql.operation.type"], @"query");
     XCTAssertNil(attributes[@"graphql.operation.name"]);
     XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes),
-                              @"[GraphQL] [api.example.com/graphql] query");
+                              @"GraphQL api.example.com/graphql - query");
 }
 
 - (void)testGraphQLTemporaryOperationAttributesAreUsedForSpanNameOnly {
@@ -331,7 +344,7 @@ using namespace bugsnag;
 
     SpanAttributesProvider provider;
     auto attributes = provider.graphQLAttributes(request, request.URL);
-    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"[GraphQL] [api.example.com/graphql] query:BugsnagTemporaryAttributes");
+    XCTAssertEqualObjects(provider.graphQLSpanName(request.URL, attributes), @"GraphQL api.example.com/graphql - query:BugsnagTemporaryAttributes");
 
     [attributes removeObjectsForKeys:@[@"graphql.operation.type", @"graphql.operation.name"]];
     XCTAssertEqualObjects(attributes[@"bugsnag.span.category"], @"graphql");
@@ -358,7 +371,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"mutation"
                  operationName:@"CancelSubscription"
-                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:CancelSubscription"];
+                      spanName:@"GraphQL api.example.com/graphql - mutation:CancelSubscription"];
 }
 
 - (void)testGraphQLMutationUpgradeSubscriptionDetected {
@@ -370,7 +383,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"mutation"
                  operationName:@"UpgradeSubscription"
-                      spanName:@"[GraphQL] [api.example.com/graphql] mutation:UpgradeSubscription"];
+                      spanName:@"GraphQL api.example.com/graphql - mutation:UpgradeSubscription"];
 }
 
 - (void)testGraphQLQueryGetSubscriptionStatusDetected {
@@ -382,7 +395,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"query"
                  operationName:@"GetSubscriptionStatus"
-                      spanName:@"[GraphQL] [api.example.com/graphql] query:GetSubscriptionStatus"];
+                      spanName:@"GraphQL api.example.com/graphql - query:GetSubscriptionStatus"];
 }
 
 - (void)testGraphQLSubscriptionOnMessageReceivedDetected {
@@ -394,7 +407,7 @@ using namespace bugsnag;
     [self assertGraphQLRequest:request
                  operationType:@"subscription"
                  operationName:@"OnMessageReceived"
-                      spanName:@"[GraphQL] [api.example.com/graphql] subscription:OnMessageReceived"];
+                      spanName:@"GraphQL api.example.com/graphql - subscription:OnMessageReceived"];
 }
 
 - (void)testInitialNetworkSpanAttributes {

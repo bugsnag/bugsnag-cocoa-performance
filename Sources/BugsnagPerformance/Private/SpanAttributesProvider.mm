@@ -482,17 +482,13 @@ SpanAttributesProvider::graphQLSpanName(NSURL *reportedURL, NSDictionary *attrib
     NSString *operationName = attributes[BSGGraphQLOperationNameAttributeKey];
     
     if (operationType.length > 0 && operationName.length > 0) {
-        // Full: [GraphQL] [endpoint] type:name
-        return [NSString stringWithFormat:@"[GraphQL] [%@] %@:%@", endpoint, operationType, operationName];
+        return [NSString stringWithFormat:@"GraphQL %@ - %@:%@", endpoint, operationType, operationName];
     } else if (operationType.length > 0) {
-        // Type only: [GraphQL] [endpoint] type
-        return [NSString stringWithFormat:@"[GraphQL] [%@] %@", endpoint, operationType];
+        return [NSString stringWithFormat:@"GraphQL %@ - %@", endpoint, operationType];
     } else if (operationName.length > 0) {
-        // Name with no explicit type (default to query): [GraphQL] [endpoint] query:name
-        return [NSString stringWithFormat:@"[GraphQL] [%@] query:%@", endpoint, operationName];
+        return [NSString stringWithFormat:@"GraphQL %@ - query:%@", endpoint, operationName];
     }
-    // Fully anonymous: [GraphQL] [endpoint]
-    return [NSString stringWithFormat:@"[GraphQL] [%@]", endpoint];
+    return [NSString stringWithFormat:@"GraphQL %@", endpoint];
 }
 
 
