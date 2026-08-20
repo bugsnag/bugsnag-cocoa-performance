@@ -34,7 +34,15 @@ NetworkSpanFactoryImpl::startNetworkSpan(NSString *httpMethod,
                                          const SpanOptions &options,
                                          NSDictionary *attributes) noexcept {
     auto name = [NSString stringWithFormat:@"[HTTP/%@]", httpMethod ?: @"unknown"];
+    return startNetworkSpan(name, options, BSGTriStateUnset, attributes);
+}
+
+BugsnagPerformanceSpan *
+NetworkSpanFactoryImpl::startNetworkSpan(NSString *spanName,
+                                         const SpanOptions &options,
+                                         BSGTriState firstClass,
+                                         NSDictionary *attributes) noexcept {
     NSMutableDictionary *spanAttributes = spanAttributesProvider_->initialNetworkSpanAttributes();
     [spanAttributes addEntriesFromDictionary:attributes];
-    return plainSpanFactory_->startSpan(name, options, BSGTriStateUnset, SPAN_KIND_CLIENT, spanAttributes, @[]);
+    return plainSpanFactory_->startSpan(spanName, options, firstClass, SPAN_KIND_CLIENT, spanAttributes, @[]);
 }

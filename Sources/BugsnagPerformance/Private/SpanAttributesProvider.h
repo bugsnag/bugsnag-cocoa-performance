@@ -11,6 +11,14 @@
 #import "SessionMetricsAccumulator.h"
 
 namespace bugsnag {
+
+extern NSString * const BSGSpanCategoryAttributeKey;
+extern NSString * const BSGSpanDisplayNameAttributeKey;
+extern NSString * const BSGGraphQLOperationTypeAttributeKey;
+extern NSString * const BSGGraphQLOperationNameAttributeKey;
+extern NSString * const BSGSpanCategoryGraphQL;
+extern NSString * const BSGSpanCategoryNetwork;
+
 class SpanAttributesProvider {
 public:
     SpanAttributesProvider() noexcept;
@@ -20,7 +28,9 @@ public:
     NSMutableDictionary *networkSpanUrlAttributes(NSURL *url, NSError *encounteredError) noexcept;
     NSMutableDictionary *networkSpanAttributes(NSURL *url, NSURLSessionTask *task, NSURLSessionTaskMetrics *metrics,
                                                NSError *encounteredError) noexcept;
-    
+    NSMutableDictionary *graphQLAttributes(NSURLRequest *request, NSURL *reportedURL) noexcept;
+    NSString *graphQLSpanName(NSURL *reportedURL, NSDictionary *graphQLAttributes) noexcept;
+
     NSMutableDictionary *internalErrorAttributes(NSError *encounteredError) noexcept;
     
     NSMutableDictionary *initialAppStartSpanAttributes() noexcept;
