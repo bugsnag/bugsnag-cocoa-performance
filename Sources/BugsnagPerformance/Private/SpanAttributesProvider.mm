@@ -395,7 +395,7 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
             if (graphQLContentType || graphQLEndpoint) {
                 BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=GET request had GraphQL hint but no readable query parameter",
                             method,
-                            reportedURL.path.length > 0 ? reportedURL.path : @"/");
+                            reportedURL.path ?: @"");
             }
             return attributes;
         }
@@ -415,7 +415,7 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
             if (graphQLContentType || graphQLEndpoint) {
                 BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=GraphQL hint present but request body is empty",
                             method,
-                            reportedURL.path.length > 0 ? reportedURL.path : @"/");
+                            reportedURL.path ?: @"");
             }
             return attributes;
         }
@@ -434,7 +434,7 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
 
         if (dataContainsGraphQLJSONKey(body)) {
             BSGLogDebug(@"GraphQL JSON candidate found: method=POST endpoint=%@ bodyBytes=%lu",
-                        reportedURL.path.length > 0 ? reportedURL.path : @"/",
+                        reportedURL.path ?: @"",
                         (unsigned long)body.length);
             id json = [NSJSONSerialization JSONObjectWithData:body options:0 error:nil];
             if ([json isKindOfClass:NSDictionary.class]) {
@@ -455,12 +455,12 @@ SpanAttributesProvider::graphQLAttributes(NSURLRequest *request, NSURL *reported
             (void)requestedName;
             BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ reason=/graphql endpoint body did not contain a readable GraphQL document",
                         method,
-                        reportedURL.path.length > 0 ? reportedURL.path : @"/");
+                        reportedURL.path ?: @"");
         }
         if (attributes.count == 0) {
             BSGLogDebug(@"GraphQL request not detected: method=%@ endpoint=%@ contentType=%@ reason=no GraphQL URL/content-type/query body signal; request remains category=network",
                         method,
-                        reportedURL.path.length > 0 ? reportedURL.path : @"/",
+                        reportedURL.path ?: @"",
                         contentType.length > 0 ? contentType : @"none");
         }
     } @catch (NSException *exception) {
@@ -475,7 +475,7 @@ SpanAttributesProvider::graphQLSpanName(NSURL *reportedURL, NSDictionary *attrib
     if (![attributes[BSGSpanCategoryAttributeKey] isEqualToString:BSGSpanCategoryGraphQL]) return nil;
     
     NSString *host = reportedURL.host ?: @"";
-    NSString *path = reportedURL.path.length > 0 ? reportedURL.path : @"/";
+    NSString *path = reportedURL.path ?: @"";
     NSString *endpoint = host.length > 0 ? [NSString stringWithFormat:@"%@%@", host, path] : path;
     
     NSString *operationType = attributes[BSGGraphQLOperationTypeAttributeKey];
