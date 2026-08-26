@@ -12,6 +12,8 @@
 #import "BugsnagPerformanceSpan+Private.h"
 #import "IdGenerator.h"
 #import "SpanOptions.h"
+#import "../../Sources/BugsnagPerformance/Private/SpanLifecycle/SpanLifecycleHandlerImpl.h"
+#import "../../Sources/BugsnagPerformance/Private/SpanStore/SpanStoreImpl.h"
 
 // TEMP: flow logs so each test narrates its steps in the test console output.
 // Uses fprintf(stderr) so xcodebuild's captured stdout/stderr picks it up
@@ -220,6 +222,101 @@ static BugsnagPerformanceSpan *makeSpan() {
 
     XCTAssertEqual(validEnds, kSpanCount);
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+}
+
+@end
+
+#pragma mark - Lifecycle gating
+
+// Asserts the SpanLifecycleHandlerImpl gating: disk IOPS attributes must never
+// be collected or applied unless BugsnagPerformance has been started AND
+// enabledMetrics.disk is on.
+@interface DiskIOLifecycleGatingTests : XCTestCase
+@end
+
+@implementation DiskIOLifecycleGatingTests {
+    BSGDiskIOCollector *collector_;
+    std::shared_ptr<SpanLifecycleHandlerImpl> handler_;
+}
+
+- (void)setUpHandler {
+    auto sampler = std::make_shared<Sampler>();
+    auto spanStackingHandler = std::make_shared<SpanStackingHandler>();
+    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
+    collector_ = [BSGDiskIOCollector new];
+    handler_ = std::make_shared<SpanLifecycleHandlerImpl>(
+        sampler,
+        std::make_shared<SpanStoreImpl>(spanStackingHandler),
+        std::make_shared<ConditionTimeoutExecutor>(),
+        std::make_shared<PlainSpanFactoryImpl>(sampler, spanStackingHandler, spanAttributesProvider),
+        std::make_shared<Batch>(),
+        [FrameMetricsCollector new],
+        collector_,
+        [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new],
+        [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new],
+        ^{},
+        ^(BugsnagPerformanceSpan *) {},
+        ^(BugsnagPerformanceSpan *) {});
+}
+
+- (BugsnagPerformanceConfiguration *)configWithDiskEnabled:(BOOL)diskEnabled {
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
+    config.enabledMetrics.disk = diskEnabled;
+    return config;
+}
+
+- (void)testNoDiskCollectionWhenNeverStarted {
+    [self setUpHandler];
+    // Even with disk metrics enabled in the configuration, nothing may be
+    // collected before start() — this covers the pre-main/early-span window
+    // and the "Bugsnag is never started" case.
+    handler_->configure([self configWithDiskEnabled:YES]);
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+
+    [NSThread sleepForTimeInterval:0.01];
+    handler_->onSpanEndSet(span);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+}
+
+- (void)testNoDiskCollectionWhenDiskMetricsDisabled {
+    [self setUpHandler];
+    // Default configuration: enabledMetrics.disk is NO.
+    handler_->configure([self configWithDiskEnabled:NO]);
+    handler_->start();
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+
+    [NSThread sleepForTimeInterval:0.01];
+    handler_->onSpanEndSet(span);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+}
+
+- (void)testDiskCollectionWhenEnabledAndStarted {
+    [self setUpHandler];
+    handler_->configure([self configWithDiskEnabled:YES]);
+    handler_->start();
+
+    // makeSpan() creates a first-class span with metricsOptions.disk unset,
+    // which is the eligible combination.
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
+
+    [NSThread sleepForTimeInterval:0.01];
+    handler_->onSpanEndSet(span);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
 }
 
 @end

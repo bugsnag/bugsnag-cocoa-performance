@@ -10,6 +10,15 @@ import BugsnagPerformance
 @objcMembers
 class DiskIOPSScenario: Scenario {
 
+    override func setInitialBugsnagConfiguration() {
+        super.setInitialBugsnagConfiguration()
+        // Pin the sampling probability for this scenario so the span is
+        // always delivered, regardless of any P value persisted by a
+        // previously-run scenario (same pattern as
+        // FixedSamplingProbabilityOneScenario).
+        bugsnagPerfConfig.samplingProbability = 1.0
+    }
+
     override func run() {
         let runDelay = toDouble(string: scenarioConfig["run_delay"])
         if runDelay > 0 {

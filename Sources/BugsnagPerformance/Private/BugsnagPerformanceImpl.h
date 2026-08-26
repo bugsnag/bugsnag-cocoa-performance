@@ -10,9 +10,7 @@
 
 #import <BugsnagPerformance/BugsnagPerformanceConfiguration.h>
 #import <BugsnagPerformance/BugsnagPerformanceViewType.h>
-#import <TargetConditionals.h>
-
-@class BugsnagPerformanceLoadingIndicatorView;
+#import <BugsnagPerformance/BugsnagPerformanceLoadingIndicatorView.h>
 
 #import "BugsnagPerformanceSpan+Private.h"
 #import "OtlpUploader.h"
@@ -123,7 +121,7 @@ private:
     std::shared_ptr<Tracer> tracer_;
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
-    NSMapTable *viewControllersToSpans_;
+    NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
     std::shared_ptr<Instrumentation> instrumentation_;
     Worker *worker_;
     std::shared_ptr<PersistentDeviceID> deviceID_;

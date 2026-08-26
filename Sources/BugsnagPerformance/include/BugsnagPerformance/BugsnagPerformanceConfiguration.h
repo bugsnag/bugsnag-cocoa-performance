@@ -10,13 +10,12 @@
 #import <BugsnagPerformance/BugsnagPerformanceSpan.h>
 #import <BugsnagPerformance/BugsnagPerformancePlugin.h>
 
-#import <TargetConditionals.h>
-
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 typedef BOOL (^ BugsnagPerformanceViewControllerInstrumentationCallback)(UIViewController *viewController);
+
 /**
  * A callback that gets called whenever a span starts.
  */

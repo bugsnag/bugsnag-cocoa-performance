@@ -275,10 +275,6 @@ void BugsnagPerformanceImpl::start() noexcept {
 
     if (configuration_.internal.clearPersistenceOnStart) {
         persistence_->clearPerformanceData();
-        // Clearing persistence removes on-disk state, but preStartSetup may have
-        // already loaded an old probability into memory. Re-apply configured
-        // defaults so this run does not inherit stale sampling values.
-        persistentState_->configure(configuration_);
     }
 
     persistentState_->start();

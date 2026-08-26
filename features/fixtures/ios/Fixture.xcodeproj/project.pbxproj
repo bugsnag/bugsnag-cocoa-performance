@@ -58,6 +58,7 @@
 		09F025152BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */; };
 		09F23AC12CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */; };
 		09F3F5282D6C728300BAA0A3 /* MemoryMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */; };
+		32083092301FFEBE00E0958A /* DiskIOPSScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32083091301FFEBC00E0958A /* DiskIOPSScenario.swift */; };
 		09F3F5302D6F17B300BAA0A3 /* RenderingMetricsScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */; };
 		1C377BA02E78BDFE002148B2 /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */; };
 		1C7852A62E5FA7DF00BB8E2D /* ManualSpanWithContextParentNilScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */; };
@@ -187,6 +188,7 @@
 		09F025142BAC50EC007D9F73 /* ViewDidLoadDoesntTriggerScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDidLoadDoesntTriggerScenario.swift; sourceTree = "<group>"; };
 		09F23AC02CF0CBB500F0D769 /* AutoInstrumentGenericViewLoadScenario2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoInstrumentGenericViewLoadScenario2.swift; sourceTree = "<group>"; };
 		09F3F5272D6C728300BAA0A3 /* MemoryMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryMetricsScenario.swift; sourceTree = "<group>"; };
+		32083091301FFEBC00E0958A /* DiskIOPSScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiskIOPSScenario.swift; sourceTree = "<group>"; };
 		09F3F52F2D6F17B300BAA0A3 /* RenderingMetricsScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderingMetricsScenario.swift; sourceTree = "<group>"; };
 		1C377B9F2E78BDF8002148B2 /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
 		1C7852A52E5FA7C700BB8E2D /* ManualSpanWithContextParentNilScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualSpanWithContextParentNilScenario.swift; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 				969EE0E12E784E6400600F63 /* ConditionsOverrideEndTimeBackwardsScenario.swift */,
 				098FC87B2D40EAB8001B627D /* CPUMetricsScenario.swift */,
 				1C8CB8C02EC3C970007BF492 /* DebugModeScenario.swift */,
+				32083091301FFEBC00E0958A /* DiskIOPSScenario.swift */,
 				09DC62292C6DE242000AA8E1 /* EarlySpanOnEndScenario.swift */,
 				CBC90CDD29CDCFF700280884 /* FirstClassNoScenario.swift */,
 				CBC90CDF29CDD02800280884 /* FirstClassYesScenario.swift */,
@@ -585,6 +588,7 @@
 				01A58C1529096AF4006E4DF7 /* SamplingProbabilityZeroScenario.swift in Sources */,
 				CB0AD76E2965BBDA002A3FB6 /* InitialPScenario.swift in Sources */,
 				09F3F5282D6C728300BAA0A3 /* MemoryMetricsScenario.swift in Sources */,
+				32083092301FFEBE00E0958A /* DiskIOPSScenario.swift in Sources */,
 				966634DE2C9DE2E0004A934D /* FrameMetricsFronzenFramesScenario.swift in Sources */,
 				09E9BDAF2C80907B00DC7C8E /* ModifyEarlySpansScenario.swift in Sources */,
 				1C8CB8C12EC3C975007BF492 /* DebugModeScenario.swift in Sources */,
