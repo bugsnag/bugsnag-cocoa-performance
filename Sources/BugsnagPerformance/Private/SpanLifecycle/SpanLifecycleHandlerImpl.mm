@@ -8,7 +8,6 @@
 
 #import "SpanLifecycleHandlerImpl.h"
 #import "../BugsnagPerformanceSpan+Private.h"
-#import "../Logging.h"  // TEMP: flow logs
 
 using namespace bugsnag;
 
@@ -20,19 +19,10 @@ SpanLifecycleHandlerImpl::preStartSetup() noexcept {
 
 void
 SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const SpanOptions &options) noexcept {
-    // TEMP: disk-IO flow log
-    bool diskEligible = shouldSampleDiskIO(span);
-    BSGLogInfo(@"[DiskIO Flow] Step A/onSpanStarted -- span=%@ firstClass=%d metrics.disk=%d enabledMetrics.disk=%d eligible=%d",
-               span.name,
-               (int)span.firstClass,
-               (int)span.metricsOptions.disk,
-               enabledMetrics_.disk ? 1 : 0,
-               diskEligible ? 1 : 0);
-
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
-    if (diskEligible) {
+    if (shouldSampleDiskIO(span)) {
         [diskIOCollector_ onSpanStart:span];
     }
     store_->addNewSpan(span, options.makeCurrentContext);
@@ -42,32 +32,19 @@ SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const Span
 
 void
 SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
-    // TEMP: disk-IO flow log
-    bool diskEligible = shouldSampleDiskIO(span);
-    BSGLogInfo(@"[DiskIO Flow] Step B/onSpanEndSet -- span=%@ firstClass=%d metrics.disk=%d enabledMetrics.disk=%d eligible=%d",
-               span.name,
-               (int)span.firstClass,
-               (int)span.metricsOptions.disk,
-               enabledMetrics_.disk ? 1 : 0,
-               diskEligible ? 1 : 0);
-
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
-    if (diskEligible) {
+    if (shouldSampleDiskIO(span)) {
         // Capture the end snapshot immediately at span end (before the span
         // enters the delay queue). Any nil result — e.g. missing start
         // snapshot, invalid platform read, or duration <= 0 — silently
         // omits disk attributes for this span.
         NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
-        BSGLogInfo(@"[DiskIO Flow] Step C/onSpanEndSet -- span=%@ attributes returned: count=%lu",
-                   span.name, (unsigned long)diskAttributes.count);
         if (diskAttributes.count > 0) {
             [span forceMutate:^{
                 [span internalSetMultipleAttributes:diskAttributes];
             }];
-            BSGLogInfo(@"[DiskIO Flow] Step D/onSpanEndSet -- span=%@ attributes APPLIED to span (will be batched & sent)",
-                       span.name);
         }
     }
     // Internal SDK bookkeeping that must happen as soon as the end time is set,
@@ -159,7 +136,11 @@ SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span
 
 bool
 SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept {
-    if (!enabledMetrics_.disk) {
+    // Disk I/O collection is strictly gated behind BugsnagPerformance.start():
+    // before start, configure() has not applied the user's enabledMetrics yet
+    // (the pre-configuration default enables everything), and nothing may be
+    // collected when Bugsnag is never started.
+    if (!isStarted_ || !enabledMetrics_.disk) {
         return false;
     }
     switch (span.metricsOptions.disk) {
@@ -334,4 +315,3 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
 
     batch_->add(span);
 }
-
