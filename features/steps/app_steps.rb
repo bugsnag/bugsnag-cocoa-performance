@@ -500,3 +500,48 @@ Then('a nested span field {string} equals {string}') do |field_path, expected_va
   end.compact
   raise Test::Unit::AssertionFailedError, "<#{field_values}> was expected to include\n<#{expected_value}>." unless field_values.include?(expected_value)
 end
+
+Then('a span field {string} does not match the regex {string}') do |field, pattern|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.each do |span|
+    value = span[field].to_s
+    Maze.check.false(
+      Regexp.new(pattern).match?(value),
+      "Expected span field '#{field}' not to match /#{pattern}/ but got '#{value}'"
+    )
+  end
+end
+
+Then('no span attribute value contains {string}') do |forbidden|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  spans.each do |span|
+    (span['attributes'] || []).each do |attr|
+      val = attr['value']
+      string_val = val['stringValue'] || val['intValue']&.to_s || ''
+      Maze.check.false(
+        string_val.include?(forbidden),
+        "Span attribute '#{attr['key']}' contains forbidden value '#{forbidden}'"
+      )
+    end
+  end
+end
+
+Then('every span field {string} exists') do |field|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  raise 'No spans received' if spans.empty?
+  spans.each do |span|
+    Maze.check.not_nil(
+      span[field],
+      "Expected span field '#{field}' to exist but it was nil"
+    )
+  end
+end
+
+Then('every span has a distinct field {string}') do |field|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  values = spans.map { |span| span[field] }
+  Maze.check.true(
+    values.uniq.length == values.length,
+    "Expected all '#{field}' values to be distinct but got: #{values}"
+  )
+end
