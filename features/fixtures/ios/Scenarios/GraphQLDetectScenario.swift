@@ -113,7 +113,6 @@ class GraphQLDetectScenario: Scenario {
         }
     }
     // MARK: - Scenario 5: Malformed/Empty Body
-    // ✅ CHANGED: reads body directly from feature file config (not body_type switch)
     private func runMalformedBodyScenario() {
         let body = scenarioConfig["body"] ?? ""
         let path: String = {
@@ -125,7 +124,6 @@ class GraphQLDetectScenario: Scenario {
         sendPOSTToReflect(path: path, contentType: "application/json", body: body)
     }
     // MARK: - Scenario 6: Edge-Case Operation Names
-    // ✅ CHANGED: added NSLog for QA visibility, fixed path fallback "/" → ""
     private func runEdgeCaseOperationNameScenario() {
         let configBody = scenarioConfig["body"] ?? ""
         let body: String
@@ -146,7 +144,6 @@ class GraphQLDetectScenario: Scenario {
         sendPOSTToReflect(path: path, contentType: "application/json", body: body)
     }
     // MARK: - Scenario 7: Batched Request
-    // ✅ CHANGED: reads body from feature file config instead of hardcoded
     private func runBatchedRequestScenario() {
         let body = scenarioConfig["body"] ?? "[{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}, {\"query\": \"query GetPosts { posts { id } }\", \"operationName\": \"GetPosts\"}]"
         let contentType = scenarioConfig["content_type"] ?? "application/json"
@@ -164,7 +161,6 @@ class GraphQLDetectScenario: Scenario {
         sendGETToReflect(path: path)
     }
     // MARK: - Scenario 9: Multiple Operations
-    // ✅ CHANGED: reads bodies from feature file config, added NSLog for QA visibility
     private func runMultipleOperationsScenario() {
         let body1 = scenarioConfig["graphql_body_1"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
         let body2 = scenarioConfig["graphql_body_2"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
@@ -175,13 +171,9 @@ class GraphQLDetectScenario: Scenario {
             }
             return "/rest/users/123"
         }()
-        NSLog("GraphQLDetect [Scenario 9]: Request 1 body: %@", body1)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body1)
-        NSLog("GraphQLDetect [Scenario 9]: Request 2 body: %@", body2)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body2)
-        NSLog("GraphQLDetect [Scenario 9]: Request 3 body: %@", body3)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body3)
-        NSLog("GraphQLDetect [Scenario 9]: Request 4 GET: %@", restPath)
         sendGETToReflect(path: restPath)
     }
     // MARK: - Scenario 10: Safe Attributes Only
@@ -227,16 +219,12 @@ class GraphQLDetectScenario: Scenario {
         sendPOSTToReflect(path: path, contentType: "application/json", body: body)
     }
     // MARK: - Scenario 15: Span ID and Trace ID Validation
-    // ✅ CHANGED: reads bodies from feature file config, added NSLog for QA visibility
     private func runSpanIdTraceIdValidationScenario() {
         let body1 = scenarioConfig["graphql_body_1"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
         let body2 = scenarioConfig["graphql_body_2"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
         let body3 = scenarioConfig["graphql_body_3"] ?? "{\"query\": \"query GetUser { user { id } }\", \"operationName\": \"GetUser\"}"
-        NSLog("GraphQLDetect [Scenario 15]: Request 1 body: %@", body1)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body1)
-        NSLog("GraphQLDetect [Scenario 15]: Request 2 body: %@", body2)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body2)
-        NSLog("GraphQLDetect [Scenario 15]: Request 3 body: %@", body3)
         sendPOSTToReflect(path: "/graphql", contentType: "application/json", body: body3)
     }
     // MARK: - Scenario 16: GraphQL Response Error Handling & Span Status
@@ -315,7 +303,6 @@ class GraphQLDetectScenario: Scenario {
     /// Send a POST request to the Maze Runner reflect endpoint
     private func sendPOSTToReflect(path: String, contentType: String, body: String, timeout: TimeInterval = 60.0) {
         guard let url = URL(string: path, relativeTo: fixtureConfig.reflectURL) else {
-            NSLog("GraphQLDetect: sendPOSTToReflect - invalid URL for path: \(path)")
             return
         }
         sendPOST(url: url, contentType: contentType, body: body, timeout: timeout)
@@ -341,7 +328,6 @@ class GraphQLDetectScenario: Scenario {
     /// Send a GET request to the Maze Runner reflect endpoint
     private func sendGETToReflect(path: String) {
         guard let url = URL(string: path, relativeTo: fixtureConfig.reflectURL) else {
-            NSLog("GraphQLDetect: sendGETToReflect - invalid URL for path: \(path)")
             return
         }
         let semaphore = DispatchSemaphore(value: 0)
@@ -367,7 +353,6 @@ class GraphQLDetectScenario: Scenario {
     ) {
         guard let baseUrl = URL(string: path, relativeTo: fixtureConfig.mazeRunnerURL),
               var components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: true) else {
-            NSLog("GraphQLDetect: sendPOSTToReflectWithResponseBody - invalid URL for path: \(path)")
             return
         }
         var queryItems = components.queryItems ?? []
@@ -378,7 +363,6 @@ class GraphQLDetectScenario: Scenario {
         }
         components.queryItems = queryItems
         guard let url = components.url else {
-            NSLog("GraphQLDetect: sendPOSTToReflectWithResponseBody - unable to build URL for path: \(path)")
             return
         }
         var request = URLRequest(url: url)

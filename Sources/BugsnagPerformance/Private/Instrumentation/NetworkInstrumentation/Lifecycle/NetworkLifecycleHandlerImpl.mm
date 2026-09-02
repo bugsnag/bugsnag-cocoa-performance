@@ -102,19 +102,6 @@ NetworkLifecycleHandlerImpl::onTaskResume(NSURLSessionTask *task) noexcept {
     if (state == nil) {
         return;
     }
-    if (state.graphQLAttributes != nil) {
-        BSGLogDebug(@"GraphQL span started: method=%@ endpoint=%@ name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
-                    req.HTTPMethod,
-                    state.url.path.length > 0 ? state.url.path : @"/",
-                    state.overallSpan.name,
-                    state.graphQLAttributes[BSGSpanCategoryAttributeKey],
-                    state.graphQLAttributes[BSGSpanDisplayNameAttributeKey]);
-    } else {
-        BSGLogDebug(@"Network span started: method=%@ endpoint=%@ category=network graphQLDetected=NO spanName=%@",
-                    req.HTTPMethod,
-                    state.url.path.length > 0 ? state.url.path : @"/",
-                    state.overallSpan.name);
-    }
     networkHeaderInjector_->injectTraceParentIfMatches(task, state.overallSpan);
 }
 
@@ -169,20 +156,10 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(
                                
                                NSData *deferredBody = BSGCapturedGraphQLResponseBodyForTask(task);
                                
-                               BSGLogDebug(
-                                           @"GraphQL deferred body check: length=%lu hasErrors=%@",
-                                           (unsigned long)deferredBody.length,
-                                           BSGGraphQLResponseBodyHasErrors(deferredBody) ? @"YES" : @"NO"
-                                           );
-                               
                                if (BSGGraphQLResponseBodyHasErrors(deferredBody)) {
                                    [state.overallSpan internalSetAttribute:
                                     BSGGraphQLResponseHasErrorsAttribute
                                                                  withValue:@YES];
-                                   BSGLogDebug(
-                                               @"GraphQL response (deferred) contained errors; "
-                                               "status will be STATUS_CODE_ERROR"
-                                               );
                                }
                                
                                BSGClearCapturedGraphQLResponseBodyForTask(task);
@@ -199,10 +176,6 @@ NetworkLifecycleHandlerImpl::onTaskDidFinishCollectingMetrics(
             [state.overallSpan internalSetAttribute:
              BSGGraphQLResponseHasErrorsAttribute
                                           withValue:@YES];
-            BSGLogDebug(
-                        @"GraphQL response contained a non-empty top-level errors "
-                        "array; span status will be STATUS_CODE_ERROR."
-                        );
         }
     }
     

@@ -576,9 +576,6 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
                                       category,
                                       displayName]];
         }
-    BSGLogDebug(@"BugsnagPerformanceImpl::sendCurrentBatchTask(): sending %zu sampled spans to /v1/traces: %@",
-                spans.count,
-                spanSummaries);
 #endif
     
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
@@ -610,7 +607,7 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
             }
         }
         if (hasNetworkOrGraphQLSpan) {
-            BSGLogDebug(@"Network/GraphQL upload payload preview (actual encoded /v1/traces values)=%@",
+            BSGLogTrace(@"Network/GraphQL upload payload preview (actual encoded /v1/traces values)=%@",
                         BSGPrettyJSONString(traceEncoding_.encode(spans, resourceAttributes_->get())));
         }
         uploadPackage(traceEncoding_.buildUploadPackage(spans, resourceAttributes_->get(), includeSamplingHeader), false);
@@ -899,9 +896,6 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
 
     NSError *errorFromGetRequest = nil;
     NSURLRequest *req = getTaskRequest(task, &errorFromGetRequest);
-    BSGLogDebug(@"BugsnagPerformanceImpl::reportNetworkSpan() method=%@ endpoint=%@",
-                req.HTTPMethod,
-                req.URL.path.length > 0 ? req.URL.path : @"/");
     
     auto info = [BugsnagPerformanceNetworkRequestInfo new];
     info.url = req.URL;
@@ -924,14 +918,6 @@ void BugsnagPerformanceImpl::reportNetworkSpan(NSURLSessionTask *task, NSURLSess
             [graphQLAttributes removeObjectsForKeys:@[BSGGraphQLOperationTypeAttributeKey,
                                                       BSGGraphQLOperationNameAttributeKey]];
             span = tracer_->startNetworkSpan(graphQLSpanName, options, BSGTriStateYes, graphQLAttributes);
-            BSGLogDebug(@"Manually reported GraphQL response completed: status=%ld durationMs=%.2f bytesSent=%lld bytesReceived=%lld name=%@ category=%@ display_name=%@ finalPayloadLog=\"GraphQL upload payload preview\"",
-                        (long)[BSGDynamicCast<NSHTTPURLResponse>(task.response) statusCode],
-                        interval.duration * 1000.0,
-                        task.countOfBytesSent,
-                        task.countOfBytesReceived,
-                        graphQLSpanName,
-                        graphQLAttributes[BSGSpanCategoryAttributeKey],
-                        graphQLAttributes[BSGSpanDisplayNameAttributeKey]);
         } else {
             span = tracer_->startNetworkSpan(name, options);
         }
