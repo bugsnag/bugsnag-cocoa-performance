@@ -566,18 +566,6 @@ bool BugsnagPerformanceImpl::sendCurrentBatchTask() noexcept {
         return false;
     }
     
-#if BSG_LOG_LEVEL >= BSG_LOGLEVEL_DEBUG
-    NSMutableArray<NSString *> *spanSummaries = [NSMutableArray arrayWithCapacity:spans.count];
-        for (BugsnagPerformanceSpan *span in spans) {
-            NSString *category = BSGDynamicCast<NSString>(span.attributes[BSGSpanCategoryAttributeKey]) ?: BSGMissingSpanAttributeValue;
-            NSString *displayName = BSGDynamicCast<NSString>(span.attributes[BSGSpanDisplayNameAttributeKey]) ?: BSGMissingSpanAttributeValue;
-            [spanSummaries addObject:[NSString stringWithFormat:@"name=%@ category=%@ display_name=%@",
-                                      span.name,
-                                      category,
-                                      displayName]];
-        }
-#endif
-    
     bool includeSamplingHeader = configuration_ == nil || configuration_.samplingProbability == nil;
 
     // Delay so that the sampler has time to fetch one more sample.
