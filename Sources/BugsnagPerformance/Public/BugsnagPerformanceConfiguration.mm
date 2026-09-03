@@ -328,6 +328,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
         // any important notifications before the first work cycle is started.
         // It also gives time for us to receive our initial P value from the server.
         _initialRecurringWorkDelay = 1.0;
+
+        // Test-only; production never changes this from "no faults".
+        _diskIOSnapshotFaultMode = 0;
     }
     return self;
 }

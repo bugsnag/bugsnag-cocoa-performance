@@ -22,7 +22,33 @@ extern NSString *const BSGDiskIOAttributeKeyIOPSRead;
 extern NSString *const BSGDiskIOAttributeKeyIOPSWrite;
 extern NSString *const BSGDiskIOAttributeKeyIOPSTotal;
 
+/// Test-only fault injection.
+///
+/// The platform snapshot source (`proc_pid_rusage`) cannot be made to fail on
+/// demand, so the negative paths of the collector are unreachable from an
+/// end-to-end fixture. These flags let the e2e fixtures drive those paths
+/// through the *real* span lifecycle and exporter.
+///
+/// `BSGDiskIOSnapshotFaultModeNone` is the default and is what production
+/// always uses — the injection block in `-onSpanEnd:` is inert unless a fault
+/// mode is explicitly set via `BSGInternalConfiguration.diskIOSnapshotFaultMode`.
+typedef NS_OPTIONS(NSUInteger, BSGDiskIOSnapshotFaultMode) {
+    /// Normal production behaviour.
+    BSGDiskIOSnapshotFaultModeNone          = 0,
+    /// Skip storing the start snapshot, as if the platform read failed.
+    BSGDiskIOSnapshotFaultModeFailAtStart   = 1 << 0,
+    /// Mark the end snapshot invalid, as if the platform read failed.
+    BSGDiskIOSnapshotFaultModeFailAtEnd     = 1 << 1,
+    /// Force `end.timestamp == start.timestamp` so duration <= 0.
+    BSGDiskIOSnapshotFaultModeZeroDuration  = 1 << 2,
+    /// Force `end.bytes* < start.bytes*` to exercise the counter-regression path.
+    BSGDiskIOSnapshotFaultModeNegativeDelta = 1 << 3,
+};
+
 @interface BSGDiskIOCollector : NSObject
+
+/// Test-only. Defaults to `BSGDiskIOSnapshotFaultModeNone`.
+@property (atomic, assign) BSGDiskIOSnapshotFaultMode faultMode;
 
 /// Capture the start snapshot for a span. Silently no-ops if the platform
 /// source is unavailable — the matching -onSpanEnd: will then return nil.

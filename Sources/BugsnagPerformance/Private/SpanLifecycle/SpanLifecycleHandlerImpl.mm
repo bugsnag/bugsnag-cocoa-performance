@@ -35,17 +35,22 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
-    if (shouldSampleDiskIO(span)) {
-        // Capture the end snapshot immediately at span end (before the span
-        // enters the delay queue). Any nil result — e.g. missing start
-        // snapshot, invalid platform read, or duration <= 0 — silently
-        // omits disk attributes for this span.
-        NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
-        if (diskAttributes.count > 0) {
-            [span forceMutate:^{
-                [span internalSetMultipleAttributes:diskAttributes];
-            }];
-        }
+    // Always call -onSpanEnd:, never gated on shouldSampleDiskIO. The gate is
+    // evaluated independently at start and end, so if the user's
+    // enabledMetrics.disk or the span's first-class status changes mid-span it
+    // can return true at start (storing a snapshot) and false at end, stranding
+    // that snapshot in the collector's map forever. Calling unconditionally
+    // guarantees the stored snapshot is always consumed and released - the
+    // collector returns nil when no start snapshot exists. This mirrors
+    // -abandonSpan: in onSpanCancelled, which is already unconditional.
+    //
+    // Any nil result - missing start snapshot, invalid platform read, or
+    // duration <= 0 - silently omits disk attributes for this span.
+    NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
+    if (diskAttributes.count > 0) {
+        [span forceMutate:^{
+            [span internalSetMultipleAttributes:diskAttributes];
+        }];
     }
     // Internal SDK bookkeeping that must happen as soon as the end time is set,
     // Before sampling or user on-span-end callbacks can discard the span.

@@ -224,6 +224,71 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
+#pragma mark - Test-only fault injection
+
+// These guard the hook used by the Maze Runner disk IOPS scenarios. The most
+// important assertion is the first one: production must always run with
+// BSGDiskIOSnapshotFaultModeNone.
+
+- (void)testFaultModeDefaultsToNone {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    XCTAssertEqual(collector.faultMode, BSGDiskIOSnapshotFaultModeNone);
+}
+
+- (void)testFailAtStartFaultStoresNoStartSnapshotAndOmitsAttributes {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.faultMode = BSGDiskIOSnapshotFaultModeFailAtStart;
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    [collector onSpanStart:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+
+    [NSThread sleepForTimeInterval:0.01];
+    XCTAssertNil([collector onSpanEnd:span]);
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testFailAtEndFaultOmitsAttributesAndStillCleansUp {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.faultMode = BSGDiskIOSnapshotFaultModeFailAtEnd;
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    [collector onSpanStart:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+
+    [NSThread sleepForTimeInterval:0.01];
+    XCTAssertNil([collector onSpanEnd:span]);
+    // The stored start snapshot must still be released.
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testZeroDurationFaultOmitsAttributes {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.faultMode = BSGDiskIOSnapshotFaultModeZeroDuration;
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    [collector onSpanStart:span];
+    [NSThread sleepForTimeInterval:0.01];
+    XCTAssertNil([collector onSpanEnd:span]);
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testNegativeDeltaFaultClampsToZeroRatherThanEmittingInvalidValues {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.faultMode = BSGDiskIOSnapshotFaultModeNegativeDelta;
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    [collector onSpanStart:span];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+
+    XCTAssertNotNil(attrs);
+    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_read"].longLongValue, 0);
+    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_write"].longLongValue, 0);
+    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_total"].longLongValue, 0);
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+}
+
 @end
 
 #pragma mark - Lifecycle gating

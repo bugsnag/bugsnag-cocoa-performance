@@ -850,8 +850,8 @@ final class DiskIOPSViewController: UIViewController {
                     ? now.bytesRead - lastSampleSnap.bytesRead : 0
                 let wd1s = now.bytesWritten >= lastSampleSnap.bytesWritten
                     ? now.bytesWritten - lastSampleSnap.bytesWritten : 0
-                let readOps1s  = Int64((Double(rd1s) / 16384.0 / windowDur).rounded())
-                let writeOps1s = Int64((Double(wd1s) / 16384.0 / windowDur).rounded())
+                let readOps1s  = Int64((Double(rd1s) / DiskIOSample.blockSizeBytes / windowDur).rounded())
+                let writeOps1s = Int64((Double(wd1s) / DiskIOSample.blockSizeBytes / windowDur).rounded())
                 let totalOps1s = readOps1s + writeOps1s
 
                 // Cumulative delta from span start (matches SDK Step 4).
@@ -920,8 +920,8 @@ final class DiskIOPSViewController: UIViewController {
             let writeDelta = endSnap.bytesWritten >= startSnap.bytesWritten
                 ? endSnap.bytesWritten - startSnap.bytesWritten : 0
 
-            let readOps  = Int64((Double(readDelta)  / 16384.0 / durationActual).rounded())
-            let writeOps = Int64((Double(writeDelta) / 16384.0 / durationActual).rounded())
+            let readOps  = Int64((Double(readDelta)  / DiskIOSample.blockSizeBytes / durationActual).rounded())
+            let writeOps = Int64((Double(writeDelta) / DiskIOSample.blockSizeBytes / durationActual).rounded())
             let totalOps = readOps + writeOps
 
             NSLog("[DiskIO Live] long-span target=\(Int(duration))s " +

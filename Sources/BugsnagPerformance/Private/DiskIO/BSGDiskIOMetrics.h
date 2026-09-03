@@ -13,11 +13,6 @@
 #include <cmath>
 #include <cstdint>
 
-// APFS default block size. Bytes read/written are divided by this to
-// approximate the operation count when the OS does not expose op counts
-// directly on iOS.
-constexpr double kBSGAssumedDiskOperationSizeBytes = 16.0 * 1024.0;
-
 struct BSGDiskIOMetrics {
     int64_t iopsRead{0};
     int64_t iopsWrite{0};
@@ -26,6 +21,10 @@ struct BSGDiskIOMetrics {
 };
 
 /// Compute a BSGDiskIOMetrics from two ordered snapshots.
+///
+/// proc_pid_rusage reports bytes transferred rather than operation counts, so
+/// the byte delta is divided by the filesystem's block size (captured on the
+/// snapshot, see BSGDiskBlockSizeBytes) to approximate the operation count.
 ///
 /// Returns valid = false if either snapshot is invalid, if the duration
 /// is not strictly positive, or if the block size is not positive. Negative
@@ -42,7 +41,11 @@ static inline BSGDiskIOMetrics BSGComputeDiskIOMetrics(const BSGDiskIOSnapshot &
         return metrics;
     }
 
-    if (kBSGAssumedDiskOperationSizeBytes <= 0.0) {
+    // Both snapshots are taken in the same process against the same volume, so
+    // the block size is expected to match. Use the end snapshot's value and
+    // reject anything non-positive rather than dividing by zero.
+    double blockSize = static_cast<double>(end.blockSize);
+    if (blockSize <= 0.0) {
         return metrics;
     }
 
@@ -53,8 +56,8 @@ static inline BSGDiskIOMetrics BSGComputeDiskIOMetrics(const BSGDiskIOSnapshot &
         ? (end.bytesWritten - start.bytesWritten)
         : 0;
 
-    double readOpsPerSec = (static_cast<double>(readDelta) / kBSGAssumedDiskOperationSizeBytes) / duration;
-    double writeOpsPerSec = (static_cast<double>(writeDelta) / kBSGAssumedDiskOperationSizeBytes) / duration;
+    double readOpsPerSec = (static_cast<double>(readDelta) / blockSize) / duration;
+    double writeOpsPerSec = (static_cast<double>(writeDelta) / blockSize) / duration;
 
     metrics.iopsRead = static_cast<int64_t>(std::llround(readOpsPerSec));
     metrics.iopsWrite = static_cast<int64_t>(std::llround(writeOpsPerSec));
