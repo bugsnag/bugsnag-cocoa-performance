@@ -1140,6 +1140,18 @@ struct DiskIOSample {
     let bytesRead: UInt64
     let bytesWritten: UInt64
 
+    /// The filesystem's native block size in bytes, read once per process.
+    /// Mirrors the SDK's BSGDiskBlockSizeBytes(): bytes transferred are divided
+    /// by this to approximate operation counts. Falls back to the APFS default
+    /// of 4 KB if statfs() fails.
+    static let blockSizeBytes: Double = {
+        var sfs = statfs()
+        if statfs(NSTemporaryDirectory(), &sfs) == 0 && sfs.f_bsize > 0 {
+            return Double(sfs.f_bsize)
+        }
+        return 4096.0
+    }()
+
     /// Reads the current process's disk byte counters. Returns nil if the
     /// platform read fails (e.g., locked down or unavailable).
     ///
