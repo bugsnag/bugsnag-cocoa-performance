@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# Safely handle parameters without declare "${@}"
 PLATFORM="${PLATFORM:-iOS}"
 OS="${OS:-14.5}"
 DEVICE="${DEVICE:-iPhone 12}"
@@ -32,10 +31,13 @@ rm -rf DerivedData
 
 echo "--- Test"
 
-xcrun simctl shutdown all
+# Kill lingering simulator daemons from previous CI jobs
+echo "--- Resetting CoreSimulator environment"
+killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
+killall -9 launchd_sim 2>/dev/null || true
+xcrun simctl shutdown all 2>/dev/null || true
 xcrun simctl erase all
 
-# Pre-boot target simulator to allow iOS 13/14 SpringBoard & LaunchServices (lsd) to settle
 simulator_udid=""
 
 if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
@@ -68,11 +70,7 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   echo "Booting $DEVICE ($simulator_udid) and waiting for iOS $OS initialization..."
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
-  # Wait for LaunchServices (lsd), SpringBoard and FBSApplicationLibrary
-  # to finish indexing installed apps after first boot on iOS 13/14.
-  # 5s is not enough on macos-12 agents — 30s covers the full migration window.
-  echo "Waiting 30s for iOS $OS LaunchServices to settle..."
-  sleep 30
+  sleep 10
 fi
 
 XCODEBUILD_EXTRA_ARGS=(
@@ -82,13 +80,11 @@ XCODEBUILD_EXTRA_ARGS=(
 )
 
 if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
-  # BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
   XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests")
 fi
 
 XCODEBUILD_EXTRA_ARGS_STR="${XCODEBUILD_EXTRA_ARGS[*]}"
 
-# Run tests with scoped retry for the known simulator-launch attach / FBSApplicationLibrary flake
 max_attempts=2
 attempt=1
 
@@ -98,11 +94,12 @@ until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_
     && [[ $attempt -lt $max_attempts ]]; then
     attempt=$((attempt + 1))
     echo "--- Simulator launch flake detected, retrying tests (attempt $attempt/$max_attempts)"
+    killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
     xcrun simctl shutdown all || true
     if [[ -n "${simulator_udid:-}" ]]; then
       xcrun simctl boot "$simulator_udid" 2>/dev/null || true
       xcrun simctl bootstatus "$simulator_udid" -b || true
-      sleep 5
+      sleep 10
     fi
     continue
   fi
