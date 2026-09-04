@@ -53,7 +53,7 @@ steps:
             upload:
               - "logs/*"
         agents:
-          queue: "macos-12-arm"
+          queue: "macos-13-arm"
         env:
           XCODE_VERSION: "14"
 
