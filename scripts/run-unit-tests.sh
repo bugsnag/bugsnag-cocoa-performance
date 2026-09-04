@@ -2,12 +2,29 @@
 
 set -euo pipefail
 
-# Safely parse parameters
-PLATFORM="${PLATFORM:-iOS}"
-OS="${OS:-14.5}"
-DEVICE="${DEVICE:-iPhone 12}"
+# Parse KEY=VALUE positional args into environment variables
+# This allows the pipeline to pass PLATFORM=iOS OS=14.5 DEVICE="iPhone 12" as args
+for arg in "$@"; do
+  case "$arg" in
+    PLATFORM=*|OS=*|DEVICE=*)
+      export "${arg?}"
+      ;;
+  esac
+done
 
-MAKE_ARGS=("$@")
+# Set defaults (only used if not passed via KEY=VALUE args above)
+PLATFORM="${PLATFORM:-iOS}"
+OS="${OS:-26.1}"
+DEVICE="${DEVICE:-iPhone 17}"
+
+# Build MAKE_ARGS excluding KEY=VALUE env overrides already handled above
+MAKE_ARGS=()
+for arg in "$@"; do
+  case "$arg" in
+    PLATFORM=*|OS=*|DEVICE=*) ;;
+    *) MAKE_ARGS+=("$arg") ;;
+  esac
+done
 
 bundle install
 
@@ -71,17 +88,28 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   echo "Booting $DEVICE ($simulator_udid) and waiting for iOS $OS initialization..."
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
-  
+
   # Allow LaunchServices (lsd) and SpringBoard background indexing to settle
-  echo "Waiting 10s for LaunchServices app registration to settle..."
-  sleep 10
+  echo "Waiting 30s for LaunchServices app registration to settle on iOS $OS..."
+  sleep 30
 fi
 
-XCODEBUILD_EXTRA_ARGS=(
-  -resultBundlePath "$xcresult"
-  -test-timeouts-enabled YES
-  -parallel-testing-enabled NO
-)
+# Use extended timeouts for iOS 14 to handle slow app registration
+if [[ "$PLATFORM" == "iOS" && "$OS" == 14.* ]]; then
+  XCODEBUILD_EXTRA_ARGS=(
+    -resultBundlePath "$xcresult"
+    -test-timeouts-enabled YES
+    -parallel-testing-enabled NO
+    -default-test-execution-time-allowance 600
+    -maximum-test-execution-time-allowance 600
+  )
+else
+  XCODEBUILD_EXTRA_ARGS=(
+    -resultBundlePath "$xcresult"
+    -test-timeouts-enabled YES
+    -parallel-testing-enabled NO
+  )
+fi
 
 if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
   XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests")
@@ -104,7 +132,7 @@ until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_
     if [[ -n "${simulator_udid:-}" ]]; then
       xcrun simctl boot "$simulator_udid" 2>/dev/null || true
       xcrun simctl bootstatus "$simulator_udid" -b || true
-      sleep 10
+      sleep 30
     fi
     continue
   fi
