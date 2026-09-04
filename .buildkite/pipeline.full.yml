@@ -47,13 +47,13 @@ steps:
       - label: ":xcode_simulator: iOS 14 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5"
         plugins:
           "artifacts#v1.9.3":
             upload:
               - "logs/*"
         agents:
-          queue: "macos-13-arm"
+          queue: "macos-12-arm"
         env:
           XCODE_VERSION: "14"
 
