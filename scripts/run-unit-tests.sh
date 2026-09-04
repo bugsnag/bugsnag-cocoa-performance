@@ -35,7 +35,7 @@ echo "--- Test"
 xcrun simctl shutdown all
 xcrun simctl erase all
 
-# Pre-boot target simulator to allow iOS 13/14 SpringBoard & Data Migrations to settle
+# Pre-boot target simulator to allow iOS 13/14 SpringBoard & LaunchServices (lsd) to settle
 simulator_udid=""
 
 if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
@@ -68,9 +68,16 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   echo "Booting $DEVICE ($simulator_udid) and waiting for iOS $OS initialization..."
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
+  
+  # Allow LaunchServices (lsd) and SpringBoard background indexing to finish
+  sleep 5
 fi
 
-XCODEBUILD_EXTRA_ARGS=(-resultBundlePath "$xcresult")
+XCODEBUILD_EXTRA_ARGS=(
+  -resultBundlePath "$xcresult"
+  -test-timeouts-enabled YES
+  -maximum-concurrent-test-device-applications 1
+)
 
 if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
   # BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
@@ -79,13 +86,13 @@ fi
 
 XCODEBUILD_EXTRA_ARGS_STR="${XCODEBUILD_EXTRA_ARGS[*]}"
 
-# Run tests with scoped retry for the known simulator-launch attach flake
+# Run tests with scoped retry for the known simulator-launch attach / FBSApplicationLibrary flake
 max_attempts=2
 attempt=1
 
 until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_STR"; do
   if [[ -f xcodebuild.log ]] \
-    && grep -q "Test runner never began executing tests after launching" xcodebuild.log \
+    && grep -qE "Test runner never began executing tests after launching|FBSApplicationLibrary" xcodebuild.log \
     && [[ $attempt -lt $max_attempts ]]; then
     attempt=$((attempt + 1))
     echo "--- Simulator launch flake detected, retrying tests (attempt $attempt/$max_attempts)"
@@ -93,6 +100,7 @@ until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_
     if [[ -n "${simulator_udid:-}" ]]; then
       xcrun simctl boot "$simulator_udid" 2>/dev/null || true
       xcrun simctl bootstatus "$simulator_udid" -b || true
+      sleep 5
     fi
     continue
   fi
