@@ -11,13 +11,12 @@ for arg in "$@"; do
   esac
 done
 
-# Set defaults (only used if not passed via KEY=VALUE args above)
+# Set defaults
 PLATFORM="${PLATFORM:-iOS}"
 OS="${OS:-26.1}"
 DEVICE="${DEVICE:-iPhone 17}"
 
 # Build MAKE_ARGS excluding KEY=VALUE env overrides
-# Use safe empty-array expansion to avoid "unbound variable" under set -u
 MAKE_ARGS=()
 for arg in "$@"; do
   case "$arg" in
@@ -52,10 +51,14 @@ echo "--- Test"
 
 # Clean up lingering CoreSimulator processes from previous agent runs
 echo "--- Resetting CoreSimulator environment"
+echo "  Killing lingering CoreSimulator daemons..."
 killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
 killall -9 launchd_sim 2>/dev/null || true
+echo "  Shutting down all simulators..."
 xcrun simctl shutdown all 2>/dev/null || true
+echo "  Erasing all simulators..."
 xcrun simctl erase all
+echo "  CoreSimulator reset complete."
 
 simulator_udid=""
 
@@ -90,8 +93,13 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
 
+  # Countdown so CI log shows progress — avoids "stuck" appearance
   echo "Waiting 30s for LaunchServices app registration to settle on iOS $OS..."
-  sleep 30
+  for i in 30 25 20 15 10 5; do
+    echo "  ... ${i}s remaining"
+    sleep 5
+  done
+  echo "  LaunchServices settle wait complete."
 fi
 
 # Use extended timeouts for iOS 14 to handle slow app registration
@@ -132,7 +140,11 @@ until make test ${MAKE_ARGS[@]+"${MAKE_ARGS[@]}"} XCODEBUILD_EXTRA_ARGS="$XCODEB
     if [[ -n "${simulator_udid:-}" ]]; then
       xcrun simctl boot "$simulator_udid" 2>/dev/null || true
       xcrun simctl bootstatus "$simulator_udid" -b || true
-      sleep 30
+      echo "Waiting 30s for LaunchServices to settle before retry..."
+      for i in 30 25 20 15 10 5; do
+        echo "  ... ${i}s remaining"
+        sleep 5
+      done
     fi
     continue
   fi
