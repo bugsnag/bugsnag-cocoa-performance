@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+# Safely parse parameters
 PLATFORM="${PLATFORM:-iOS}"
 OS="${OS:-14.5}"
 DEVICE="${DEVICE:-iPhone 12}"
@@ -31,7 +32,7 @@ rm -rf DerivedData
 
 echo "--- Test"
 
-# Kill lingering simulator daemons from previous CI jobs
+# Clean up lingering CoreSimulator processes from previous agent runs
 echo "--- Resetting CoreSimulator environment"
 killall -9 com.apple.CoreSimulator.CoreSimulatorService 2>/dev/null || true
 killall -9 launchd_sim 2>/dev/null || true
@@ -70,6 +71,9 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   echo "Booting $DEVICE ($simulator_udid) and waiting for iOS $OS initialization..."
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
+  
+  # Allow LaunchServices (lsd) and SpringBoard background indexing to settle
+  echo "Waiting 10s for LaunchServices app registration to settle..."
   sleep 10
 fi
 
@@ -85,12 +89,13 @@ fi
 
 XCODEBUILD_EXTRA_ARGS_STR="${XCODEBUILD_EXTRA_ARGS[*]}"
 
+# Run tests with scoped retry for known simulator-launch attach flakes
 max_attempts=2
 attempt=1
 
 until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_STR"; do
   if [[ -f xcodebuild.log ]] \
-    && grep -qE "Test runner never began executing tests after launching|FBSApplicationLibrary" xcodebuild.log \
+    && grep -qE "Test runner never began executing tests after launching|FBSApplicationLibrary|Early unexpected exit" xcodebuild.log \
     && [[ $attempt -lt $max_attempts ]]; then
     attempt=$((attempt + 1))
     echo "--- Simulator launch flake detected, retrying tests (attempt $attempt/$max_attempts)"
