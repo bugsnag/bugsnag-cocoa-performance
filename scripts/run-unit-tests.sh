@@ -68,9 +68,11 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   echo "Booting $DEVICE ($simulator_udid) and waiting for iOS $OS initialization..."
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
-  
-  # Allow LaunchServices (lsd) and SpringBoard background indexing to finish
-  sleep 5
+  # Wait for LaunchServices (lsd), SpringBoard and FBSApplicationLibrary
+  # to finish indexing installed apps after first boot on iOS 13/14.
+  # 5s is not enough on macos-12 agents — 30s covers the full migration window.
+  echo "Waiting 30s for iOS $OS LaunchServices to settle..."
+  sleep 30
 fi
 
 XCODEBUILD_EXTRA_ARGS=(
