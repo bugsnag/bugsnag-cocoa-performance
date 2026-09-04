@@ -3,7 +3,6 @@
 set -euo pipefail
 
 # Parse KEY=VALUE positional args into environment variables
-# This allows the pipeline to pass PLATFORM=iOS OS=14.5 DEVICE="iPhone 12" as args
 for arg in "$@"; do
   case "$arg" in
     PLATFORM=*|OS=*|DEVICE=*)
@@ -17,7 +16,8 @@ PLATFORM="${PLATFORM:-iOS}"
 OS="${OS:-26.1}"
 DEVICE="${DEVICE:-iPhone 17}"
 
-# Build MAKE_ARGS excluding KEY=VALUE env overrides already handled above
+# Build MAKE_ARGS excluding KEY=VALUE env overrides
+# Use safe empty-array expansion to avoid "unbound variable" under set -u
 MAKE_ARGS=()
 for arg in "$@"; do
   case "$arg" in
@@ -25,6 +25,7 @@ for arg in "$@"; do
     *) MAKE_ARGS+=("$arg") ;;
   esac
 done
+MAKE_ARGS=("${MAKE_ARGS[@]+"${MAKE_ARGS[@]}"}")
 
 bundle install
 
@@ -43,7 +44,7 @@ echo "--- Analyze"
 
 rm -rf DerivedData
 
-make analyze "${MAKE_ARGS[@]}" || die
+make analyze ${MAKE_ARGS[@]+"${MAKE_ARGS[@]}"} || die
 
 rm -rf DerivedData
 
@@ -89,7 +90,6 @@ if [[ "$PLATFORM" == "iOS" && ( "$OS" == 14.* || "$OS" == 13.* ) ]]; then
   xcrun simctl boot "$simulator_udid" 2>/dev/null || true
   xcrun simctl bootstatus "$simulator_udid" -b || true
 
-  # Allow LaunchServices (lsd) and SpringBoard background indexing to settle
   echo "Waiting 30s for LaunchServices app registration to settle on iOS $OS..."
   sleep 30
 fi
@@ -121,7 +121,7 @@ XCODEBUILD_EXTRA_ARGS_STR="${XCODEBUILD_EXTRA_ARGS[*]}"
 max_attempts=2
 attempt=1
 
-until make test "${MAKE_ARGS[@]}" XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_STR"; do
+until make test ${MAKE_ARGS[@]+"${MAKE_ARGS[@]}"} XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS_STR"; do
   if [[ -f xcodebuild.log ]] \
     && grep -qE "Test runner never began executing tests after launching|FBSApplicationLibrary|Early unexpected exit" xcodebuild.log \
     && [[ $attempt -lt $max_attempts ]]; then
