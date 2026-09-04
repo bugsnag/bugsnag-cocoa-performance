@@ -76,7 +76,7 @@ fi
 XCODEBUILD_EXTRA_ARGS=(
   -resultBundlePath "$xcresult"
   -test-timeouts-enabled YES
-  -maximum-concurrent-test-device-applications 1
+  -parallel-testing-enabled NO
 )
 
 if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
