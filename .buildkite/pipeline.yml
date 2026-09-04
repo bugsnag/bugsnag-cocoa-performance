@@ -16,11 +16,11 @@ steps:
         env:
           XCODE_VERSION: "26.1.1"
         plugins:
-          - "artifacts#v1.9.3":
-              upload:
-                - "BugsnagPerformance.xcframework.zip"
-                - "BugsnagPerformanceSwift.xcframework.zip"
-                - "BugsnagPerformanceNamedSpans.xcframework.zip"
+          "artifacts#v1.9.3":
+            upload:
+              - "BugsnagPerformance.xcframework.zip"
+              - "BugsnagPerformanceSwift.xcframework.zip"
+              - "BugsnagPerformanceNamedSpans.xcframework.zip"
 
       - label: ":hammer: Carthage"
         timeout_in_minutes: 10
@@ -73,11 +73,11 @@ steps:
         env:
           XCODE_VERSION: "26.1.1"
         plugins:
-          - "artifacts#v1.9.3":
-              download:
-                - "BugsnagPerformance.xcframework.zip"
-                - "BugsnagPerformanceSwift.xcframework.zip"
-                - "BugsnagPerformanceNamedSpans.xcframework.zip"
+          "artifacts#v1.9.3":
+            download:
+              - "BugsnagPerformance.xcframework.zip"
+              - "BugsnagPerformanceSwift.xcframework.zip"
+              - "BugsnagPerformanceNamedSpans.xcframework.zip"
         artifact_paths:
           - "features/fixtures/ios/output/bb_xcframework_ipa_url.txt"
           - "features/fixtures/ios/output/bs_xcframework_ipa_url.txt"
@@ -128,7 +128,7 @@ steps:
   - group: "Unit tests"
     steps:
       - label: ":xcode_simulator: iOS 26 Unit Tests"
-        timeout_in_minutes: 10
+        timeout_in_minutes: 15
         commands:
           - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1 DEVICE=\"iPhone 17\""
         env:
@@ -137,19 +137,44 @@ steps:
           "artifacts#v1.9.3":
             upload:
               - "logs/*"
+        retry:
+          automatic:
+            - exit_status: 1
+              limit: 1
 
-      - label: ":xcode_simulator: iOS 13 Unit tests"
-        timeout_in_minutes: 10
+      - label: ":xcode_simulator: iOS 14 Unit Tests"
+        timeout_in_minutes: 25
         agents:
           queue: "macos-12-arm"
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7"
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
         env:
           XCODE_VERSION: "14"
         plugins:
           "artifacts#v1.9.3":
             upload:
               - "logs/*"
+        retry:
+          automatic:
+            - exit_status: 1
+              limit: 1
+
+      - label: ":xcode_simulator: iOS 13 Unit Tests"
+        timeout_in_minutes: 25
+        agents:
+          queue: "macos-12-arm"
+        commands:
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7 DEVICE=\"iPhone 11\""
+        env:
+          XCODE_VERSION: "14"
+        plugins:
+          "artifacts#v1.9.3":
+            upload:
+              - "logs/*"
+        retry:
+          automatic:
+            - exit_status: 1
+              limit: 1
 
   - group: "e2e tests"
     steps:
@@ -192,7 +217,7 @@ steps:
           automatic:
             - exit_status: -1  # Agent was lost
               limit: 2
-            - exit_status: 103  # Appium session failed
+            - exit_status: 103 # Appium session failed
               limit: 2
 
   - group: "XcFramework e2e tests"
@@ -236,7 +261,7 @@ steps:
           automatic:
             - exit_status: -1  # Agent was lost
               limit: 2
-            - exit_status: 103  # Appium session failed
+            - exit_status: 103 # Appium session failed
               limit: 2
 
   - group: "Swizzling disabled e2e tests"
@@ -280,7 +305,7 @@ steps:
           automatic:
             - exit_status: -1  # Agent was lost
               limit: 2
-            - exit_status: 103  # Appium session failed
+            - exit_status: 103 # Appium session failed
               limit: 2
 
   - group: "Swizzling premain e2e tests"
@@ -325,7 +350,7 @@ steps:
           automatic:
             - exit_status: -1  # Agent was lost
               limit: 2
-            - exit_status: 103  # Appium session failed
+            - exit_status: 103 # Appium session failed
               limit: 2
 
   - group: "Benchmark tests"
@@ -369,7 +394,7 @@ steps:
           automatic:
             - exit_status: -1  # Agent was lost
               limit: 2
-            - exit_status: 103  # Appium session failed
+            - exit_status: 103 # Appium session failed
               limit: 2
 
   - label: "Conditionally trigger full set of tests"
