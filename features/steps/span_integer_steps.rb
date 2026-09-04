@@ -96,3 +96,62 @@ Then('span float attribute {string} should be less than {float}') do |attribute,
   end
   Maze.check.true(found, "No span found with attribute '#{attribute}'.")
 end
+
+# Strict integer >= check. The `a span integer attribute ... is greater than or
+# equal to ...` step in app_steps.rb only asserts that the attribute exists, so
+# this variant is used where the value itself must be validated.
+Then('span integer attribute {string} should be greater than or equal to {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?, "No span found with integer attribute '#{attribute}'")
+  selected_attributes.each do |a|
+    val = a['value']['intValue'].to_i
+    Maze.check.true(val >= expected, "Expected #{attribute} (#{val}) >= #{expected}")
+  end
+end
+
+Then('every span integer attribute {string} equals {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?, "No span found with integer attribute '#{attribute}'")
+  selected_attributes.each do |a|
+    val = a['value']['intValue'].to_i
+    Maze.check.true(val == expected, "Expected #{attribute} (#{val}) == #{expected}")
+  end
+end
+
+# Named-span variants, needed to assert per-span independence for concurrent spans.
+def span_named(name)
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  span = spans.find { |s| s['name'] == name }
+  raise Test::Unit::AssertionFailedError, "No span named '#{name}' was received" if span.nil?
+  span
+end
+
+def named_span_int_attribute(name, attribute)
+  span = span_named(name)
+  attr = (span['attributes'] || []).find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') }
+  raise Test::Unit::AssertionFailedError, "Span '#{name}' has no integer attribute '#{attribute}'" if attr.nil?
+  attr['value']['intValue'].to_i
+end
+
+Then('the span named {string} integer attribute {string} is greater than or equal to {int}') do |name, attribute, expected|
+  val = named_span_int_attribute(name, attribute)
+  Maze.check.true(val >= expected, "Expected #{name}.#{attribute} (#{val}) >= #{expected}")
+end
+
+Then('the span named {string} attribute {string} does not exist') do |name, attribute|
+  span = span_named(name)
+  attr = (span['attributes'] || []).find { |a| a['key'] == attribute }
+  Maze.check.nil(attr, "Span '#{name}' unexpectedly has attribute '#{attribute}'")
+end
+
+# Consistency/independence check: total must be self-consistent within the same
+# span, which cannot hold if a snapshot leaked between overlapping spans.
+Then('the span named {string} integer attribute {string} equals the sum of integer attributes {string} and {string}') do |name, total_attr, a_attr, b_attr|
+  total = named_span_int_attribute(name, total_attr)
+  val_a = named_span_int_attribute(name, a_attr)
+  val_b = named_span_int_attribute(name, b_attr)
+  Maze.check.true(total == val_a + val_b,
+                  "Expected #{name}.#{total_attr} (#{total}) == #{a_attr} (#{val_a}) + #{b_attr} (#{val_b})")
+end

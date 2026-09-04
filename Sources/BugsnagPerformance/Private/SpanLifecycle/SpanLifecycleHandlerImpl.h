@@ -10,6 +10,7 @@
 #import "SpanLifecycleHandler.h"
 #import "../Batch.h"
 #import "../BugsnagPerformanceConfiguration+Private.h"
+#import "../DiskIO/BSGDiskIOCollector.h"
 #import "../FrameRateMetrics/FrameMetricsCollector.h"
 #import "../SpanStackingHandler.h"
 #import "../Sampler.h"
@@ -31,6 +32,7 @@ public:
                              std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
                              std::shared_ptr<Batch> batch,
                              FrameMetricsCollector *frameMetricsCollector,
+                             BSGDiskIOCollector *diskIOCollector,
                              BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
                              BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                              void (^onSpanStarted)(),
@@ -42,6 +44,7 @@ public:
     , plainSpanFactory_(plainSpanFactory)
     , batch_(batch)
     , frameMetricsCollector_(frameMetricsCollector)
+    , diskIOCollector_(diskIOCollector)
     , onSpanStartCallbacks_(onSpanStartCallbacks)
     , onSpanEndCallbacks_(onSpanEndCallbacks)
     , onSpanStarted_(onSpanStarted)
@@ -72,6 +75,7 @@ private:
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
     std::shared_ptr<SpanStore> store_;
     FrameMetricsCollector *frameMetricsCollector_;
+    BSGDiskIOCollector *diskIOCollector_;
     bool isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
     void (^onSpanEndSet_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
@@ -84,6 +88,7 @@ private:
     
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept;
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) noexcept;

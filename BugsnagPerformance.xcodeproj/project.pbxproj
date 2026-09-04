@@ -86,6 +86,13 @@
 		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };
 		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
 		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
+		3208308C301FF28000E0958A /* DiskIOCollectorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3208308B301FF27900E0958A /* DiskIOCollectorTests.mm */; };
+		3208308E301FF30400E0958A /* DiskIOMetricsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3208308D301FF2F900E0958A /* DiskIOMetricsTests.mm */; };
+		32083090301FF33400E0958A /* DiskIOSnapshotTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3208308F301FF32E00E0958A /* DiskIOSnapshotTests.mm */; };
+		3299CB1430209ACF008774D3 /* BSGDiskIOCollector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3299CB1330209ACD008774D3 /* BSGDiskIOCollector.mm */; };
+		3299CB1630209ADC008774D3 /* BSGDiskIOCollector.h in Headers */ = {isa = PBXBuildFile; fileRef = 3299CB1530209AD6008774D3 /* BSGDiskIOCollector.h */; };
+		3299CB1830209AE6008774D3 /* BSGDiskIOMetrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3299CB1730209AE3008774D3 /* BSGDiskIOMetrics.h */; };
+		3299CB1A30209AFA008774D3 /* BSGDiskIOSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 3299CB1930209AF6008774D3 /* BSGDiskIOSnapshot.h */; };
 		8A80DA8B2966CE940035BDA9 /* BugsnagPerformance.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */; };
 		8A80DA912966CEB30035BDA9 /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A80DA80296588840035BDA9 /* ConfigurationTests.swift */; };
 		960EECF12B23DF9B009FAA11 /* BugsnagPerformanceTrackedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960EECED2B237561009FAA11 /* BugsnagPerformanceTrackedViewController.swift */; };
@@ -515,6 +522,13 @@
 		1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BugsnagPerformanceAppStartTypePlugin.mm; sourceTree = "<group>"; };
 		1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpanContext.h; sourceTree = "<group>"; };
 		1C7852A32E5F697D00BB8E2D /* SpanContext.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SpanContext.mm; sourceTree = "<group>"; };
+		3208308B301FF27900E0958A /* DiskIOCollectorTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DiskIOCollectorTests.mm; sourceTree = "<group>"; };
+		3208308D301FF2F900E0958A /* DiskIOMetricsTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DiskIOMetricsTests.mm; sourceTree = "<group>"; };
+		3208308F301FF32E00E0958A /* DiskIOSnapshotTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DiskIOSnapshotTests.mm; sourceTree = "<group>"; };
+		3299CB1330209ACD008774D3 /* BSGDiskIOCollector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BSGDiskIOCollector.mm; sourceTree = "<group>"; };
+		3299CB1530209AD6008774D3 /* BSGDiskIOCollector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGDiskIOCollector.h; sourceTree = "<group>"; };
+		3299CB1730209AE3008774D3 /* BSGDiskIOMetrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGDiskIOMetrics.h; sourceTree = "<group>"; };
+		3299CB1930209AF6008774D3 /* BSGDiskIOSnapshot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSGDiskIOSnapshot.h; sourceTree = "<group>"; };
 		72E4BB63359EA30E80116E2A /* BugsnagPerformance.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = BugsnagPerformance.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A80DA80296588840035BDA9 /* ConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationTests.swift; sourceTree = "<group>"; };
 		8A80DA872966CE940035BDA9 /* BugsnagPerformance-iOSTestsSwift.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "BugsnagPerformance-iOSTestsSwift.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -907,6 +921,7 @@
 		0122C21F29019770002D243C /* Private */ = {
 			isa = PBXGroup;
 			children = (
+				3299CB1130209A72008774D3 /* DiskIO */,
 				CB572EA829BB783200FD7A2A /* AppStateTracker.h */,
 				CB572EA929BB783200FD7A2A /* AppStateTracker.m */,
 				CBE8EA1C294B5E1500702950 /* Batch.h */,
@@ -1050,6 +1065,9 @@
 		0122C25C29019C05002D243C /* BugsnagPerformanceTests */ = {
 			isa = PBXGroup;
 			children = (
+				3208308F301FF32E00E0958A /* DiskIOSnapshotTests.mm */,
+				3208308D301FF2F900E0958A /* DiskIOMetricsTests.mm */,
+				3208308B301FF27900E0958A /* DiskIOCollectorTests.mm */,
 				CB0AD75C29641B59002A3FB6 /* BatchTests.mm */,
 				963726D92DEFBA5200C739E6 /* BSGCompositeSpanControlProviderTests.m */,
 				963726D62DEFB2BE00C739E6 /* BSGPrioritizedStoreTests.m */,
@@ -1118,6 +1136,17 @@
 				09D807F42B9756B000D01DF5 /* BugsnagPerformanceSwiftUI.docc */,
 			);
 			path = BugsnagPerformanceSwiftUI;
+			sourceTree = "<group>";
+		};
+		3299CB1130209A72008774D3 /* DiskIO */ = {
+			isa = PBXGroup;
+			children = (
+				3299CB1930209AF6008774D3 /* BSGDiskIOSnapshot.h */,
+				3299CB1730209AE3008774D3 /* BSGDiskIOMetrics.h */,
+				3299CB1530209AD6008774D3 /* BSGDiskIOCollector.h */,
+				3299CB1330209ACD008774D3 /* BSGDiskIOCollector.mm */,
+			);
+			path = DiskIO;
 			sourceTree = "<group>";
 		};
 		450CB5014AAED50046482044 /* Products */ = {
@@ -1554,6 +1583,7 @@
 				CB04969729150D860097E526 /* OtlpPackage.h in Headers */,
 				960EECF32B24CA24009FAA11 /* BugsnagPerformanceTrackedViewContainer.h in Headers */,
 				966634D52C8A3647004A934D /* FrameMetricsSnapshot.h in Headers */,
+				3299CB1A30209AFA008774D3 /* BSGDiskIOSnapshot.h in Headers */,
 				CB34772029068C350033759C /* BSGURLSessionPerformanceProxy.h in Headers */,
 				963726E42DF19D7F00C739E6 /* BugsnagPerformanceSpanControlProvider+Private.h in Headers */,
 				963726DD2DF0B43500C739E6 /* BugsnagPerformancePluginContext.h in Headers */,
@@ -1567,6 +1597,7 @@
 				967949BD2E99373E005FD87F /* SpanStore.h in Headers */,
 				963726C12DEA4E5700C739E6 /* BugsnagPerformancePriority.h in Headers */,
 				962CE7E82E6123E700380522 /* ViewLoadLoadingIndicatorsHandlerImpl.h in Headers */,
+				3299CB1830209AE6008774D3 /* BSGDiskIOMetrics.h in Headers */,
 				962CE7E92E6123E700380522 /* ViewLoadLoadingIndicatorsHandler.h in Headers */,
 				CB7FD930299D2EF200499E13 /* BugsnagPerformanceSpanOptions.h in Headers */,
 				965FBD152DF24D3300D6BACB /* Logging.h in Headers */,
@@ -1636,6 +1667,7 @@
 				CB572EAA29BB783200FD7A2A /* AppStateTracker.h in Headers */,
 				CBEC51DC2976F1F9009C0CE3 /* RetryQueue.h in Headers */,
 				963726CE2DEAB34B00C739E6 /* BSGPrioritizedStore.h in Headers */,
+				3299CB1630209ADC008774D3 /* BSGDiskIOCollector.h in Headers */,
 				01A414CD2913C0F0003152A4 /* SpanAttributes.h in Headers */,
 				963829162E54972600404F3A /* AppStartupSpanFactoryImpl.h in Headers */,
 				0122C25129019770002D243C /* Tracer.h in Headers */,
@@ -2046,7 +2078,9 @@
 				963726D72DEFB2CC00C739E6 /* BSGPrioritizedStoreTests.m in Sources */,
 				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
+				32083090301FF33400E0958A /* DiskIOSnapshotTests.mm in Sources */,
 				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,
+				3208308C301FF28000E0958A /* DiskIOCollectorTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */,
 				CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */,
@@ -2061,6 +2095,7 @@
 				0122C27129019CEF002D243C /* OtlpTraceEncodingTests.mm in Sources */,
 				098FC8792D3FADFE001B627D /* SpanAttributesTests.mm in Sources */,
 				962F80F229DB03A400BE82BC /* PerformanceMicrobenchmarkTests.swift in Sources */,
+				3208308E301FF30400E0958A /* DiskIOMetricsTests.mm in Sources */,
 				CB747D1F299E4984003CA1B4 /* SpanOptionsTests.mm in Sources */,
 				CB0AD76C296578D9002A3FB6 /* BugsnagPerformanceConfigurationTests.mm in Sources */,
 				96F1292F2DCD1BE200A6FB2B /* BugsnagPerformanceRemoteSpanContextTests.m in Sources */,
@@ -2137,6 +2172,7 @@
 				968AA5FD2CCA5AB000BA69CF /* BSGPerformanceSharedSessionProxy.mm in Sources */,
 				967949C12E993750005FD87F /* SpanStoreImpl.mm in Sources */,
 				964B78562D4B924C00FF077D /* BugsnagPerformanceSpanCondition.mm in Sources */,
+				3299CB1430209ACF008774D3 /* BSGDiskIOCollector.mm in Sources */,
 				CBEC51DD2976F1F9009C0CE3 /* RetryQueue.mm in Sources */,
 				01A414CE2913C0F0003152A4 /* SpanAttributes.mm in Sources */,
 				CBE8EA1B294B5AB800702950 /* Worker.mm in Sources */,
