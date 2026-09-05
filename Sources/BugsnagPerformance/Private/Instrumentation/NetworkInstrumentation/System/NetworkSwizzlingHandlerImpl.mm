@@ -11,14 +11,36 @@
 #import "Proxy/BSGPerformanceSharedSessionProxy.h"
 #import "../../../Swizzle.h"
 #import <objc/runtime.h>
+#import "../../../Logging.h"
 
 using namespace bugsnag;
+
+static const void *kGraphQLResponseBodyKey = &kGraphQLResponseBodyKey;
+static const NSUInteger kMaxCapturedGraphQLResponseBodyBytes = 64 * 1024;
+
+extern "C" void BSGAssociateGraphQLResponseBodyWithTask(NSURLSessionTask *task, NSData *body) {
+    if (task == nil || body.length == 0 || body.length > kMaxCapturedGraphQLResponseBodyBytes) {
+        return;
+    }
+    objc_setAssociatedObject(task, kGraphQLResponseBodyKey, body, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+extern "C" NSData *BSGCapturedGraphQLResponseBodyForTask(NSURLSessionTask *task) {
+    return task == nil ? nil : objc_getAssociatedObject(task, kGraphQLResponseBodyKey);
+}
+
+extern "C" void BSGClearCapturedGraphQLResponseBodyForTask(NSURLSessionTask *task) {
+    if (task != nil) {
+        objc_setAssociatedObject(task, kGraphQLResponseBodyKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+}
 
 void
 NetworkSwizzlingHandlerImpl::instrumentSession(id<NSURLSessionTaskDelegate> taskDelegate,
                                                BSGIsEnabledCallback isEnabled) noexcept {
     instrumentSessionWithConfigurationDelegateQueue(taskDelegate, isEnabled);
     instrumentSharedSession(isEnabled);
+    instrumentSessionCompletionHandlers(isEnabled);
 }
 
 void
@@ -91,5 +113,73 @@ NetworkSwizzlingHandlerImpl::instrumentSessionWithConfigurationDelegateQueue(id<
             sessionDelegate = taskDelegate;
         }
         return originalIMP(self, selector, configuration, sessionDelegate, queue);
+    });
+}
+
+void
+NetworkSwizzlingHandlerImpl::instrumentSessionCompletionHandlers(BSGIsEnabledCallback isEnabled) noexcept {
+    __weak BSGIsEnabledCallback weakIsEnabled = isEnabled;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        {
+            SEL selector = @selector(dataTaskWithRequest:completionHandler:);
+            typedef NSURLSessionDataTask *(*IMPPrototype)(id, SEL, NSURLRequest *, void (^)(NSData *, NSURLResponse *, NSError *));
+            __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::replaceInstanceMethodOverride(NSURLSession.class, selector,
+                ^NSURLSessionDataTask *(NSURLSession *session, NSURLRequest *request, void (^completionHandler)(NSData *, NSURLResponse *, NSError *)) {
+                    BSGIsEnabledCallback localIsEnabled = weakIsEnabled;
+                    if (localIsEnabled != nil && !localIsEnabled()) {
+                        return originalIMP(session, selector, request, completionHandler);
+                    }
+                    __block NSURLSessionDataTask *task = nil;
+                    void (^wrappedCompletion)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+                        BSGAssociateGraphQLResponseBodyWithTask(task, data);
+                        if (completionHandler != nil) {
+                            completionHandler(data, response, error);
+                        }
+                    };
+                    task = originalIMP(session, selector, request, wrappedCompletion);
+                    return task;
+                });
+        }
+        {
+            SEL selector = @selector(dataTaskWithURL:completionHandler:);
+            typedef NSURLSessionDataTask *(*IMPPrototype)(id, SEL, NSURL *, void (^)(NSData *, NSURLResponse *, NSError *));
+            __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::replaceInstanceMethodOverride(NSURLSession.class, selector,
+                ^NSURLSessionDataTask *(NSURLSession *session, NSURL *url, void (^completionHandler)(NSData *, NSURLResponse *, NSError *)) {
+                    BSGIsEnabledCallback localIsEnabled = weakIsEnabled;
+                    if (localIsEnabled != nil && !localIsEnabled()) {
+                        return originalIMP(session, selector, url, completionHandler);
+                    }
+                    __block NSURLSessionDataTask *task = nil;
+                    void (^wrappedCompletion)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+                        BSGAssociateGraphQLResponseBodyWithTask(task, data);
+                        if (completionHandler != nil) {
+                            completionHandler(data, response, error);
+                        }
+                    };
+                    task = originalIMP(session, selector, url, wrappedCompletion);
+                    return task;
+                });
+        }
+        {
+            SEL selector = @selector(uploadTaskWithRequest:fromData:completionHandler:);
+            typedef NSURLSessionUploadTask *(*IMPPrototype)(id, SEL, NSURLRequest *, NSData *, void (^)(NSData *, NSURLResponse *, NSError *));
+            __block IMPPrototype originalIMP = (IMPPrototype)ObjCSwizzle::replaceInstanceMethodOverride(NSURLSession.class, selector,
+                ^NSURLSessionUploadTask *(NSURLSession *session, NSURLRequest *request, NSData *bodyData, void (^completionHandler)(NSData *, NSURLResponse *, NSError *)) {
+                    BSGIsEnabledCallback localIsEnabled = weakIsEnabled;
+                    if (localIsEnabled != nil && !localIsEnabled()) {
+                        return originalIMP(session, selector, request, bodyData, completionHandler);
+                    }
+                    __block NSURLSessionUploadTask *task = nil;
+                    void (^wrappedCompletion)(NSData *, NSURLResponse *, NSError *) = ^(NSData *data, NSURLResponse *response, NSError *error) {
+                        BSGAssociateGraphQLResponseBodyWithTask(task, data);
+                        if (completionHandler != nil) {
+                            completionHandler(data, response, error);
+                        }
+                    };
+                    task = originalIMP(session, selector, request, bodyData, wrappedCompletion);
+                    return task;
+                });
+        }
     });
 }

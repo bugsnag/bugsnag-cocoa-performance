@@ -1,3 +1,4 @@
+@resource_aggregation
 Feature: Foreground App Session Span
 
 Scenario: App session span sends app-session attributes
