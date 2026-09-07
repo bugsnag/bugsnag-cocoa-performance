@@ -155,3 +155,53 @@ Then('the span named {string} integer attribute {string} equals the sum of integ
   Maze.check.true(total == val_a + val_b,
                   "Expected #{name}.#{total_attr} (#{total}) == #{a_attr} (#{val_a}) + #{b_attr} (#{val_b})")
 end
+
+# Strict universal check: EVERY received span must carry the attribute (as an
+# OTLP intValue) and satisfy the bound. Unlike the `span integer attribute ...`
+# steps above, spans missing the attribute fail rather than being skipped -
+# needed by the orphan-smoke scenario where all completed spans must report.
+Then('every span integer attribute {string} is greater than or equal to {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  Maze.check.false(spans.empty?, 'No spans received')
+  spans.each do |span|
+    attr = (span['attributes'] || []).find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') }
+    Maze.check.false(attr.nil?, "Span '#{span['name']}' has no integer attribute '#{attribute}'")
+    val = attr['value']['intValue'].to_i
+    Maze.check.true(val >= expected, "Expected #{span['name']}.#{attribute} (#{val}) >= #{expected}")
+  end
+end
+
+# Strict integer < check (the `a span integer attribute ... is less than ...`
+# step in app_steps.rb only asserts attribute existence). Used to prove burst
+# I/O is averaged over the full span duration rather than the burst window.
+Then('span integer attribute {string} should be less than {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?, "No span found with integer attribute '#{attribute}'")
+  selected_attributes.each do |a|
+    val = a['value']['intValue'].to_i
+    Maze.check.true(val < expected, "Expected #{attribute} (#{val}) < #{expected}")
+  end
+end
+
+# Namespace hygiene: no attribute on any span may use the given key prefix.
+# Guards against legacy/duplicate disk keys (bugsnag.app.disk.*,
+# bugsnag.device.disk.*) leaking into the payload alongside the canonical
+# bugsnag.system.disk.* keys.
+Then('no span attribute key starts with {string}') do |prefix|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  Maze.check.false(spans.empty?, 'No spans received')
+  offenders = spans.flat_map do |span|
+    (span['attributes'] || []).map { |a| a['key'] }.select { |k| k.start_with?(prefix) }
+  end
+  Maze.check.true(offenders.empty?, "Attribute keys with forbidden prefix '#{prefix}' found: #{offenders.uniq}")
+end
+
+# Cross-span inequality: proves two concurrent spans computed independent
+# values rather than sharing or copying a snapshot.
+Then('the span named {string} integer attribute {string} does not equal the span named {string} integer attribute {string}') do |name_a, attr_a, name_b, attr_b|
+  val_a = named_span_int_attribute(name_a, attr_a)
+  val_b = named_span_int_attribute(name_b, attr_b)
+  Maze.check.false(val_a == val_b,
+                   "Expected #{name_a}.#{attr_a} (#{val_a}) != #{name_b}.#{attr_b} (#{val_b})")
+end

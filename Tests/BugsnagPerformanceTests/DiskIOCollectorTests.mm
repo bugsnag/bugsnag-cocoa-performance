@@ -273,19 +273,17 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
-- (void)testNegativeDeltaFaultClampsToZeroRatherThanEmittingInvalidValues {
+// PLAT-17202 (Option B): a regressed counter omits the whole attribute set,
+// matching the fail-at-start/fail-at-end/zero-duration paths above.
+- (void)testNegativeDeltaFaultOmitsAttributes {
     BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
     collector.faultMode = BSGDiskIOSnapshotFaultModeNegativeDelta;
     BugsnagPerformanceSpan *span = makeSpan();
 
     [collector onSpanStart:span];
     [NSThread sleepForTimeInterval:0.01];
-    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
-
-    XCTAssertNotNil(attrs);
-    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_read"].longLongValue, 0);
-    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_write"].longLongValue, 0);
-    XCTAssertEqual(attrs[@"bugsnag.system.disk.iops_total"].longLongValue, 0);
+    XCTAssertNil([collector onSpanEnd:span]);
+    // The stored start snapshot must still be released.
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 

@@ -158,22 +158,47 @@ static BSGDiskIOSnapshot makeSnapshot(CFAbsoluteTime t, uint64_t r, uint64_t w) 
     XCTAssertFalse(metrics.valid);
 }
 
-- (void)testNegativeReadDeltaClampsToZero {
-    // Counter regressed backwards (should never happen on the platform, but
-    // handle it defensively).
-    // write delta = 762144 - 500000 = 262144 -> 262144/4096 = 64 ops, /2s = 32
+// PLAT-17202 (Option B): a regressed counter is a data-integrity signal, so
+// the whole attribute set is omitted (valid = false) - matching the
+// invalid-snapshot and non-positive-duration paths. Never clamped, never
+// per-dimension.
+
+- (void)testNegativeReadDeltaOmitsAttributes {
+    // Read counter regressed backwards; write advanced normally.
     BSGDiskIOSnapshot start = makeSnapshot(0.0, 1000000, 500000);
     BSGDiskIOSnapshot end = makeSnapshot(2.0, 900000, 762144);
     BSG_TEST_LOG(@"Step 1: read counter regressed (1000000 -> 900000); write went up by 262144 over 2s");
 
     BSGDiskIOMetrics metrics = BSGComputeDiskIOMetrics(start, end);
     logMetrics("Step 2: result", metrics);
-    BSG_TEST_LOG(@"Step 3: expecting read=0 (clamped), write=32, total=32");
+    BSG_TEST_LOG(@"Step 3: expecting metrics.valid = false (whole set omitted)");
 
-    XCTAssertTrue(metrics.valid);
-    XCTAssertEqual(metrics.iopsRead, 0);
-    XCTAssertEqual(metrics.iopsWrite, 32);
-    XCTAssertEqual(metrics.iopsTotal, 32);
+    XCTAssertFalse(metrics.valid);
+}
+
+- (void)testNegativeWriteDeltaOmitsAttributes {
+    // Write counter regressed backwards; read advanced normally.
+    BSGDiskIOSnapshot start = makeSnapshot(0.0, 500000, 1000000);
+    BSGDiskIOSnapshot end = makeSnapshot(2.0, 762144, 900000);
+    BSG_TEST_LOG(@"Step 1: write counter regressed (1000000 -> 900000); read went up by 262144 over 2s");
+
+    BSGDiskIOMetrics metrics = BSGComputeDiskIOMetrics(start, end);
+    logMetrics("Step 2: result", metrics);
+    BSG_TEST_LOG(@"Step 3: expecting metrics.valid = false (whole set omitted)");
+
+    XCTAssertFalse(metrics.valid);
+}
+
+- (void)testBothCountersRegressOmitsAttributes {
+    BSGDiskIOSnapshot start = makeSnapshot(0.0, 1000000, 1000000);
+    BSGDiskIOSnapshot end = makeSnapshot(2.0, 900000, 900000);
+    BSG_TEST_LOG(@"Step 1: both counters regressed (1000000 -> 900000) over 2s");
+
+    BSGDiskIOMetrics metrics = BSGComputeDiskIOMetrics(start, end);
+    logMetrics("Step 2: result", metrics);
+    BSG_TEST_LOG(@"Step 3: expecting metrics.valid = false (whole set omitted)");
+
+    XCTAssertFalse(metrics.valid);
 }
 
 - (void)testRoundingUsesLlround {
