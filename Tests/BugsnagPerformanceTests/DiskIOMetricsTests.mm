@@ -6,6 +6,19 @@
 //  Copyright © 2026 Bugsnag. All rights reserved.
 //
 
+// this file as test-method clusters):
+//   Scenario 2  (platform formula)      -> testKnownGoodDatasetFromScopingDoc,
+//                                          testRoundingUsesLlround,
+//                                          testSubBlockDeltaRoundsToZero,
+//                                          testCapturedSnapshotUsesRealFilesystemBlockSize
+//   Scenario 3  (invalid duration)      -> testZeroDurationReturnsInvalid,
+//                                          testNegativeDurationReturnsInvalid
+//   Scenario 4  (negative deltas)       -> testNegativeReadDeltaOmitsAttributes,
+//                                          testNegativeWriteDeltaOmitsAttributes,
+//                                          testBothCountersRegressOmitsAttributes
+//   Scenario 6  (zero activity)         -> testZeroDeltaProducesZeroIOPS
+//   Scenario 11 (short/high I/O bounds) -> testShortSubSecondSpanStillComputesNormally
+
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/DiskIO/BSGDiskIOMetrics.h"

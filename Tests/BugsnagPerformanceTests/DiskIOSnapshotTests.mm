@@ -6,6 +6,10 @@
 //  Copyright © 2026 Bugsnag. All rights reserved.
 //
 
+//   Scenario 2 (source correctness) -> testCaptureReturnsValidSnapshot,
+//                                      testTimestampsAreMonotonicAcrossCaptures,
+//                                      testByteCountersAreMonotonicOverASmallWrite
+
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/DiskIO/BSGDiskIOSnapshot.h"

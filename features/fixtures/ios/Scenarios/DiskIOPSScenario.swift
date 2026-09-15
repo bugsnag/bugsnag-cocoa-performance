@@ -15,7 +15,7 @@ class DiskIOPSScenario: Scenario {
     /// Name used by the "span started before BugsnagPerformance.start()" mode.
     /// Fixed rather than derived from `spanName` because the span is created
     /// before `variant_name` is meaningful for this path.
-    static let earlySpanName = "DiskIOPSScenarioEarlySpan"
+    static let earlySpanName = "DiskIopsEarlySpan"
 
     /// Raw values of `BSGDiskIOSnapshotFaultMode` (see `BSGDiskIOCollector.h`).
     /// The enum is not exposed to Swift, so the raw bitmask is used.
@@ -58,6 +58,10 @@ class DiskIOPSScenario: Scenario {
         if toBool(string: scenarioConfig["orphan_mode"]) {
             bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
         }
+        // The mixed mode delivers its disk-on and disk-off spans in ONE batch
+        if toBool(string: scenarioConfig["mixed_mode"]) {
+            bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 2
+        }
         super.startBugsnag()
     }
 
@@ -86,12 +90,19 @@ class DiskIOPSScenario: Scenario {
             runOrphanMode()
             return
         }
+        if toBool(string: scenarioConfig["mixed_mode"]) {
+            runMixedMode()
+            return
+        }
         switch scenarioConfig["lifecycle_mode"] {
         case "mid_span_background":
             runMidSpanBackgroundMode()
             return
         case "start_in_background":
             runStartInBackgroundMode()
+            return
+        case "start_end_in_background":
+            runStartEndInBackgroundMode()
             return
         default:
             break
@@ -101,6 +112,16 @@ class DiskIOPSScenario: Scenario {
 
     // MARK: - Modes
 
+    /// Custom span name from the QA doc (e.g. "DiskActivitySpan",
+    /// "WorkloadSpan", "FaultSpan", "CustomSpan", "LifecycleSpan"). Falls back
+    /// to the variant-derived name used by the configuration scenarios.
+    private var configuredSpanName: String {
+        if let name = scenarioConfig["span_name"], !name.isEmpty {
+            return name
+        }
+        return spanName
+    }
+
     private func runSingleSpanMode() {
         prepareWorkload()
 
@@ -108,13 +129,15 @@ class DiskIOPSScenario: Scenario {
         if scenarioConfig["span_type"] == "app_session" {
             // Real app-session API: SDK controls the "[AppSession/<type>]" name
             // and category. App-session spans are first class, so they are
-            // disk-eligible under the default tri-state rules.
-            span = BugsnagPerformance.startAppSessionSpan("DiskIOPS")
+            // disk-eligible under the default tri-state rules. `span_name` is
+            // ignored on this path by design.
+            // Session type "DiskIops" gives the span name "[AppSession/DiskIops]",
+            span = BugsnagPerformance.startAppSessionSpan("DiskIops")
         } else {
             let opts = BugsnagPerformanceSpanOptions()
             opts.setFirstClass(toTriState(string: scenarioConfig["opts_first_class"]))
             opts.metricsOptions.disk = toTriState(string: scenarioConfig["opts_metrics_disk"])
-            span = BugsnagPerformance.startSpan(name: spanName, options: opts)
+            span = BugsnagPerformance.startSpan(name: configuredSpanName, options: opts)
         }
 
         performWorkload()
@@ -147,10 +170,10 @@ class DiskIOPSScenario: Scenario {
     /// A's counters must differ from B's — a shared or leaked snapshot would
     /// make them identical.
     private func runConcurrentMode() {
-        let spanA = BugsnagPerformance.startSpan(name: spanName + "A", options: concurrentSpanOptions()) // T0
+        let spanA = BugsnagPerformance.startSpan(name: configuredSpanName + "A", options: concurrentSpanOptions()) // T0
         forcedWrite(bytes: 2_097_152)
 
-        let spanB = BugsnagPerformance.startSpan(name: spanName + "B", options: concurrentSpanOptions()) // T1
+        let spanB = BugsnagPerformance.startSpan(name: configuredSpanName + "B", options: concurrentSpanOptions()) // T1
         // B's window is deliberately idle: no forced I/O until B has ended.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             spanB.end() // T2
@@ -171,18 +194,43 @@ class DiskIOPSScenario: Scenario {
         opts.setMakeCurrentContext(false)
 
         for _ in 0..<50 {
-            orphanSpans.append(BugsnagPerformance.startSpan(name: spanName + "Orphan", options: opts))
+            orphanSpans.append(BugsnagPerformance.startSpan(name: configuredSpanName + "Orphaned", options: opts))
         }
 
         forcedWrite(bytes: 1_048_576)
 
         for _ in 0..<100 {
-            let span = BugsnagPerformance.startSpan(name: spanName, options: opts)
+            let span = BugsnagPerformance.startSpan(name: configuredSpanName, options: opts)
             // Guarantee a strictly positive wall-clock duration per span.
             usleep(2000)
             span.end()
         }
         flushAfterDelay()
+    }
+
+    /// One disk-reporting span ("DiskIopsNewSdk", metricsOptions.disk = yes)
+    /// and one disk-omitting span ("DiskIopsOldSdk", metricsOptions.disk = no)
+    /// delivered in the same batch - ROAD 2233 Scenario 14 in its SDK-scoped
+    private func runMixedMode() {
+        let onOpts = BugsnagPerformanceSpanOptions()
+        onOpts.setFirstClass(.yes)
+        onOpts.metricsOptions.disk = .yes
+        onOpts.setMakeCurrentContext(false)
+        let newSdkSpan = BugsnagPerformance.startSpan(name: "DiskIopsNewSdk", options: onOpts)
+
+        let offOpts = BugsnagPerformanceSpanOptions()
+        offOpts.setFirstClass(.yes)
+        offOpts.metricsOptions.disk = .no
+        offOpts.setMakeCurrentContext(false)
+        let oldSdkSpan = BugsnagPerformance.startSpan(name: "DiskIopsOldSdk", options: offOpts)
+
+        forcedWrite(bytes: 524_288)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            newSdkSpan.end()
+            oldSdkSpan.end()
+            self.flushAfterDelay()
+        }
     }
 
     /// An app-session span held open across background → foreground. Session
@@ -209,7 +257,7 @@ class DiskIOPSScenario: Scenario {
             let opts = BugsnagPerformanceSpanOptions()
             opts.setFirstClass(.yes)
             opts.setMakeCurrentContext(false)
-            self.lifecycleSpan = BugsnagPerformance.startSpan(name: self.spanName, options: opts)
+            self.lifecycleSpan = BugsnagPerformance.startSpan(name: self.configuredSpanName, options: opts)
             self.forcedWrite(bytes: 262_144)
             // Keep the process alive briefly so the span start is fully
             // processed before the OS suspends the app (same pattern as
@@ -219,6 +267,32 @@ class DiskIOPSScenario: Scenario {
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
                                                object: nil, queue: nil) { _ in
             self.endLifecycleSpanOnce()
+        }
+    }
+
+    /// A first-class span whose whole lifetime is inside the background window
+    /// (started and ended after didEnterBackground). This is the QA doc's
+    /// "span ends while in background" row in its achievable form: a span that
+    /// is merely OPEN when the app backgrounds is aborted by the SDK by design
+    /// (abortOpenSpansOnBackground), so start and end must both happen in the
+    /// background for the span to be deliverable - the pattern proven by
+    /// BackgroundForegroundScenario.
+    private func runStartEndInBackgroundMode() {
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                               object: nil, queue: nil) { _ in
+            guard self.lifecycleSpan == nil else { return }
+            let opts = BugsnagPerformanceSpanOptions()
+            opts.setFirstClass(.yes)
+            opts.setMakeCurrentContext(false)
+            let span = BugsnagPerformance.startSpan(name: self.configuredSpanName, options: opts)
+            self.lifecycleSpan = span
+            self.forcedWrite(bytes: 262_144)
+            Thread.sleep(forTimeInterval: 0.5)
+            span.end()
+            self.lifecycleSpanEnded = true
+            self.flushAfterDelay()
+            // Keep the process alive so the batch can upload before suspension.
+            Thread.sleep(forTimeInterval: 2)
         }
     }
 

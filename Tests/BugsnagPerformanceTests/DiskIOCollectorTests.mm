@@ -6,6 +6,19 @@
 //  Copyright © 2026 Bugsnag. All rights reserved.
 //
 
+// this file as test-method clusters):
+//   Scenario 1  (attribute emission)     -> testStartFollowedByEndReturnsThreeIOPSAttributes
+//   Scenario 4  (negative delta, e2e hook) -> testNegativeDeltaFaultOmitsAttributes
+//   Scenario 5  (source unavailable)     -> testFailAtStartFaultStoresNoStartSnapshotAndOmitsAttributes,
+//                                           testFailAtEndFaultOmitsAttributesAndStillCleansUp,
+//                                           testEndWithoutMatchingStartReturnsNil
+//   Scenario 7  (concurrent spans)       -> testTwoSpansAreTrackedIndependently,
+//                                           testConcurrentStartAndEndAreThreadSafe
+//   Scenario 8  (orphaned snapshots)     -> testAbandonReleasesPendingStart
+//   Scenario 12 (payload shape)          -> testTotalEqualsReadPlusWrite
+//   PLAT-17203  (fault hook default)     -> testFaultModeDefaultsToNone
+//   Scenarios 9/10/13 (lifecycle gating) -> DiskIOLifecycleGatingTests (below)
+
 #import <XCTest/XCTest.h>
 
 #import "../../Sources/BugsnagPerformance/Private/DiskIO/BSGDiskIOCollector.h"
