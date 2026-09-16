@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // sampler can feed the SessionMetricsAccumulator every second.
         //config.enabledMetrics.cpu = true
         //config.enabledMetrics.memory = true
+        //config.enabledMetrics.disk = true
 
         // Disable automatic app startup instrumentation:
         //config.autoInstrumentAppStarts = false

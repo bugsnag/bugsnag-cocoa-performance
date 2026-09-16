@@ -12,51 +12,18 @@ import UIKit
 @objcMembers
 class DiskIOPSScenario: Scenario {
 
-    /// Name used by the "span started before BugsnagPerformance.start()" mode.
-    /// Fixed rather than derived from `spanName` because the span is created
-    /// before `variant_name` is meaningful for this path.
-    static let earlySpanName = "DiskIopsEarlySpan"
-
-    /// Raw values of `BSGDiskIOSnapshotFaultMode` (see `BSGDiskIOCollector.h`).
-    /// The enum is not exposed to Swift, so the raw bitmask is used.
-    /// Retained per PLAT-17203 (Option A) - used by the negative-delta
-    /// omission scenario, which cannot be driven from a real device otherwise.
-    private static let faultModeNone: UInt = 0
-    private static let faultModeFailAtStart: UInt = 1 << 0
-    private static let faultModeFailAtEnd: UInt = 1 << 1
-    private static let faultModeZeroDuration: UInt = 1 << 2
-    private static let faultModeNegativeDelta: UInt = 1 << 3
-
-    /// Span opened before Bugsnag was started (see `start_before_bugsnag_start`).
-    private var earlySpan: BugsnagPerformanceSpan?
-
-    /// Started-never-ended spans for the orphan-smoke mode. Strong references
-    /// keep them alive (and open) for the lifetime of the scenario.
-    private var orphanSpans: [BugsnagPerformanceSpan] = []
-
     /// Span driven across an app lifecycle transition.
     private var lifecycleSpan: BugsnagPerformanceSpan?
     private var lifecycleSpanEnded = false
 
-    /// Pre-created file for read-only / file-copy workloads. Written (and
-    /// flushed) BEFORE the measured span starts so in-span reads are real.
+    /// Pre-created file for the file-copy workload. Written (and flushed)
+    /// BEFORE the measured span starts so in-span reads are real.
     private var readTargetURL: URL?
 
     override func startBugsnag() {
-        applyFaultMode()
-        // Opening the span here keeps it strictly before `BugsnagPerformance.start()`.
-        // Disk sampling is gated behind `isStarted_`, so no start snapshot can be
-        // captured — this drives the real "start snapshot unavailable" path.
-        if toBool(string: scenarioConfig["start_before_bugsnag_start"]) {
-            let opts = BugsnagPerformanceSpanOptions()
-            opts.setFirstClass(.yes)
-            opts.setMakeCurrentContext(false)
-            earlySpan = BugsnagPerformance.startSpan(name: DiskIOPSScenario.earlySpanName, options: opts)
-        }
-        // The orphan-smoke mode delivers 100 completed spans; batch them into a
-        // single trace request instead of 100 separate uploads.
-        if toBool(string: scenarioConfig["orphan_mode"]) {
-            bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 100
+        // The sequential mode delivers its two spans in ONE batch.
+        if toBool(string: scenarioConfig["sequential_mode"]) {
+            bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 2
         }
         // The mixed mode delivers its disk-on and disk-off spans in ONE batch
         if toBool(string: scenarioConfig["mixed_mode"]) {
@@ -78,16 +45,8 @@ class DiskIOPSScenario: Scenario {
     }
 
     func delayedRun() {
-        if let earlySpan = earlySpan {
-            runEarlySpanMode(span: earlySpan)
-            return
-        }
-        if toBool(string: scenarioConfig["concurrent"]) {
-            runConcurrentMode()
-            return
-        }
-        if toBool(string: scenarioConfig["orphan_mode"]) {
-            runOrphanMode()
+        if toBool(string: scenarioConfig["sequential_mode"]) {
+            runSequentialMode()
             return
         }
         if toBool(string: scenarioConfig["mixed_mode"]) {
@@ -112,9 +71,9 @@ class DiskIOPSScenario: Scenario {
 
     // MARK: - Modes
 
-    /// Custom span name from the QA doc (e.g. "DiskActivitySpan",
-    /// "WorkloadSpan", "FaultSpan", "CustomSpan", "LifecycleSpan"). Falls back
-    /// to the variant-derived name used by the configuration scenarios.
+    /// Custom span name from the QA doc (e.g. "DiskIopsWorkload",
+    /// "DiskIopsCustom", "DiskIopsIsolation"). Falls back to the
+    /// variant-derived name.
     private var configuredSpanName: String {
         if let name = scenarioConfig["span_name"], !name.isEmpty {
             return name
@@ -152,60 +111,29 @@ class DiskIOPSScenario: Scenario {
         }
     }
 
-    /// Ends a span that was started before `BugsnagPerformance.start()`.
-    /// The collector holds no start snapshot for it, so the end path must omit
-    /// all disk attributes while still exporting the span intact.
-    private func runEarlySpanMode(span: BugsnagPerformanceSpan) {
-        doConfiguredDiskWork()
-        let spanDuration = toDouble(string: scenarioConfig["span_duration"])
-        DispatchQueue.main.asyncAfter(deadline: .now() + spanDuration) {
-            span.end()
-            self.earlySpan = nil
-            self.flushAfterDelay()
-        }
-    }
-
-    /// Two overlapping spans with B nested inside A (A: T0→T3, B: T1→T2).
-    /// All forced I/O happens in the A-only windows, outside B's lifetime, so
-    /// A's counters must differ from B's — a shared or leaked snapshot would
-    /// make them identical.
-    private func runConcurrentMode() {
-        let spanA = BugsnagPerformance.startSpan(name: configuredSpanName + "A", options: concurrentSpanOptions()) // T0
-        forcedWrite(bytes: 2_097_152)
-
-        let spanB = BugsnagPerformance.startSpan(name: configuredSpanName + "B", options: concurrentSpanOptions()) // T1
-        // B's window is deliberately idle: no forced I/O until B has ended.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            spanB.end() // T2
-            self.forcedWrite(bytes: 2_097_152)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                spanA.end() // T3
+    /// Two back-to-back spans: the second starts only after the first has
+    /// ended, each doing forced I/O in its own window. Each span must capture
+    /// a fresh start snapshot rather than reusing the previous span's
+    /// counters, so each span is asserted independently in the feature file.
+    private func runSequentialMode() {
+        let span1 = BugsnagPerformance.startSpan(name: "DiskIopsSequential1", options: sequentialSpanOptions())
+        forcedWrite(bytes: 1_048_576)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            span1.end()
+            let span2 = BugsnagPerformance.startSpan(name: "DiskIopsSequential2", options: self.sequentialSpanOptions())
+            self.forcedWrite(bytes: 1_048_576)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                span2.end()
                 self.flushAfterDelay()
             }
         }
     }
 
-    /// 50 spans that start but never end, alongside 100 spans that complete
-    /// normally. All 100 completed spans must deliver valid disk attributes
-    /// and the app must not crash or exhaust memory.
-    private func runOrphanMode() {
+    private func sequentialSpanOptions() -> BugsnagPerformanceSpanOptions {
         let opts = BugsnagPerformanceSpanOptions()
         opts.setFirstClass(.yes)
         opts.setMakeCurrentContext(false)
-
-        for _ in 0..<50 {
-            orphanSpans.append(BugsnagPerformance.startSpan(name: configuredSpanName + "Orphaned", options: opts))
-        }
-
-        forcedWrite(bytes: 1_048_576)
-
-        for _ in 0..<100 {
-            let span = BugsnagPerformance.startSpan(name: configuredSpanName, options: opts)
-            // Guarantee a strictly positive wall-clock duration per span.
-            usleep(2000)
-            span.end()
-        }
-        flushAfterDelay()
+        return opts
     }
 
     /// One disk-reporting span ("DiskIopsNewSdk", metricsOptions.disk = yes)
@@ -238,7 +166,7 @@ class DiskIOPSScenario: Scenario {
     /// (all other open spans are deliberately aborted), so they are the only
     /// honest vehicle for the "mid-span transition" lifecycle row.
     private func runMidSpanBackgroundMode() {
-        lifecycleSpan = BugsnagPerformance.startAppSessionSpan("DiskIOPS")
+        lifecycleSpan = BugsnagPerformance.startAppSessionSpan("DiskIops")
         forcedWrite(bytes: 1_048_576)
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
                                                object: nil, queue: nil) { _ in
@@ -248,16 +176,27 @@ class DiskIOPSScenario: Scenario {
         // "I switch to the web browser for N seconds".
     }
 
-    /// A first-class span started while the app is in the background and ended
-    /// after returning to the foreground.
+    /// Span factory for the lifecycle background modes: an app-session span
+    /// when `span_type` is "app_session" (the SDK controls the
+    /// "[AppSession/DiskIops]" name), otherwise a first-class custom span.
+    private func makeLifecycleSpan() -> BugsnagPerformanceSpan {
+        if scenarioConfig["span_type"] == "app_session" {
+            return BugsnagPerformance.startAppSessionSpan("DiskIops")
+        }
+        let opts = BugsnagPerformanceSpanOptions()
+        opts.setFirstClass(.yes)
+        opts.setMakeCurrentContext(false)
+        return BugsnagPerformance.startSpan(name: configuredSpanName, options: opts)
+    }
+
+    /// A disk-eligible span (custom or app-session, per `span_type`) started
+    /// while the app is in the background and ended after returning to the
+    /// foreground.
     private func runStartInBackgroundMode() {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
                                                object: nil, queue: nil) { _ in
             guard self.lifecycleSpan == nil else { return }
-            let opts = BugsnagPerformanceSpanOptions()
-            opts.setFirstClass(.yes)
-            opts.setMakeCurrentContext(false)
-            self.lifecycleSpan = BugsnagPerformance.startSpan(name: self.configuredSpanName, options: opts)
+            self.lifecycleSpan = self.makeLifecycleSpan()
             self.forcedWrite(bytes: 262_144)
             // Keep the process alive briefly so the span start is fully
             // processed before the OS suspends the app (same pattern as
@@ -270,10 +209,11 @@ class DiskIOPSScenario: Scenario {
         }
     }
 
-    /// A first-class span whose whole lifetime is inside the background window
-    /// (started and ended after didEnterBackground). This is the QA doc's
-    /// "span ends while in background" row in its achievable form: a span that
-    /// is merely OPEN when the app backgrounds is aborted by the SDK by design
+    /// A disk-eligible span (custom or app-session, per `span_type`) whose
+    /// whole lifetime is inside the background window (started and ended
+    /// after didEnterBackground). This is the QA doc's "span ends while in
+    /// background" row in its achievable form: a span that is merely OPEN
+    /// when the app backgrounds is aborted by the SDK by design
     /// (abortOpenSpansOnBackground), so start and end must both happen in the
     /// background for the span to be deliverable - the pattern proven by
     /// BackgroundForegroundScenario.
@@ -281,10 +221,7 @@ class DiskIOPSScenario: Scenario {
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
                                                object: nil, queue: nil) { _ in
             guard self.lifecycleSpan == nil else { return }
-            let opts = BugsnagPerformanceSpanOptions()
-            opts.setFirstClass(.yes)
-            opts.setMakeCurrentContext(false)
-            let span = BugsnagPerformance.startSpan(name: self.configuredSpanName, options: opts)
+            let span = self.makeLifecycleSpan()
             self.lifecycleSpan = span
             self.forcedWrite(bytes: 262_144)
             Thread.sleep(forTimeInterval: 0.5)
@@ -306,14 +243,6 @@ class DiskIOPSScenario: Scenario {
         }
     }
 
-    private func concurrentSpanOptions() -> BugsnagPerformanceSpanOptions {
-        let opts = BugsnagPerformanceSpanOptions()
-        opts.setFirstClass(toTriState(string: scenarioConfig["opts_first_class"]))
-        opts.metricsOptions.disk = toTriState(string: scenarioConfig["opts_metrics_disk"])
-        opts.setMakeCurrentContext(false)
-        return opts
-    }
-
     // MARK: - Workloads
     //
     // Forced I/O uses F_NOCACHE plus fsync so bytes genuinely reach the disk
@@ -326,11 +255,12 @@ class DiskIOPSScenario: Scenario {
         return configured > 0 ? configured : 4_194_304
     }
 
-    /// Pre-span setup: read-style workloads need an on-disk source file that
-    /// was written (and flushed out of the page cache) before the span starts.
+    /// Pre-span setup: the file-copy workload needs an on-disk source file
+    /// that was written (and flushed out of the page cache) before the span
+    /// starts.
     private func prepareWorkload() {
         switch scenarioConfig["workload"] {
-        case "read", "file_copy":
+        case "file_copy":
             readTargetURL = forcedWrite(bytes: workloadBytes)
         default:
             break
@@ -342,8 +272,6 @@ class DiskIOPSScenario: Scenario {
         switch scenarioConfig["workload"] {
         case "write", "burst_write":
             forcedWrite(bytes: workloadBytes)
-        case "read":
-            if let url = readTargetURL { forcedRead(url: url) }
         case "sqlite":
             runSQLiteWorkload(insertCount: 1000)
         case "file_copy":
@@ -390,25 +318,6 @@ class DiskIOPSScenario: Scenario {
         }
         fsync(fd)
         return url
-    }
-
-    /// Reads the whole file through F_NOCACHE so the reads hit the disk rather
-    /// than the page cache.
-    private func forcedRead(url: URL) {
-        let fd = open(url.path, O_RDONLY)
-        guard fd >= 0 else {
-            logError("DiskIOPSScenario: forcedRead open failed: \(String(cString: strerror(errno)))")
-            return
-        }
-        defer { close(fd) }
-        _ = fcntl(fd, F_NOCACHE, 1)
-        var buffer = [UInt8](repeating: 0, count: 262_144)
-        while true {
-            let count = buffer.withUnsafeMutableBytes { raw -> Int in
-                read(fd, raw.baseAddress, raw.count)
-            }
-            if count <= 0 { break }
-        }
     }
 
     /// Streams `source` to a new file, both sides through F_NOCACHE, so read
@@ -471,29 +380,6 @@ class DiskIOPSScenario: Scenario {
     }
 
     // MARK: - Helpers
-
-    /// Maps the `disk_fault_mode` scenario config onto the internal test-only
-    /// fault mask. Must run before `BugsnagPerformance.start()`.
-    private func applyFaultMode() {
-        let mode = scenarioConfig["disk_fault_mode"] ?? "none"
-        let mask: UInt
-        switch mode {
-        case "none":
-            mask = DiskIOPSScenario.faultModeNone
-        case "fail_start":
-            mask = DiskIOPSScenario.faultModeFailAtStart
-        case "fail_end":
-            mask = DiskIOPSScenario.faultModeFailAtEnd
-        case "zero_duration":
-            mask = DiskIOPSScenario.faultModeZeroDuration
-        case "negative_delta":
-            mask = DiskIOPSScenario.faultModeNegativeDelta
-        default:
-            fatalError("\(mode): Unknown disk_fault_mode")
-        }
-        bugsnagPerfConfig.internal.diskIOSnapshotFaultMode = mask
-        logDebug("DiskIOPSScenario: diskIOSnapshotFaultMode = \(mask)")
-    }
 
     private func doConfiguredDiskWork() {
         let workBytes = Int(toDouble(string: scenarioConfig["disk_work_bytes"]))

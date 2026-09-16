@@ -197,6 +197,16 @@ Then('no span attribute key starts with {string}') do |prefix|
   Maze.check.true(offenders.empty?, "Attribute keys with forbidden prefix '#{prefix}' found: #{offenders.uniq}")
 end
 
+# Exact attribute-count check by key prefix: the named span must carry exactly
+# N attributes whose keys start with the given prefix - no more, no fewer.
+# Proves the payload contains the full canonical key set and nothing extra.
+Then('the span named {string} has exactly {int} attributes whose keys start with {string}') do |name, expected, prefix|
+  span = span_named(name)
+  keys = (span['attributes'] || []).map { |a| a['key'] }.select { |k| k.start_with?(prefix) }
+  Maze.check.true(keys.length == expected,
+                  "Expected exactly #{expected} attributes on '#{name}' with key prefix '#{prefix}', found #{keys.length}: #{keys}")
+end
+
 # Cross-span inequality: proves two concurrent spans computed independent
 # values rather than sharing or copying a snapshot.
 Then('the span named {string} integer attribute {string} does not equal the span named {string} integer attribute {string}') do |name_a, attr_a, name_b, attr_b|
