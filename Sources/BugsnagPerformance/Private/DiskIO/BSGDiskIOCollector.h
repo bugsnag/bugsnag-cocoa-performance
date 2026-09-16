@@ -22,6 +22,16 @@ extern NSString *const BSGDiskIOAttributeKeyIOPSRead;
 extern NSString *const BSGDiskIOAttributeKeyIOPSWrite;
 extern NSString *const BSGDiskIOAttributeKeyIOPSTotal;
 
+/// Test-only debug attribute keys: the raw byte counters from the start and
+/// end snapshots. Only attached when `attachDebugSnapshots` is set (never in
+/// production). They let e2e tests prove snapshot freshness: within a span
+/// start <= end, and a later span's start counters must be >= an earlier
+/// span's end counters (the source counters are process-wide and monotonic).
+extern NSString *const BSGDiskIODebugAttributeKeyReadStart;
+extern NSString *const BSGDiskIODebugAttributeKeyReadEnd;
+extern NSString *const BSGDiskIODebugAttributeKeyWriteStart;
+extern NSString *const BSGDiskIODebugAttributeKeyWriteEnd;
+
 /// Test-only fault injection.
 ///
 /// The platform snapshot source (`proc_pid_rusage`) cannot be made to fail on
@@ -49,6 +59,11 @@ typedef NS_OPTIONS(NSUInteger, BSGDiskIOSnapshotFaultMode) {
 
 /// Test-only. Defaults to `BSGDiskIOSnapshotFaultModeNone`.
 @property (atomic, assign) BSGDiskIOSnapshotFaultMode faultMode;
+
+/// Test-only. When YES, the dictionary returned by -onSpanEnd: additionally
+/// contains the four BSGDiskIODebugAttributeKey* raw counter values.
+/// Defaults to NO; set via `BSGInternalConfiguration.attachDiskIOSnapshots`.
+@property (atomic, assign) BOOL attachDebugSnapshots;
 
 /// Capture the start snapshot for a span. Silently no-ops if the platform
 /// source is unavailable — the matching -onSpanEnd: will then return nil.

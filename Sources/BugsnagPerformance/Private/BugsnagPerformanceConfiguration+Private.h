@@ -49,6 +49,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic,readwrite) NSUInteger diskIOSnapshotFaultMode;
 
+/**
+ * Test-only. When true, spans that report disk IOPS additionally carry the
+ * raw snapshot byte counters as `bugsnag.internal.disk_io.*` attributes so
+ * e2e tests can assert snapshot freshness (start <= end within a span, and a
+ * later span's start counters >= an earlier span's end counters).
+ * Defaults to false; production never enables this.
+ */
+@property(nonatomic,readwrite) bool attachDiskIOSnapshots;
+
 @end
 
 @interface BugsnagPerformanceConfiguration ()

@@ -21,6 +21,12 @@ class DiskIOPSScenario: Scenario {
     private var readTargetURL: URL?
 
     override func startBugsnag() {
+        // Test-only: attach the raw snapshot byte counters as
+        // bugsnag.internal.disk_io.* attributes so the feature file can assert
+        // snapshot freshness. Must be set before BugsnagPerformance.start().
+        if toBool(string: scenarioConfig["attach_disk_snapshots"]) {
+            bugsnagPerfConfig.internal.attachDiskIOSnapshots = true
+        }
         // The sequential mode delivers its two spans in ONE batch.
         if toBool(string: scenarioConfig["sequential_mode"]) {
             bugsnagPerfConfig.internal.autoTriggerExportOnBatchSize = 2

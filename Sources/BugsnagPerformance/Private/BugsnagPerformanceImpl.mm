@@ -228,6 +228,7 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
     diskIOCollector_.faultMode = (BSGDiskIOSnapshotFaultMode)config.internal.diskIOSnapshotFaultMode;
+    diskIOCollector_.attachDebugSnapshots = config.internal.attachDiskIOSnapshots;
     [BugsnagPerformanceCrossTalkAPI.sharedInstance configure:config];
 }
 

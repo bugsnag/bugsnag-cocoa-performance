@@ -215,3 +215,13 @@ Then('the span named {string} integer attribute {string} does not equal the span
   Maze.check.false(val_a == val_b,
                    "Expected #{name_a}.#{attr_a} (#{val_a}) != #{name_b}.#{attr_b} (#{val_b})")
 end
+
+# Cross-span ordering: proves a later span's snapshot counters are at least as
+# fresh as an earlier span's (the platform counters are monotonic, so a stale
+# or reused start snapshot would violate this).
+Then('the span named {string} integer attribute {string} is greater than or equal to the span named {string} integer attribute {string}') do |name_a, attr_a, name_b, attr_b|
+  val_a = named_span_int_attribute(name_a, attr_a)
+  val_b = named_span_int_attribute(name_b, attr_b)
+  Maze.check.true(val_a >= val_b,
+                  "Expected #{name_a}.#{attr_a} (#{val_a}) >= #{name_b}.#{attr_b} (#{val_b})")
+end

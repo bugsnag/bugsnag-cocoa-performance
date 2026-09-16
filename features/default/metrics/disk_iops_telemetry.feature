@@ -8,7 +8,10 @@ Feature: Disk IOPS
   #   metricsOptions.disk (unset -> first-class spans only).
   # - No OS-version floor: proc_pid_rusage and statfs exist on every supported
   #   iOS version, so this file runs across the whole BitBar device matrix.
-  # - The SDK emits no internal debug attributes (bugsnag.internal.*).
+  # - bugsnag.internal.disk_io.* raw counter attributes are attached ONLY when
+  #   the test-only internal option attachDiskIOSnapshots is enabled (via the
+  #   "attach_disk_snapshots" scenario config); production payloads never
+  #   contain them.
 
   # ==========================================================================
   # ROAD 2233 - Scenario 1
@@ -46,7 +49,9 @@ Feature: Disk IOPS
   # ==========================================================================
   # ROAD 2233 - Scenario 2
   # SDK reports real disk IOPS values computed on the device: integers >= 0
-  # and total = read + write.
+  # and total = read + write. The raw snapshot counters (attached via the
+  # test-only attach_disk_snapshots hook) must satisfy start <= end, proving
+  # the values came from two real, correctly ordered snapshots.
   # ==========================================================================
   Scenario Outline: SDK reports real disk IOPS values computed on the device
     Given I load scenario "DiskIOPSScenario"
@@ -58,6 +63,7 @@ Feature: Disk IOPS
     And I configure scenario "opts_first_class" to "yes"
     And I configure scenario "workload" to "write"
     And I configure scenario "workload_bytes" to "2097152"
+    And I configure scenario "attach_disk_snapshots" to "true"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for exactly 1 span
@@ -66,6 +72,8 @@ Feature: Disk IOPS
     * the span named "<span_name>" integer attribute "bugsnag.system.disk.iops_write" is greater than or equal to 0
     * the span named "<span_name>" integer attribute "bugsnag.system.disk.iops_total" is greater than or equal to 0
     * the span named "<span_name>" integer attribute "bugsnag.system.disk.iops_total" equals the sum of integer attributes "bugsnag.system.disk.iops_read" and "bugsnag.system.disk.iops_write"
+    * a span integer attribute "bugsnag.internal.disk_io.read_start" is less than or equal to span integer attribute "bugsnag.internal.disk_io.read_end"
+    * a span integer attribute "bugsnag.internal.disk_io.write_start" is less than or equal to span integer attribute "bugsnag.internal.disk_io.write_end"
 
     Examples:
       | platform | span_type   | span_name             |
@@ -76,13 +84,18 @@ Feature: Disk IOPS
   # ROAD 2233 - Scenario 7b
   # Multiple sequential spans capture independent disk metrics: consecutive
   # spans each capture a fresh snapshot (no stale start counters). Each span
-  # is asserted independently for valid, internally consistent values.
+  # is asserted independently for valid, internally consistent values, and the
+  # raw snapshot counters (attached via the test-only attach_disk_snapshots
+  # hook) prove freshness directly: the second span's start counters must be
+  # >= the first span's end counters, which cannot hold if a start snapshot
+  # was stale or reused.
   # ==========================================================================
   Scenario: Multiple sequential spans capture independent disk metrics
     Given I load scenario "DiskIOPSScenario"
     And I configure bugsnag "diskMetrics" to "true"
     And I configure scenario "run_delay" to "0"
     And I configure scenario "sequential_mode" to "true"
+    And I configure scenario "attach_disk_snapshots" to "true"
     And I start bugsnag
     And I run the loaded scenario
     And I wait for exactly 2 spans
@@ -96,6 +109,8 @@ Feature: Disk IOPS
     * the span named "DiskIopsSequential2" integer attribute "bugsnag.system.disk.iops_write" is greater than or equal to 0
     * the span named "DiskIopsSequential2" integer attribute "bugsnag.system.disk.iops_total" is greater than or equal to 0
     * the span named "DiskIopsSequential2" integer attribute "bugsnag.system.disk.iops_total" equals the sum of integer attributes "bugsnag.system.disk.iops_read" and "bugsnag.system.disk.iops_write"
+    * the span named "DiskIopsSequential2" integer attribute "bugsnag.internal.disk_io.read_start" is greater than or equal to the span named "DiskIopsSequential1" integer attribute "bugsnag.internal.disk_io.read_end"
+    * the span named "DiskIopsSequential2" integer attribute "bugsnag.internal.disk_io.write_start" is greater than or equal to the span named "DiskIopsSequential1" integer attribute "bugsnag.internal.disk_io.write_end"
 
   # ==========================================================================
   # ROAD 2233 - Scenario 9

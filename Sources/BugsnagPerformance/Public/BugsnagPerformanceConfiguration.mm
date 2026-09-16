@@ -331,6 +331,9 @@ static inline NSUInteger minMaxDefault(NSUInteger value, NSUInteger min, NSUInte
 
         // Test-only; production never changes this from "no faults".
         _diskIOSnapshotFaultMode = 0;
+
+        // Test-only; production never attaches internal debug attributes.
+        _attachDiskIOSnapshots = false;
     }
     return self;
 }

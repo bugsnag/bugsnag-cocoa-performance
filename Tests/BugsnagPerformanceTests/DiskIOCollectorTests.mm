@@ -116,6 +116,91 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(t, r + w);
 }
 
+- (void)testDebugSnapshotsOmittedByDefault {
+    // The raw-counter debug attributes are strictly test-only: with the flag
+    // at its default, the returned dictionary must contain ONLY the three
+    // canonical IOPS keys.
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    XCTAssertFalse(collector.attachDebugSnapshots);
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    BSG_TEST_LOG(@"Step 1: onSpanStart + 10 ms sleep + onSpanEnd (flag default)");
+    [collector onSpanStart:span];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+
+    BSG_TEST_LOG(@"Step 2: got %lu attributes (expected exactly 3): %@", (unsigned long)attrs.count, attrs);
+    XCTAssertEqual(attrs.count, (NSUInteger)3);
+    XCTAssertNil(attrs[BSGDiskIODebugAttributeKeyReadStart]);
+    XCTAssertNil(attrs[BSGDiskIODebugAttributeKeyReadEnd]);
+    XCTAssertNil(attrs[BSGDiskIODebugAttributeKeyWriteStart]);
+    XCTAssertNil(attrs[BSGDiskIODebugAttributeKeyWriteEnd]);
+}
+
+- (void)testAttachDebugSnapshotsAddsOrderedRawCounters {
+    // With the test-only flag enabled the result gains the four raw counter
+    // keys, and the counters must be ordered start <= end (the platform
+    // counters are monotonic within a process).
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+    BugsnagPerformanceSpan *span = makeSpan();
+
+    BSG_TEST_LOG(@"Step 1: onSpanStart + 10 ms sleep + onSpanEnd (flag enabled)");
+    [collector onSpanStart:span];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+
+    BSG_TEST_LOG(@"Step 2: got %lu attributes (expected exactly 7): %@", (unsigned long)attrs.count, attrs);
+    XCTAssertEqual(attrs.count, (NSUInteger)7);
+    XCTAssertNotNil(attrs[BSGDiskIOAttributeKeyIOPSRead]);
+    XCTAssertNotNil(attrs[BSGDiskIOAttributeKeyIOPSWrite]);
+    XCTAssertNotNil(attrs[BSGDiskIOAttributeKeyIOPSTotal]);
+
+    int64_t readStart = attrs[BSGDiskIODebugAttributeKeyReadStart].longLongValue;
+    int64_t readEnd = attrs[BSGDiskIODebugAttributeKeyReadEnd].longLongValue;
+    int64_t writeStart = attrs[BSGDiskIODebugAttributeKeyWriteStart].longLongValue;
+    int64_t writeEnd = attrs[BSGDiskIODebugAttributeKeyWriteEnd].longLongValue;
+    BSG_TEST_LOG(@"Step 3: read %lld->%lld write %lld->%lld (expecting start <= end)",
+                 readStart, readEnd, writeStart, writeEnd);
+    XCTAssertGreaterThanOrEqual(readStart, (int64_t)0);
+    XCTAssertGreaterThanOrEqual(writeStart, (int64_t)0);
+    XCTAssertLessThanOrEqual(readStart, readEnd);
+    XCTAssertLessThanOrEqual(writeStart, writeEnd);
+}
+
+- (void)testSequentialSpansHaveMonotonicDebugSnapshots {
+    // Two back-to-back spans: the second span's start counters must be >= the
+    // first span's end counters - a stale or reused start snapshot would
+    // violate this ordering.
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+
+    BSG_TEST_LOG(@"Step 1: run span 1 (start + sleep + end)");
+    BugsnagPerformanceSpan *span1 = makeSpan();
+    [collector onSpanStart:span1];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs1 = [collector onSpanEnd:span1];
+    XCTAssertNotNil(attrs1);
+
+    BSG_TEST_LOG(@"Step 2: run span 2 strictly after span 1 has ended");
+    BugsnagPerformanceSpan *span2 = makeSpan();
+    [collector onSpanStart:span2];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs2 = [collector onSpanEnd:span2];
+    XCTAssertNotNil(attrs2);
+
+    int64_t span1ReadEnd = attrs1[BSGDiskIODebugAttributeKeyReadEnd].longLongValue;
+    int64_t span1WriteEnd = attrs1[BSGDiskIODebugAttributeKeyWriteEnd].longLongValue;
+    int64_t span2ReadStart = attrs2[BSGDiskIODebugAttributeKeyReadStart].longLongValue;
+    int64_t span2WriteStart = attrs2[BSGDiskIODebugAttributeKeyWriteStart].longLongValue;
+    BSG_TEST_LOG(@"Step 3: span1 end read=%lld write=%lld, span2 start read=%lld write=%lld",
+                 span1ReadEnd, span1WriteEnd, span2ReadStart, span2WriteStart);
+    XCTAssertGreaterThanOrEqual(span2ReadStart, span1ReadEnd);
+    XCTAssertGreaterThanOrEqual(span2WriteStart, span1WriteEnd);
+}
+
 - (void)testEndWithoutMatchingStartReturnsNil {
     BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
     BugsnagPerformanceSpan *span = makeSpan();
