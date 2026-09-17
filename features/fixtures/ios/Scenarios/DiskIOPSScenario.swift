@@ -63,10 +63,10 @@ class DiskIOPSScenario: Scenario {
         case "mid_span_background":
             runMidSpanBackgroundMode()
             return
-        case "start_in_background":
+        case "start_in_background", "starts_in_background":
             runStartInBackgroundMode()
             return
-        case "start_end_in_background":
+        case "start_end_in_background", "ends_in_background":
             runStartEndInBackgroundMode()
             return
         default:
@@ -160,7 +160,10 @@ class DiskIOPSScenario: Scenario {
 
         forcedWrite(bytes: 524_288)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        // 3s window: the system-info sampler ticks once per second and the
+        // cpu_measures_* assertions on these custom spans need at least two
+        // samples inside the span window; 1.5s made that a coin flip.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
             newSdkSpan.end()
             oldSdkSpan.end()
             self.flushAfterDelay()

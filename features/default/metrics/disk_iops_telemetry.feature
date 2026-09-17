@@ -117,7 +117,9 @@ Feature: Disk IOPS
   # Disk IOPS across app lifecycle transitions, for custom and app-session
   # spans. Constraints forced by SDK design (abortOpenSpansOnBackground aborts
   # every open non-app-session span when the app backgrounds):
-  #  - mid-span transition must use an app-session span (the only survivor);
+  #  - mid-span transition must use an app-session span. The QA doc's custom
+  #    row for this case is NOT runnable on iOS: a custom span held open when
+  #    the app backgrounds is aborted by design and never delivered;
   #  - "ends while in background" requires the span to also START in the
   #    background (a span merely open at the transition is aborted);
   #  - the app-termination row is omitted (no next-launch assertion harness).
@@ -130,19 +132,22 @@ Feature: Disk IOPS
     And I configure scenario "lifecycle_mode" to "mid_span_background"
     And I start bugsnag
     And I run the loaded scenario
-    And I switch to the web browser for 2 seconds
+    And I switch to the web browser for 3 seconds
     And I wait for exactly 1 span
     Then a span field "name" equals "[AppSession/DiskIops]"
     * span integer attribute "bugsnag.system.disk.iops_read" should be greater than or equal to 0
     * span integer attribute "bugsnag.system.disk.iops_write" should be greater than or equal to 0
     * the span named "[AppSession/DiskIops]" integer attribute "bugsnag.system.disk.iops_total" equals the sum of integer attributes "bugsnag.system.disk.iops_read" and "bugsnag.system.disk.iops_write"
 
-  # Row: span starts and ends while in the background.
-  Scenario Outline: SDK captures disk IOPS for a span that ends while in the background
+  # Rows: QA doc scenarios 2 and 3 merged into one outline (per QA feedback).
+  # "ends_in_background" = span starts AND ends inside the background window
+  # (the achievable form of "ends while in background" - see constraint above);
+  # "starts_in_background" = span starts in background, ends after foregrounding.
+  Scenario Outline: SDK captures disk IOPS for a span that starts or ends in the background
     Given I load scenario "DiskIOPSScenario"
     And I configure bugsnag "diskMetrics" to "true"
     And I configure scenario "run_delay" to "0"
-    And I configure scenario "lifecycle_mode" to "start_end_in_background"
+    And I configure scenario "lifecycle_mode" to "<transition>"
     And I configure scenario "span_type" to "<span_type>"
     And I configure scenario "span_name" to "DiskIopsCustom"
     And I start bugsnag
@@ -155,31 +160,11 @@ Feature: Disk IOPS
     * the span named "<span_name>" integer attribute "bugsnag.system.disk.iops_total" equals the sum of integer attributes "bugsnag.system.disk.iops_read" and "bugsnag.system.disk.iops_write"
 
     Examples:
-      | platform | span_type   | span_name             |
-      | ios      | custom      | DiskIopsCustom        |
-      | ios      | app_session | [AppSession/DiskIops] |
-
-  # Row: background -> foreground (span starts in background, ends in foreground).
-  Scenario Outline: SDK captures disk IOPS for a span that starts in the background
-    Given I load scenario "DiskIOPSScenario"
-    And I configure bugsnag "diskMetrics" to "true"
-    And I configure scenario "run_delay" to "0"
-    And I configure scenario "lifecycle_mode" to "start_in_background"
-    And I configure scenario "span_type" to "<span_type>"
-    And I configure scenario "span_name" to "DiskIopsCustom"
-    And I start bugsnag
-    And I run the loaded scenario
-    And I switch to the web browser for 2 seconds
-    And I wait for exactly 1 span
-    Then a span field "name" equals "<span_name>"
-    * span integer attribute "bugsnag.system.disk.iops_read" should be greater than or equal to 0
-    * span integer attribute "bugsnag.system.disk.iops_write" should be greater than or equal to 0
-    * the span named "<span_name>" integer attribute "bugsnag.system.disk.iops_total" equals the sum of integer attributes "bugsnag.system.disk.iops_read" and "bugsnag.system.disk.iops_write"
-
-    Examples:
-      | platform | span_type   | span_name             |
-      | ios      | custom      | DiskIopsCustom        |
-      | ios      | app_session | [AppSession/DiskIops] |
+      | platform | span_type   | transition           | span_name             |
+      | ios      | custom      | ends_in_background   | DiskIopsCustom        |
+      | ios      | custom      | starts_in_background | DiskIopsCustom        |
+      | ios      | app_session | ends_in_background   | [AppSession/DiskIops] |
+      | ios      | app_session | starts_in_background | [AppSession/DiskIops] |
 
   # ==========================================================================
   # ROAD 2233 - Scenario 10
@@ -228,7 +213,7 @@ Feature: Disk IOPS
     Examples:
       | platform | workload    | duration_sec | workload_bytes |
       | ios      | sqlite      | 2.0          | 0              |
-      | ios      | burst_write | 10.0         | 10485760       |
+      | ios      | burst_write | 5.0          | 10485760       |
       | ios      | file_copy   | 5.0          | 52428800       |
 
   # ==========================================================================
@@ -264,9 +249,12 @@ Feature: Disk IOPS
   # ==========================================================================
   # ROAD 2233 - Scenario 13
   # Disk IOPS does not affect existing system metrics. Frozen-frame attrs
-  # require driven view frames and stay covered by metrics_frame.feature;
-  # Maze checks CPU + memory on a first-class span with disk enabled and
-  # disabled.
+  # require driven view frames and stay covered by metrics_frame.feature.
+  # Per QA feedback, validation uses the CPU min/max and memory min/max
+  # attributes - on iOS these are emitted only on app-session spans (the
+  # session-accumulator path in SpanAttributesProvider), which also needs
+  # just one sampler tick instead of the two the custom-span path requires,
+  # so the span here is an app-session span.
   # ==========================================================================
   Scenario: Existing system metrics are present when disk IOPS is enabled
     Given I load scenario "DiskIOPSScenario"
@@ -274,21 +262,16 @@ Feature: Disk IOPS
     And I configure bugsnag "cpuMetrics" to "true"
     And I configure bugsnag "memoryMetrics" to "true"
     And I configure scenario "run_delay" to "0"
-    And I configure scenario "span_duration" to "1.5"
+    And I configure scenario "span_duration" to "2.5"
     And I configure scenario "disk_work_bytes" to "524288"
-    And I configure scenario "opts_first_class" to "yes"
-    And I configure scenario "span_name" to "DiskIopsIsolation"
+    And I configure scenario "span_type" to "app_session"
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "DiskIopsIsolation"
+    Then a span field "name" equals "[AppSession/DiskIops]"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.cpu_measures_total" is not empty
-    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.cpu_measures_main_thread" is not empty
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.memory.timestamps" is not empty
-    * span integer attribute "bugsnag.system.memory.spaces.device.size" should be greater than 0
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.memory.spaces.device.used" is not empty
+    * span float attribute "bugsnag.system.cpu_max_total" should be greater than 0.0
+    * span integer attribute "bugsnag.system.memory.spaces.device.max" should be greater than 0
     * span integer attribute "bugsnag.system.disk.iops_total" should be greater than or equal to 0
 
   Scenario: Existing system metrics are present when disk IOPS is disabled
@@ -297,19 +280,16 @@ Feature: Disk IOPS
     And I configure bugsnag "cpuMetrics" to "true"
     And I configure bugsnag "memoryMetrics" to "true"
     And I configure scenario "run_delay" to "0"
-    And I configure scenario "span_duration" to "1.5"
+    And I configure scenario "span_duration" to "2.5"
     And I configure scenario "disk_work_bytes" to "524288"
-    And I configure scenario "opts_first_class" to "yes"
-    And I configure scenario "span_name" to "DiskIopsIsolation"
+    And I configure scenario "span_type" to "app_session"
     And I start bugsnag
     And I run the loaded scenario
     And I wait to receive at least 1 span
-    Then a span field "name" equals "DiskIopsIsolation"
+    Then a span field "name" equals "[AppSession/DiskIops]"
     * every span bool attribute "bugsnag.span.first_class" is true
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.cpu_measures_total" is not empty
-    * a span float attribute "bugsnag.system.cpu_mean_total" is greater than 0.0
-    * the span named "DiskIopsIsolation" array attribute "bugsnag.system.memory.timestamps" is not empty
-    * span integer attribute "bugsnag.system.memory.spaces.device.size" should be greater than 0
+    * span float attribute "bugsnag.system.cpu_max_total" should be greater than 0.0
+    * span integer attribute "bugsnag.system.memory.spaces.device.max" should be greater than 0
     * every span attribute "bugsnag.system.disk.iops_read" does not exist
     * every span attribute "bugsnag.system.disk.iops_write" does not exist
     * every span attribute "bugsnag.system.disk.iops_total" does not exist
