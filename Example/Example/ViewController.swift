@@ -16,7 +16,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        installDiskIOPSOperationsButton()
+        //installDiskIOPSOperationsButton()
     }
 
     @IBAction func showGenericView(_ sender: Any) {
