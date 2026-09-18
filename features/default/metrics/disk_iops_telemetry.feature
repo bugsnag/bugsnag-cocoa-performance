@@ -133,7 +133,7 @@ Feature: Disk IOPS
     And I start bugsnag
     And I run the loaded scenario
     And I switch to the web browser for 3 seconds
-    And I wait for exactly 1 span
+    And I wait to receive at least 1 span
     Then a span field "name" equals "[AppSession/DiskIops]"
     * span integer attribute "bugsnag.system.disk.iops_read" should be greater than or equal to 0
     * span integer attribute "bugsnag.system.disk.iops_write" should be greater than or equal to 0

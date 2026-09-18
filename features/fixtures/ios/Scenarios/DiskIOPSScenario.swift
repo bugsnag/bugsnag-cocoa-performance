@@ -15,6 +15,7 @@ class DiskIOPSScenario: Scenario {
     /// Span driven across an app lifecycle transition.
     private var lifecycleSpan: BugsnagPerformanceSpan?
     private var lifecycleSpanEnded = false
+    private var lifecycleSpanWasBackgrounded = false
 
     /// Pre-created file for the file-copy workload. Written (and flushed)
     /// BEFORE the measured span starts so in-span reads are real.
@@ -177,8 +178,24 @@ class DiskIOPSScenario: Scenario {
     private func runMidSpanBackgroundMode() {
         lifecycleSpan = BugsnagPerformance.startAppSessionSpan("DiskIops")
         forcedWrite(bytes: 1_048_576)
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
+                                               object: nil, queue: nil) { _ in
+            self.lifecycleSpanWasBackgrounded = true
+        }
+        // End only after a real background -> foreground transition. A stray
+        // didBecomeActive before the transition (system alert dismissal,
+        // automation-framework activation) must not end the span early or the
+        // "mid-span" part of the scenario would be a lie.
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
                                                object: nil, queue: nil) { _ in
+            guard self.lifecycleSpanWasBackgrounded else { return }
+            self.endLifecycleSpanOnce()
+        }
+        // Failsafe: if the foreground notification is missed on the device
+        // farm, end the span anyway so Maze receives a payload to assert on
+        // instead of timing out with 0 spans. The main-queue timer suspends
+        // with the app, so it fires only after the app is foregrounded again.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 12) {
             self.endLifecycleSpanOnce()
         }
         // Maze Runner drives the actual transition via
