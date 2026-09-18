@@ -23,6 +23,10 @@ public:
     virtual BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod,
                                                      const SpanOptions &options,
                                                      NSDictionary *attributes) noexcept = 0;
+    virtual BugsnagPerformanceSpan *startNetworkSpan(NSString *spanName,
+                                                         const SpanOptions &options,
+                                                         BSGTriState firstClass,
+                                                         NSDictionary *attributes) noexcept = 0;
     virtual ~NetworkSpanFactory() {}
 };
 }

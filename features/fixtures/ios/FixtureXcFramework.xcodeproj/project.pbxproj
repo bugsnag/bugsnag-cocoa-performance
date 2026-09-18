@@ -133,6 +133,7 @@
 		DAC7DD6D2E3CDA990091961A /* BugsnagPerformanceNamedSpans.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DADB14F72DDF852B0006F44F /* OnStartCallbackScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */; };
 		E1A5A6412FE052BB00A663EA /* AppSessionResourceUsageScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */; };
+		E1CD1EFE3010784400C3C4F1 /* GraphQLDetectScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1CD1EFD3010782200C3C4F1 /* GraphQLDetectScenario.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -284,6 +285,7 @@
 		DAC7DD6A2E3CDA590091961A /* BugsnagPerformanceNamedSpans.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = BugsnagPerformanceNamedSpans.xcframework; path = ../../../BugsnagPerformanceNamedSpans.xcframework; sourceTree = "<group>"; };
 		DADB14F62DDF85210006F44F /* OnStartCallbackScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnStartCallbackScenario.swift; sourceTree = "<group>"; };
 		E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionResourceUsageScenario.swift; sourceTree = "<group>"; };
+		E1CD1EFD3010782200C3C4F1 /* GraphQLDetectScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphQLDetectScenario.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,6 +371,7 @@
 			isa = PBXGroup;
 			children = (
 				32083091301FFEBC00E0958A /* DiskIOPSScenario.swift */,
+				E1CD1EFD3010782200C3C4F1 /* GraphQLDetectScenario.swift */,
 				E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
 				96D090D62EEB3E1D00BAA6D4 /* AppStartInterruptedScenario.swift */,
@@ -584,6 +587,7 @@
 				96D528D02C77F38400FEA2E2 /* FixedSamplingProbabilityZeroScenario.swift in Sources */,
 				09D59E1D2BE105F700199E1B /* AutoInstrumentNetworkTracePropagationScenario.swift in Sources */,
 				09F3F52A2D6C72B300BAA0A3 /* CPUMetricsScenario.swift in Sources */,
+				E1CD1EFE3010784400C3C4F1 /* GraphQLDetectScenario.swift in Sources */,
 				96F9010B2EE7B81F0026F5B9 /* AutoInstrumentNetworkEarlyCallbackScenario.swift in Sources */,
 				01FE4DAD28E1AEBD00D1F239 /* ViewController.swift in Sources */,
 				CBEC89232A458BA70088A3CE /* AutoInstrumentNetworkMultiple.swift in Sources */,

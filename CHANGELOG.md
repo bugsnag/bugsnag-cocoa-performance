@@ -5,6 +5,13 @@ Changelog
 
 ### Enhancements
 
+* Added GraphQL request detection and span grouping by operation type and name.
+  [#589](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/589)
+
+## 3.0.0 (2026-07-07)
+
+### Enhancements
+
 * Added AppSession Span support for aggregating CPU and memory usage across manual app sessions, including long-running sessions and OS-supported background execution.
   [#579](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/579)
 

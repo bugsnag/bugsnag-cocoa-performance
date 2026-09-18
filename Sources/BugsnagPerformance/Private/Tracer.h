@@ -74,6 +74,11 @@ public:
 
     BugsnagPerformanceSpan *startNetworkSpan(NSString *httpMethod, const SpanOptions &options) noexcept;
 
+    BugsnagPerformanceSpan *startNetworkSpan(NSString *spanName,
+                                             const SpanOptions &options,
+                                             BSGTriState firstClass,
+                                             NSDictionary *attributes) noexcept;
+
     BugsnagPerformanceSpan *startViewLoadPhaseSpan(NSString *className,
                                                    NSString *phase,
                                                    BugsnagPerformanceSpanContext *parentContext,

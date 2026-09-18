@@ -57,8 +57,7 @@ private:
                                  NSError *error) noexcept;
     
     NetworkInstrumentationState *initializeStateAndSaveIfNotVetoed(NSURLSessionTask *task,
-                                                                   NSString *httpMethod,
-                                                                   NSURL *originalUrl,
+                                                                   NSURLRequest *request,
                                                                    NSError *error) noexcept;
     
     void endSpanOnDestroyIfNeeded(NetworkInstrumentationState *state) noexcept;
