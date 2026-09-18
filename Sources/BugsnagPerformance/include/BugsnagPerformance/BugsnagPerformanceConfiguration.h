@@ -33,6 +33,7 @@ OBJC_EXPORT
 @property(nonatomic) BOOL rendering; // (default NO)
 @property(nonatomic) BOOL cpu;       // (default NO)
 @property(nonatomic) BOOL memory;    // (default NO)
+@property(nonatomic) BOOL disk;      // (default NO)
 
 - (instancetype) clone;
 

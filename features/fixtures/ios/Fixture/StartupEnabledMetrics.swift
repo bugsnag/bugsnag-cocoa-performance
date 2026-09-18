@@ -12,10 +12,12 @@ class StartupEnabledMetrics: Codable {
     public var rendering: Bool
     public var cpu: Bool
     public var memory: Bool
+    public var disk: Bool
 
     init() {
         self.rendering = false
         self.cpu = false
         self.memory = false
+        self.disk = false
     }
 }

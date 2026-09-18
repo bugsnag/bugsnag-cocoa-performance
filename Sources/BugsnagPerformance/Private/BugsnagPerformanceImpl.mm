@@ -107,6 +107,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
+, diskIOCollector_([BSGDiskIOCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
@@ -125,6 +126,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
                                                                     plainSpanFactory_,
                                                                     batch_,
                                                                     frameMetricsCollector_,
+                                                                    diskIOCollector_,
                                                                     spanStartCallbacks_,
                                                                     spanEndCallbacks_,
                                                                     ^{ this->onSpanStarted(); },
@@ -238,6 +240,8 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     instrumentation_->configure(config);
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
+    diskIOCollector_.faultMode = (BSGDiskIOSnapshotFaultMode)config.internal.diskIOSnapshotFaultMode;
+    diskIOCollector_.attachDebugSnapshots = config.internal.attachDiskIOSnapshots;
     [BugsnagPerformanceCrossTalkAPI.sharedInstance configure:config];
 }
 

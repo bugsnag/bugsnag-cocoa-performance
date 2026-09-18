@@ -22,6 +22,9 @@ SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const Span
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+    if (shouldSampleDiskIO(span)) {
+        [diskIOCollector_ onSpanStart:span];
+    }
     store_->addNewSpan(span, options.makeCurrentContext);
     callOnSpanStartCallbacks(span);
     onSpanStarted_();
@@ -31,6 +34,23 @@ void
 SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
+    }
+    // Always call -onSpanEnd:, never gated on shouldSampleDiskIO. The gate is
+    // evaluated independently at start and end, so if the user's
+    // enabledMetrics.disk or the span's first-class status changes mid-span it
+    // can return true at start (storing a snapshot) and false at end, stranding
+    // that snapshot in the collector's map forever. Calling unconditionally
+    // guarantees the stored snapshot is always consumed and released - the
+    // collector returns nil when no start snapshot exists. This mirrors
+    // -abandonSpan: in onSpanCancelled, which is already unconditional.
+    //
+    // Any nil result - missing start snapshot, invalid platform read, or
+    // duration <= 0 - silently omits disk attributes for this span.
+    NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
+    if (diskAttributes.count > 0) {
+        [span forceMutate:^{
+            [span internalSetMultipleAttributes:diskAttributes];
+        }];
     }
     // Internal SDK bookkeeping that must happen as soon as the end time is set,
     // Before sampling or user on-span-end callbacks can discard the span.
@@ -86,6 +106,9 @@ SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept
     if (!span) {
         return;
     }
+    // Release any pending disk-IO start snapshot so the map does not grow
+    // for spans that will never end.
+    [diskIOCollector_ abandonSpan:span];
     batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
     onSpanDiscarded_(span);
     if (span.isBlocked) {
@@ -113,6 +136,25 @@ SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span
             return enabledMetrics_.rendering &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
+    }
+}
+
+bool
+SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept {
+    // Disk I/O collection is strictly gated behind BugsnagPerformance.start():
+    // before start, configure() has not applied the user's enabledMetrics yet
+    // (the pre-configuration default enables everything), and nothing may be
+    // collected when Bugsnag is never started.
+    if (!isStarted_ || !enabledMetrics_.disk) {
+        return false;
+    }
+    switch (span.metricsOptions.disk) {
+        case BSGTriStateYes:
+            return true;
+        case BSGTriStateNo:
+            return false;
+        case BSGTriStateUnset:
+            return span.firstClass == BSGTriStateYes;
     }
 }
 

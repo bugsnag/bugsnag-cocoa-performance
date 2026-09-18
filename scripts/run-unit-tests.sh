@@ -39,6 +39,14 @@ if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
 	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests")
 fi
 
+if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
+	# BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOCollectorTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOMetricsTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOSnapshotTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOLifecycleGatingTests")
+fi
+
 make test "$@" XCODEBUILD_EXTRA_ARGS="${XCODEBUILD_EXTRA_ARGS[*]}" || die
 
 rm -rf "$xcresult"

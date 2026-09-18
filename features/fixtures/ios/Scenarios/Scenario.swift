@@ -71,6 +71,7 @@ class Scenario: NSObject {
         bugsnagPerfConfig.enabledMetrics.rendering = startupConfig.enabledMetrics.rendering
         bugsnagPerfConfig.enabledMetrics.cpu = startupConfig.enabledMetrics.cpu
         bugsnagPerfConfig.enabledMetrics.memory = startupConfig.enabledMetrics.memory
+        bugsnagPerfConfig.enabledMetrics.disk = startupConfig.enabledMetrics.disk
     }
 
     func urlHasAnyPrefixIn(url: URL, prefixes: [URL]) -> Bool {
@@ -135,6 +136,10 @@ class Scenario: NSObject {
         case "memoryMetrics":
             bugsnagPerfConfig.enabledMetrics.memory = (value == "true")
             logDebug("config.enabledMetrics.memory = \(bugsnagPerfConfig.enabledMetrics.memory)")
+            break
+        case "diskMetrics":
+            bugsnagPerfConfig.enabledMetrics.disk = (value == "true")
+            logDebug("config.enabledMetrics.disk = \(bugsnagPerfConfig.enabledMetrics.disk)")
             break
         case "renderingMetrics":
             bugsnagPerfConfig.enabledMetrics.rendering = (value == "true")
