@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NetworkInstrumentationState : NSObject
 @property (nonatomic, nullable, strong) BugsnagPerformanceSpan *overallSpan;
 @property (nonatomic, nullable) NSURL *url;
+@property (nonatomic, nullable, copy) NSDictionary *graphQLAttributes;
 @property (nonatomic) BOOL hasBeenVetoed;
 @end
 

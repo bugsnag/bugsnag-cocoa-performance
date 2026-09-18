@@ -120,10 +120,10 @@ private:
     std::unique_ptr<RetryQueue> retryQueue_;
     AppStateTracker *appStateTracker_;
     NSMapTable<UIViewController *, BugsnagPerformanceSpan *> *viewControllersToSpans_;
-    std::shared_ptr<Instrumentation> instrumentation_;
-    Worker *worker_;
     std::shared_ptr<PersistentDeviceID> deviceID_;
     std::shared_ptr<ResourceAttributes> resourceAttributes_;
+    std::shared_ptr<Instrumentation> instrumentation_;
+    Worker *worker_;
     BugsnagPerformanceNetworkRequestCallback networkRequestCallback_;
     OtlpTraceEncoding traceEncoding_;
 
