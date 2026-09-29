@@ -370,6 +370,7 @@
 		01FE4DC128E1AF0700D1F239 /* Scenarios */ = {
 			isa = PBXGroup;
 			children = (
+				E1CD1EFD3010782200C3C4F1 /* GraphQLDetectScenario.swift */,
 				32083091301FFEBC00E0958A /* DiskIOPSScenario.swift */,
 				E1A5A6402FE052BB00A663EA /* AppSessionResourceUsageScenario.swift */,
 				96D528CB2C72B14300FEA2E2 /* AppDataOverrideScenario.swift */,
