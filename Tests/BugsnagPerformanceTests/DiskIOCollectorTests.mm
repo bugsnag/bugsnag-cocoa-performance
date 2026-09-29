@@ -522,75 +522,88 @@ static BugsnagPerformanceSpan *makeSpan() {
 
 #pragma mark - App-session span across a background transition
 
-#import "../../Sources/BugsnagPerformance/Private/AppStateTracker.h"
-#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceImpl.h"
-#import "../../Sources/BugsnagPerformance/Private/BugsnagPerformanceConfiguration+Private.h"
-#import "../../Sources/BugsnagPerformance/Private/Reachability.h"
-#import "../../Sources/BugsnagPerformance/Private/EarlyConfiguration.h"
-#import <UIKit/UIKit.h>
-
 // Reproduces the e2e scenario "SDK captures disk IOPS across a mid-span
-// background transition" at the SDK level: an app-session span is open when
-// the app backgrounds, the app returns to the foreground, then the span ends.
-// The span must survive the background abort, be accepted by the span-end
-// callbacks, reach the export batch, and carry the three disk attributes.
+// background transition" at the span-lifecycle level: an app-session span
+// and an ordinary span are open when the app backgrounds. The ordinary span
+// is aborted (abortOpenSpansOnBackground), the session span must survive,
+// end normally, carry the three disk attributes and reach the export batch.
+//
+// Deliberately built on SpanLifecycleHandlerImpl rather than a started
+// BugsnagPerformanceImpl: a started SDK instance has no shutdown path, so its
+// sampler and worker keep running after the test destroys it and the next
+// test dies on a destroyed mutex ("mutex lock failed: Invalid argument").
 @interface DiskIOAppSessionBackgroundTests : XCTestCase
 @end
 
-@implementation DiskIOAppSessionBackgroundTests
+@implementation DiskIOAppSessionBackgroundTests {
+    BSGDiskIOCollector *collector_;
+    std::shared_ptr<Batch> batch_;
+    std::shared_ptr<SpanLifecycleHandlerImpl> handler_;
+}
+
+- (void)setUp {
+    auto sampler = std::make_shared<Sampler>();
+    auto spanStackingHandler = std::make_shared<SpanStackingHandler>();
+    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
+    collector_ = [BSGDiskIOCollector new];
+    batch_ = std::make_shared<Batch>();
+    handler_ = std::make_shared<SpanLifecycleHandlerImpl>(
+        sampler,
+        std::make_shared<SpanStoreImpl>(spanStackingHandler),
+        std::make_shared<ConditionTimeoutExecutor>(),
+        std::make_shared<PlainSpanFactoryImpl>(sampler, spanStackingHandler, spanAttributesProvider),
+        batch_,
+        [FrameMetricsCollector new],
+        collector_,
+        [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new],
+        [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new],
+        ^{},
+        ^(BugsnagPerformanceSpan *) {},
+        ^(BugsnagPerformanceSpan *) {});
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
+    config.enabledMetrics.disk = YES;
+    handler_->configure(config);
+    handler_->start();
+}
 
 - (void)testAppSessionSpanSurvivesBackgroundTransitionAndReachesBatch {
-    AppStateTracker *tracker = [AppStateTracker new];
-    auto impl = std::make_unique<BugsnagPerformanceImpl>(std::make_shared<Reachability>(), tracker);
-    impl->earlyConfigure([BSGEarlyConfiguration new]);
-    impl->earlySetup();
+    BugsnagPerformanceSpan *session = makeSpan();
+    session.isAppSessionSpan = YES;
+    BugsnagPerformanceSpan *ordinary = makeSpan();
 
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-    config.endpoint = [NSURL URLWithString:@"http://127.0.0.1:9/traces"];
-    config.autoInstrumentAppStarts = NO;
-    config.autoInstrumentAppStartsLegacy = NO;
-    config.autoInstrumentViewControllers = NO;
-    config.autoInstrumentNetworkRequests = NO;
-    config.samplingProbability = @1.0;
-    config.enabledMetrics.disk = YES;
-    // Keep the span in the batch so the test can observe it there.
-    config.internal.autoTriggerExportOnBatchSize = 1000;
-    config.internal.initialRecurringWorkDelay = 1000;
-    __block BOOL endCallbackSawSessionSpan = NO;
-    [config addOnSpanEndCallback:^BOOL(BugsnagPerformanceSpan *span) {
-        if ([span.name isEqualToString:@"[AppSession/DiskIops]"]) {
-            endCallbackSawSessionSpan = YES;
-        }
-        return YES;
-    }];
-    impl->configure(config);
-    impl->preStartSetup();
-    impl->start();
+    handler_->onSpanStarted(session, SpanOptions());
+    handler_->onSpanStarted(ordinary, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)2);
+    BSG_TEST_LOG(@"Step 1: session + ordinary spans open, 2 start snapshots held");
 
-    BugsnagPerformanceSpan *span = impl->startAppSessionSpan(@"DiskIops");
-    XCTAssertEqual(span.state, SpanStateOpen);
-    BSG_TEST_LOG(@"Step 1: session span open, batch=%lu", (unsigned long)impl->testing_getBatchCount());
+    // The app goes to the background mid-span.
+    handler_->onAppEnteredBackground();
+    BSG_TEST_LOG(@"Step 2: after background: session state=%d ordinary state=%d",
+                 (int)session.state, (int)ordinary.state);
+    XCTAssertEqual(session.state, SpanStateOpen, @"app-session span must survive backgrounding");
+    XCTAssertEqual(ordinary.state, SpanStateAborted, @"ordinary open span is aborted on background");
+    // In the SDK the abort reaches the handler through the span's
+    // onSpanCancelled block; makeSpan() wires empty blocks, so call it here.
+    handler_->onSpanCancelled(ordinary);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1, @"aborted span releases its snapshot");
 
-    [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidEnterBackgroundNotification object:nil];
-    [NSThread sleepForTimeInterval:0.2];
-    BSG_TEST_LOG(@"Step 2: after background, span state=%d (0=open)", (int)span.state);
-    XCTAssertEqual(span.state, SpanStateOpen, @"app-session span must survive backgrounding");
+    [NSThread sleepForTimeInterval:0.01];
 
-    [NSNotificationCenter.defaultCenter postNotificationName:UIApplicationDidBecomeActiveNotification object:nil];
-    [NSThread sleepForTimeInterval:0.3];
-    [span end];
-    [NSThread sleepForTimeInterval:0.2];
-    BSG_TEST_LOG(@"Step 3: after end, state=%d callback=%d batch=%lu attrs=%@",
-                 (int)span.state, endCallbackSawSessionSpan,
-                 (unsigned long)impl->testing_getBatchCount(),
-                 [span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    // The session span ends later (in the real scenario, from the background
+    // handler or after foregrounding); follow the SDK's end sequence.
+    [session end];
+    handler_->onSpanEndSet(session);
+    handler_->onSpanClosed(session);
+    BSG_TEST_LOG(@"Step 3: after end: state=%d batch=%zu iops_total=%@",
+                 (int)session.state, batch_->count(),
+                 [session getAttribute:@"bugsnag.system.disk.iops_total"]);
 
-    XCTAssertEqual(span.state, SpanStateEnded);
-    XCTAssertTrue(endCallbackSawSessionSpan, @"span-end callbacks must see the session span");
-    XCTAssertEqual(impl->testing_getBatchCount(), (NSUInteger)1, @"session span must reach the export batch");
-    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
-    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
-    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    XCTAssertEqual(session.state, SpanStateEnded);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"every start snapshot must be consumed");
+    XCTAssertEqual(batch_->count(), (size_t)1, @"session span must reach the export batch");
+    XCTAssertNotNil([session getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNotNil([session getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNotNil([session getAttribute:@"bugsnag.system.disk.iops_total"]);
 }
 
 @end
