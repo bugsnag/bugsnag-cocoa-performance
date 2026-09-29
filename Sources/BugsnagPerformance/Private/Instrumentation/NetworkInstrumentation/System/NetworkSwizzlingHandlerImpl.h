@@ -19,5 +19,6 @@ private:
     void instrumentSharedSession(BSGIsEnabledCallback isEnabled) noexcept;
     void instrumentSessionWithConfigurationDelegateQueue(id<NSURLSessionTaskDelegate> taskDelegate,
                                                          BSGIsEnabledCallback isEnabled) noexcept;
+    void instrumentSessionCompletionHandlers(BSGIsEnabledCallback isEnabled) noexcept;
 };
 }

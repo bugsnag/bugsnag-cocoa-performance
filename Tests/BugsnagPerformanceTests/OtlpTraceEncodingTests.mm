@@ -1,6 +1,6 @@
 //
 //  OtlpTraceEncodingTests.mm
-//  
+//
 //
 //  Created by Nick Dowell on 27/09/2022.
 //
@@ -23,18 +23,27 @@ using namespace bugsnag;
 static id findAttributeNamed(NSDictionary *span, NSString *name) {
     for (NSDictionary *attribute in span[@"attributes"]) {
         if ([attribute[@"key"] isEqual:name]) {
-            id value = attribute[@"value"][@"stringValue"];
-            if (value != nil) {
-                return value;
+            NSDictionary *value = attribute[@"value"];
+            if (value[@"stringValue"] != nil) {
+                return value[@"stringValue"];
             }
-            value = attribute[@"value"][@"intValue"];
-            if (value != nil) {
-                return [NSNumber numberWithLong:[value longValue]];
+            if (value[@"intValue"] != nil) {
+                id intValue = value[@"intValue"];
+                if ([intValue isKindOfClass:[NSString class]]) {
+                    // OTLP JSON encodes intValue as a decimal string.
+                    return @([(NSString *)intValue longLongValue]);
+                }
+                if ([intValue isKindOfClass:[NSNumber class]]) {
+                    return intValue;
+                }
             }
-            value = attribute[@"value"][@"boolValue"];
-            if (value != nil) {
-                return value;
+            if (value[@"boolValue"] != nil) {
+                return value[@"boolValue"];
             }
+            if (value[@"doubleValue"] != nil) {
+                return value[@"doubleValue"];
+            }
+            return nil;
         }
     }
     return nil;
@@ -222,30 +231,34 @@ static id findAttributeNamed(NSDictionary *span, NSString *name) {
     XCTAssertEqualObjects(findAttributeNamed(span, @"bugsnag.span.first_class"), @YES);
 }
 
-- (void)testEncodeRequestFirstClassNo {
+- (void)testEncodeGraphQLSpanContract {
     auto encoder = [self newEncoder];
-    NSMutableArray<BugsnagPerformanceSpan *> *spans = [[NSMutableArray alloc] init];
-    TraceId tid = {.value=1};
-    [spans addObject:[self spanWithName:@""
-                                traceId:tid
-                                 spanId:1
-                               parentId:0
-                              startTime:CFAbsoluteTimeGetCurrent()
-                             firstClass:BSGTriStateNo]];
-    auto json = encoder->encode(spans, @{});
-    
-    XCTAssertIsKindOfClass(json[@"resourceSpans"], [NSArray class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0], [NSDictionary class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"], [NSDictionary class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"resource"][@"attributes"], [NSArray class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"], [NSArray class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0], [NSDictionary class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"], [NSArray class]);
-    XCTAssertIsKindOfClass(json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0][@"spanId"], [NSString class]);
+    TraceId traceId = {.value = 1};
+    BugsnagPerformanceSpan *graphQLSpan = [self spanWithName:@"[GraphQL] [example.com/graphql] query:GetUser"
+                                                    traceId:traceId
+                                                     spanId:1
+                                                   parentId:0
+                                                  startTime:CFAbsoluteTimeGetCurrent()
+                                                 firstClass:BSGTriStateYes];
+    [graphQLSpan internalSetMultipleAttributes:@{
+        @"bugsnag.span.category": @"graphql",
+        @"display_name": @"query /graphql (GetUser)",
+        @"http.method": @"POST",
+        @"http.url": @"https://example.com/graphql",
+        @"http.status_code": @200,
+    }];
 
-    NSDictionary *span = json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0];
-    XCTAssertNotNil(span);
-    XCTAssertEqualObjects(findAttributeNamed(span, @"bugsnag.span.first_class"), @NO);
+    NSDictionary *json = encoder->encode(@[graphQLSpan], @{});
+    NSDictionary *encodedSpan = json[@"resourceSpans"][0][@"scopeSpans"][0][@"spans"][0];
+
+    XCTAssertEqualObjects(encodedSpan[@"name"], @"[GraphQL] [example.com/graphql] query:GetUser");
+    XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"bugsnag.span.category"), @"graphql");
+    XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"bugsnag.span.first_class"), @YES);
+    XCTAssertEqualObjects(findAttributeNamed(encodedSpan, @"http.method"), @"POST");
+    XCTAssertEqual([findAttributeNamed(encodedSpan, @"http.status_code") intValue], 200);
+    XCTAssertNil(findAttributeNamed(encodedSpan, @"graphql.operation.type"));
+    XCTAssertNil(findAttributeNamed(encodedSpan, @"graphql.operation.name"));
+    XCTAssertNil(findAttributeNamed(encodedSpan, @"graphql.document"));
 }
 
 - (void)testEncodeRequestFirstClassUnset {

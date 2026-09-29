@@ -1,3 +1,4 @@
+@resource_aggregation
 Feature: Foreground App Session Span - Extended Validations
 
   Scenario: App session span contains all CPU sub-metrics with range validation
