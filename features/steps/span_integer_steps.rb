@@ -97,6 +97,23 @@ Then('span float attribute {string} should be less than {float}') do |attribute,
   Maze.check.true(found, "No span found with attribute '#{attribute}'.")
 end
 
+# Inclusive ceiling. CPU percentages are clamped by the SDK at 100.0, the
+# physical maximum for one thread (and per-core for the process), so a
+# saturated thread legitimately reports exactly 100.0.
+Then('span float attribute {string} should be less than or equal to {float}') do |attribute, max_val|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  found = false
+  spans.each do |span|
+    attrs = span['attributes'] || []
+    attr = attrs.find { |a| a['key'] == attribute }
+    next unless attr
+    val = attr['value']['doubleValue'].to_f
+    found = true
+    Maze.check.true(val <= max_val, "Expected #{attribute} (#{val}) <= #{max_val}.")
+  end
+  Maze.check.true(found, "No span found with attribute '#{attribute}'.")
+end
+
 # Strict integer >= check. The `a span integer attribute ... is greater than or
 # equal to ...` step in app_steps.rb only asserts that the attribute exists, so
 # this variant is used where the value itself must be validated.
