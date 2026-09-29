@@ -696,8 +696,8 @@ final class DiskIOPSViewController: UIViewController {
             let writeDelta = endSnap.bytesWritten >= startSnap.bytesWritten
                 ? endSnap.bytesWritten - startSnap.bytesWritten : 0
 
-            let readOps  = Int64((Double(readDelta)  / 16384.0 / duration).rounded())
-            let writeOps = Int64((Double(writeDelta) / 16384.0 / duration).rounded())
+            let readOps  = Int64((Double(readDelta)  / DiskIOSample.blockSizeBytes / duration).rounded())
+            let writeOps = Int64((Double(writeDelta) / DiskIOSample.blockSizeBytes / duration).rounded())
             let totalOps = readOps + writeOps
 
             NSLog("[DiskIO Live] tick=\(self.sampleCount + 1) " +
@@ -737,7 +737,7 @@ final class DiskIOPSViewController: UIViewController {
     // IOPS is averaged across arbitrarily large time windows — the same
     // byte-delta divided by a larger `duration` yields smaller ops/sec,
     // and at long enough durations both counters round to 0 because the
-    // metrics helper divides bytes by an assumed 16 KB block size.
+    // metrics helper divides bytes by the filesystem block size (4 KB on APFS).
     //
     // Values shown on-screen are computed locally via `proc_pid_rusage`.
     // They should match the SDK's own computation, visible at span end

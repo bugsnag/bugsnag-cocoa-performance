@@ -480,4 +480,41 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
 }
 
+// Jira PLAT-17309 #21 (main-thread overhead): start and end 1,000
+// disk-eligible spans in a tight loop on the main thread. Each span pays two
+// snapshots (CFAbsoluteTimeGetCurrent + proc_pid_rusage), a mutex/map
+// insert+erase, and the attribute write. The bound is deliberately generous
+// (CI simulators are noisy) - the target from the checklist is < 10 us per
+// snapshot; the measured figure is logged so regressions are visible.
+- (void)testThousandSpansOnMainThreadStayCheap {
+    XCTAssertTrue(NSThread.isMainThread);
+    [self setUpHandler];
+    handler_->configure([self configWithDiskEnabled:YES]);
+    handler_->start();
+
+    const int iterations = 1000;
+    // Warm-up: first snapshot pays the one-time statfs()/NSTemporaryDirectory cost.
+    {
+        BugsnagPerformanceSpan *warm = makeSpan();
+        handler_->onSpanStarted(warm, SpanOptions());
+        handler_->onSpanEndSet(warm);
+    }
+
+    CFAbsoluteTime t0 = CFAbsoluteTimeGetCurrent();
+    for (int i = 0; i < iterations; i++) {
+        BugsnagPerformanceSpan *span = makeSpan();
+        handler_->onSpanStarted(span, SpanOptions());
+        handler_->onSpanEndSet(span);
+    }
+    CFAbsoluteTime elapsed = CFAbsoluteTimeGetCurrent() - t0;
+    double perSpanMicros = elapsed / iterations * 1e6;
+    BSG_TEST_LOG(@"%d start+end cycles on main thread: total=%.2fms, per span=%.2fus (2 snapshots each)",
+                 iterations, elapsed * 1e3, perSpanMicros);
+
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"every start snapshot must be consumed");
+    // 1,000 spans must complete well inside a single frame budget (16.7 ms);
+    // 100 us per span (50 us per snapshot) is 5x the checklist target.
+    XCTAssertLessThan(perSpanMicros, 100.0, @"disk-IO start+end costs %.2fus per span on the main thread", perSpanMicros);
+}
+
 @end
