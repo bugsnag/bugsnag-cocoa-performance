@@ -15,7 +15,6 @@ class DiskIOPSScenario: Scenario {
     /// Span driven across an app lifecycle transition.
     private var lifecycleSpan: BugsnagPerformanceSpan?
     private var lifecycleSpanEnded = false
-    private var lifecycleSpanWasBackgrounded = false
 
     /// Pre-created file for the file-copy workload. Written (and flushed)
     /// BEFORE the measured span starts so in-span reads are real.
@@ -63,9 +62,6 @@ class DiskIOPSScenario: Scenario {
         switch scenarioConfig["lifecycle_mode"] {
         case "mid_span_background":
             runMidSpanBackgroundMode()
-            return
-        case "start_in_background", "starts_in_background":
-            runStartInBackgroundMode()
             return
         case "start_end_in_background", "ends_in_background":
             runStartEndInBackgroundMode()
@@ -171,32 +167,33 @@ class DiskIOPSScenario: Scenario {
         }
     }
 
-    /// An app-session span held open across background → foreground. Session
-    /// spans are the only span type the SDK keeps open across backgrounding
-    /// (all other open spans are deliberately aborted), so they are the only
-    /// honest vehicle for the "mid-span transition" lifecycle row.
+    /// An app-session span started in the foreground, backgrounded mid-span,
+    /// and ended inside the background window. Session spans are the only span
+    /// type the SDK keeps open across backgrounding (all other open spans are
+    /// deliberately aborted), so they are the only honest vehicle for the
+    /// "mid-span transition" lifecycle row.
+    ///
+    /// The span is ended from the didEnterBackground handler rather than after
+    /// a return to the foreground: the fixture registers no URL scheme, so the
+    /// Maze "background_for_N_sec.html" page cannot reopen the app and a
+    /// foreground notification never arrives on the device farm. Ending and
+    /// uploading inside the handler is the pattern proven by
+    /// BackgroundForegroundScenario.
     private func runMidSpanBackgroundMode() {
         lifecycleSpan = BugsnagPerformance.startAppSessionSpan("DiskIops")
         forcedWrite(bytes: 1_048_576)
         NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
                                                object: nil, queue: nil) { _ in
-            self.lifecycleSpanWasBackgrounded = true
-        }
-        // End only after a real background -> foreground transition. A stray
-        // didBecomeActive before the transition (system alert dismissal,
-        // automation-framework activation) must not end the span early or the
-        // "mid-span" part of the scenario would be a lie.
-        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
-                                               object: nil, queue: nil) { _ in
-            guard self.lifecycleSpanWasBackgrounded else { return }
-            self.endLifecycleSpanOnce()
-        }
-        // Failsafe: if the foreground notification is missed on the device
-        // farm, end the span anyway so Maze receives a payload to assert on
-        // instead of timing out with 0 spans. The main-queue timer suspends
-        // with the app, so it fires only after the app is foregrounded again.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 12) {
-            self.endLifecycleSpanOnce()
+            guard let span = self.lifecycleSpan, !self.lifecycleSpanEnded else { return }
+            self.lifecycleSpanEnded = true
+            // More disk work on the background side of the transition so the
+            // delta spans both halves of the span's lifetime.
+            self.forcedWrite(bytes: 262_144)
+            span.end()
+            self.flushAfterDelay()
+            // Keep the process alive so the SDK's delayed batch send (sampler
+            // interval + upload) completes before the OS suspends the app.
+            Thread.sleep(forTimeInterval: 3)
         }
         // Maze Runner drives the actual transition via
         // "I switch to the web browser for N seconds".
@@ -213,26 +210,6 @@ class DiskIOPSScenario: Scenario {
         opts.setFirstClass(.yes)
         opts.setMakeCurrentContext(false)
         return BugsnagPerformance.startSpan(name: configuredSpanName, options: opts)
-    }
-
-    /// A disk-eligible span (custom or app-session, per `span_type`) started
-    /// while the app is in the background and ended after returning to the
-    /// foreground.
-    private func runStartInBackgroundMode() {
-        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification,
-                                               object: nil, queue: nil) { _ in
-            guard self.lifecycleSpan == nil else { return }
-            self.lifecycleSpan = self.makeLifecycleSpan()
-            self.forcedWrite(bytes: 262_144)
-            // Keep the process alive briefly so the span start is fully
-            // processed before the OS suspends the app (same pattern as
-            // BackgroundForegroundScenario).
-            Thread.sleep(forTimeInterval: 1)
-        }
-        NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
-                                               object: nil, queue: nil) { _ in
-            self.endLifecycleSpanOnce()
-        }
     }
 
     /// A disk-eligible span (custom or app-session, per `span_type`) whose
@@ -256,16 +233,6 @@ class DiskIOPSScenario: Scenario {
             self.flushAfterDelay()
             // Keep the process alive so the batch can upload before suspension.
             Thread.sleep(forTimeInterval: 2)
-        }
-    }
-
-    private func endLifecycleSpanOnce() {
-        guard let span = lifecycleSpan, !lifecycleSpanEnded else { return }
-        lifecycleSpanEnded = true
-        // Small settle delay after foregrounding before ending the span.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            span.end()
-            self.flushAfterDelay()
         }
     }
 

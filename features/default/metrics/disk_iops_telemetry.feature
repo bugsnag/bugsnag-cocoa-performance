@@ -122,9 +122,15 @@ Feature: Disk IOPS
   #    the app backgrounds is aborted by design and never delivered;
   #  - "ends while in background" requires the span to also START in the
   #    background (a span merely open at the transition is aborted);
+  #  - every span here is ended and uploaded INSIDE the background window:
+  #    the fixture registers no URL scheme, so Maze's background_for_N_sec
+  #    page cannot reopen the app and no foreground notification ever
+  #    arrives on the device farm (same constraint BackgroundForegroundScenario
+  #    works under). Rows that needed a return to the foreground are omitted;
   #  - the app-termination row is omitted (no next-launch assertion harness).
   # ==========================================================================
-  # Row: foreground -> background then foreground (mid-span transition).
+  # Row: app-session span started in the foreground, backgrounded mid-span,
+  # ended inside the background window.
   Scenario: SDK captures disk IOPS across a mid-span background transition
     Given I load scenario "DiskIOPSScenario"
     And I configure bugsnag "diskMetrics" to "true"
@@ -141,9 +147,10 @@ Feature: Disk IOPS
 
   # Rows: QA doc scenarios 2 and 3 merged into one outline (per QA feedback).
   # "ends_in_background" = span starts AND ends inside the background window
-  # (the achievable form of "ends while in background" - see constraint above);
-  # "starts_in_background" = span starts in background, ends after foregrounding.
-  Scenario Outline: SDK captures disk IOPS for a span that starts or ends in the background
+  # (the achievable form of "ends while in background" - see constraint above).
+  # The "starts in background, ends after foregrounding" rows are omitted: the
+  # app never returns to the foreground on the device farm (see above).
+  Scenario Outline: SDK captures disk IOPS for a span that starts and ends in the background
     Given I load scenario "DiskIOPSScenario"
     And I configure bugsnag "diskMetrics" to "true"
     And I configure scenario "run_delay" to "0"
@@ -162,9 +169,7 @@ Feature: Disk IOPS
     Examples:
       | platform | span_type   | transition           | span_name             |
       | ios      | custom      | ends_in_background   | DiskIopsCustom        |
-      | ios      | custom      | starts_in_background | DiskIopsCustom        |
       | ios      | app_session | ends_in_background   | [AppSession/DiskIops] |
-      | ios      | app_session | starts_in_background | [AppSession/DiskIops] |
 
   # ==========================================================================
   # ROAD 2233 - Scenario 10

@@ -39,12 +39,15 @@ if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 9.* ]]; then
 	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests")
 fi
 
-if [[ ("$PLATFORM" = iOS || "$PLATFORM" = tvOS) && "$OS" == 14.* ]]; then
-	# BugsnagNetworkRequestPlugin requires iOS/tvOS 14 or later
-	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOCollectorTests")
-	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOMetricsTests")
-	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOSnapshotTests")
-	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformanceTests-iOSTests/DiskIOLifecycleGatingTests")
+if [[ "$PLATFORM" = iOS && ("$OS" == 14 || "$OS" == 14.*) ]]; then
+	# Disk IOPS unit tests (PLAT-17309 / ROAD-2233) are not run on any iOS 14.x
+	# simulator job. The test target is BugsnagPerformance-iOSTests; the four
+	# classes live in DiskIOCollectorTests.mm, DiskIOMetricsTests.mm and
+	# DiskIOSnapshotTests.mm.
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformance-iOSTests/DiskIOCollectorTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformance-iOSTests/DiskIOLifecycleGatingTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformance-iOSTests/DiskIOMetricsTests")
+	XCODEBUILD_EXTRA_ARGS+=("-skip-testing:BugsnagPerformance-iOSTests/DiskIOSnapshotTests")
 fi
 
 make test "$@" XCODEBUILD_EXTRA_ARGS="${XCODEBUILD_EXTRA_ARGS[*]}" || die

@@ -16,17 +16,20 @@
 #import <unistd.h>
 
 #include <cstdint>
+#include <dlfcn.h>
 
-// libproc.h is not in the iOS public SDK, so forward-declare the single
-// entry point we need. The symbol resolves at runtime via libSystem,
-// where proc_pid_rusage has always been available.
-#ifdef __cplusplus
-extern "C" {
-#endif
-int proc_pid_rusage(int pid, int flavor, rusage_info_t *buffer);
-#ifdef __cplusplus
+// libproc.h is not in the iOS public SDK, so proc_pid_rusage is looked up
+// by name at first use instead of being linked directly. A direct reference
+// would make the framework fail to load (dyld "symbol not found") on any
+// runtime whose libSystem does not export it, which would take the whole app
+// down. With dlsym a missing symbol simply yields an invalid snapshot and the
+// disk attributes are omitted for the span.
+typedef int (*BSGProcPidRusageFn)(int pid, int flavor, rusage_info_t *buffer);
+
+static inline BSGProcPidRusageFn BSGProcPidRusage() noexcept {
+    static BSGProcPidRusageFn fn = (BSGProcPidRusageFn)dlsym(RTLD_DEFAULT, "proc_pid_rusage");
+    return fn;
 }
-#endif
 
 /// Fallback used when statfs() is unavailable. APFS on iOS reports a 4 KB
 /// native block size (f_bsize); this matches that so the fallback does not
@@ -72,8 +75,12 @@ static inline BSGDiskIOSnapshot BSGCaptureDiskIOSnapshot() noexcept {
     snapshot.timestamp = CFAbsoluteTimeGetCurrent();
     snapshot.blockSize = BSGDiskBlockSizeBytes();
 
+    BSGProcPidRusageFn procPidRusage = BSGProcPidRusage();
+    if (procPidRusage == nullptr) {
+        return snapshot;
+    }
     rusage_info_current info{};
-    int rc = proc_pid_rusage(getpid(), RUSAGE_INFO_V4, (rusage_info_t *)&info);
+    int rc = procPidRusage(getpid(), RUSAGE_INFO_V4, (rusage_info_t *)&info);
     if (rc != 0) {
         return snapshot;
     }
