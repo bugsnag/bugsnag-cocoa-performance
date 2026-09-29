@@ -66,17 +66,19 @@ NSString *const BSGDiskIODebugAttributeKeyWriteEnd = @"bugsnag.internal.disk_io.
         auto it = _startSnapshots.find((uint64_t)span.spanId);
         if (it != _startSnapshots.end()) {
             startSnapshot = it->second;
-            _startSnapshots.erase(it);
             hasStart = true;
         }
     }
 
-    // This method runs unconditionally for every span end (so a stored start
-    // snapshot is always consumed and released), but most spans are not
-    // disk-eligible and hold no start snapshot - especially when disk metrics
-    // are disabled, which is the default. Bail out before the end-snapshot
-    // capture so those spans pay only a map lookup, not a proc_pid_rusage
-    // syscall.
+    // The start snapshot is deliberately NOT erased here. A span's end time
+    // can be moved later by a span condition (blocked spans), which re-runs
+    // the end path; keeping the start snapshot lets each end recompute the
+    // metrics over the span's real window. The entry is released by
+    // -abandonSpan: once the span is final (processed, aborted or cancelled).
+    //
+    // Spans without a start snapshot (not disk-eligible, or disk metrics
+    // disabled - the default) bail out before the end-snapshot capture so
+    // they pay only a map lookup, not a proc_pid_rusage syscall.
     if (!hasStart) {
         return nil;
     }
@@ -88,9 +90,7 @@ NSString *const BSGDiskIODebugAttributeKeyWriteEnd = @"bugsnag.internal.disk_io.
 
     // Test-only fault injection. `faultMode` is
     // BSGDiskIOSnapshotFaultModeNone in production, so this block is inert
-    // outside of e2e fixtures. Note that it deliberately runs *after* the
-    // start snapshot has been erased above, so cleanup is still exercised on
-    // every simulated failure path.
+    // outside of e2e fixtures.
     BSGDiskIOSnapshotFaultMode faultMode = self.faultMode;
     if (faultMode != BSGDiskIOSnapshotFaultModeNone) {
         if ((faultMode & BSGDiskIOSnapshotFaultModeFailAtEnd) != 0) {

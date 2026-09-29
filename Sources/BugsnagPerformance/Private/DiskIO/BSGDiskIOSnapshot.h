@@ -17,6 +17,7 @@
 
 #include <cstdint>
 #include <dlfcn.h>
+#include <time.h>
 
 // libproc.h is not in the iOS public SDK, so proc_pid_rusage is looked up
 // by name at first use instead of being linked directly. A direct reference
@@ -26,7 +27,7 @@
 // disk attributes are omitted for the span.
 typedef int (*BSGProcPidRusageFn)(int pid, int flavor, rusage_info_t *buffer);
 
-static inline BSGProcPidRusageFn BSGProcPidRusage() noexcept {
+inline BSGProcPidRusageFn BSGProcPidRusage() noexcept {
     static BSGProcPidRusageFn fn = (BSGProcPidRusageFn)dlsym(RTLD_DEFAULT, "proc_pid_rusage");
     return fn;
 }
@@ -38,12 +39,17 @@ constexpr uint32_t kBSGFallbackDiskBlockSizeBytes = 4096;
 
 /// The filesystem's native block size, read once per process.
 ///
+/// Deliberately `inline` rather than `static inline`: a static-linkage
+/// function gets a separate copy of its function-local static in every
+/// translation unit, so the warm-up call made at SDK start would prime a
+/// different copy than the one the collector uses. `inline` shares one.
+///
 /// proc_pid_rusage reports bytes transferred, not operation counts, so the
 /// byte delta is divided by this to approximate operations. Reading the real
 /// f_bsize avoids the 4x under-reporting that a hardcoded 16 KB "allocation
 /// cluster" size would produce on device. statfs is called at most once -
 /// calling it per snapshot would add a syscall to every span start and end.
-static inline uint32_t BSGDiskBlockSizeBytes() noexcept {
+inline uint32_t BSGDiskBlockSizeBytes() noexcept {
     static uint32_t blockSize = []() -> uint32_t {
         struct statfs sfs;
         if (statfs([NSTemporaryDirectory() fileSystemRepresentation], &sfs) == 0 &&
@@ -55,8 +61,21 @@ static inline uint32_t BSGDiskBlockSizeBytes() noexcept {
     return blockSize;
 }
 
+/// Monotonic seconds since boot. The snapshot timestamps only ever feed a
+/// duration, and the span's own duration is computed from the monotonic clock
+/// to defeat wall-clock adjustments, so the disk window must be too: an NTP
+/// or user clock jump during a span would otherwise skew or negate the IOPS.
+inline double BSGDiskIOMonotonicSeconds() noexcept {
+    struct timespec ts{};
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0) {
+        return 0;
+    }
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
 struct BSGDiskIOSnapshot {
-    CFAbsoluteTime timestamp{0};
+    /// Monotonic seconds (see BSGDiskIOMonotonicSeconds), not wall-clock time.
+    double timestamp{0};
     uint64_t bytesRead{0};
     uint64_t bytesWritten{0};
     /// Filesystem block size in bytes at the time of capture. Defaults to the
@@ -70,9 +89,9 @@ struct BSGDiskIOSnapshot {
 /// Uses proc_pid_rusage(RUSAGE_INFO_V4) to read ri_diskio_bytesread and
 /// ri_diskio_byteswritten. On failure (non-zero return) the returned
 /// snapshot has valid = false and disk metrics are omitted for the span.
-static inline BSGDiskIOSnapshot BSGCaptureDiskIOSnapshot() noexcept {
+inline BSGDiskIOSnapshot BSGCaptureDiskIOSnapshot() noexcept {
     BSGDiskIOSnapshot snapshot;
-    snapshot.timestamp = CFAbsoluteTimeGetCurrent();
+    snapshot.timestamp = BSGDiskIOMonotonicSeconds();
     snapshot.blockSize = BSGDiskBlockSizeBytes();
 
     BSGProcPidRusageFn procPidRusage = BSGProcPidRusage();

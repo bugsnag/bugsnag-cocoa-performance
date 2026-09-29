@@ -94,8 +94,11 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertNotNil(attrs[@"bugsnag.system.disk.iops_write"]);
     XCTAssertNotNil(attrs[@"bugsnag.system.disk.iops_total"]);
 
-    // Start entry must have been removed.
-    BSG_TEST_LOG(@"Step 7: pending after end=%lu (expected 0)", (unsigned long)collector.pendingSpanCount);
+    // The start entry is kept until the span is final (a later end can
+    // recompute); -abandonSpan: releases it.
+    BSG_TEST_LOG(@"Step 7: pending after end=%lu (expected 1, released by abandon)", (unsigned long)collector.pendingSpanCount);
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+    [collector abandonSpan:span];
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
@@ -201,6 +204,26 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertGreaterThanOrEqual(span2WriteStart, span1WriteEnd);
 }
 
+- (void)testEndCanRunAgainUntilAbandoned {
+    // The start snapshot survives an end so that a later end (a span
+    // condition moving the end time) recomputes the metrics; only
+    // -abandonSpan: drops it. Before this behaviour a second end returned nil.
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    BugsnagPerformanceSpan *span = makeSpan();
+    [collector onSpanStart:span];
+    [NSThread sleepForTimeInterval:0.01];
+
+    XCTAssertNotNil([collector onSpanEnd:span], @"first end computes");
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+    [NSThread sleepForTimeInterval:0.01];
+    XCTAssertNotNil([collector onSpanEnd:span], @"second end must recompute, not find the start gone");
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+
+    [collector abandonSpan:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+    XCTAssertNil([collector onSpanEnd:span], @"after abandon there is nothing to compute from");
+}
+
 - (void)testEndWithoutMatchingStartReturnsNil {
     BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
     BugsnagPerformanceSpan *span = makeSpan();
@@ -262,15 +285,17 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)2);
 
     [NSThread sleepForTimeInterval:0.01];
-    BSG_TEST_LOG(@"Step 3: onSpanEnd(A) -- B must remain pending");
+    BSG_TEST_LOG(@"Step 3: onSpanEnd(A) then abandon(A) -- B must remain pending");
     NSDictionary *attrsA = [collector onSpanEnd:spanA];
     XCTAssertNotNil(attrsA);
+    [collector abandonSpan:spanA];
     BSG_TEST_LOG(@"Step 4: pending=%lu (expected 1)", (unsigned long)collector.pendingSpanCount);
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
 
-    BSG_TEST_LOG(@"Step 5: onSpanEnd(B)");
+    BSG_TEST_LOG(@"Step 5: onSpanEnd(B) then abandon(B)");
     NSDictionary *attrsB = [collector onSpanEnd:spanB];
     XCTAssertNotNil(attrsB);
+    [collector abandonSpan:spanB];
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
@@ -305,6 +330,7 @@ static BugsnagPerformanceSpan *makeSpan() {
     for (BugsnagPerformanceSpan *span in spans) {
         dispatch_group_async(group, endQueue, ^{
             NSDictionary *attrs = [collector onSpanEnd:span];
+            [collector abandonSpan:span];
             if (attrs != nil) {
                 [counterLock lock];
                 validEnds++;
@@ -356,7 +382,9 @@ static BugsnagPerformanceSpan *makeSpan() {
 
     [NSThread sleepForTimeInterval:0.01];
     XCTAssertNil([collector onSpanEnd:span]);
-    // The stored start snapshot must still be released.
+    // The stored start snapshot is kept until the span is final, then released.
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+    [collector abandonSpan:span];
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
@@ -368,6 +396,7 @@ static BugsnagPerformanceSpan *makeSpan() {
     [collector onSpanStart:span];
     [NSThread sleepForTimeInterval:0.01];
     XCTAssertNil([collector onSpanEnd:span]);
+    [collector abandonSpan:span];
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
@@ -381,7 +410,7 @@ static BugsnagPerformanceSpan *makeSpan() {
     [collector onSpanStart:span];
     [NSThread sleepForTimeInterval:0.01];
     XCTAssertNil([collector onSpanEnd:span]);
-    // The stored start snapshot must still be released.
+    [collector abandonSpan:span];
     XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
 }
 
@@ -395,35 +424,54 @@ static BugsnagPerformanceSpan *makeSpan() {
 @interface DiskIOLifecycleGatingTests : XCTestCase
 @end
 
+// Shared fixture for the handler-level tests below: a SpanLifecycleHandlerImpl
+// wired to a fresh collector, batch and span-end callback store.
+struct DiskIOHandlerFixture {
+    BSGDiskIOCollector *collector;
+    std::shared_ptr<Batch> batch;
+    BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *spanEndCallbacks;
+    std::shared_ptr<SpanLifecycleHandlerImpl> handler;
+};
+
+static DiskIOHandlerFixture makeHandlerFixture() {
+    auto sampler = std::make_shared<Sampler>();
+    auto spanStackingHandler = std::make_shared<SpanStackingHandler>();
+    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
+    DiskIOHandlerFixture f;
+    f.collector = [BSGDiskIOCollector new];
+    f.batch = std::make_shared<Batch>();
+    f.spanEndCallbacks = [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new];
+    f.handler = std::make_shared<SpanLifecycleHandlerImpl>(
+        sampler,
+        std::make_shared<SpanStoreImpl>(spanStackingHandler),
+        std::make_shared<ConditionTimeoutExecutor>(),
+        std::make_shared<PlainSpanFactoryImpl>(sampler, spanStackingHandler, spanAttributesProvider),
+        f.batch,
+        [FrameMetricsCollector new],
+        f.collector,
+        [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new],
+        f.spanEndCallbacks,
+        ^{},
+        ^(BugsnagPerformanceSpan *) {},
+        ^(BugsnagPerformanceSpan *) {});
+    return f;
+}
+
+static BugsnagPerformanceConfiguration *configWithDiskEnabled(BOOL diskEnabled) {
+    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
+    config.enabledMetrics.disk = diskEnabled;
+    return config;
+}
+
 @implementation DiskIOLifecycleGatingTests {
     BSGDiskIOCollector *collector_;
     std::shared_ptr<SpanLifecycleHandlerImpl> handler_;
 }
 
 - (void)setUpHandler {
-    auto sampler = std::make_shared<Sampler>();
-    auto spanStackingHandler = std::make_shared<SpanStackingHandler>();
-    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
-    collector_ = [BSGDiskIOCollector new];
-    handler_ = std::make_shared<SpanLifecycleHandlerImpl>(
-        sampler,
-        std::make_shared<SpanStoreImpl>(spanStackingHandler),
-        std::make_shared<ConditionTimeoutExecutor>(),
-        std::make_shared<PlainSpanFactoryImpl>(sampler, spanStackingHandler, spanAttributesProvider),
-        std::make_shared<Batch>(),
-        [FrameMetricsCollector new],
-        collector_,
-        [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new],
-        [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new],
-        ^{},
-        ^(BugsnagPerformanceSpan *) {},
-        ^(BugsnagPerformanceSpan *) {});
-}
-
-- (BugsnagPerformanceConfiguration *)configWithDiskEnabled:(BOOL)diskEnabled {
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-    config.enabledMetrics.disk = diskEnabled;
-    return config;
+    DiskIOHandlerFixture f = makeHandlerFixture();
+    collector_ = f.collector;
+    handler_ = f.handler;
 }
 
 - (void)testNoDiskCollectionWhenNeverStarted {
@@ -431,7 +479,7 @@ static BugsnagPerformanceSpan *makeSpan() {
     // Even with disk metrics enabled in the configuration, nothing may be
     // collected before start() — this covers the pre-main/early-span window
     // and the "Bugsnag is never started" case.
-    handler_->configure([self configWithDiskEnabled:YES]);
+    handler_->configure(configWithDiskEnabled(YES));
 
     BugsnagPerformanceSpan *span = makeSpan();
     handler_->onSpanStarted(span, SpanOptions());
@@ -447,7 +495,7 @@ static BugsnagPerformanceSpan *makeSpan() {
 - (void)testNoDiskCollectionWhenDiskMetricsDisabled {
     [self setUpHandler];
     // Default configuration: enabledMetrics.disk is NO.
-    handler_->configure([self configWithDiskEnabled:NO]);
+    handler_->configure(configWithDiskEnabled(NO));
     handler_->start();
 
     BugsnagPerformanceSpan *span = makeSpan();
@@ -463,7 +511,7 @@ static BugsnagPerformanceSpan *makeSpan() {
 
 - (void)testDiskCollectionWhenEnabledAndStarted {
     [self setUpHandler];
-    handler_->configure([self configWithDiskEnabled:YES]);
+    handler_->configure(configWithDiskEnabled(YES));
     handler_->start();
 
     // makeSpan() creates a first-class span with metricsOptions.disk unset,
@@ -473,11 +521,84 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
 
     [NSThread sleepForTimeInterval:0.01];
+    [span end];
     handler_->onSpanEndSet(span);
     XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
     XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
     XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    // The snapshot is held until the span is processed, then released.
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
+    handler_->onSpanClosed(span);
     XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testLaterEndRecomputesOverTheExtendedWindow {
+    // A blocked span's end time can be moved later by a span condition, which
+    // re-runs onSpanEndSet. The start snapshot must survive the first end so
+    // the metrics are recomputed over the extended window, and be released
+    // only when the span is finally processed.
+    [self setUpHandler];
+    handler_->configure(configWithDiskEnabled(YES));
+    handler_->start();
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    NSNumber *firstTotal = [span getAttribute:@"bugsnag.system.disk.iops_total"];
+    XCTAssertNotNil(firstTotal);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1, @"start snapshot must survive the first end");
+
+    // Condition extends the end time later: the end path runs again.
+    [NSThread sleepForTimeInterval:0.05];
+    handler_->onSpanEndSet(span);
+    NSNumber *secondTotal = [span getAttribute:@"bugsnag.system.disk.iops_total"];
+    XCTAssertNotNil(secondTotal, @"second end must recompute, not drop, the attributes");
+    BSG_TEST_LOG(@"first total=%@ second total=%@ (recomputed over a longer window)", firstTotal, secondTotal);
+
+    handler_->onSpanClosed(span);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testNoDiskCollectionWhenStartTimeWasProvided {
+    // Mirrors the rendering gate: a caller-supplied start time makes the real
+    // elapsed window meaningless for the span, so no snapshot is taken.
+    [self setUpHandler];
+    handler_->configure(configWithDiskEnabled(YES));
+    handler_->start();
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.wasStartOrEndTimeProvided = YES;
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    handler_->onSpanClosed(span);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+}
+
+- (void)testNoDiskAttributesWhenEndTimeWasProvided {
+    // A caller-supplied END time is only known at the end: the start snapshot
+    // exists, but no attributes may be computed and the snapshot must still be
+    // released when the span is processed.
+    [self setUpHandler];
+    handler_->configure(configWithDiskEnabled(YES));
+    handler_->start();
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
+
+    [NSThread sleepForTimeInterval:0.01];
+    span.wasStartOrEndTimeProvided = YES;  // as endWithEndTime: does
+    [span end];
+    handler_->onSpanEndSet(span);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    handler_->onSpanClosed(span);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"snapshot released even though no metrics were computed");
 }
 
 // Jira PLAT-17309 #21 (main-thread overhead): start and end 1,000
@@ -489,7 +610,7 @@ static BugsnagPerformanceSpan *makeSpan() {
 - (void)testThousandSpansOnMainThreadStayCheap {
     XCTAssertTrue(NSThread.isMainThread);
     [self setUpHandler];
-    handler_->configure([self configWithDiskEnabled:YES]);
+    handler_->configure(configWithDiskEnabled(YES));
     handler_->start();
 
     const int iterations = 1000;
@@ -497,18 +618,22 @@ static BugsnagPerformanceSpan *makeSpan() {
     {
         BugsnagPerformanceSpan *warm = makeSpan();
         handler_->onSpanStarted(warm, SpanOptions());
+        [warm end];
         handler_->onSpanEndSet(warm);
+        handler_->onSpanClosed(warm);
     }
 
     CFAbsoluteTime t0 = CFAbsoluteTimeGetCurrent();
     for (int i = 0; i < iterations; i++) {
         BugsnagPerformanceSpan *span = makeSpan();
         handler_->onSpanStarted(span, SpanOptions());
+        [span end];
         handler_->onSpanEndSet(span);
+        handler_->onSpanClosed(span);
     }
     CFAbsoluteTime elapsed = CFAbsoluteTimeGetCurrent() - t0;
     double perSpanMicros = elapsed / iterations * 1e6;
-    BSG_TEST_LOG(@"%d start+end cycles on main thread: total=%.2fms, per span=%.2fus (2 snapshots each)",
+    BSG_TEST_LOG(@"%d start+end+close cycles on main thread: total=%.2fms, per span=%.2fus (2 snapshots each)",
                  iterations, elapsed * 1e3, perSpanMicros);
 
     XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"every start snapshot must be consumed");
@@ -539,30 +664,25 @@ static BugsnagPerformanceSpan *makeSpan() {
     BSGDiskIOCollector *collector_;
     std::shared_ptr<Batch> batch_;
     std::shared_ptr<SpanLifecycleHandlerImpl> handler_;
+    BOOL endCallbackSawSessionSpan_;
 }
 
 - (void)setUp {
-    auto sampler = std::make_shared<Sampler>();
-    auto spanStackingHandler = std::make_shared<SpanStackingHandler>();
-    auto spanAttributesProvider = std::make_shared<SpanAttributesProvider>();
-    collector_ = [BSGDiskIOCollector new];
-    batch_ = std::make_shared<Batch>();
-    handler_ = std::make_shared<SpanLifecycleHandlerImpl>(
-        sampler,
-        std::make_shared<SpanStoreImpl>(spanStackingHandler),
-        std::make_shared<ConditionTimeoutExecutor>(),
-        std::make_shared<PlainSpanFactoryImpl>(sampler, spanStackingHandler, spanAttributesProvider),
-        batch_,
-        [FrameMetricsCollector new],
-        collector_,
-        [BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new],
-        [BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> new],
-        ^{},
-        ^(BugsnagPerformanceSpan *) {},
-        ^(BugsnagPerformanceSpan *) {});
-    auto config = [[BugsnagPerformanceConfiguration alloc] initWithApiKey:@"12312312312312312312312312312312"];
-    config.enabledMetrics.disk = YES;
-    handler_->configure(config);
+    DiskIOHandlerFixture f = makeHandlerFixture();
+    collector_ = f.collector;
+    batch_ = f.batch;
+    handler_ = f.handler;
+    endCallbackSawSessionSpan_ = NO;
+    // A user on-span-end callback must observe the session span (and keep it).
+    __weak DiskIOAppSessionBackgroundTests *weakSelf = self;
+    [f.spanEndCallbacks addObject:^BOOL(BugsnagPerformanceSpan *span) {
+        DiskIOAppSessionBackgroundTests *strongSelf = weakSelf;
+        if (strongSelf != nil && span.isAppSessionSpan) {
+            strongSelf->endCallbackSawSessionSpan_ = YES;
+        }
+        return YES;
+    } priority:BugsnagPerformancePriorityMedium];
+    handler_->configure(configWithDiskEnabled(YES));
     handler_->start();
 }
 
@@ -582,10 +702,11 @@ static BugsnagPerformanceSpan *makeSpan() {
                  (int)session.state, (int)ordinary.state);
     XCTAssertEqual(session.state, SpanStateOpen, @"app-session span must survive backgrounding");
     XCTAssertEqual(ordinary.state, SpanStateAborted, @"ordinary open span is aborted on background");
-    // In the SDK the abort reaches the handler through the span's
-    // onSpanCancelled block; makeSpan() wires empty blocks, so call it here.
-    handler_->onSpanCancelled(ordinary);
-    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1, @"aborted span releases its snapshot");
+    // abortIfOpen reaches the handler through sendForProcessing -> the span's
+    // onSpanClosed block (never onSpanCancelled). makeSpan() wires empty
+    // blocks, so drive that production path by hand.
+    handler_->onSpanClosed(ordinary);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1, @"aborted span must release its start snapshot");
 
     [NSThread sleepForTimeInterval:0.01];
 
@@ -599,6 +720,7 @@ static BugsnagPerformanceSpan *makeSpan() {
                  [session getAttribute:@"bugsnag.system.disk.iops_total"]);
 
     XCTAssertEqual(session.state, SpanStateEnded);
+    XCTAssertTrue(endCallbackSawSessionSpan_, @"user span-end callbacks must see the session span");
     XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"every start snapshot must be consumed");
     XCTAssertEqual(batch_->count(), (size_t)1, @"session span must reach the export batch");
     XCTAssertNotNil([session getAttribute:@"bugsnag.system.disk.iops_read"]);

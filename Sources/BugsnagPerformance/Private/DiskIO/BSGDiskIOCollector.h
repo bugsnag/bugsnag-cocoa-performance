@@ -69,8 +69,10 @@ typedef NS_OPTIONS(NSUInteger, BSGDiskIOSnapshotFaultMode) {
 /// source is unavailable — the matching -onSpanEnd: will then return nil.
 - (void)onSpanStart:(BugsnagPerformanceSpan *)span;
 
-/// Capture the end snapshot immediately, retrieve+remove the start
-/// snapshot under a lock, and compute the IOPS metrics.
+/// Capture the end snapshot immediately, look up the start snapshot under a
+/// lock, and compute the IOPS metrics. The start snapshot is kept so that a
+/// later end (a span condition extending the end time) recomputes over the
+/// span's real window; call -abandonSpan: once the span is final.
 ///
 /// Returns a dictionary keyed by the three BSGDiskIOAttributeKey* keys
 /// whose values are int64_t NSNumbers, or nil if no valid metrics could
@@ -78,8 +80,9 @@ typedef NS_OPTIONS(NSUInteger, BSGDiskIOSnapshotFaultMode) {
 /// duration <= 0).
 - (nullable NSDictionary<NSString *, NSNumber *> *)onSpanEnd:(BugsnagPerformanceSpan *)span;
 
-/// Drop any stored start snapshot for a span that will never end.
-/// Called for cancelled / discarded spans to keep the map bounded.
+/// Drop the stored start snapshot for a span that is final: processed for
+/// export, aborted, or cancelled. Keeps the map bounded; a no-op when the
+/// span holds no snapshot.
 - (void)abandonSpan:(BugsnagPerformanceSpan *)span;
 
 /// Testing only — number of pending start snapshots currently held.
