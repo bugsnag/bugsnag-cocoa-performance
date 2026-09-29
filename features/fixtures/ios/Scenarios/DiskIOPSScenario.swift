@@ -364,12 +364,21 @@ class DiskIOPSScenario: Scenario {
             try? FileManager.default.removeItem(atPath: path)
         }
         sqlite3_exec(db, "CREATE TABLE t (id INTEGER PRIMARY KEY AUTOINCREMENT, payload BLOB)", nil, nil, nil)
+        // One transaction for the whole batch. In autocommit mode every INSERT
+        // is its own transaction with its own journal write and fsync, which on
+        // an older device (iPhone 7 Plus on the farm) runs for longer than the
+        // 30 s Maze wait and the span is never delivered. One commit still
+        // writes the same ~4 MB of table data through to disk.
+        sqlite3_exec(db, "BEGIN", nil, nil, nil)
         for i in 0..<insertCount {
             sqlite3_exec(db, "INSERT INTO t (payload) VALUES (randomblob(4096))", nil, nil, nil)
             if i % 100 == 0 {
                 sqlite3_exec(db, "SELECT count(*), sum(length(payload)) FROM t", nil, nil, nil)
             }
         }
+        sqlite3_exec(db, "COMMIT", nil, nil, nil)
+        // Read the table back so the read counter moves as well as the write one.
+        sqlite3_exec(db, "SELECT count(*), sum(length(payload)) FROM t", nil, nil, nil)
     }
 
     // MARK: - Helpers
