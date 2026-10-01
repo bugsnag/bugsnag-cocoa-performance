@@ -22,6 +22,9 @@ SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const Span
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+    if (shouldSampleDiskIO(span)) {
+        [diskIOCollector_ onSpanStart:span];
+    }
     store_->addNewSpan(span, options.makeCurrentContext);
     callOnSpanStartCallbacks(span);
     onSpanStarted_();
@@ -32,6 +35,22 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     if (shouldInstrumentRendering(span)) {
         span.endFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
+    // Gated exactly like rendering: a span whose start or end time was
+    // supplied by the caller reports a window that does not match the real
+    // elapsed time between the start() and end() calls, so IOPS computed over
+    // the real window would not describe the span. The start snapshot (if any)
+    // is released when the span is final, in onSpanClosed/processClosedSpan.
+    //
+    // This may run more than once for a blocked span whose end time a span
+    // condition later extends; each run recomputes over the current window.
+    if (shouldSampleDiskIO(span)) {
+        NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
+        if (diskAttributes.count > 0) {
+            [span forceMutate:^{
+                [span internalSetMultipleAttributes:diskAttributes];
+            }];
+        }
+    }
     // Internal SDK bookkeeping that must happen as soon as the end time is set,
     // Before sampling or user on-span-end callbacks can discard the span.
     onSpanEndSet_(span);
@@ -39,6 +58,14 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
 
 void
 SpanLifecycleHandlerImpl::onSpanClosed(BugsnagPerformanceSpan *span) noexcept {
+    if (span.state == SpanStateAborted) {
+        // Every abort path (abortOpenSpansOnBackground, abortIfOpen,
+        // abortUnconditionally, the dealloc abort of a dropped open span)
+        // arrives here via sendForProcessing, and a blocked span that aborts
+        // never reaches processClosedSpan, so release the disk-IO start
+        // snapshot here rather than further down.
+        [diskIOCollector_ abandonSpan:span];
+    }
     if (!span.isBlocked) {
         processClosedSpan(span);
     }
@@ -86,6 +113,9 @@ SpanLifecycleHandlerImpl::onSpanCancelled(BugsnagPerformanceSpan *span) noexcept
     if (!span) {
         return;
     }
+    // Release any pending disk-IO start snapshot so the map does not grow
+    // for spans that will never end (only -cancel reaches here).
+    [diskIOCollector_ abandonSpan:span];
     batch_->removeSpan(span.traceIdHi, span.traceIdLo, span.spanId);
     onSpanDiscarded_(span);
     if (span.isBlocked) {
@@ -113,6 +143,28 @@ SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span
             return enabledMetrics_.rendering &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
+    }
+}
+
+bool
+SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept {
+    // Disk I/O collection is strictly gated behind BugsnagPerformance.start():
+    // before start, configure() has not applied the user's enabledMetrics yet
+    // (the pre-configuration default enables everything), and nothing may be
+    // collected when Bugsnag is never started.
+    if (!isStarted_ || !enabledMetrics_.disk) {
+        return false;
+    }
+    switch (span.metricsOptions.disk) {
+        case BSGTriStateYes:
+            return true;
+        case BSGTriStateNo:
+            return false;
+        case BSGTriStateUnset:
+            // Same rule as rendering: caller-supplied start/end times make the
+            // real elapsed window meaningless for the span.
+            return span.firstClass == BSGTriStateYes &&
+                   !span.wasStartOrEndTimeProvided;
     }
 }
 
@@ -250,6 +302,9 @@ SpanLifecycleHandlerImpl::processClosedSpan(BugsnagPerformanceSpan *span) noexce
     }
 
     store_->removeSpan(span);
+    // The span is final from here on (its end time can no longer move), so
+    // the disk-IO start snapshot is no longer needed whatever happens next.
+    [diskIOCollector_ abandonSpan:span];
 
     if(span.state == SpanStateAborted) {
         onSpanDiscarded_(span);

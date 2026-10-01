@@ -7,17 +7,23 @@ Maze.hooks.after do |scenario|
   path = File.join(folder1, folder2, folder3)
   case Maze::Helper.get_current_platform
   when 'ios'
+    # get_logs can be slow (1 or 2 seconds) on device farms
     if scenario.failed? || Maze.config.farm == :local
-      FileUtils.makedirs(path)
-      File.open(File.join(path, 'syslog.log'), 'wb') do |file|
-        begin
-          driver = Maze.driver.respond_to?(:driver) ? Maze.driver.driver : Maze.driver
-          driver.manage.logs.get('syslog').each do |entry|
-                file.puts entry.message
-          end
-        rescue StandardError => e
-          file.puts "Failed to retrieve syslog: #{e.message}"
+      begin
+        manager = Maze::Api::Appium::DeviceManager.new
+        # `get_log` was renamed to `get_logs` in Maze Runner 11.
+        entries = if manager.respond_to?(:get_logs)
+                    manager.get_logs('syslog')
+                  else
+                    manager.get_log('syslog')
+                  end
+        FileUtils.makedirs(path)
+        File.open(File.join(path, 'syslog.log'), 'wb') do |file|
+          entries.each { |entry| file.puts entry.message }
         end
+      rescue StandardError => e
+        # Never let log collection mask the actual scenario result.
+        $logger.warn "Unable to capture device syslog: #{e.class}: #{e.message}"
       end
     end
   end

@@ -203,6 +203,13 @@ Then('a span integer attribute {string} is greater than {int}') do |attribute, e
   Maze.check.false(attribute_values.empty?)
 end
 
+Then('a span integer attribute {string} is greater than or equal to {int}') do |attribute, expected|
+  spans = spans_from_request_list(Maze::Server.list_for('traces'))
+  selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
+  Maze.check.false(selected_attributes.empty?)
+  Maze.check.true(selected_attributes.any? { |a| a['value']['intValue'].to_i >= expected })
+end
+
 Then('a span integer attribute {string} equals {int}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
