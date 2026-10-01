@@ -86,7 +86,7 @@
 		1C68DBA52E535E21002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C68DBA42E535E1E002621D1 /* BugsnagPerformanceAppStartTypePlugin.mm */; };
 		1C7852A22E5F5B3000BB8E2D /* SpanContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1C7852A12E5F5B2E00BB8E2D /* SpanContext.h */; };
 		1C7852A42E5F698300BB8E2D /* SpanContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C7852A32E5F697D00BB8E2D /* SpanContext.mm */; };
-		3208308C301FF28000E0958A /* DiskIOCollectorTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3208308B301FF27900E0958A /* DiskIOCollectorTests.mm */; };
+		32083090301FF33400E0958A /* DiskIOSnapshotTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3208308F301FF32E00E0958A /* DiskIOSnapshotTests.mm */; };
 		3299CB1430209ACF008774D3 /* BSGDiskIOCollector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3299CB1330209ACD008774D3 /* BSGDiskIOCollector.mm */; };
 		3299CB1630209ADC008774D3 /* BSGDiskIOCollector.h in Headers */ = {isa = PBXBuildFile; fileRef = 3299CB1530209AD6008774D3 /* BSGDiskIOCollector.h */; };
 		3299CB1830209AE6008774D3 /* BSGDiskIOMetrics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3299CB1730209AE3008774D3 /* BSGDiskIOMetrics.h */; };
@@ -2076,8 +2076,8 @@
 				963726D72DEFB2CC00C739E6 /* BSGPrioritizedStoreTests.m in Sources */,
 				CBEC51DF29782471009C0CE3 /* OtlpPackageTests.mm in Sources */,
 				CB0AD75B295F27DD002A3FB6 /* WorkerTests.mm in Sources */,
+				32083090301FF33400E0958A /* DiskIOSnapshotTests.mm in Sources */,
 				CBEC51C3296EC0AC009C0CE3 /* JSONTests.mm in Sources */,
-				3208308C301FF28000E0958A /* DiskIOCollectorTests.mm in Sources */,
 				01A414C52912B93F003152A4 /* ResourceAttributesTests.mm in Sources */,
 				09B4730A2B2313570024CF11 /* WeakSpansListTests.mm in Sources */,
 				CB2B8A9B2A0924A50054FBBE /* SpanTests.mm in Sources */,
