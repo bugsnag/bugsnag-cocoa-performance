@@ -614,7 +614,7 @@ static BugsnagPerformanceConfiguration *configWithDiskEnabled(BOOL diskEnabled) 
     handler_->start();
 
     const int iterations = 1000;
-    // Warm-up: first snapshot pays the one-time statfs()/NSTemporaryDirectory cost.
+    // Warm-up: the first snapshot pays the one-time dlsym lookup of proc_pid_rusage.
     {
         BugsnagPerformanceSpan *warm = makeSpan();
         handler_->onSpanStarted(warm, SpanOptions());

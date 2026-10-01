@@ -10,8 +10,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import <sys/mount.h>
-#import <sys/param.h>
 #import <sys/resource.h>
 #import <unistd.h>
 
@@ -32,33 +30,15 @@ inline BSGProcPidRusageFn BSGProcPidRusage() noexcept {
     return fn;
 }
 
-/// Fallback used when statfs() is unavailable. APFS on iOS reports a 4 KB
-/// native block size (f_bsize); this matches that so the fallback does not
-/// silently skew the derived operation count.
-constexpr uint32_t kBSGFallbackDiskBlockSizeBytes = 4096;
+/// The block size used to turn bytes into an approximate operation count: APFS, the only iOS filesystem, reports a
+/// 4 KB native block size (f_bsize). A constant rather than statfs(): statfs is an Apple "required reason" API
+/// (NSPrivacyAccessedAPICategoryDiskSpace), which would need a declaration in the privacy manifest of every app
+/// shipping the SDK, only to read a value that is always 4096 on iOS.
+constexpr uint32_t kBSGDiskBlockSizeBytes = 4096;
 
-/// The filesystem's native block size, read once per process.
-///
-/// Deliberately `inline` rather than `static inline`: a static-linkage
-/// function gets a separate copy of its function-local static in every
-/// translation unit, so the warm-up call made at SDK start would prime a
-/// different copy than the one the collector uses. `inline` shares one.
-///
-/// proc_pid_rusage reports bytes transferred, not operation counts, so the
-/// byte delta is divided by this to approximate operations. Reading the real
-/// f_bsize avoids the 4x under-reporting that a hardcoded 16 KB "allocation
-/// cluster" size would produce on device. statfs is called at most once -
-/// calling it per snapshot would add a syscall to every span start and end.
+/// Kept as a function so callers and tests read the block size in one place.
 inline uint32_t BSGDiskBlockSizeBytes() noexcept {
-    static uint32_t blockSize = []() -> uint32_t {
-        struct statfs sfs;
-        if (statfs([NSTemporaryDirectory() fileSystemRepresentation], &sfs) == 0 &&
-            sfs.f_bsize > 0) {
-            return (uint32_t)sfs.f_bsize;
-        }
-        return kBSGFallbackDiskBlockSizeBytes;
-    }();
-    return blockSize;
+    return kBSGDiskBlockSizeBytes;
 }
 
 /// Monotonic seconds since boot. The snapshot timestamps only ever feed a
@@ -78,9 +58,9 @@ struct BSGDiskIOSnapshot {
     double timestamp{0};
     uint64_t bytesRead{0};
     uint64_t bytesWritten{0};
-    /// Filesystem block size in bytes at the time of capture. Defaults to the
-    /// fallback so unit tests constructing snapshots by hand get a sane value.
-    uint32_t blockSize{kBSGFallbackDiskBlockSizeBytes};
+    /// Block size in bytes (kBSGDiskBlockSizeBytes); unit tests constructing
+    /// snapshots by hand get the same value.
+    uint32_t blockSize{kBSGDiskBlockSizeBytes};
     bool valid{false};
 };
 

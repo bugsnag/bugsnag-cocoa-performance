@@ -398,17 +398,6 @@ NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
             [blockThis->pluginManager_ startPlugins];
             return true;
         },
-        ^bool() {
-            // Warm the one-time filesystem block-size lookup off the main
-            // thread. The first NSTemporaryDirectory() + statfs() call costs
-            // ~1-2 ms cold; without this it would land on whichever thread
-            // starts the first disk-eligible span, which can be the main
-            // thread during app launch.
-            if (blockThis->configuration_.enabledMetrics.disk) {
-                (void)BSGDiskBlockSizeBytes();
-            }
-            return true;
-        },
     ];
 }
 

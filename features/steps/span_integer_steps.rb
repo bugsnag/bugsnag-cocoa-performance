@@ -114,9 +114,7 @@ Then('span float attribute {string} should be less than or equal to {float}') do
   Maze.check.true(found, "No span found with attribute '#{attribute}'.")
 end
 
-# Strict integer >= check. The `a span integer attribute ... is greater than or
-# equal to ...` step in app_steps.rb only asserts that the attribute exists, so
-# this variant is used where the value itself must be validated.
+# Strict integer >= check: every span carrying the attribute must satisfy the bound.
 Then('span integer attribute {string} should be greater than or equal to {int}') do |attribute, expected|
   spans = spans_from_request_list(Maze::Server.list_for('traces'))
   selected_attributes = spans.map { |span| span['attributes'].find { |a| a['key'].eql?(attribute) && a['value'].has_key?('intValue') } }.compact
