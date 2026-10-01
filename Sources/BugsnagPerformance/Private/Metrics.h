@@ -20,11 +20,13 @@ public:
     : rendering(metrics.rendering)
     , cpu(metrics.cpu)
     , memory(metrics.memory)
+    , disk(metrics.disk)
     {}
 
     BSGTriState rendering{BSGTriStateUnset};
     BSGTriState cpu{BSGTriStateUnset};
     BSGTriState memory{BSGTriStateUnset};
+    BSGTriState disk{BSGTriStateUnset};
 };
 
 };
