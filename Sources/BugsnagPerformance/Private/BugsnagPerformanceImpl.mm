@@ -17,6 +17,7 @@
 #import "BugsnagPerformanceCrossTalkAPI.h"
 #import "Utils.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "DiskIO/BSGDiskIOSnapshot.h"
 #import "ConditionTimeoutExecutor.h"
 #import "BugsnagPerformanceSpan+Private.h"
 #import "BugsnagPerformanceAppStartTypePlugin.h"
@@ -107,6 +108,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
 , spanAttributesProvider_(std::make_shared<SpanAttributesProvider>())
 , networkHeaderInjector_(std::make_shared<NetworkHeaderInjector>(spanAttributesProvider_, spanStackingHandler_, sampler_))
 , frameMetricsCollector_([FrameMetricsCollector new])
+, diskIOCollector_([BSGDiskIOCollector new])
 , conditionTimeoutExecutor_(std::make_shared<ConditionTimeoutExecutor>())
 , spanControlProvider_([BSGCompositeSpanControlProvider new])
 , spanStartCallbacks_([BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> new])
@@ -125,6 +127,7 @@ BugsnagPerformanceImpl::BugsnagPerformanceImpl(std::shared_ptr<Reachability> rea
                                                                     plainSpanFactory_,
                                                                     batch_,
                                                                     frameMetricsCollector_,
+                                                                    diskIOCollector_,
                                                                     spanStartCallbacks_,
                                                                     spanEndCallbacks_,
                                                                     ^{ this->onSpanStarted(); },
@@ -238,6 +241,8 @@ void BugsnagPerformanceImpl::configure(BugsnagPerformanceConfiguration *config) 
     instrumentation_->configure(config);
     [worker_ configure:config];
     [frameMetricsCollector_ configure:config];
+    diskIOCollector_.faultMode = (BSGDiskIOSnapshotFaultMode)config.internal.diskIOSnapshotFaultMode;
+    diskIOCollector_.attachDebugSnapshots = config.internal.attachDiskIOSnapshots;
     [BugsnagPerformanceCrossTalkAPI.sharedInstance configure:config];
 }
 
@@ -391,6 +396,17 @@ NSArray<Task> *BugsnagPerformanceImpl::buildInitialTasks() noexcept {
     return @[
         ^bool() {
             [blockThis->pluginManager_ startPlugins];
+            return true;
+        },
+        ^bool() {
+            // Warm the one-time filesystem block-size lookup off the main
+            // thread. The first NSTemporaryDirectory() + statfs() call costs
+            // ~1-2 ms cold; without this it would land on whichever thread
+            // starts the first disk-eligible span, which can be the main
+            // thread during app launch.
+            if (blockThis->configuration_.enabledMetrics.disk) {
+                (void)BSGDiskBlockSizeBytes();
+            }
             return true;
         },
     ];
