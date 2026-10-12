@@ -150,8 +150,8 @@ Feature: Automatic network instrumentation spans
     Then the trace "Content-Type" header equals "application/json"
     * every span field "name" equals "[HTTP/GET]"
     * every span field "kind" equals 3
-    * a span string attribute "http.url" equals "https://www.bugsnag.com"
-    * a span string attribute "http.url" equals "https://www.bugsnag.com/changed"
+    * a span string attribute "http.url" equals "https://bugsnag.com"
+    * a span string attribute "http.url" equals "https://bugsnag.com/changed"
 
   Scenario: AutoInstrumentNullNetworkCallbackScenario
     Given I run "AutoInstrumentNullNetworkCallbackScenario"
@@ -162,7 +162,7 @@ Feature: Automatic network instrumentation spans
     Then the trace "Content-Type" header equals "application/json"
     * a span field "name" equals "[HTTP/GET]"
     * every span field "kind" equals 3
-    * a span string attribute "http.url" equals "https://www.bugsnag.com"
+    * a span string attribute "http.url" equals "https://bugsnag.com"
 
   Scenario: AutoInstrumentNetworkEarlyCallbackScenario
     Given I run "AutoInstrumentNetworkEarlyCallbackScenario"
@@ -175,8 +175,8 @@ Feature: Automatic network instrumentation spans
     * every span field "kind" equals 3
     * every span field "startTimeUnixNano" matches the regex "^[0-9]+$"
     * every span field "endTimeUnixNano" matches the regex "^[0-9]+$"
-    * a span string attribute "http.url" equals "https://www.bugsnag.com"
-    * a span string attribute "http.url" equals "https://www.bugsnag.com/changed"
+    * a span string attribute "http.url" equals "https://bugsnag.com"
+    * a span string attribute "http.url" equals "https://bugsnag.com/changed"
 
   Scenario: AutoInstrumentNetworkTracePropagationScenario: Allow All
     Given I load scenario "AutoInstrumentNetworkTracePropagationScenario"

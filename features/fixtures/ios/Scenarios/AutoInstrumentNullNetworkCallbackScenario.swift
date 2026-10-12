@@ -26,6 +26,6 @@ class AutoInstrumentNullNetworkCallbackScenario: Scenario {
     override func run() {
         // Force the automatic spans to be sent in a separate trace that we will discard
         waitForCurrentBatch()
-        query(url: URL(string: "https://www.bugsnag.com")!)
+        query(url: URL(string: "https://bugsnag.com")!)
     }
 }

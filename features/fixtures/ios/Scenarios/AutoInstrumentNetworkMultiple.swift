@@ -35,6 +35,6 @@ class AutoInstrumentNetworkMultiple: Scenario {
         query(url: "https://redhat.com")
         query(url: "https://ubuntu.com")
         query(url: "https://kubernetes.io")
-        query(url: "https://www.bugsnag.com")
+        query(url: "https://bugsnag.com")
     }
 }

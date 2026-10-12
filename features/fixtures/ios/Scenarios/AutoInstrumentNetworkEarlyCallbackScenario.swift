@@ -12,8 +12,8 @@ class AutoInstrumentNetworkEarlyCallbackScenario: Scenario {
     
     override func postLoad() {
         super.postLoad()
-        query(url: URL(string: "https://www.bugsnag.com")!)
-        query(url: URL(string: "https://www.bugsnag.com/changeme")!)
+        query(url: URL(string: "https://bugsnag.com")!)
+        query(url: URL(string: "https://bugsnag.com/changeme")!)
         query(url: URL(string: "https://google.com")!)
         
         // Wait for the query to finish before starting bugsnag
