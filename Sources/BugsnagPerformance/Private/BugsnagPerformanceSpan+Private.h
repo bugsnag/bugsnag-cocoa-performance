@@ -64,6 +64,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readonly) BOOL isBlocked;
 @property (nonatomic,readonly) NSUInteger attributeCountLimit;
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
+/// The span starts at process launch, when the kernel disk-IO counters are zero.
+@property (nonatomic,readwrite) BOOL diskIOBaselineIsProcessStart;
 @property (nonatomic) MetricsOptions metricsOptions;
 @property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
 @property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;

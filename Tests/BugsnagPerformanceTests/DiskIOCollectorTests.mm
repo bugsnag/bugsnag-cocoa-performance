@@ -224,6 +224,50 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertNil([collector onSpanEnd:span], @"after abandon there is nothing to compute from");
 }
 
+- (void)testProcessStartSpanUsesZeroBaselineAtSpanStart {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() - 1.0;
+
+    [collector onProcessStartSpan:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+    XCTAssertEqual(attrs[BSGDiskIODebugAttributeKeyReadStart].longLongValue, 0);
+    XCTAssertEqual(attrs[BSGDiskIODebugAttributeKeyWriteStart].longLongValue, 0);
+    XCTAssertEqual(attrs[BSGDiskIOAttributeKeyIOPSTotal].longLongValue,
+                   attrs[BSGDiskIOAttributeKeyIOPSRead].longLongValue + attrs[BSGDiskIOAttributeKeyIOPSWrite].longLongValue);
+    [collector abandonSpan:span];
+}
+
+- (void)testProcessStartSpanDoesNotOverwriteExistingStart {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() - 1.0;
+
+    [collector onSpanStart:span];
+    [collector onProcessStartSpan:span];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+    XCTAssertGreaterThan(attrs[BSGDiskIODebugAttributeKeyReadStart].longLongValue +
+                         attrs[BSGDiskIODebugAttributeKeyWriteStart].longLongValue, 0);
+    [collector abandonSpan:span];
+}
+
+- (void)testProcessStartSpanWithFutureStartIsIgnored {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() + 10.0;
+
+    [collector onProcessStartSpan:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+    XCTAssertNil([collector onSpanEnd:span]);
+}
+
 - (void)testEndWithoutMatchingStartReturnsNil {
     BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
     BugsnagPerformanceSpan *span = makeSpan();

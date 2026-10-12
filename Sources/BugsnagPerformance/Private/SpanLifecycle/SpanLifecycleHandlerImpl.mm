@@ -44,6 +44,9 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     // This may run more than once for a blocked span whose end time a span
     // condition later extends; each run recomputes over the current window.
     if (shouldSampleDiskIO(span)) {
+        if (span.diskIOBaselineIsProcessStart) {
+            [diskIOCollector_ onProcessStartSpan:span];
+        }
         NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
         if (diskAttributes.count > 0) {
             [span forceMutate:^{

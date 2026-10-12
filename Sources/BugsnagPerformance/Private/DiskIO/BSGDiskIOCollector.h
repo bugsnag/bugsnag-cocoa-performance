@@ -69,6 +69,12 @@ typedef NS_OPTIONS(NSUInteger, BSGDiskIOSnapshotFaultMode) {
 /// source is unavailable — the matching -onSpanEnd: will then return nil.
 - (void)onSpanStart:(BugsnagPerformanceSpan *)span;
 
+/// Store a zero-byte start snapshot at the span's start time for a span that
+/// began at process launch (before the SDK could take a real snapshot). The
+/// kernel counters are cumulative from process creation, so zero is exact.
+/// No-op if the span already has a start snapshot.
+- (void)onProcessStartSpan:(BugsnagPerformanceSpan *)span;
+
 /// Capture the end snapshot immediately, look up the start snapshot under a
 /// lock, and compute the IOPS metrics. The start snapshot is kept so that a
 /// later end (a span condition extending the end time) recomputes over the

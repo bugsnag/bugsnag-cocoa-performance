@@ -54,6 +54,25 @@ NSString *const BSGDiskIODebugAttributeKeyWriteEnd = @"bugsnag.internal.disk_io.
     _startSnapshots[(uint64_t)span.spanId] = snapshot;
 }
 
+- (void)onProcessStartSpan:(BugsnagPerformanceSpan *)span {
+    if (span == nil) {
+        return;
+    }
+    if ((self.faultMode & BSGDiskIOSnapshotFaultModeFailAtStart) != 0) {
+        return;
+    }
+    // Map the wall-clock start onto the monotonic clock the end snapshot uses.
+    double elapsed = CFAbsoluteTimeGetCurrent() - span.startAbsTime;
+    if (!(elapsed > 0)) {
+        return;
+    }
+    BSGDiskIOSnapshot snapshot;
+    snapshot.timestamp = BSGDiskIOMonotonicSeconds() - elapsed;
+    snapshot.valid = true;
+    std::lock_guard<std::mutex> lock(_mutex);
+    _startSnapshots.emplace((uint64_t)span.spanId, snapshot);
+}
+
 - (NSDictionary<NSString *, NSNumber *> *)onSpanEnd:(BugsnagPerformanceSpan *)span {
     if (span == nil) {
         return nil;
