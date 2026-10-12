@@ -151,11 +151,9 @@ SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span
 
 bool
 SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept {
-    // Disk I/O collection is strictly gated behind BugsnagPerformance.start():
-    // before start, configure() has not applied the user's enabledMetrics yet
-    // (the pre-configuration default enables everything), and nothing may be
-    // collected when Bugsnag is never started.
-    if (!isStarted_ || !enabledMetrics_.disk) {
+    // Before configure() this is the all-enabled default, so early spans collect;
+    // reprocessEarlySpans() strips the result if the user's config disables disk.
+    if (!enabledMetrics_.disk) {
         return false;
     }
     switch (span.metricsOptions.disk) {
@@ -266,6 +264,13 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
             [span abortUnconditionally];
             onSpanDiscarded_(span);
             continue;
+        }
+        if (!shouldSampleDiskIO(span)) {
+            [span forceMutate:^() {
+                [span internalSetAttribute:BSGDiskIOAttributeKeyIOPSRead withValue:nil];
+                [span internalSetAttribute:BSGDiskIOAttributeKeyIOPSWrite withValue:nil];
+                [span internalSetAttribute:BSGDiskIOAttributeKeyIOPSTotal withValue:nil];
+            }];
         }
         [span forceMutate:^() {
             callOnSpanEndCallbacks(span);

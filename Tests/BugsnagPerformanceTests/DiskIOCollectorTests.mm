@@ -462,8 +462,8 @@ static BugsnagPerformanceSpan *makeSpan() {
 
 #pragma mark - Lifecycle gating
 
-// Asserts the SpanLifecycleHandlerImpl gating: disk IOPS attributes must never
-// be collected or applied unless BugsnagPerformance has been started AND
+// Asserts the SpanLifecycleHandlerImpl gating: disk IOPS attributes are
+// collected for early (pre-start) spans and are only kept when
 // enabledMetrics.disk is on.
 @interface DiskIOLifecycleGatingTests : XCTestCase
 @end
@@ -518,19 +518,36 @@ static BugsnagPerformanceConfiguration *configWithDiskEnabled(BOOL diskEnabled) 
     handler_ = f.handler;
 }
 
-- (void)testNoDiskCollectionWhenNeverStarted {
+- (void)testDiskCollectionBeforeStartWhenEnabled {
     [self setUpHandler];
-    // Even with disk metrics enabled in the configuration, nothing may be
-    // collected before start() — this covers the pre-main/early-span window
-    // and the "Bugsnag is never started" case.
+    // Spans started and ended before start() (e.g. "Before start") must
+    // still carry disk IOPS, like they carry CPU and memory.
     handler_->configure(configWithDiskEnabled(YES));
 
     BugsnagPerformanceSpan *span = makeSpan();
     handler_->onSpanStarted(span, SpanOptions());
-    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
 
     [NSThread sleepForTimeInterval:0.01];
     handler_->onSpanEndSet(span);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+}
+
+- (void)testEarlySpanDiskAttributesStrippedWhenConfigDisablesDisk {
+    [self setUpHandler];
+    // Before configure() the all-enabled default applies, so the span collects.
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    handler_->onSpanClosed(span);
+
+    handler_->configure(configWithDiskEnabled(NO));
+    handler_->preStartSetup();
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
