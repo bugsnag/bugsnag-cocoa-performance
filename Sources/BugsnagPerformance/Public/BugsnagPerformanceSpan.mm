@@ -371,6 +371,7 @@ static CFAbsoluteTime currentTimeIfUnset(CFAbsoluteTime time) {
         copy.isAppSessionSpan = self.isAppSessionSpan;
         copy.wasStartOrEndTimeProvided = self.wasStartOrEndTimeProvided;
         copy.diskIOBaselineIsProcessStart = self.diskIOBaselineIsProcessStart;
+        copy.earlyDiskIOAttributes = self.earlyDiskIOAttributes;
         copy.state = self.state;
         copy.startClock = self.startClock;
         copy.onDumped = self.onDumped;

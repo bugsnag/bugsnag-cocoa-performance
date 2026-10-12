@@ -66,6 +66,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,readwrite) BOOL wasStartOrEndTimeProvided;
 /// The span starts at process launch, when the kernel disk-IO counters are zero.
 @property (nonatomic,readwrite) BOOL diskIOBaselineIsProcessStart;
+/// Disk IOPS computed for a span that started and ended before BugsnagPerformance.start(), while the configuration was
+/// not yet known. Held here (never sent) until the early spans are reprocessed after configure; attached only if
+/// enabledMetrics.disk is on, otherwise dropped. Atomic: written on the ending thread, read on the starting thread.
+@property (atomic, copy, nullable) NSDictionary<NSString *, NSNumber *> *earlyDiskIOAttributes;
 @property (nonatomic) MetricsOptions metricsOptions;
 @property (nonatomic, strong) FrameMetricsSnapshot *startFramerateSnapshot;
 @property (nonatomic, strong) FrameMetricsSnapshot *endFramerateSnapshot;
