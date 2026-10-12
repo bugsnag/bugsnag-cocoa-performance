@@ -148,8 +148,8 @@ Feature: Manual creation of spans
     Then the trace "Content-Type" header equals "application/json"
     * every span field "name" equals "[HTTP/GET]"
     * every span field "kind" equals 3
-    * a span string attribute "http.url" equals "https://bugsnag.com"
-    * a span string attribute "http.url" equals "https://bugsnag.com/changed"
+    * a span string attribute "http.url" equals "https://www.bugsnag.com"
+    * a span string attribute "http.url" equals "https://www.bugsnag.com/changed"
 
   Scenario: Manually start a network span with callback set to nil
     Given I run "ManualNetworkSpanCallbackSetToNilScenario"
