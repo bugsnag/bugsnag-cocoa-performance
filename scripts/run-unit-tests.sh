@@ -143,7 +143,7 @@ rm -rf DerivedData
 echo "--- Test"
 # Parallel testing off: cloned simulators fail to launch the test runner
 # on old runtimes in CI ("Test runner never began executing tests", INFRA-6183).
-XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult -parallel-testing-enabled NO -maximum-parallel-testing-workers 1"
+XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO"
 
 create_dedicated_simulator
 
