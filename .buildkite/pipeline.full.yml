@@ -69,7 +69,7 @@ steps:
           - "IOS_14"
         depends_on:
           - "ios_fixture"
-        timeout_in_minutes: 75
+        timeout_in_minutes: 90
         agents:
           queue: "opensource"
         plugins:
@@ -210,7 +210,7 @@ steps:
           - "IOS_14"
         depends_on:
           - "ios_fixture_swizzling_premain"
-        timeout_in_minutes: 75
+        timeout_in_minutes: 90
         agents:
           queue: "opensource"
         plugins:
