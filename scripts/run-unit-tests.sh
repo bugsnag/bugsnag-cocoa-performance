@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Runs static analysis and unit tests for the Bugsnag Cocoa SDK.
+# Runs static analysis and unit tests for the Bugsnag Cocoa Performance SDK.
 # Usage: ./scripts/run-unit-tests.sh [PLATFORM=..] [OS=..] [DEVICE=..] [DESTINATION=..]
 
 set -eu
@@ -141,12 +141,9 @@ rm -rf DerivedData
 
 # --- Test ------------------------------------------------------------------
 echo "--- Test"
+# Parallel testing off: cloned simulators fail to launch the test runner
+# on old runtimes in CI ("Test runner never began executing tests", INFRA-6183).
 XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult -parallel-testing-enabled NO -maximum-parallel-testing-workers 1"
-
-if { [ "$PLATFORM" = "iOS" ] || [ "$PLATFORM" = "tvOS" ]; } && [ "${OS#9.}" != "$OS" ]; then
-  # BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
-  XCODEBUILD_EXTRA_ARGS="$XCODEBUILD_EXTRA_ARGS -skip-testing:BugsnagNetworkRequestPlugin-${PLATFORM}Tests"
-fi
 
 create_dedicated_simulator
 
