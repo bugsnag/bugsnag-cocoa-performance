@@ -106,11 +106,11 @@ bool
 SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
-            return enabledMetrics_.rendering;
+            return renderingMetricsEnabled_.load(std::memory_order_relaxed);
         case BSGTriStateNo:
             return false;
         case BSGTriStateUnset:
-            return enabledMetrics_.rendering &&
+            return renderingMetricsEnabled_.load(std::memory_order_relaxed) &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }

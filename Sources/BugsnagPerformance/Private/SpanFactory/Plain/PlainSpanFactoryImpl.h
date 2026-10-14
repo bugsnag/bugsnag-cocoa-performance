@@ -11,6 +11,7 @@
 #import "../../SpanAttributesProvider.h"
 #import "../../Sampler.h"
 #import "../../SpanStackingHandler.h"
+#import <atomic>
 
 namespace bugsnag {
 
@@ -41,7 +42,7 @@ public:
     }
     
     void setAttributeCountLimit(NSUInteger limit) noexcept {
-        attributeCountLimit_ = limit;
+        attributeCountLimit_.store(limit, std::memory_order_relaxed);
     }
     
 private:
@@ -49,7 +50,7 @@ private:
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
     PlainSpanFactoryCallbacks *callbacks_;
-    NSUInteger attributeCountLimit_{128};
+    std::atomic<NSUInteger> attributeCountLimit_{128};
     
     PlainSpanFactoryImpl() = delete;
 };
