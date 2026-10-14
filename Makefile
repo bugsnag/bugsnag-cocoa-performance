@@ -2,9 +2,9 @@
 # Bugsnag Performance Makefile
 #
 # This file contains rules for building, testing and releasing the Bugsnag
-# Cocoa performance framework. It is intended to be used by Bugsnag
-# developers and automated systems. It is NOT intended for use by end-users
-# wishing to use the framework. For that please deploy Bugsnag in your
+# Cocoa performance framework.  It is intended to be used by Bugsnag
+# developers and automated systems.  It is NOT intended for use by end-users
+# wishing to use the framework.  For that please deploy Bugsnag in your
 # application using one of the supported methods: Cocoapods, Carthage etc.
 #
 #--------------------------------------------------------------------------
@@ -42,17 +42,6 @@ else
  endif
  BUILD_ONLY_FLAGS=-sdk $(SDK) -destination "$(DESTINATION)" -configuration $(TEST_CONFIGURATION)
 endif
-
-# Disk IOPS unit tests fail to start on iOS 14.x simulators. Skip them there only.
-SKIP_TESTS?=
-ifeq ($(PLATFORM),iOS)
- ifneq (,$(filter 14 14.%,$(OS)))
-  SKIP_TESTS=-skip-testing:BugsnagPerformance-iOSTests/DiskIOCollectorTests \
-   -skip-testing:BugsnagPerformance-iOSTests/DiskIOMetricsTests \
-   -skip-testing:BugsnagPerformance-iOSTests/DiskIOSnapshotTests
- endif
-endif
-
 XCODEBUILD=set -o pipefail && xcodebuild
 PRESET_VERSION=$(shell cat VERSION)
 ifneq ($(strip $(shell which xcpretty)),)
@@ -135,7 +124,7 @@ endif
 test: ## Run unit tests
 	@sw_vers
 	@$(XCODEBUILD) -version
-	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(SKIP_TESTS) $(FORMATTER)
+	@$(XCODEBUILD) $(BUILD_FLAGS) $(BUILD_ONLY_FLAGS) test $(FORMATTER)
 
 test-fixture: ## Build the end-to-end test fixture
 	@./features/fixtures/ios/build.sh
