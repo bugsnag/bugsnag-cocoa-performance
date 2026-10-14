@@ -141,7 +141,7 @@ rm -rf DerivedData
 
 # --- Test ------------------------------------------------------------------
 echo "--- Test"
-XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult"
+XCODEBUILD_EXTRA_ARGS="-resultBundlePath $xcresult -parallel-testing-enabled NO -maximum-parallel-testing-workers 1"
 
 if { [ "$PLATFORM" = "iOS" ] || [ "$PLATFORM" = "tvOS" ]; } && [ "${OS#9.}" != "$OS" ]; then
   # BugsnagNetworkRequestPlugin requires iOS/tvOS 10 or later
