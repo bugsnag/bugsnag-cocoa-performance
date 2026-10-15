@@ -11,7 +11,7 @@ steps:
       - label: ":xcode_simulator: iOS 18 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=18.4 DEVICE=\"iPhone 16\""
         plugins:
           "artifacts#v1.9.3":
             upload:
@@ -20,7 +20,7 @@ steps:
       - label: ":xcode_simulator: iOS 17 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE=\"iPhone 15\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=17.5 DEVICE=\"iPhone 15\""
         plugins:
           "artifacts#v1.9.3":
             upload:
@@ -29,7 +29,7 @@ steps:
       - label: ":xcode_simulator: iOS 16 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE=\"iPhone 14\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=16.4 DEVICE=\"iPhone 14\""
         plugins:
           "artifacts#v1.9.3":
             upload:
@@ -38,7 +38,7 @@ steps:
       - label: ":xcode_simulator: iOS 15 Unit tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE=\"iPhone 13\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=15.5 DEVICE=\"iPhone 13\""
         plugins:
           "artifacts#v1.9.3":
             upload:

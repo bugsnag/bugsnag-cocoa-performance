@@ -130,7 +130,7 @@ steps:
       - label: ":xcode_simulator: iOS 26 Unit Tests"
         timeout_in_minutes: 10
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1 DEVICE=\"iPhone 17\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=26.1 DEVICE=\"iPhone 17\""
         env:
           XCODE_VERSION: "26.1.1"
         plugins:
@@ -143,7 +143,7 @@ steps:
         agents:
           queue: "macos-12-arm"
         commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7 XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
+          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7"
         env:
           XCODE_VERSION: "14"
         plugins:
