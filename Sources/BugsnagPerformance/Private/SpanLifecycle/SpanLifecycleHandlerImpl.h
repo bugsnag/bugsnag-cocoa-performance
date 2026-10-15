@@ -89,6 +89,9 @@ private:
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
     bool shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept;
+    bool isDiskIOEligible(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleDiskIOBeforeStart(BugsnagPerformanceSpan *span) noexcept;
+    void applyEarlyDiskIO(BugsnagPerformanceSpan *span) noexcept;
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) noexcept;

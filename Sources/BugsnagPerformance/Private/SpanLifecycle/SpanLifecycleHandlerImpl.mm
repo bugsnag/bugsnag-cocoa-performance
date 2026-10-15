@@ -22,7 +22,7 @@ SpanLifecycleHandlerImpl::onSpanStarted(BugsnagPerformanceSpan *span, const Span
     if (shouldInstrumentRendering(span)) {
         span.startFramerateSnapshot = [frameMetricsCollector_ currentSnapshot];
     }
-    if (shouldSampleDiskIO(span)) {
+    if (shouldSampleDiskIO(span) || shouldSampleDiskIOBeforeStart(span)) {
         [diskIOCollector_ onSpanStart:span];
     }
     store_->addNewSpan(span, options.makeCurrentContext);
@@ -44,12 +44,22 @@ SpanLifecycleHandlerImpl::onSpanEndSet(BugsnagPerformanceSpan *span) noexcept {
     // This may run more than once for a blocked span whose end time a span
     // condition later extends; each run recomputes over the current window.
     if (shouldSampleDiskIO(span)) {
+        if (span.diskIOBaselineIsProcessStart) {
+            [diskIOCollector_ onProcessStartSpan:span];
+        }
         NSDictionary *diskAttributes = [diskIOCollector_ onSpanEnd:span];
         if (diskAttributes.count > 0) {
             [span forceMutate:^{
                 [span internalSetMultipleAttributes:diskAttributes];
             }];
         }
+    } else if (shouldSampleDiskIOBeforeStart(span)) {
+        // A span that ends before start() (for example a custom span created in
+        // didFinishLaunching before BugsnagPerformance.start): the end snapshot
+        // must be taken now, but whether disk metrics are enabled is not known
+        // until configure. Hold the result on the span; reprocessEarlySpans
+        // attaches it only if enabledMetrics.disk is on.
+        span.earlyDiskIOAttributes = [diskIOCollector_ onSpanEnd:span];
     }
     // Internal SDK bookkeeping that must happen as soon as the end time is set,
     // Before sampling or user on-span-end callbacks can discard the span.
@@ -148,13 +158,52 @@ SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span
 
 bool
 SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept {
-    // Disk I/O collection is strictly gated behind BugsnagPerformance.start():
-    // before start, configure() has not applied the user's enabledMetrics yet
-    // (the pre-configuration default enables everything), and nothing may be
-    // collected when Bugsnag is never started.
+    // After BugsnagPerformance.start(), disk I/O is collected only when the
+    // user's configuration enables it. Spans that start before start() are
+    // handled by shouldSampleDiskIOBeforeStart.
     if (!isStarted_ || !enabledMetrics_.disk) {
         return false;
     }
+    return isDiskIOEligible(span);
+}
+
+bool
+SpanLifecycleHandlerImpl::shouldSampleDiskIOBeforeStart(BugsnagPerformanceSpan *span) noexcept {
+    // Before start(), configure() has not applied the user's enabledMetrics yet,
+    // so an eligible span's snapshots are taken speculatively (as rendering
+    // metrics are): a custom span started during launch can only get its disk
+    // IOPS if its start counters are read when it starts. The readings stay in
+    // memory and are never attached or sent unless the SDK starts with
+    // enabledMetrics.disk on (applyEarlyDiskIO); otherwise they are dropped.
+    //
+    // A span whose start time was supplied by the caller is excluded: a
+    // snapshot taken now does not describe its window. This also keeps the
+    // app-start span on its process-launch baseline (onProcessStartSpan).
+    if (isStarted_ || span.wasStartOrEndTimeProvided) {
+        return false;
+    }
+    return isDiskIOEligible(span);
+}
+
+void
+SpanLifecycleHandlerImpl::applyEarlyDiskIO(BugsnagPerformanceSpan *span) noexcept {
+    NSDictionary *attributes = span.earlyDiskIOAttributes;
+    if (attributes == nil) {
+        return;
+    }
+    span.earlyDiskIOAttributes = nil;
+    // configure() has run: attach only if the user enabled disk metrics and the
+    // span is still eligible (its end time was not supplied by the caller).
+    if (!enabledMetrics_.disk || !isDiskIOEligible(span) || attributes.count == 0) {
+        return;
+    }
+    [span forceMutate:^{
+        [span internalSetMultipleAttributes:attributes];
+    }];
+}
+
+bool
+SpanLifecycleHandlerImpl::isDiskIOEligible(BugsnagPerformanceSpan *span) noexcept {
     switch (span.metricsOptions.disk) {
         case BSGTriStateYes:
             return true;
@@ -260,10 +309,15 @@ SpanLifecycleHandlerImpl::reprocessEarlySpans() noexcept {
             continue;
         }
         if (!sampler_->sampled(span)) {
+            span.earlyDiskIOAttributes = nil;
             [span abortUnconditionally];
             onSpanDiscarded_(span);
             continue;
         }
+        // Before the user's callbacks, as for spans ending after start: the
+        // disk IOPS of a span that ended before start() are attached now that
+        // the configuration is known.
+        applyEarlyDiskIO(span);
         [span forceMutate:^() {
             callOnSpanEndCallbacks(span);
         }];

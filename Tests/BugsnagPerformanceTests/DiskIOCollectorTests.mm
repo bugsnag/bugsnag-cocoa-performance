@@ -224,6 +224,50 @@ static BugsnagPerformanceSpan *makeSpan() {
     XCTAssertNil([collector onSpanEnd:span], @"after abandon there is nothing to compute from");
 }
 
+- (void)testProcessStartSpanUsesZeroBaselineAtSpanStart {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() - 1.0;
+
+    [collector onProcessStartSpan:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)1);
+
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+    XCTAssertEqual(attrs[BSGDiskIODebugAttributeKeyReadStart].longLongValue, 0);
+    XCTAssertEqual(attrs[BSGDiskIODebugAttributeKeyWriteStart].longLongValue, 0);
+    XCTAssertEqual(attrs[BSGDiskIOAttributeKeyIOPSTotal].longLongValue,
+                   attrs[BSGDiskIOAttributeKeyIOPSRead].longLongValue + attrs[BSGDiskIOAttributeKeyIOPSWrite].longLongValue);
+    [collector abandonSpan:span];
+}
+
+- (void)testProcessStartSpanDoesNotOverwriteExistingStart {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    collector.attachDebugSnapshots = YES;
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() - 1.0;
+
+    [collector onSpanStart:span];
+    [collector onProcessStartSpan:span];
+    [NSThread sleepForTimeInterval:0.01];
+    NSDictionary<NSString *, NSNumber *> *attrs = [collector onSpanEnd:span];
+    XCTAssertNotNil(attrs);
+    XCTAssertGreaterThan(attrs[BSGDiskIODebugAttributeKeyReadStart].longLongValue +
+                         attrs[BSGDiskIODebugAttributeKeyWriteStart].longLongValue, 0);
+    [collector abandonSpan:span];
+}
+
+- (void)testProcessStartSpanWithFutureStartIsIgnored {
+    BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.startAbsTime = CFAbsoluteTimeGetCurrent() + 10.0;
+
+    [collector onProcessStartSpan:span];
+    XCTAssertEqual(collector.pendingSpanCount, (NSUInteger)0);
+    XCTAssertNil([collector onSpanEnd:span]);
+}
+
 - (void)testEndWithoutMatchingStartReturnsNil {
     BSGDiskIOCollector *collector = [BSGDiskIOCollector new];
     BugsnagPerformanceSpan *span = makeSpan();
@@ -418,9 +462,11 @@ static BugsnagPerformanceSpan *makeSpan() {
 
 #pragma mark - Lifecycle gating
 
-// Asserts the SpanLifecycleHandlerImpl gating: disk IOPS attributes must never
-// be collected or applied unless BugsnagPerformance has been started AND
-// enabledMetrics.disk is on.
+// Asserts the SpanLifecycleHandlerImpl gating: disk IOPS attributes are never
+// applied unless BugsnagPerformance has been configured with enabledMetrics.disk
+// on. Before start(), eligible spans take their snapshots speculatively (the
+// configuration is not known yet); the results are attached when the early
+// spans are reprocessed after configure, and dropped if disk metrics are off.
 @interface DiskIOLifecycleGatingTests : XCTestCase
 @end
 
@@ -474,22 +520,108 @@ static BugsnagPerformanceConfiguration *configWithDiskEnabled(BOOL diskEnabled) 
     handler_ = f.handler;
 }
 
-- (void)testNoDiskCollectionWhenNeverStarted {
+// A custom span started and ended before start() (as a span created in
+// didFinishLaunching before BugsnagPerformance.start): the snapshots are taken
+// when it starts and ends, nothing is attached before configure, and the three
+// attributes are attached when the early spans are reprocessed with disk on.
+- (void)testSpanEndedBeforeStartGetsDiskIOPSWhenDiskEnabled {
     [self setUpHandler];
-    // Even with disk metrics enabled in the configuration, nothing may be
-    // collected before start() — this covers the pre-main/early-span window
-    // and the "Bugsnag is never started" case.
-    handler_->configure(configWithDiskEnabled(YES));
 
     BugsnagPerformanceSpan *span = makeSpan();
     handler_->onSpanStarted(span, SpanOptions());
-    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1, @"start snapshot taken speculatively before start()");
 
     [NSThread sleepForTimeInterval:0.01];
+    [span end];
     handler_->onSpanEndSet(span);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"], @"nothing attached before the configuration is known");
+    XCTAssertNotNil(span.earlyDiskIOAttributes);
+    handler_->onSpanClosed(span);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0, @"start snapshot released once the span is closed");
+
+    handler_->configure(configWithDiskEnabled(YES));
+    handler_->preStartSetup();
+    handler_->start();
+
+    NSNumber *read = [span getAttribute:@"bugsnag.system.disk.iops_read"];
+    NSNumber *write = [span getAttribute:@"bugsnag.system.disk.iops_write"];
+    NSNumber *total = [span getAttribute:@"bugsnag.system.disk.iops_total"];
+    XCTAssertNotNil(read);
+    XCTAssertNotNil(write);
+    XCTAssertNotNil(total);
+    XCTAssertEqual(total.longLongValue, read.longLongValue + write.longLongValue);
+    XCTAssertNil(span.earlyDiskIOAttributes, @"held result cleared once applied");
+}
+
+- (void)testSpanEndedBeforeStartGetsNoDiskIOPSWhenDiskDisabled {
+    [self setUpHandler];
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    handler_->onSpanClosed(span);
+
+    handler_->configure(configWithDiskEnabled(NO));
+    handler_->preStartSetup();
+    handler_->start();
+
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
     XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    XCTAssertNil(span.earlyDiskIOAttributes, @"held result dropped when disk metrics are off");
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testNothingAttachedWhenNeverStarted {
+    [self setUpHandler];
+    // Bugsnag is never started: the readings stay in memory and nothing is
+    // attached to the span; the start snapshot is released when it closes.
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    handler_->onSpanClosed(span);
+
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testSpanStartedBeforeStartAndEndedAfterUsesItsEarlySnapshot {
+    [self setUpHandler];
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)1);
+
+    handler_->configure(configWithDiskEnabled(YES));
+    handler_->preStartSetup();
+    handler_->start();
+
+    [NSThread sleepForTimeInterval:0.01];
+    [span end];
+    handler_->onSpanEndSet(span);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_read"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_write"]);
+    XCTAssertNotNil([span getAttribute:@"bugsnag.system.disk.iops_total"]);
+    handler_->onSpanClosed(span);
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
+}
+
+- (void)testNoEarlySnapshotWhenStartTimeWasProvided {
+    // A caller-supplied start time (as the app-start span has) is never given a
+    // speculative snapshot: it would not describe the span's window, and the
+    // app-start span must keep its process-launch baseline.
+    [self setUpHandler];
+
+    BugsnagPerformanceSpan *span = makeSpan();
+    span.wasStartOrEndTimeProvided = YES;
+    handler_->onSpanStarted(span, SpanOptions());
+    XCTAssertEqual(collector_.pendingSpanCount, (NSUInteger)0);
 }
 
 - (void)testNoDiskCollectionWhenDiskMetricsDisabled {

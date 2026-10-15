@@ -17,9 +17,9 @@ Feature: Disk IOPS
   # ROAD 2233 - Scenario 1
   # SDK emits all 3 disk IOPS attributes as IntValue on eligible spans.
   #
-  # iOS app_start spans begin BEFORE BugsnagPerformance.start() (pre-main),
-  # when no start snapshot can exist, so they never carry disk attributes by
-  # design and no app_start row is run.
+  # The [AppStart/...] span starts at process launch, before start(); it uses
+  # the kernel's zero counters at process creation as its baseline. Its
+  # pre-main / post-main / UI-init phase spans carry no disk attributes.
   # ==========================================================================
   Scenario Outline: SDK emits all 3 disk IOPS attributes as IntValue on eligible spans
     Given I load scenario "DiskIOPSScenario"
@@ -150,7 +150,8 @@ Feature: Disk IOPS
   # (the achievable form of "ends while in background" - see constraint above).
   # The "starts in background, ends after foregrounding" rows are omitted: the
   # app never returns to the foreground on the device farm (see above).
-  Scenario Outline: SDK captures disk IOPS for a span that starts and ends in the background
+   Scenario Outline: SDK captures disk IOPS for a span that starts and ends in the background
+   # "starts_in_background" = span starts in background, ends after foregrounding.
     Given I load scenario "DiskIOPSScenario"
     And I configure bugsnag "diskMetrics" to "true"
     And I configure scenario "run_delay" to "0"
@@ -169,7 +170,9 @@ Feature: Disk IOPS
     Examples:
       | platform | span_type   | transition           | span_name             |
       | ios      | custom      | ends_in_background   | DiskIopsCustom        |
+       | ios      | custom      | starts_in_background | DiskIopsCustom        |
       | ios      | app_session | ends_in_background   | [AppSession/DiskIops] |
+       | ios      | app_session | starts_in_background | [AppSession/DiskIops] |
 
   # ==========================================================================
   # ROAD 2233 - Scenario 10

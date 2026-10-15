@@ -45,6 +45,7 @@ steps:
               - "logs/*"
 
       - label: ":xcode_simulator: iOS 14 Unit tests"
+        skip: "iOS 14.5 test runner hangs on macOS 12 agents - INFRA-6183"
         timeout_in_minutes: 20
         commands:
           - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=14.5 DEVICE=\"iPhone 12\""
@@ -68,7 +69,7 @@ steps:
           - "IOS_14"
         depends_on:
           - "ios_fixture"
-        timeout_in_minutes: 75
+        timeout_in_minutes: 90
         agents:
           queue: "opensource"
         plugins:
@@ -209,7 +210,7 @@ steps:
           - "IOS_14"
         depends_on:
           - "ios_fixture_swizzling_premain"
-        timeout_in_minutes: 75
+        timeout_in_minutes: 90
         agents:
           queue: "opensource"
         plugins:
