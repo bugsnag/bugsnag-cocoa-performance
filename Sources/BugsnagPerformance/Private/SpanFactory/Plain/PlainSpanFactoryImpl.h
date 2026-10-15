@@ -49,6 +49,8 @@ private:
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    // Set once in the Tracer constructor, before any span can start; never reassigned,
+    // so it does not need the same protection as attributeCountLimit_.
     PlainSpanFactoryCallbacks *callbacks_;
     std::atomic<NSUInteger> attributeCountLimit_{128};
     
