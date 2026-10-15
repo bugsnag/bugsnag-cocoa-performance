@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## 4.0.0 (2026-09-18)
 
 ### Enhancements
 
