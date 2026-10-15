@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <stdatomic.h>
 #import "BSGPrioritizedStore.h"
 
 @interface BSGPrioritizedStoreTests: XCTestCase
@@ -255,7 +256,8 @@
     const NSUInteger objectCount = 2000;
     const NSUInteger readerCount = 4;
 
-    __block volatile BOOL writerFinished = NO;
+    // atomic (not volatile): written by the writer, read by the readers.
+    __block atomic_bool writerFinished = false;
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
 
@@ -269,13 +271,15 @@
             }
             [store addObject:[NSString stringWithFormat:@"%lu", (unsigned long)i] priority:priority];
         }
-        writerFinished = YES;
+        atomic_store_explicit(&writerFinished, true, memory_order_release);
     });
 
     for (NSUInteger r = 0; r < readerCount; r++) {
         dispatch_group_async(group, queue, ^{
             NSUInteger lastCount = 0;
-            while (!writerFinished) {
+            // do-while: every reader reads at least once, even if the writer
+            // finishes before this block is scheduled.
+            do {
                 NSArray<NSString *> *snapshot = store.objects;
                 NSUInteger seen = 0;
                 for (NSString *obj in snapshot) {
@@ -286,7 +290,7 @@
                 // Snapshots only ever grow.
                 XCTAssertGreaterThanOrEqual(snapshot.count, lastCount);
                 lastCount = snapshot.count;
-            }
+            } while (!atomic_load_explicit(&writerFinished, memory_order_acquire));
         });
     }
 

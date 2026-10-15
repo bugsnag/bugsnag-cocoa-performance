@@ -242,11 +242,33 @@ static BugsnagPerformanceConfiguration *configWithRendering(BOOL rendering) {
 
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+    dispatch_semaphore_t workersReady = dispatch_semaphore_create(0);
     auto handler = handler_;
     auto startCallbacks = self.onSpanStartCallbacks;
 
-    // "configure" thread
-    dispatch_group_async(group, queue, ^{
+    // span threads
+    for (int t = 0; t < spanThreads; t++) {
+        dispatch_group_async(group, queue, ^{
+            dispatch_semaphore_signal(workersReady);  // check in
+            // do-while: each worker runs at least one iteration.
+            do {
+                @autoreleasepool {
+                    auto span = createSpan(BSGTriStateUnset);
+                    handler->onSpanStarted(span, spanOptions());
+                    (*spansStarted)++;
+                }
+            } while (!configureFinished->load());
+        });
+    }
+
+    // "configure" thread: a dedicated thread, not the GCD pool, so spinning
+    // span workers can never starve it. It starts only after every worker
+    // has checked in, so the configure/span race is always exercised.
+    dispatch_group_enter(group);
+    [NSThread detachNewThreadWithBlock:^{
+        for (int t = 0; t < spanThreads; t++) {
+            dispatch_semaphore_wait(workersReady, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+        }
         for (int i = 0; i < configureIterations; i++) {
             handler->configure(configWithRendering(i % 2 == 0));
             // Each add replaces the store's objects array, as configure()
@@ -255,20 +277,8 @@ static BugsnagPerformanceConfiguration *configWithRendering(BOOL rendering) {
                              priority:BugsnagPerformancePriorityMedium];
         }
         configureFinished->store(true);
-    });
-
-    // span threads
-    for (int t = 0; t < spanThreads; t++) {
-        dispatch_group_async(group, queue, ^{
-            while (!configureFinished->load()) {
-                @autoreleasepool {
-                    auto span = createSpan(BSGTriStateUnset);
-                    handler->onSpanStarted(span, spanOptions());
-                    (*spansStarted)++;
-                }
-            }
-        });
-    }
+        dispatch_group_leave(group);
+    }];
 
     long result = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC));
     XCTAssertEqual(result, 0, @"Concurrent configure/span start did not finish in time");
@@ -295,33 +305,43 @@ static BugsnagPerformanceConfiguration *configWithRendering(BOOL rendering) {
 
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+    dispatch_semaphore_t workersReady = dispatch_semaphore_create(0);
     auto handler = handler_;
     std::weak_ptr<SpanLifecycleHandlerImpl> weakHandler = handler_;
     auto endCallbacks = self.onSpanEndCallbacks;
 
-    // "configure" thread
-    dispatch_group_async(group, queue, ^{
-        for (int i = 0; i < configureIterations; i++) {
-            handler->configure(configWithRendering(i % 2 == 0));
-            [endCallbacks addObject:^BOOL(BugsnagPerformanceSpan *) { (*endCallbackCalls)++; return YES; }
-                           priority:BugsnagPerformancePriorityMedium];
-        }
-        configureFinished->store(true);
-    });
-
     // span threads: start and end spans continuously
     for (int t = 0; t < spanThreads; t++) {
         dispatch_group_async(group, queue, ^{
-            while (!configureFinished->load()) {
+            dispatch_semaphore_signal(workersReady);  // check in
+            // do-while: each worker runs at least one iteration.
+            do {
                 @autoreleasepool {
                     auto span = createWiredSpan(weakHandler, BSGTriStateUnset);
                     handler->onSpanStarted(span, spanOptions());
                     [span end];
                     (*spansEnded)++;
                 }
-            }
+            } while (!configureFinished->load());
         });
     }
+
+    // "configure" thread: a dedicated thread, not the GCD pool, so spinning
+    // span workers can never starve it. It starts only after every worker
+    // has checked in, so the configure/span race is always exercised.
+    dispatch_group_enter(group);
+    [NSThread detachNewThreadWithBlock:^{
+        for (int t = 0; t < spanThreads; t++) {
+            dispatch_semaphore_wait(workersReady, dispatch_time(DISPATCH_TIME_NOW, 2 * NSEC_PER_SEC));
+        }
+        for (int i = 0; i < configureIterations; i++) {
+            handler->configure(configWithRendering(i % 2 == 0));
+            [endCallbacks addObject:^BOOL(BugsnagPerformanceSpan *) { (*endCallbackCalls)++; return YES; }
+                           priority:BugsnagPerformancePriorityMedium];
+        }
+        configureFinished->store(true);
+        dispatch_group_leave(group);
+    }];
 
     long result = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC));
     XCTAssertEqual(result, 0, @"Concurrent configure/span end did not finish in time");
@@ -338,3 +358,4 @@ static BugsnagPerformanceConfiguration *configWithRendering(BOOL rendering) {
 }
 
 @end
+

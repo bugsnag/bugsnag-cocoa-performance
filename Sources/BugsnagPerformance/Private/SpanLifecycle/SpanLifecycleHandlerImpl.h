@@ -77,7 +77,7 @@ private:
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
     std::shared_ptr<SpanStore> store_;
     FrameMetricsCollector *frameMetricsCollector_;
-    bool isStarted_{false};
+    std::atomic<bool> isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
     void (^onSpanEndSet_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
     void (^onSpanDiscarded_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
