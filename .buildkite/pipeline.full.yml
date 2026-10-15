@@ -5,6 +5,9 @@ env:
 agents:
   queue: "macos-15"
 
+# Unit test steps pass XCODEBUILD_EXTRA_ARGS="CODE_SIGNING_ALLOWED=NO":
+# CI agents have no signing certificates and the unit test bundles run on the
+# simulator without entitlements, so code signing is skipped.
 steps:
   - group: "Unit tests"
     steps:
