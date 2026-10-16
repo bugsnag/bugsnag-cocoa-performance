@@ -15,7 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void (^ BSGPrioritizedStoreAddBlock)(ObjectType object, BugsnagPerformancePriority priority);
 typedef void (^ BSGPrioritizedStoreBatchBlock)(BSGPrioritizedStoreAddBlock addBlock);
 
-@property (nonatomic, readonly) NSArray<ObjectType> *objects;
+// atomic: read on span start/end threads while configure() may be replacing it.
+@property (atomic, readonly) NSArray<ObjectType> *objects;
 
 - (void)addObject:(ObjectType)object priority:(BugsnagPerformancePriority)priority;
 - (void)batchAddObjects:(BSGPrioritizedStoreBatchBlock)batchBlock;

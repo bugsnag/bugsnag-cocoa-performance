@@ -104,13 +104,16 @@ SpanLifecycleHandlerImpl::onAppEnteredBackground() noexcept {
 
 bool
 SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    // Load once per call so every check below sees the same value, even if
+    // configure() runs concurrently on another thread.
+    const bool renderingEnabled = renderingMetricsEnabled_.load(std::memory_order_relaxed);
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
-            return enabledMetrics_.rendering;
+            return renderingEnabled;
         case BSGTriStateNo:
             return false;
         case BSGTriStateUnset:
-            return enabledMetrics_.rendering &&
+            return renderingEnabled &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }
