@@ -6,9 +6,9 @@ Changelog
 ### Enhancements
 
 * Added disk I/O metrics for spans. When `enabledMetrics.disk` is enabled (it's off by default), first-class spans include the `bugsnag.system.disk.iops_read`, `bugsnag.system.disk.iops_write` and `bugsnag.system.disk.iops_total` attributes. These are the average read, write and total disk operations per second over the span's duration, estimated from the bytes the process read and wrote, in 4 KB blocks.
-  Use `BugsnagPerformanceSpanOptions.metricsOptions.disk` to turn disk metrics on or off for an individual span. The app start span measures from process launch.
-  `BugsnagPerformanceEnabledMetrics.withAllEnabled` now also enables disk metrics.
-  [#592](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/592)
+    Use `BugsnagPerformanceSpanOptions.metricsOptions.disk` to turn disk metrics on or off for an individual span. The app start span measures from process launch.
+    `BugsnagPerformanceEnabledMetrics.withAllEnabled` now also enables disk metrics.
+    [#592](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/592)
 
 ## 4.1.0 (2026-10-15)
 
