@@ -187,7 +187,7 @@ static BugsnagPerformanceConfiguration *newConfig() {
     XCTAssertEqual(span.samplingProbability, expectedSamplingProbability);
 }
 
-#pragma mark - Thread safety (regression for EXC_BAD_ACCESS, PLAT-17486 / Zendesk #78933)
+#pragma mark - Thread safety
 
 // Safety cap on spans per worker so time and memory stay bounded on slow CI
 // simulators. Workers normally stop earlier, as soon as configure() finishes.
