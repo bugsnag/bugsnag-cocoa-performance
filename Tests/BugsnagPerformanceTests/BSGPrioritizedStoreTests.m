@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <stdatomic.h>
 #import "BSGPrioritizedStore.h"
 
 @interface BSGPrioritizedStoreTests: XCTestCase
@@ -226,6 +227,76 @@
     XCTAssertTrue([store.objects[0] isEqualToString:@"First"]);
     XCTAssertTrue([store.objects[1] isEqualToString:@"Second"]);
     XCTAssertTrue([store.objects[2] isEqualToString:@"Third"]);
+}
+
+#pragma mark - Thread safety
+
+- (void)testObjectsSnapshotIsImmutableAndUnaffectedByLaterAdds {
+    BSGPrioritizedStore<NSString *> *store = [BSGPrioritizedStore new];
+    [store addObject:@"First" priority:BugsnagPerformancePriorityHigh];
+
+    NSArray<NSString *> *snapshot = store.objects;
+    XCTAssertFalse([snapshot isKindOfClass:[NSMutableArray class]]);
+
+    [store addObject:@"Second" priority:BugsnagPerformancePriorityHigh];
+
+    // The earlier snapshot must stay valid and unchanged; readers iterate it
+    // on span threads while configure() may be adding callbacks.
+    XCTAssertEqual(snapshot.count, 1);
+    XCTAssertTrue([snapshot[0] isEqualToString:@"First"]);
+    XCTAssertEqual(store.objects.count, 2);
+}
+
+// Regression test for EXC_BAD_ACCESS when span start/end callbacks are read on
+// one thread while configure() adds callbacks on another (objects was nonatomic
+// and the previous array could be freed mid-iteration).
+// Most reliable when run with Address Sanitizer or Thread Sanitizer enabled.
+- (void)testConcurrentReadsWhileAddingDoNotCrash {
+    BSGPrioritizedStore<NSString *> *store = [BSGPrioritizedStore new];
+    const NSUInteger objectCount = 2000;
+    const NSUInteger readerCount = 4;
+
+    // atomic (not volatile): written by the writer, read by the readers.
+    __block atomic_bool writerFinished = false;
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_queue_t queue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0);
+
+    dispatch_group_async(group, queue, ^{
+        for (NSUInteger i = 0; i < objectCount; i++) {
+            BugsnagPerformancePriority priority = BugsnagPerformancePriorityLow;
+            if (i % 3 == 0) {
+                priority = BugsnagPerformancePriorityHigh;
+            } else if (i % 3 == 1) {
+                priority = BugsnagPerformancePriorityMedium;
+            }
+            [store addObject:[NSString stringWithFormat:@"%lu", (unsigned long)i] priority:priority];
+        }
+        atomic_store_explicit(&writerFinished, true, memory_order_release);
+    });
+
+    for (NSUInteger r = 0; r < readerCount; r++) {
+        dispatch_group_async(group, queue, ^{
+            NSUInteger lastCount = 0;
+            // do-while: every reader reads at least once, even if the writer
+            // finishes before this block is scheduled.
+            do {
+                NSArray<NSString *> *snapshot = store.objects;
+                NSUInteger seen = 0;
+                for (NSString *obj in snapshot) {
+                    // Touch each element so a freed array/element would fault.
+                    seen += obj.length > 0 ? 1 : 0;
+                }
+                XCTAssertEqual(seen, snapshot.count);
+                // Snapshots only ever grow.
+                XCTAssertGreaterThanOrEqual(snapshot.count, lastCount);
+                lastCount = snapshot.count;
+            } while (!atomic_load_explicit(&writerFinished, memory_order_acquire));
+        });
+    }
+
+    long result = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 60 * NSEC_PER_SEC));
+    XCTAssertEqual(result, 0, @"Concurrent readers/writer did not finish in time");
+    XCTAssertEqual(store.objects.count, objectCount);
 }
 
 @end

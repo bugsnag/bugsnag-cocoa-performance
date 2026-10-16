@@ -144,7 +144,7 @@ Tracer::startSpan(NSString *name, SpanOptions options, BSGTriState defaultFirstC
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
                                                             samplingProbability:sampler_->getProbability()
-                                                            attributeCountLimit:attributeCountLimit_
+                                                            attributeCountLimit:attributeCountLimit_.load(std::memory_order_relaxed)
                                                                  metricsOptions:options.metricsOptions
                                                                    onSpanEndSet:onSpanEndSet
                                                                    onSpanClosed:onSpanClosed
@@ -415,13 +415,15 @@ Tracer::onPrewarmPhaseEnded(void) noexcept {
 
 bool
 Tracer::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    // Load once so all checks in this call see the same value.
+    const bool renderingEnabled = renderingMetricsEnabled_.load(std::memory_order_relaxed);
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
-            return enabledMetrics_.rendering;
+            return renderingEnabled;
         case BSGTriStateNo:
             return false;
         case BSGTriStateUnset:
-            return enabledMetrics_.rendering &&
+            return renderingEnabled &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }

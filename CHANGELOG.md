@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 1.16.3 (2026-10-16)
+
+### Bug fixes
+
+* Fixed an intermittent EXC_BAD_ACCESS crash when BugsnagPerformance.start(configuration:) is called while spans are being started or ended on other threads.
+  [606](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/606)
+
 ## 1.16.2 (2025-12-11)
 
 ### Bug fixes
