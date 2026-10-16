@@ -20,6 +20,7 @@
 #import "ConditionTimeoutExecutor.h"
 #import "BSGPrioritizedStore.h"
 
+#import <atomic>
 #import <memory>
 
 namespace bugsnag {
@@ -44,8 +45,9 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept;
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
-        attributeCountLimit_ = config.attributeCountLimit;
-        enabledMetrics_ = [config.enabledMetrics clone];
+        attributeCountLimit_.store(config.attributeCountLimit, std::memory_order_relaxed);
+        // configure() can run concurrently with span start/end processing.
+        renderingMetricsEnabled_.store(config.enabledMetrics.rendering, std::memory_order_relaxed);
     };
     void preStartSetup() noexcept;
     void start() noexcept {}
@@ -90,13 +92,14 @@ private:
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
 
     std::atomic<bool> willDiscardPrewarmSpans_{false};
-    BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
+    // Defaults to true to match [BugsnagPerformanceEnabledMetrics withAllEnabled].
+    std::atomic<bool> renderingMetricsEnabled_{true};
     std::mutex prewarmSpansMutex_;
     NSMutableArray<BugsnagPerformanceSpan *> *prewarmSpans_;
     NSMutableArray<BugsnagPerformanceSpan *> *blockedSpans_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
-    NSUInteger attributeCountLimit_{128};
+    std::atomic<NSUInteger> attributeCountLimit_{128};
 
     // Sloppy list of "open" spans. Some spans may have already been closed,
     // but span abort/end are idempotent so it doesn't matter.
