@@ -11,6 +11,7 @@
 #import "../Batch.h"
 #import "../BugsnagPerformanceConfiguration+Private.h"
 #import "../DiskIO/BSGDiskIOCollector.h"
+#import <atomic>
 #import "../FrameRateMetrics/FrameMetricsCollector.h"
 #import "../SpanStackingHandler.h"
 #import "../Sampler.h"
@@ -54,7 +55,12 @@ public:
     void earlyConfigure(BSGEarlyConfiguration *) noexcept {}
     void earlySetup() noexcept {}
     void configure(BugsnagPerformanceConfiguration *config) noexcept {
-        enabledMetrics_ = [config.enabledMetrics clone];
+        // configure() may run on a different thread from span start/end (e.g. start
+        // called on a background thread while spans are created elsewhere). Store a
+        // plain atomic flag instead of swapping an ObjC object, which could be
+        // released while another thread is reading it (EXC_BAD_ACCESS).
+        renderingMetricsEnabled_.store(config.enabledMetrics.rendering, std::memory_order_relaxed);
+        diskMetricsEnabled_.store(config.enabledMetrics.disk, std::memory_order_relaxed);
     }
     void preStartSetup() noexcept;
     void start() noexcept {
@@ -76,7 +82,7 @@ private:
     std::shared_ptr<SpanStore> store_;
     FrameMetricsCollector *frameMetricsCollector_;
     BSGDiskIOCollector *diskIOCollector_;
-    bool isStarted_{false};
+    std::atomic<bool> isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
     void (^onSpanEndSet_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
     void (^onSpanDiscarded_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
@@ -84,8 +90,11 @@ private:
     std::shared_ptr<Batch> batch_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks_;
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
-    BugsnagPerformanceEnabledMetrics *enabledMetrics_{[BugsnagPerformanceEnabledMetrics withAllEnabled]};
-    
+    // Defaults to true to match [BugsnagPerformanceEnabledMetrics withAllEnabled]
+    std::atomic<bool> renderingMetricsEnabled_{true};
+    // Defaults to true to match [BugsnagPerformanceEnabledMetrics withAllEnabled]
+    std::atomic<bool> diskMetricsEnabled_{true};
+
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
     bool shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept;

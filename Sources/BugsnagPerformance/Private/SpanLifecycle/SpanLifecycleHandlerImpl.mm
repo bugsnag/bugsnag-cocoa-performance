@@ -144,13 +144,16 @@ SpanLifecycleHandlerImpl::onAppEnteredBackground() noexcept {
 
 bool
 SpanLifecycleHandlerImpl::shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept {
+    // Load once per call so every check below sees the same value, even if
+    // configure() runs concurrently on another thread.
+    const bool renderingEnabled = renderingMetricsEnabled_.load(std::memory_order_relaxed);
     switch (span.metricsOptions.rendering) {
         case BSGTriStateYes:
-            return enabledMetrics_.rendering;
+            return renderingEnabled;
         case BSGTriStateNo:
             return false;
         case BSGTriStateUnset:
-            return enabledMetrics_.rendering &&
+            return renderingEnabled &&
             !span.wasStartOrEndTimeProvided &&
             span.firstClass == BSGTriStateYes;
     }
@@ -161,7 +164,7 @@ SpanLifecycleHandlerImpl::shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexc
     // After BugsnagPerformance.start(), disk I/O is collected only when the
     // user's configuration enables it. Spans that start before start() are
     // handled by shouldSampleDiskIOBeforeStart.
-    if (!isStarted_ || !enabledMetrics_.disk) {
+    if (!isStarted_ || !diskMetricsEnabled_.load(std::memory_order_relaxed)) {
         return false;
     }
     return isDiskIOEligible(span);
@@ -194,7 +197,7 @@ SpanLifecycleHandlerImpl::applyEarlyDiskIO(BugsnagPerformanceSpan *span) noexcep
     span.earlyDiskIOAttributes = nil;
     // configure() has run: attach only if the user enabled disk metrics and the
     // span is still eligible (its end time was not supplied by the caller).
-    if (!enabledMetrics_.disk || !isDiskIOEligible(span) || attributes.count == 0) {
+    if (!diskMetricsEnabled_.load(std::memory_order_relaxed) || !isDiskIOEligible(span) || attributes.count == 0) {
         return;
     }
     [span forceMutate:^{

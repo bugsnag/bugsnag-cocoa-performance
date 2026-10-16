@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Bug fixes
+
+* Fixed race conditions that could cause `EXC_BAD_ACCESS` when `configure()` runs concurrently with span start/end processing and callback iteration.
+  [#601](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/601)
+
 ## 4.0.0 (2026-09-18)
 
 ### Enhancements
