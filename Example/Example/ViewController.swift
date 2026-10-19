@@ -44,7 +44,7 @@ class ViewController: UIViewController {
         usleep(100000 + waitTime)
         span.end()
     }
-    
+
     @IBAction func DoSessionSpan(_ sender: Any) {
         globalSessionSpan = BugsnagPerformance.startAppSessionSpan("my session span")
         // Navigate to Session Span Test Flow
