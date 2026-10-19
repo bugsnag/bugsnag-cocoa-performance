@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added disk IOPS metrics to first-class spans, reporting the average read, write and total disk operations per second over the span's duration. Enable them with `enabledMetrics.disk` (off by default).
+  [#592](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/592)
+  
 ## 4.1.0 (2026-10-15)
 
 ### Bug fixes

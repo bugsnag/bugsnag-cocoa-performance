@@ -10,6 +10,7 @@
 #import "SpanLifecycleHandler.h"
 #import "../Batch.h"
 #import "../BugsnagPerformanceConfiguration+Private.h"
+#import "../DiskIO/BSGDiskIOCollector.h"
 #import <atomic>
 #import "../FrameRateMetrics/FrameMetricsCollector.h"
 #import "../SpanStackingHandler.h"
@@ -32,6 +33,7 @@ public:
                              std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory,
                              std::shared_ptr<Batch> batch,
                              FrameMetricsCollector *frameMetricsCollector,
+                             BSGDiskIOCollector *diskIOCollector,
                              BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *onSpanStartCallbacks,
                              BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks,
                              void (^onSpanStarted)(),
@@ -43,6 +45,7 @@ public:
     , plainSpanFactory_(plainSpanFactory)
     , batch_(batch)
     , frameMetricsCollector_(frameMetricsCollector)
+    , diskIOCollector_(diskIOCollector)
     , onSpanStartCallbacks_(onSpanStartCallbacks)
     , onSpanEndCallbacks_(onSpanEndCallbacks)
     , onSpanStarted_(onSpanStarted)
@@ -57,6 +60,7 @@ public:
         // plain atomic flag instead of swapping an ObjC object, which could be
         // released while another thread is reading it (EXC_BAD_ACCESS).
         renderingMetricsEnabled_.store(config.enabledMetrics.rendering, std::memory_order_relaxed);
+        diskMetricsEnabled_.store(config.enabledMetrics.disk, std::memory_order_relaxed);
     }
     void preStartSetup() noexcept;
     void start() noexcept {
@@ -77,6 +81,7 @@ private:
     std::shared_ptr<PlainSpanFactoryImpl> plainSpanFactory_;
     std::shared_ptr<SpanStore> store_;
     FrameMetricsCollector *frameMetricsCollector_;
+    BSGDiskIOCollector *diskIOCollector_;
     std::atomic<bool> isStarted_{false};
     void (^onSpanStarted_)(){ ^(){} };
     void (^onSpanEndSet_)(BugsnagPerformanceSpan *){ ^(BugsnagPerformanceSpan *){} };
@@ -87,9 +92,15 @@ private:
     BSGPrioritizedStore<BugsnagPerformanceSpanEndCallback> *onSpanEndCallbacks_;
     // Defaults to true to match [BugsnagPerformanceEnabledMetrics withAllEnabled]
     std::atomic<bool> renderingMetricsEnabled_{true};
+    // Defaults to true to match [BugsnagPerformanceEnabledMetrics withAllEnabled]
+    std::atomic<bool> diskMetricsEnabled_{true};
 
     void processClosedSpan(BugsnagPerformanceSpan *span) noexcept;
     bool shouldInstrumentRendering(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleDiskIO(BugsnagPerformanceSpan *span) noexcept;
+    bool isDiskIOEligible(BugsnagPerformanceSpan *span) noexcept;
+    bool shouldSampleDiskIOBeforeStart(BugsnagPerformanceSpan *span) noexcept;
+    void applyEarlyDiskIO(BugsnagPerformanceSpan *span) noexcept;
     void processFrameMetrics(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanStartCallbacks(BugsnagPerformanceSpan *span) noexcept;
     void callOnSpanEndCallbacks(BugsnagPerformanceSpan *span) noexcept;

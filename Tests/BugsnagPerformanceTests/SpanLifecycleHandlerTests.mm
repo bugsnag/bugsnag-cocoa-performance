@@ -51,6 +51,7 @@ using namespace bugsnag;
                                                           plainSpanFactory,
                                                           batch_,
                                                           self.frameMetricsCollector,
+                                                          nil, // diskIOCollector
                                                           self.onSpanStartCallbacks,
                                                           self.onSpanEndCallbacks,
                                                           ^{},
