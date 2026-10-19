@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## TBD
+## ## 5.0.0 (2026-10-19)
 
 ### Enhancements
 
