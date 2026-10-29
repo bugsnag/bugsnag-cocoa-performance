@@ -372,6 +372,377 @@ steps:
             - exit_status: 103  # Appium session failed
               limit: 2
 
+  ##############################################################################
+  #
+  # Xcode 27 on macos-26-2 (PLAT-17600)
+  #
+  # - Runs on the "developer-machine" queue; xcode27-setup.sh fails fast if the
+  #   host isn't macos-26-2 or the default Xcode isn't 27, and writes CI-only
+  #   build setting overrides (iOS 15 deployment target, deprecation warnings
+  #   not errors) via XCODE_XCCONFIG_FILE.
+  # - All steps are soft_fail so they can't turn the build red.
+  # - Artifacts use *_xcode27 names so they never replace the Xcode 26 ones.
+  # - IOS_27 e2e jobs only work once BitBar has iOS 27 devices.
+  #
+
+  - group: ":xcode: Xcode 27 (macos-26-2)"
+    key: "xcode27"
+    steps:
+      - label: "Xcode 27 - environment check"
+        key: "xcode27_env"
+        timeout_in_minutes: 5
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "hostname"
+          - "sw_vers"
+          - "xcode-select -p"
+          - "xcodebuild -version"
+          - "xcodebuild -showsdks"
+          - "xcrun simctl list runtimes"
+          - "source .buildkite/xcode27-setup.sh"
+
+      - label: ":hammer: Xcode 27 - XCFramework"
+        key: "xcode27_xcframework"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "make build_xcframework"
+          - "for n in BugsnagPerformance BugsnagPerformanceSwift BugsnagPerformanceNamedSpans; do mv $$n.xcframework.zip $$n.xcframework_xcode27.zip; done"
+        plugins:
+          - "artifacts#v1.9.3":
+              upload:
+                - "BugsnagPerformance.xcframework_xcode27.zip"
+                - "BugsnagPerformanceSwift.xcframework_xcode27.zip"
+                - "BugsnagPerformanceNamedSpans.xcframework_xcode27.zip"
+
+      - label: ":hammer: Xcode 27 - Carthage"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "bundle install"
+          - "./features/fixtures/carthage/build.sh"
+
+      - label: ":hammer: Xcode 27 - CocoaPods"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "bundle install"
+          - "pod lib lint BugsnagPerformance.podspec.json"
+
+      - label: ":hammer: Xcode 27 - Example"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "bundle install"
+          - "./Example/build.sh"
+
+      - label: ":hammer: Xcode 27 - Fixture"
+        key: "xcode27_ios_fixture"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "./features/fixtures/ios/build.sh"
+          - "bundle install"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/Fixture.ipa --app-id-file=./features/fixtures/ios/output/bb_ipa_url_xcode27.txt"
+        artifact_paths:
+          - "features/fixtures/ios/output/bb_ipa_url_xcode27.txt"
+
+      - label: ":hammer: Xcode 27 - XcFramework fixture"
+        key: "xcode27_ios_xcframework_fixture"
+        depends_on: "xcode27_xcframework"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "for n in BugsnagPerformance BugsnagPerformanceSwift BugsnagPerformanceNamedSpans; do buildkite-agent artifact download \"$$n.xcframework_xcode27.zip\" . && mv $$n.xcframework_xcode27.zip $$n.xcframework.zip; done"
+          - "./features/fixtures/ios/build_xcframework.sh"
+          - "bundle install"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureXcFramework.ipa --app-id-file=./features/fixtures/ios/output/bb_xcframework_ipa_url_xcode27.txt"
+        artifact_paths:
+          - "features/fixtures/ios/output/bb_xcframework_ipa_url_xcode27.txt"
+
+      - label: ":xcode_simulator: Xcode 27 - iOS Unit Tests"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        # run-unit-tests.sh erases all simulators, so don't overlap with other agents on this host
+        concurrency: 1
+        concurrency_group: "bugsnag-cocoa-performance/xcode27-simulators"
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - |
+            IOS_OS=$$(xcodebuild -showsdks | grep -Eo 'iphonesimulator[0-9.]+' | tail -1 | sed 's/iphonesimulator//')
+            echo "Using iOS simulator $$IOS_OS"
+            STATUS=0
+            ./scripts/run-unit-tests.sh PLATFORM=iOS OS=$$IOS_OS DEVICE="iPhone 17" || STATUS=$$?
+            mkdir -p logs
+            find ~/Library/Logs/DiagnosticReports -name '*TestHost*' -mmin -60 -exec cp {} logs/ \; 2>/dev/null || true
+            exit $$STATUS
+        artifact_paths:
+          - "logs/*"
+
+      - label: ":bitbar: {{matrix}} e2e tests (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_ios_fixture"
+        timeout_in_minutes: 75
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          "artifacts#v1.9.3":
+            download: "features/fixtures/ios/output/bb_ipa_url_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
+            command:
+              - "--app=@build/bb_ipa_url_xcode27.txt"
+              - "--device={{matrix}}"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/default"
+        concurrency: 25
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: {{matrix}} XcFramework e2e tests (Xcode 27 XCFramework)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_ios_xcframework_fixture"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          "artifacts#v1.9.3":
+            download: "features/fixtures/ios/output/bb_xcframework_ipa_url_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
+            command:
+              - "--app=@build/bb_xcframework_ipa_url_xcode27.txt"
+              - "--device={{matrix}}"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/default/automatic"
+        concurrency: 25
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":hammer: Xcode 27 - Fixture swizzling disabled"
+        key: "xcode27_ios_fixture_swizzling_disabled"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling"
+          - "bundle install"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithDisableSwizzling.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_disabled_xcode27.txt"
+        artifact_paths:
+          - "features/fixtures/ios/output/bb_url_swizzling_disabled_xcode27.txt"
+
+      - label: ":hammer: Xcode 27 - Fixture swizzling premain"
+        key: "xcode27_ios_fixture_swizzling_premain"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain"
+          - "bundle install"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/ios/output/FixtureWithSwizzlingPremain.ipa --app-id-file=./features/fixtures/ios/output/bb_url_swizzling_premain_xcode27.txt"
+        artifact_paths:
+          - "features/fixtures/ios/output/bb_url_swizzling_premain_xcode27.txt"
+
+      - label: ":hammer: Xcode 27 - Benchmarks fixture"
+        key: "xcode27_ios_fixture_benchmarks"
+        depends_on: "xcode27_env"
+        timeout_in_minutes: 15
+        soft_fail: true
+        agents:
+          queue: "developer-machine"
+        commands:
+          - "source .buildkite/xcode27-setup.sh"
+          - "./features/fixtures/benchmarks/build.sh --fixtureName FixtureBenchmarks"
+          - "bundle install"
+          - "bundle exec upload-app --farm=bb --app=./features/fixtures/benchmarks/output/FixtureBenchmarks.ipa --app-id-file=./features/fixtures/benchmarks/output/bb_ipa_url_benchmarks_xcode27.txt"
+        artifact_paths:
+          - "features/fixtures/benchmarks/output/bb_ipa_url_benchmarks_xcode27.txt"
+
+      - label: ":bitbar: {{matrix}} swizzling disabled e2e tests (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_ios_fixture_swizzling_disabled"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          "artifacts#v1.9.3":
+            download: "features/fixtures/ios/output/bb_url_swizzling_disabled_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+              - "maze_output/metrics.csv"
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
+            command:
+              - "--app=@build/bb_url_swizzling_disabled_xcode27.txt"
+              - "--device={{matrix}}"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/swizzling_disabled"
+        concurrency: 25
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: {{matrix}} swizzling premain e2e tests (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_ios_fixture_swizzling_premain"
+        timeout_in_minutes: 75
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          "artifacts#v1.9.3":
+            download: "features/fixtures/ios/output/bb_url_swizzling_premain_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/maze_output.zip"
+              - "maze_output/metrics.csv"
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
+            command:
+              - "--app=@build/bb_url_swizzling_premain_xcode27.txt"
+              - "--device={{matrix}}"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--exclude=features/default/automatic/automatic_spans_generic_view_load.feature"
+              - "features/default"
+        concurrency: 25
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
+      - label: ":bitbar: {{matrix}} Benchmark tests (Xcode 27 fixture)"
+        matrix:
+          - "IOS_26"
+          - "IOS_27"
+        depends_on: "xcode27_ios_fixture_benchmarks"
+        timeout_in_minutes: 30
+        soft_fail: true
+        agents:
+          queue: "opensource"
+        plugins:
+          "artifacts#v1.9.3":
+            download: "features/fixtures/benchmarks/output/bb_ipa_url_benchmarks_xcode27.txt"
+            upload:
+              - "maze_output/failed/**/*"
+              - "maze_output/metrics.csv"
+              - "maze_output/maze_output.zip"
+          "docker-compose#v4.8.0":
+            pull: "maze-runner-bb"
+            run: "maze-runner-bb"
+            service-ports: "true"
+            command:
+              - "--app=@build_benchmarks/bb_ipa_url_benchmarks_xcode27.txt"
+              - "--device={{matrix}}"
+              - "--fail-fast"
+              - "--farm=bb"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "features/benchmarks"
+        concurrency: 25
+        concurrency_group: "bitbar-app"
+        concurrency_method: "eager"
+        retry:
+          automatic:
+            - exit_status: -1  # Agent was lost
+              limit: 2
+            - exit_status: 103  # Appium session failed
+              limit: 2
+
   - label: "Conditionally trigger full set of tests"
     agents:
       queue: "macos"
