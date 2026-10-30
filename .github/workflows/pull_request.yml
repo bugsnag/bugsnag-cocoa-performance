@@ -4,6 +4,8 @@ permissions: read-all
 
 jobs:
   danger:
+    env:
+      BUNDLE_GEMFILE: .github/Gemfile
     permissions:
       pull-requests: write
       statuses: write
@@ -23,8 +25,8 @@ jobs:
     - name: Build
       run: xcodebuild -scheme BugsnagPerformance-iOS -destination generic/platform=iOS -configuration Release -quiet -derivedDataPath $PWD/DerivedData.new VALID_ARCHS=arm64
     - name: Install dependencies
-      run: brew install bloaty && gem install danger
+      run: brew install bloaty && bundle install
     - name: Run danger
-      run: danger
+      run: bundle exec danger
       env:
         DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
