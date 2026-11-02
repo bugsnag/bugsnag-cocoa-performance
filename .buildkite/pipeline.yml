@@ -394,6 +394,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "hostname"
           - "sw_vers"
@@ -410,6 +412,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "make build_xcframework"
@@ -427,6 +431,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "bundle install"
@@ -438,6 +444,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "bundle install"
@@ -449,6 +457,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "bundle install"
@@ -461,6 +471,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "./features/fixtures/ios/build.sh"
@@ -476,6 +488,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "for n in BugsnagPerformance BugsnagPerformanceSwift BugsnagPerformanceNamedSpans; do buildkite-agent artifact download \"$$n.xcframework_xcode27.zip\" . && mv $$n.xcframework_xcode27.zip $$n.xcframework.zip; done"
@@ -494,6 +508,8 @@ steps:
         concurrency_group: "bugsnag-cocoa-performance/xcode27-simulators"
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - |
@@ -590,6 +606,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "./features/fixtures/ios/build.sh --disableSwizzling --fixtureName FixtureWithDisableSwizzling"
@@ -605,6 +623,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "./features/fixtures/ios/build.sh --swizzlingPremain --fixtureName FixtureWithSwizzlingPremain"
@@ -620,6 +640,8 @@ steps:
         soft_fail: true
         agents:
           queue: "developer-machine"
+        env:
+          XCODE_VERSION: "27.0.0"
         commands:
           - "source .buildkite/xcode27-setup.sh"
           - "./features/fixtures/benchmarks/build.sh --fixtureName FixtureBenchmarks"
