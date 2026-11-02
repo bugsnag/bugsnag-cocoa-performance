@@ -24,8 +24,11 @@ AppStartupSpanFactoryImpl::startAppStartOverallSpan(CFAbsoluteTime startTime, bo
     options.metricsOptions.cpu = BSGTriStateYes;
     options.metricsOptions.memory = BSGTriStateYes;
     options.metricsOptions.rendering = BSGTriStateYes;
+    options.metricsOptions.disk = BSGTriStateYes;
     auto attributes = spanAttributesProvider_->appStartSpanAttributes(firstViewName, isColdLaunch);
-    return startAppStartSpan(name, options, attributes, @[]);
+    auto span = startAppStartSpan(name, options, attributes, @[]);
+    span.diskIOBaselineIsProcessStart = YES;
+    return span;
 }
 
 BugsnagPerformanceSpan *

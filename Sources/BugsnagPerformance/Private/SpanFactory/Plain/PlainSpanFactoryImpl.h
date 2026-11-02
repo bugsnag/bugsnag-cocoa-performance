@@ -11,6 +11,7 @@
 #import "../../SpanAttributesProvider.h"
 #import "../../Sampler.h"
 #import "../../SpanStackingHandler.h"
+#import <atomic>
 
 namespace bugsnag {
 
@@ -41,15 +42,17 @@ public:
     }
     
     void setAttributeCountLimit(NSUInteger limit) noexcept {
-        attributeCountLimit_ = limit;
+        attributeCountLimit_.store(limit, std::memory_order_relaxed);
     }
     
 private:
     std::shared_ptr<Sampler> sampler_;
     std::shared_ptr<SpanStackingHandler> spanStackingHandler_;
     std::shared_ptr<SpanAttributesProvider> spanAttributesProvider_;
+    // Set once in the Tracer constructor, before any span can start; never reassigned,
+    // so it does not need the same protection as attributeCountLimit_.
     PlainSpanFactoryCallbacks *callbacks_;
-    NSUInteger attributeCountLimit_{128};
+    std::atomic<NSUInteger> attributeCountLimit_{128};
     
     PlainSpanFactoryImpl() = delete;
 };

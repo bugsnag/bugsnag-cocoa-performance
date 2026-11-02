@@ -77,7 +77,7 @@ PlainSpanFactoryImpl::startSpan(NSString *name,
                                                                       startTime:options.startTime
                                                                      firstClass:firstClass
                                                             samplingProbability:sampler_->getProbability()
-                                                            attributeCountLimit:attributeCountLimit_
+                                                            attributeCountLimit:attributeCountLimit_.load(std::memory_order_relaxed)
                                                                  metricsOptions:options.metricsOptions
                                                          conditionsToEndOnClose:conditionsToEndOnClose
                                                                    onSpanEndSet:onSpanEndSet

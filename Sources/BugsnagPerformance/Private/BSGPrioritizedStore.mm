@@ -37,8 +37,12 @@
 
 @interface BSGPrioritizedStore ()
 
+// Only mutated inside batchAddObjects:, which holds @synchronized(self), so writers
+// are serialized. Readers never touch this; they use the atomic `objects` snapshot.
 @property (nonatomic, strong) NSMutableArray<BSGPrioritizedStoreEntry *> *store;
-@property (nonatomic, strong) NSArray *objects;
+// atomic so the getter returns a retained snapshot; a nonatomic swap here could
+// free the old array while a span thread is iterating it (EXC_BAD_ACCESS).
+@property (atomic, strong) NSArray *objects;
 
 @end
 
@@ -104,7 +108,7 @@
     for (BSGPrioritizedStoreEntry *entry in self.store) {
         [newObjects addObject:entry.object];
     }
-    self.objects = newObjects;
+    self.objects = [newObjects copy];
 }
 
 @end

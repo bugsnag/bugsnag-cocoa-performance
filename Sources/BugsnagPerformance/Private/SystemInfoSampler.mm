@@ -88,6 +88,16 @@ static double calcCPUUsagePct(CFAbsoluteTime earlierSampledAtTime,
     return result;
 }
 
+// The wall-clock interval (sampledAt) and the kernel CPU-time reads below are
+// not taken atomically, so on a saturated thread the CPU-time delta can be a
+// fraction longer than the wall delta and the ratio comes out just above 100
+// (100.12 has been observed on device). A thread cannot use more than one
+// core and the process figure is normalised per core, so 100 is the physical
+// ceiling for every value here.
+static inline double clampCPUPct(double pct) {
+    return pct > 100.0 ? 100.0 : pct;
+}
+
 void SystemInfoSampler::recordSample() {
     SystemInfoSampleData sample(CFAbsoluteTimeGetCurrent());
 
@@ -95,20 +105,20 @@ void SystemInfoSampler::recordSample() {
         auto taskInfo = systemInfo_.taskTimeInfo();
         if (taskInfo != nullptr) {
             double activeProcessorCount = MAX((double) systemInfo_.activeProcessorCount(), 1.0);
-            sample.processCPUPct = calcCPUUsagePct(lastSampledAtTime_,
-                                                   lastSampleProcessCPU_,
-                                                   sample.sampledAt,
-                                                   taskInfo->user_time) / activeProcessorCount;
+            sample.processCPUPct = clampCPUPct(calcCPUUsagePct(lastSampledAtTime_,
+                                                                lastSampleProcessCPU_,
+                                                                sample.sampledAt,
+                                                                taskInfo->user_time) / activeProcessorCount);
             lastSampleProcessCPU_ = taskInfo->user_time;
             BSGLogTrace(@"SystemInfoSampler::recordSample: taskInfo: %d.%d = %f", taskInfo->user_time.seconds, taskInfo->user_time.microseconds, sample.processCPUPct);
         }
 
         auto mainThreadInfo = systemInfo_.threadBasicInfo(mainThread_);
         if (mainThreadInfo != nullptr) {
-            sample.mainThreadCPUPct = calcCPUUsagePct(lastSampledAtTime_,
-                                                      lastSampleMainThreadCPU_,
-                                                      sample.sampledAt,
-                                                      mainThreadInfo->user_time);
+            sample.mainThreadCPUPct = clampCPUPct(calcCPUUsagePct(lastSampledAtTime_,
+                                                                   lastSampleMainThreadCPU_,
+                                                                   sample.sampledAt,
+                                                                   mainThreadInfo->user_time));
             lastSampleMainThreadCPU_ = mainThreadInfo->user_time;
             BSGLogTrace(@"SystemInfoSampler::recordSample: mainThreadInfo: %d.%d = %f", mainThreadInfo->user_time.seconds, mainThreadInfo->user_time.microseconds, sample.mainThreadCPUPct);
         }
@@ -119,10 +129,10 @@ void SystemInfoSampler::recordSample() {
         if (thread_self != mainThread_) {
             auto monitorThreadInfo = systemInfo_.threadBasicInfo(thread_self);
             if (monitorThreadInfo != nullptr) {
-                sample.monitorThreadCPUPct = calcCPUUsagePct(lastSampledAtTime_,
-                                                             lastSampleMonitorThreadCPU_,
-                                                             sample.sampledAt,
-                                                             monitorThreadInfo->user_time);
+                sample.monitorThreadCPUPct = clampCPUPct(calcCPUUsagePct(lastSampledAtTime_,
+                                                                          lastSampleMonitorThreadCPU_,
+                                                                          sample.sampledAt,
+                                                                          monitorThreadInfo->user_time));
                 lastSampleMonitorThreadCPU_ = monitorThreadInfo->user_time;
                 BSGLogTrace(@"SystemInfoSampler::recordSample: monitorThreadInfo: %d.%d = %f", monitorThreadInfo->user_time.seconds, monitorThreadInfo->user_time.microseconds, sample.monitorThreadCPUPct);
             }

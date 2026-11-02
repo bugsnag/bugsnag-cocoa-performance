@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## TBD
+
+### Enhancements
+
+* Added disk IOPS metrics to first-class spans, reporting the average read, write and total disk operations per second over the span's duration. Enable them with `enabledMetrics.disk` (off by default).
+  [#592](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/592)
+  
+## 4.1.0 (2026-10-15)
+
+### Bug fixes
+
+* Fixed race conditions that could cause `EXC_BAD_ACCESS` when `configure()` runs concurrently with span start/end processing and callback iteration.
+  [#601](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/601)
+
+## 4.0.0 (2026-09-18)
+
+### Enhancements
+
+* Added GraphQL request detection and span grouping by operation type and name.
+  [#589](https://github.com/bugsnag/bugsnag-cocoa-performance/pull/589)
+
 ## 3.0.0 (2026-07-07)
 
 ### Enhancements
