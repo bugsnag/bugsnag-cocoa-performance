@@ -41,6 +41,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property(nonatomic,readwrite) NSTimeInterval initialRecurringWorkDelay;
 
+/**
+ * Test-only. A `BSGDiskIOSnapshotFaultMode` bitmask used by the e2e fixtures to
+ * drive the disk-IOPS omission paths (which are otherwise unreachable because
+ * the platform snapshot source cannot be made to fail on demand).
+ * Defaults to 0 (`BSGDiskIOSnapshotFaultModeNone`).
+ */
+@property(nonatomic,readwrite) NSUInteger diskIOSnapshotFaultMode;
+
+/**
+ * Test-only. When true, spans that report disk IOPS additionally carry the
+ * raw snapshot byte counters as `bugsnag.internal.disk_io.*` attributes so
+ * e2e tests can assert snapshot freshness (start <= end within a span, and a
+ * later span's start counters >= an earlier span's end counters).
+ * Defaults to false; production never enables this.
+ */
+@property(nonatomic,readwrite) bool attachDiskIOSnapshots;
+
 @end
 
 @interface BugsnagPerformanceConfiguration ()

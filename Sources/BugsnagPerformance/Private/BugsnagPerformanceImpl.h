@@ -28,6 +28,7 @@
 #import "Instrumentation/NetworkInstrumentation/System/NetworkHeaderInjector.h"
 #import "OtlpTraceEncoding.h"
 #import "FrameRateMetrics/FrameMetricsCollector.h"
+#import "DiskIO/BSGDiskIOCollector.h"
 #import "ConditionTimeoutExecutor.h"
 #import "SystemInfoSampler.h"
 #import "SpanControl/BSGCompositeSpanControlProvider.h"
@@ -106,6 +107,7 @@ private:
     std::shared_ptr<class Sampler> sampler_;
     std::shared_ptr<NetworkHeaderInjector> networkHeaderInjector_;
     FrameMetricsCollector *frameMetricsCollector_;
+    BSGDiskIOCollector *diskIOCollector_;
     std::shared_ptr<ConditionTimeoutExecutor> conditionTimeoutExecutor_;
     BSGCompositeSpanControlProvider *spanControlProvider_;
     BSGPrioritizedStore<BugsnagPerformanceSpanStartCallback> *spanStartCallbacks_;

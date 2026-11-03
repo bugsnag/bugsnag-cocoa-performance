@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // sampler can feed the SessionMetricsAccumulator every second.
         //config.enabledMetrics.cpu = true
         //config.enabledMetrics.memory = true
+        //config.enabledMetrics.disk = true
 
         // Disable automatic app startup instrumentation:
         //config.autoInstrumentAppStarts = false
@@ -32,10 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Disable automatic URLSession request instrumentation:
         //config.autoInstrumentNetworkRequests = false
-
         // ... or control whether spans are created on a per-instance basis:
-        config.viewControllerInstrumentationCallback = {
-            !($0 is IgnoredViewController)
+        config.viewControllerInstrumentationCallback = { viewController in
+            !(viewController is IgnoredViewController)
         }
 
         BugsnagPerformance.start(configuration: config)

@@ -24,13 +24,13 @@ Feature: Foreground App Session Span - Extended Validations
     * span float attribute "bugsnag.system.cpu_max_main_thread" should be greater than 0.0
     * span float attribute "bugsnag.system.cpu_mean_overhead" should be greater than 0.0
     * span float attribute "bugsnag.system.cpu_max_overhead" should be greater than 0.0
-    # All CPU attributes < 100
-    * span float attribute "bugsnag.system.cpu_mean_total" should be less than 100.0
-    * span float attribute "bugsnag.system.cpu_max_total" should be less than 100.0
-    * span float attribute "bugsnag.system.cpu_mean_main_thread" should be less than 100.0
-    * span float attribute "bugsnag.system.cpu_max_main_thread" should be less than 100.0
-    * span float attribute "bugsnag.system.cpu_mean_overhead" should be less than 100.0
-    * span float attribute "bugsnag.system.cpu_max_overhead" should be less than 100.0
+    # All CPU attributes <= 100 (the SDK clamps at the physical ceiling)
+    * span float attribute "bugsnag.system.cpu_mean_total" should be less than or equal to 100.0
+    * span float attribute "bugsnag.system.cpu_max_total" should be less than or equal to 100.0
+    * span float attribute "bugsnag.system.cpu_mean_main_thread" should be less than or equal to 100.0
+    * span float attribute "bugsnag.system.cpu_max_main_thread" should be less than or equal to 100.0
+    * span float attribute "bugsnag.system.cpu_mean_overhead" should be less than or equal to 100.0
+    * span float attribute "bugsnag.system.cpu_max_overhead" should be less than or equal to 100.0
     # min ≤ mean ≤ max for all CPU fields
     * a span float attribute "bugsnag.system.cpu_min_total" is less than or equal to span float attribute "bugsnag.system.cpu_mean_total"
     * a span float attribute "bugsnag.system.cpu_mean_total" is less than or equal to span float attribute "bugsnag.system.cpu_max_total"
