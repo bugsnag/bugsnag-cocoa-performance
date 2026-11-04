@@ -138,25 +138,11 @@ steps:
             upload:
               - "logs/*"
 
-      - label: ":xcode_simulator: iOS 13 Unit tests"
-        timeout_in_minutes: 10
-        agents:
-          queue: "macos-12-arm"
-        commands:
-          - "./scripts/run-unit-tests.sh PLATFORM=iOS OS=13.7 DEVICE=\"iPhone 11\" XCODEBUILD_EXTRA_ARGS=\"CODE_SIGNING_ALLOWED=NO\""
-        env:
-          XCODE_VERSION: "14"
-        plugins:
-          "artifacts#v1.9.3":
-            upload:
-              - "logs/*"
-
   - group: "e2e tests"
     steps:
       - label: ":bitbar: {{matrix}} e2e tests"
         matrix:
           - "IOS_26"
-          - "IOS_13"
         depends_on:
           - "ios_fixture"
         timeout_in_minutes: 90
@@ -200,7 +186,6 @@ steps:
       - label: ":bitbar: {{matrix}} XcFramework e2e tests"
         matrix:
           - "IOS_26"
-          - "IOS_13"
         depends_on:
           - "ios_xcframework_fixture"
         timeout_in_minutes: 30
@@ -244,7 +229,6 @@ steps:
       - label: ":bitbar: {{matrix}} swizzling disabled e2e tests"
         matrix:
           - "IOS_26"
-          - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_disabled"
         timeout_in_minutes: 30
@@ -288,7 +272,6 @@ steps:
       - label: ":bitbar: {{matrix}} swizzling premain e2e tests"
         matrix:
           - "IOS_26"
-          - "IOS_13"
         depends_on:
           - "ios_fixture_swizzling_premain"
         timeout_in_minutes: 90
@@ -333,7 +316,6 @@ steps:
       - label: ":bitbar: {{matrix}} Benchmark tests"
         matrix:
           - "IOS_26"
-          - "IOS_13"
         depends_on:
           - "ios_fixture_benchmarks"
         timeout_in_minutes: 30
