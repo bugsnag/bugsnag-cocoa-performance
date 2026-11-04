@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "BugsnagPerformance",
     platforms: [
-        .iOS(.v15.0),
+        .iOS(.v15),
     ],
     products: [
         .library(
